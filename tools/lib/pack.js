@@ -25,7 +25,16 @@ const AS2_SUPER_POWER_COUNTER_BALLOON_PATH = "content/www.poptropica.com/popups/
 const AS2_SUPER_POWER_BALLOON_PATH = "content/www.poptropica.com/popups/balloon.swf";
 const AS2_SUPER_POWER_SCENE_PATH = "content/www.poptropica.com/scenes/islandSuper/sceneSuperMain.swf";
 const AS2_SUPER_POWER_DOWNTOWN_PATH = "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf";
+const AS2_SUPER_POWER_SCENE_SWF_PATTERN = /content\/www\.poptropica\.com\/scenes\/islandSuper\/scene[^/]+\.swf$/iu;
+const AS2_SUPER_POWER_OPTIONAL_UI_SWF_PATTERN = /content\/www\.poptropica\.com\/popups\/super[^/]+\.swf$/iu;
 const AS2_SUPER_POWER_SENTINEL_TEXT = "原版气泡中文测试";
+const AS2_ROOM_NAME_LINE_PATTERN = /\broomName\s*=/iu;
+const AS2_SUPER_POWER_SHARED_SWF_TEXT_SKIP_PATHS = new Set([
+  AS2_SUPER_POWER_GAMEPLAY_PATH,
+  AS2_SUPER_POWER_SHARED_CHAR_PATH,
+  AS2_SUPER_POWER_COUNTER_BALLOON_PATH,
+  AS2_SUPER_POWER_BALLOON_PATH
+]);
 const SKIP_RUNTIME_FILE_PATTERNS = [
   /content\/www\.poptropica\.com\/game\/data\/languages\/en\/islands\/start\/language\.xml$/iu,
   /content\/www\.poptropica\.com\/game\/data\/languages\/en\/shared\/language\.xml$/iu
@@ -1116,6 +1125,17 @@ function replaceSwfScriptLiteralInLine(line, { quote, rawLiteral, occurrenceInde
   });
 }
 
+function shouldSkipSwfScriptTranslationLine(line) {
+  return AS2_ROOM_NAME_LINE_PATTERN.test(String(line || ""));
+}
+
+function shouldSkipAs2SuperPowerSwfTextPatch(assetPath) {
+  const normalizedAssetPath = String(assetPath || "");
+  return AS2_SUPER_POWER_SCENE_SWF_PATTERN.test(normalizedAssetPath)
+    || AS2_SUPER_POWER_OPTIONAL_UI_SWF_PATTERN.test(normalizedAssetPath)
+    || AS2_SUPER_POWER_SHARED_SWF_TEXT_SKIP_PATHS.has(normalizedAssetPath);
+}
+
 function buildTranslatedSwfScriptFiles({ assetRows, sourceScriptRoot, translatedScriptRoot }) {
   const changedFiles = new Set();
 
@@ -1136,6 +1156,9 @@ function buildTranslatedSwfScriptFiles({ assetRows, sourceScriptRoot, translated
     const sourceLines = fs.readFileSync(sourceFile, "utf8").split(/\r?\n/u);
     const lineIndex = Math.max(0, Number(context.lineNumber) - 1);
     if (lineIndex >= sourceLines.length) {
+      continue;
+    }
+    if (shouldSkipSwfScriptTranslationLine(sourceLines[lineIndex])) {
       continue;
     }
 
@@ -1284,146 +1307,7 @@ function escapeAs2ScriptString(value) {
     .replace(/\r?\n/gu, "\\n");
 }
 
-function renderAs2StaticOverlayHelpers(overlays, containerExpression = "this") {
-  const lines = [
-    "function zhOverlayFill(targetClip, width, height, color, alpha)",
-    "{",
-    "   targetClip.beginFill(color,alpha);",
-    "   targetClip.moveTo(0,0);",
-    "   targetClip.lineTo(width,0);",
-    "   targetClip.lineTo(width,height);",
-    "   targetClip.lineTo(0,height);",
-    "   targetClip.lineTo(0,0);",
-    "   targetClip.endFill();",
-    "}",
-    "function zhOverlayLabel(container, clipName, x, y, width, height, bgColor, bgAlpha, textValue, fontSize, textColor, rotation)",
-    "{",
-    "   var holder;",
-    "   var fmt;",
-    "   holder = container.createEmptyMovieClip(clipName,container.getNextHighestDepth());",
-    "   holder._x = x;",
-    "   holder._y = y;",
-    "   if(rotation != undefined)",
-    "   {",
-    "      holder._rotation = rotation;",
-    "   }",
-    "   zhOverlayFill(holder,width,height,bgColor,bgAlpha);",
-    "   holder.createTextField(\"txt\",holder.getNextHighestDepth(),4,0,Math.max(1,width - 8),height);",
-    "   holder.txt.embedFonts = false;",
-    "   holder.txt.selectable = false;",
-    "   holder.txt.multiline = true;",
-    "   holder.txt.wordWrap = true;",
-    "   holder.txt.autoSize = false;",
-    "   holder.txt.text = textValue;",
-    "   fmt = new TextFormat();",
-    "   fmt.font = \"_sans\";",
-    "   fmt.size = fontSize;",
-    "   fmt.color = textColor;",
-    "   fmt.bold = true;",
-    "   fmt.align = \"center\";",
-    "   fmt.leading = 2;",
-    "   holder.txt.setNewTextFormat(fmt);",
-    "   holder.txt.setTextFormat(fmt);",
-    "   holder.txt._height = height;",
-    "   holder.txt._y = Math.max(0,Math.floor((height - holder.txt.textHeight - 6) / 2));",
-    "   return holder;",
-    "}",
-    "function installZhStaticOverlay()",
-    "{",
-    "   var overlayRoot;",
-    "   var overlayHost;",
-    `   overlayHost = ${containerExpression};`,
-    "   if(overlayHost == undefined || overlayHost.zhStaticOverlay != undefined)",
-    "   {",
-    "      return undefined;",
-    "   }",
-    "   overlayRoot = overlayHost.createEmptyMovieClip(\"zhStaticOverlay\",overlayHost.getNextHighestDepth());"
-  ];
-  for (const overlay of overlays) {
-    lines.push(
-      `   zhOverlayLabel(overlayRoot,"${overlay.name}",${overlay.x},${overlay.y},${overlay.width},${overlay.height},${overlay.bgColor},${overlay.bgAlpha},"${escapeAs2ScriptString(overlay.text)}",${overlay.textSize},${overlay.textColor},${overlay.rotation == undefined ? "undefined" : overlay.rotation});`
-    );
-  }
-  lines.push("}");
-  return lines.join("\n");
-}
-
-const AS2_SUPER_POWER_SCENE_OVERLAY_CONFIGS = new Map([
-  [
-    AS2_SUPER_POWER_SCENE_PATH,
-    {
-      insertSearch: "function initChars()\n{",
-      callSearch: `bitmapBackground();
-_root.makeBackdrop();`,
-      callReplacement: `bitmapBackground();
-_root.makeBackdrop();
-installZhStaticOverlay();`,
-      containerExpression: "bg",
-      overlays: [
-        { name: "costumeMain", x: 1010, y: 1572, width: 235, height: 78, bgColor: 0x3F5F88, bgAlpha: 92, text: "面具与披风", textSize: 26, textColor: 0xFFFFFF },
-        { name: "costumeWindow", x: 872, y: 1738, width: 156, height: 24, bgColor: 0x506985, bgAlpha: 92, text: "面具与服装", textSize: 12, textColor: 0xFFFFFF },
-        { name: "heroWindow", x: 1218, y: 1738, width: 184, height: 24, bgColor: 0x506985, bgAlpha: 92, text: "超级英雄配件", textSize: 12, textColor: 0xFFFFFF },
-        { name: "openSign", x: 917, y: 1762, width: 74, height: 56, bgColor: 0xB56C73, bgAlpha: 96, text: "营业中", textSize: 20, textColor: 0xFFFFFF },
-        { name: "comicShop", x: 590, y: 1682, width: 186, height: 56, bgColor: 0x5C8F58, bgAlpha: 90, text: "漫画店", textSize: 22, textColor: 0xFFFFFF },
-        { name: "telephone", x: 3934, y: 1718, width: 134, height: 30, bgColor: 0xD6772E, bgAlpha: 100, text: "电话亭", textSize: 18, textColor: 0xFFFFFF },
-        { name: "dailyPaper", x: 4340, y: 1672, width: 224, height: 44, bgColor: 0x5A716F, bgAlpha: 90, text: "每日新闻", textSize: 22, textColor: 0xF6E2BD },
-        { name: "downtown", x: 2372, y: 1714, width: 92, height: 54, bgColor: 0x6F9B2F, bgAlpha: 96, text: "市中心", textSize: 18, textColor: 0xFFFFFF },
-        { name: "countyPrison", x: 2360, y: 1818, width: 118, height: 36, bgColor: 0x5E8B3B, bgAlpha: 96, text: "县监狱", textSize: 16, textColor: 0xFFFFFF },
-        { name: "tapeUpper", x: 1980, y: 1794, width: 278, height: 20, bgColor: 0xF5D200, bgAlpha: 96, text: "警戒线 禁止跨越", textSize: 13, textColor: 0x000000, rotation: -17 },
-        { name: "tapeLower", x: 1670, y: 1884, width: 230, height: 20, bgColor: 0xF5D200, bgAlpha: 96, text: "警戒线 禁止跨越", textSize: 13, textColor: 0x000000, rotation: 15 }
-      ]
-    }
-  ],
-  [
-    AS2_SUPER_POWER_DOWNTOWN_PATH,
-    {
-      insertSearch: "function initChars()\n{",
-      callSearch: `_root.makeBackground();
-_root.makeBackdrop();`,
-      callReplacement: `_root.makeBackground();
-_root.makeBackdrop();
-installZhStaticOverlay();`,
-      containerExpression: "bg",
-      overlays: [
-        { name: "mainStreet", x: 246, y: 1718, width: 96, height: 52, bgColor: 0x6F9B2F, bgAlpha: 96, text: "主街", textSize: 22, textColor: 0xFFFFFF }
-      ]
-    }
-  ]
-]);
-
-function applyAs2SuperPowerStaticOverlayPatch(content, assetPath) {
-  const config = AS2_SUPER_POWER_SCENE_OVERLAY_CONFIGS.get(assetPath);
-  if (!config) {
-    return normalizeScriptContent(content);
-  }
-
-  let nextContent = normalizeScriptContent(content);
-  const hasInsertAnchor = nextContent.includes(config.insertSearch);
-  const hasCallAnchor = nextContent.includes(config.callSearch);
-  if (!hasInsertAnchor && !hasCallAnchor) {
-    return nextContent;
-  }
-  const hasHelper = nextContent.includes("function installZhStaticOverlay()");
-  if (hasInsertAnchor && !hasHelper) {
-    nextContent = replaceRequiredSnippet(
-      nextContent,
-      config.insertSearch,
-      `${renderAs2StaticOverlayHelpers(config.overlays, config.containerExpression)}\n${config.insertSearch}`,
-      `${assetPath} static overlay helper insertion`
-    );
-  }
-  if ((hasInsertAnchor || hasHelper) && hasCallAnchor && !nextContent.includes(config.callReplacement)) {
-    nextContent = replaceRequiredSnippet(
-      nextContent,
-      config.callSearch,
-      config.callReplacement,
-      `${assetPath} static overlay install call`
-    );
-  }
-  return nextContent;
-}
-
-const AS2_SUPER_POWER_SCENE_REPLACEMENTS = [
+const AS2_SUPER_POWER_SCENE_DIALOGUE_REPLACEMENTS = [
   ["I gave the Island Medallion\nto our hero, Ned Noodlehead!", "我把岛奖章交给了我们的英雄，\n内德·面条头！"],
   ["I think this meteor\nis a nice decoration\nfor the prison.", "我觉得这颗陨石\n很适合当监狱的装饰。"],
   ["It's a good thing those\nvillains are back in prison!", "那些坏蛋又回监狱了，\n真是太好了！"],
@@ -1468,21 +1352,7 @@ const AS2_SUPER_POWER_SCENE_REPLACEMENTS = [
   ["What are you\ndoing up here?", "你在这上面\n做什么？"],
   ["I can't keep up with all\nthese super villains anymore!", "我实在应付不了这么多\n超级反派了！"],
   ["I want to be\na super hero!", "我也想成为\n超级英雄！"],
-  ["There's more to it than\nhaving a suit and ID!\nTalk to me after you've\ndefeated at least 5 villains.", "光有制服和证件可不够！\n等你打败至少5个反派\n再来找我。"],
-  ['labelText = "TRAVEL";', 'labelText = "旅行";'],
-  ['labelText = "ENTER";', 'labelText = "进入";'],
-  ['labelText = "GO RIGHT";', 'labelText = "向右";'],
-  ['labelText = "GO LEFT";', 'labelText = "向左";'],
-  ['labelText = "GO DOWN";', 'labelText = "向下";'],
-  ['labelText = "GO UP";', 'labelText = "向上";'],
-  ['labelText = "COMMON ROOM";', 'labelText = "公共休息室";'],
-  ['desc = ["Costume",426,380];', 'desc = ["服装店",426,380];'],
-  ['desc = ["Comic",741,400];', 'desc = ["漫画店",741,400];'],
-  ['desc = ["News",642,1050];', 'desc = ["新闻社",642,1050];'],
-  ['desc = ["Bank",1295,1220];', 'desc = ["银行",1295,1220];'],
-  ['desc = ["Station",234,102];', 'desc = ["车站",234,102];'],
-  ['desc = ["Skyscraper",836,3052];', 'desc = ["摩天楼",836,3052];'],
-  ['desc = ["Skyscraper",1204,3052];', 'desc = ["摩天楼",1204,3052];']
+  ["There's more to it than\nhaving a suit and ID!\nTalk to me after you've\ndefeated at least 5 villains.", "光有制服和证件可不够！\n等你打败至少5个反派\n再来找我。"]
 ];
 
 function exportSwfScriptsForPatch({ ffdecCli, inputSwf, outputDir }) {
@@ -1512,10 +1382,7 @@ function applyAs2SuperPowerSceneValidationPatch({ sourceScriptRoot, translatedSc
   let changed = false;
   for (const entry of scriptEntries) {
     const originalContent = fs.readFileSync(entry.filePath, "utf8");
-    const patchedContent = applyAs2SuperPowerStaticOverlayPatch(
-      applyLiteralStringReplacements(originalContent, AS2_SUPER_POWER_SCENE_REPLACEMENTS),
-      assetPath
-    );
+    const patchedContent = applyLiteralStringReplacements(originalContent, AS2_SUPER_POWER_SCENE_DIALOGUE_REPLACEMENTS);
     if (patchedContent === normalizeScriptContent(originalContent)) {
       continue;
     }
@@ -1543,6 +1410,29 @@ function applyAs2GameplayShowSayScriptPatch(content) {
    }
    return _loc2_;
 }
+function looksLikeZhHtmlText(rawText)
+{
+   var htmlValue;
+   htmlValue = rawText == undefined || rawText == null ? "" : String(rawText);
+   htmlValue = htmlValue.toUpperCase();
+   return htmlValue.indexOf("<TEXTFORMAT") >= 0 || htmlValue.indexOf("<P") >= 0 || htmlValue.indexOf("<FONT") >= 0 || htmlValue.indexOf("<BR") >= 0;
+}
+function normalizeZhHtmlText(rawText)
+{
+   var htmlValue;
+   htmlValue = decodeZhSayText(rawText);
+   htmlValue = htmlValue.split("FACE=\\"Arial\\"").join("FACE=\\"_sans\\"");
+   htmlValue = htmlValue.split("FACE='Arial'").join("FACE='_sans'");
+   htmlValue = htmlValue.split("FACE=\\"Verdana\\"").join("FACE=\\"_sans\\"");
+   htmlValue = htmlValue.split("FACE='Verdana'").join("FACE='_sans'");
+   htmlValue = htmlValue.split("FACE=\\"_serif\\"").join("FACE=\\"_sans\\"");
+   htmlValue = htmlValue.split("FACE='_serif'").join("FACE='_sans'");
+   if(htmlValue.toUpperCase().indexOf("<TEXTFORMAT") < 0)
+   {
+      htmlValue = "<TEXTFORMAT LEADING=\\"2\\"><P ALIGN=\\"CENTER\\"><FONT FACE=\\"_sans\\">" + htmlValue + "</FONT></P></TEXTFORMAT>";
+   }
+   return htmlValue;
+}
 function normalizeZhSayField(fieldRef)
 {
    var fmt;
@@ -1555,10 +1445,10 @@ function normalizeZhSayField(fieldRef)
    fieldRef.multiline = true;
    fieldRef.wordWrap = true;
    fieldRef.autoSize = false;
-   fieldRef._width = 188;
-   fieldRef._height = 72;
-   fieldRef._x = -94;
-   fieldRef._y = -34;
+   fieldRef._width = 204;
+   fieldRef._height = 86;
+   fieldRef._x = -102;
+   fieldRef._y = -40;
    if(fieldRef.__zhFmt == undefined)
    {
       fmt = new TextFormat();
@@ -1578,18 +1468,28 @@ function normalizeZhSayField(fieldRef)
 function setZhTextFieldValue(fieldRef, rawText)
 {
    var _loc2_;
+   var _loc3_;
    normalizeZhSayField(fieldRef);
    if(fieldRef == undefined)
    {
       return "";
    }
-   _loc2_ = decodeZhSayText(rawText);
-   fieldRef.text = _loc2_;
+   _loc3_ = looksLikeZhHtmlText(rawText);
+   _loc2_ = !_loc3_ ? decodeZhSayText(rawText) : normalizeZhHtmlText(rawText);
+   fieldRef.html = _loc3_;
+   if(_loc3_)
+   {
+      fieldRef.htmlText = _loc2_;
+   }
+   else
+   {
+      fieldRef.text = _loc2_;
+   }
    if(fieldRef.__zhFmt != undefined)
    {
       fieldRef.setTextFormat(fieldRef.__zhFmt);
    }
-   fieldRef._height = Math.max(36,Math.min(86,fieldRef.textHeight + 8));
+   fieldRef._height = Math.max(40,Math.min(110,fieldRef.textHeight + 10));
    return _loc2_;
 }
 function showSay(target, sayText, id)
@@ -1751,7 +1651,7 @@ function showBalloon(balloonFrame, ball)
   nextContent = replaceRequiredSnippet(
     nextContent,
     `      _loc5_.loadClip("popups/balloon.swf",balloon);`,
-    `      _loc5_.loadClip("popups/balloon.swf?zhfix=sp2",balloon);`,
+    `      _loc5_.loadClip("popups/counter/balloon.swf?zhfix=sp2",balloon);`,
     "showBalloon patched balloon path"
   );
   nextContent = replaceRequiredSnippet(
@@ -1811,10 +1711,10 @@ const AS2_GAMEPLAY_SAY_CLIP_FRAME1_SCRIPT = `function ensureZhField()
    fld.multiline = true;
    fld.wordWrap = true;
    fld.autoSize = false;
-   fld._width = 188;
-   fld._height = 72;
-   fld._x = -94;
-   fld._y = -34;
+   fld._width = 204;
+   fld._height = 86;
+   fld._x = -102;
+   fld._y = -40;
    fmt = new TextFormat();
    fmt.font = "_sans";
    fmt.size = 16;
@@ -1827,7 +1727,7 @@ const AS2_GAMEPLAY_SAY_CLIP_FRAME1_SCRIPT = `function ensureZhField()
 }
 function sizeBubbles()
 {
-   fld._height = Math.max(36,Math.min(86,fld.textHeight + 8));
+   fld._height = Math.max(40,Math.min(110,fld.textHeight + 10));
    txtBox._x = fld._x + fld._width / 2;
    txtBox._y = fld._y + fld._height / 2;
    txtBox._width = fld._width + padding * 2;
@@ -1876,21 +1776,57 @@ const AS2_COUNTER_BALLOON_FRAME1_SCRIPT = `function decodeBalloonText(rawText)
    }
    return textValue;
 }
+function ensureShapeMetrics()
+{
+   var bounds;
+   if(shape == undefined)
+   {
+      return undefined;
+   }
+   if(shape.__zhBaseWidth == undefined)
+   {
+      bounds = shape.getBounds(this);
+      if(bounds == undefined || bounds.xMax <= bounds.xMin || bounds.yMax <= bounds.yMin)
+      {
+         shape.__zhBaseXMin = -92;
+         shape.__zhBaseXMax = 92;
+         shape.__zhBaseYMin = -92;
+         shape.__zhBaseYMax = -10;
+      }
+      else
+      {
+         shape.__zhBaseXMin = bounds.xMin;
+         shape.__zhBaseXMax = bounds.xMax;
+         shape.__zhBaseYMin = bounds.yMin;
+         shape.__zhBaseYMax = bounds.yMax;
+      }
+      shape.__zhBaseWidth = Math.max(1,shape.__zhBaseXMax - shape.__zhBaseXMin);
+      shape.__zhBaseHeight = Math.max(1,shape.__zhBaseYMax - shape.__zhBaseYMin);
+      shape.__zhBaseXScale = shape._xscale == undefined ? 100 : shape._xscale;
+      shape.__zhBaseYScale = shape._yscale == undefined ? 100 : shape._yscale;
+      shape.__zhCenterX = Math.round((shape.__zhBaseXMin + shape.__zhBaseXMax) / 2);
+      shape.__zhTopY = shape.__zhBaseYMin + 14;
+      shape.__zhInnerWidth = Math.max(176,shape.__zhBaseWidth - 28);
+      shape.__zhInnerHeight = Math.max(52,shape.__zhBaseHeight - 22);
+   }
+}
 function ensureBalloonLabel()
 {
    var fmt;
+   ensureShapeMetrics();
    if(label == undefined)
    {
-      createTextField("label",3,0,0,220,96);
+      createTextField("label",3,-88,-74,176,86);
       label.multiline = true;
       label.wordWrap = true;
       label.selectable = false;
       label.embedFonts = false;
+      label.autoSize = false;
       fmt = new TextFormat();
       fmt.font = "_sans";
-      fmt.size = 18;
+      fmt.size = 16;
       fmt.bold = true;
-      fmt.leading = 2;
+      fmt.leading = 3;
       fmt.align = "center";
       fmt.color = 0;
       label.setNewTextFormat(fmt);
@@ -1899,34 +1835,45 @@ function ensureBalloonLabel()
 }
 function layoutBalloonLabel()
 {
-   var bounds;
-   var widthValue;
-   var heightValue;
    var textValue;
+   var targetWidth;
+   var targetHeight;
+   var widthScale;
    ensureBalloonLabel();
-   bounds = shape.getBounds(this);
-   if(bounds.xMax <= bounds.xMin || bounds.yMax <= bounds.yMin)
+   if(label == undefined)
    {
-      label._x = -110;
-      label._y = -78;
-      label._width = 220;
-      label._height = 96;
-   }
-   else
-   {
-      widthValue = Math.max(96,bounds.xMax - bounds.xMin - 30);
-      heightValue = Math.max(32,bounds.yMax - bounds.yMin - 42);
-      label._x = bounds.xMin + Math.max(12,Math.round((bounds.xMax - bounds.xMin - widthValue) / 2));
-      label._y = bounds.yMin + 12;
-      label._width = widthValue;
-      label._height = heightValue;
+      return undefined;
    }
    textValue = char != undefined ? decodeBalloonText(char.talkyText) : "";
+   label._width = 236;
+   label._height = 120;
    if(label.__textValue != textValue)
    {
       label.text = textValue;
       label.setTextFormat(label.__fmt);
       label.__textValue = textValue;
+    }
+   label._visible = textValue.length > 0;
+   if(shape == undefined)
+   {
+      label._x = -88;
+      label._y = -74;
+      label._width = 176;
+      label._height = 86;
+      return undefined;
+   }
+   targetWidth = Math.max(shape.__zhInnerWidth,Math.min(236,label.textWidth + 26));
+   targetHeight = Math.max(48,Math.min(110,label.textHeight + 18));
+   label._width = targetWidth;
+   label._height = targetHeight;
+   label._x = shape.__zhCenterX - Math.round(targetWidth / 2);
+   label._y = shape.__zhTopY + Math.max(0,Math.round((shape.__zhInnerHeight - targetHeight) / 2));
+   widthScale = Math.max(100,Math.min(150,Math.round(targetWidth / Math.max(1,shape.__zhInnerWidth) * 100)));
+   shape._xscale = Math.round(shape.__zhBaseXScale * widthScale / 100);
+   shape._yscale = shape.__zhBaseYScale;
+   if(string != undefined)
+   {
+      string._x = shape.__zhCenterX;
    }
 }
 function init()
@@ -2295,6 +2242,9 @@ function buildAs2SuperPowerSharedAssets({ config, outputDir, manifest, islandIds
       });
       continue;
     }
+    if (!scenePatchResult.changed) {
+      continue;
+    }
 
     const sceneOutputSwf = path.join(outputDir, "swf", sceneSpec.assetPath.replace(/\//gu, path.sep));
     ensureDirSync(path.dirname(sceneOutputSwf));
@@ -2504,6 +2454,9 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
   const normalizedAssetPatterns = assetPatterns
     .map((item) => String(item || "").trim())
     .filter(Boolean);
+  const superPowerOnlyScope = sourceGroup === "as2"
+    && normalizedIslandIds.length > 0
+    && normalizedIslandIds.every((item) => item === "super-power");
 
   const assets = db
     .getAssetsForSourceGroup(sourceGroup)
@@ -2571,9 +2524,12 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
       ensureDirSync(translatedTextRoot);
       ensureDirSync(translatedScriptRoot);
       const fontFilePath = findPreferredSwfFontFile(config);
+      const swfTextRows = sourceGroup === "as2" && superPowerOnlyScope && shouldSkipAs2SuperPowerSwfTextPatch(sample.asset_path)
+        ? []
+        : assetRows;
       const swfPatch = sourceGroup === "as2"
         ? buildPlainSwfTextPatch({
-          assetRows,
+          assetRows: swfTextRows,
           sourceTextRoot,
           inputSwf: sample.extracted_path,
           ffdecCli: config.tools.ffdecCli,

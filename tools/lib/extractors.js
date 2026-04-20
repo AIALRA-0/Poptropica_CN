@@ -436,7 +436,6 @@ const SWF_SCRIPT_LINE_PATTERNS = [
   /\btalkyText\s*=/iu,
   /\bshowSay\s*\(/iu,
   /\bmanualSay\s*\(/iu,
-  /\broomName\s*=/iu,
   /\ba\d+\s*=/iu
 ];
 
