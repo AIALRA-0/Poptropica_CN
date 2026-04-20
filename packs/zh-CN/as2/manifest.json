@@ -1,0 +1,262 @@
+{
+  "generatedAt": "2026-04-20T16:53:33.419Z",
+  "sourceGroup": "as2",
+  "islandIds": [],
+  "assetPatterns": [],
+  "canonicalKeys": [
+    "24-carrot",
+    "astro-knights",
+    "back-lot",
+    "big-nate",
+    "charlie-and-the-chocolate-factory",
+    "cryptids",
+    "early-poptropica",
+    "escape-from-pelican-rock",
+    "game-show",
+    "ghost-story",
+    "great-pumpkin",
+    "home-hub",
+    "lunar-colony",
+    "map",
+    "mission-atlantis",
+    "monster-carnival",
+    "mystery-train",
+    "mythology-haxe",
+    "nabooti",
+    "night-watch",
+    "reality-tv",
+    "red-dragon",
+    "shark-tooth",
+    "shrink-ray",
+    "sos",
+    "spy",
+    "start",
+    "steamworks",
+    "super-power",
+    "super-villain",
+    "survival",
+    "time-tangled",
+    "vampires-curse",
+    "wild-west",
+    "wimpy-boardwalk",
+    "wimpy-wonderland"
+  ],
+  "assetsPatched": 41,
+  "externalTextAssets": [
+    {
+      "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
+      "assetPath": "content/www.poptropica.com/flashpoint/originalFiles/framework/data/config.xml",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\flashpoint\\originalFiles\\framework\\data\\config.xml"
+    },
+    {
+      "assetId": "d9a9a13196ad6d7b7ea21b43249a0e35e5e6fb3e",
+      "assetPath": "content/www.poptropica.com/framework/data/config.xml",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\framework\\data\\config.xml"
+    },
+    {
+      "assetId": "4d5f48e8fbf88632a6123e098f1ec47065305dd1",
+      "assetPath": "content/www.poptropica.com/get_inventory_menu.php",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\get_inventory_menu.php"
+    },
+    {
+      "assetId": "e3f8c1a9b6bfc5dfa9b886be25b7a1a20bffee36",
+      "assetPath": "content/www.poptropica.com/scenes/islandGameShow/assets/trivia_noItalics.xml",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\scenes\\islandGameShow\\assets\\trivia_noItalics.xml"
+    },
+    {
+      "assetId": "97806a12b807de11355405cde747b505ddf30fcd",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/assets/clues.xml",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\scenes\\islandTrain\\assets\\clues.xml"
+    }
+  ],
+  "swfPatchedAssets": [
+    {
+      "assetId": "420d1eda503b59d00b935a55fde60c98aeae59b2",
+      "assetPath": "content/www.poptropica.com/flashpoint/originalFiles/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\flashpoint\\originalFiles\\framework.swf"
+    },
+    {
+      "assetId": "037459acc84af4349c9055103f8f8588861b6acc",
+      "assetPath": "content/www.poptropica.com/flashpoint/originalFiles/scenes/islandSuper/sceneComic.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\flashpoint\\originalFiles\\scenes\\islandSuper\\sceneComic.swf"
+    },
+    {
+      "assetId": "5f58825fec8af7f2e988f28517a6bffeb446de67",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf"
+    },
+    {
+      "assetId": "5bdf976ac0d0dfd98dd44268e21f0f649ed6fb83",
+      "assetPath": "content/www.poptropica.com/popups/BlimpGame/dialog.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\BlimpGame\\dialog.swf"
+    },
+    {
+      "assetId": "47d31e99c4f3517ddfce0429513c14471c1aee3d",
+      "assetPath": "content/www.poptropica.com/popups/BlimpGame/start.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\BlimpGame\\start.swf"
+    },
+    {
+      "assetId": "d05ff06adbc31235c7099ee0c3d4ab5e7a8ab778",
+      "assetPath": "content/www.poptropica.com/popups/Shipwreck/intro.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Shipwreck\\intro.swf"
+    },
+    {
+      "assetId": "17f3b125f000eb60fe9359ff8636c21990fbbdca",
+      "assetPath": "content/www.poptropica.com/popups/Train/promo/start.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Train\\promo\\start.swf"
+    },
+    {
+      "assetId": "57146483afcab8870fe70d698f6a2448b7181a38",
+      "assetPath": "content/www.poptropica.com/popups/Vampire/intro.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Vampire\\intro.swf"
+    },
+    {
+      "assetId": "1f62ec5841cd96d720b72d2b8aa9827d0640d3a7",
+      "assetPath": "content/www.poptropica.com/popups/Woodland/intro.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Woodland\\intro.swf"
+    },
+    {
+      "assetId": "dc40d750ed93d470efd7e9410203d700e63391ca",
+      "assetPath": "content/www.poptropica.com/popups/Zombie/intro.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Zombie\\intro.swf"
+    },
+    {
+      "assetId": "ea68d1e788ace6f241bb8e4a63183b88952cee54",
+      "assetPath": "content/www.poptropica.com/popups/superchase.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\superchase.swf"
+    },
+    {
+      "assetId": "08000fc50e8b8443aef74e8f40656e4d38102072",
+      "assetPath": "content/www.poptropica.com/popups/superfiles.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\superfiles.swf"
+    },
+    {
+      "assetId": "97e903cf2e0d04ea5906f75189e12c11851a002d",
+      "assetPath": "content/www.poptropica.com/popups/superhandbook.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\superhandbook.swf"
+    },
+    {
+      "assetId": "2a0ff84b66546afbeae30fff38405beca0f615d7",
+      "assetPath": "content/www.poptropica.com/popups/supernews.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\supernews.swf"
+    },
+    {
+      "assetId": "f12eef6f22512d6a325fdd630825c3c3ceddca9a",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH34.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneAdGroundH34.swf"
+    },
+    {
+      "assetId": "0932521294936f851ad255daa0878f16d56523c3",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH4.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneAdGroundH4.swf"
+    },
+    {
+      "assetId": "a5a0bb28c439372f8c27035441c0e0fb647063b7",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneBank.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneBank.swf"
+    },
+    {
+      "assetId": "f17d3b862bf7a08418f732d943a6843745129a40",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneBathroom1.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneBathroom1.swf"
+    },
+    {
+      "assetId": "0aa51cb2ee36082e4c9599d860d245f6f4893b63",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneBathroom2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneBathroom2.swf"
+    },
+    {
+      "assetId": "8037a84336e66a67bb8d2092260fd6e5a2b42be1",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneComic.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneComic.swf"
+    },
+    {
+      "assetId": "3a0fe703ecf33108a49cf08ce067c7af3cc00559",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneCostume.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneCostume.swf"
+    },
+    {
+      "assetId": "7ca4f6628ae6ced87d0204736f3eaff519c88c94",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneDownTown.swf"
+    },
+    {
+      "assetId": "5ff10cbaac8d845e908fc212e4fa15e3744706d0",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneJunkyard.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneJunkyard.swf"
+    },
+    {
+      "assetId": "3b5f0eac47fdf24d848abdf53e5db15e5a74ab6b",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneNews.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneNews.swf"
+    },
+    {
+      "assetId": "6039b65f5d48feb20fb3b049b36b9920ca6b76f1",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/scenePark.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\scenePark.swf"
+    },
+    {
+      "assetId": "91d670aec3a349e1b40bdb59eca40cb83ee9ef98",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSewer1.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSewer1.swf"
+    },
+    {
+      "assetId": "e3694304522e2c713965fee61b37d1778a82cbc4",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSewer2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSewer2.swf"
+    },
+    {
+      "assetId": "939842af6b0069874dfa65505c2274a1f181a0bd",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSkyscraper.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSkyscraper.swf"
+    },
+    {
+      "assetId": "fd9c618effa65041759fad220efc3387f2725120",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneStation.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneStation.swf"
+    },
+    {
+      "assetId": "db5c5cd81878e9caaef0339f5209416d83b1304e",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSubway.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSubway.swf"
+    },
+    {
+      "assetId": "91a3f366af1b9d220254720535b1e18515c6e11d",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSuperMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSuperMain.swf"
+    },
+    {
+      "assetId": "super-power:gameplay",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf"
+    },
+    {
+      "assetId": "super-power:char",
+      "assetPath": "content/www.poptropica.com/char.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\char.swf"
+    },
+    {
+      "assetId": "super-power:counter-balloon",
+      "assetPath": "content/www.poptropica.com/popups/counter/balloon.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\counter\\balloon.swf"
+    },
+    {
+      "assetId": "super-power:balloon",
+      "assetPath": "content/www.poptropica.com/popups/balloon.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\balloon.swf"
+    },
+    {
+      "assetId": "super-power:downtown",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneDownTown.swf"
+    }
+  ],
+  "pendingSwfAssets": [],
+  "runtimeZip": {
+    "status": "ready",
+    "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
+    "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
+    "replacementCount": 40,
+    "swfRuntimeOverrides": "enabled"
+  }
+}
