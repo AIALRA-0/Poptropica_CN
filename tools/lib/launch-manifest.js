@@ -1,0 +1,248 @@
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+const paths = require("./paths");
+const { loadConfig } = require("./config");
+const { buildCatalogIndex } = require("./catalog");
+const { fileExists, readJson, writeJson } = require("./fs-utils");
+
+const AS2_ROOM_PRIORITY = [
+  "City2",
+  "MainStreet",
+  "Mainstreet",
+  "Main",
+  "RealityMain",
+  "TradeMain",
+  "CounterMain",
+  "NabootiMain",
+  "AstroMain",
+  "Present"
+];
+
+const AS3_ROOM_PRIORITY = [
+  "mainStreet",
+  "town",
+  "mainLand",
+  "landing",
+  "beach",
+  "center",
+  "spacePort",
+  "bazaar",
+  "reef",
+  "crashLanding",
+  "mainHall",
+  "lobby",
+  "intro",
+  "startScreen",
+  "login"
+];
+
+function capitalizeFirst(value) {
+  const text = String(value || "");
+  return text ? `${text.slice(0, 1).toUpperCase()}${text.slice(1)}` : "";
+}
+
+function toAs3SceneClass(sceneFolder, roomParam) {
+  const islandPackage = String(sceneFolder || "");
+  const roomPackage = String(roomParam || "");
+  const roomClass = roomPackage
+    .split(/[^a-z0-9]+/iu)
+    .filter(Boolean)
+    .map(capitalizeFirst)
+    .join("");
+  if (!islandPackage || !roomPackage || !roomClass) {
+    return null;
+  }
+  return `game.scenes.${islandPackage}.${roomPackage}.${roomClass}`;
+}
+
+function listArchiveEntries(archivePath, tarBin) {
+  if (!archivePath || !fileExists(archivePath) || !tarBin || !fileExists(tarBin)) {
+    return [];
+  }
+  const result = spawnSync(tarBin, ["-tf", archivePath], {
+    encoding: "utf8",
+    windowsHide: true,
+    maxBuffer: 1024 * 1024 * 128
+  });
+  if (result.status !== 0) {
+    return [];
+  }
+  return result.stdout.split(/\r?\n/u).map((line) => line.trim()).filter(Boolean);
+}
+
+function loadLaunchOverrides() {
+  return readJson(paths.launchOverridesPath, { as2: {}, as3: {} }) || { as2: {}, as3: {} };
+}
+
+function buildAs2SceneMap(entries) {
+  const sceneMap = new Map();
+  for (const entry of entries) {
+    const match = entry.match(/content\/www\.poptropica\.com\/scenes\/island([^/]+)\/scene([^/]+)\.swf$/iu);
+    if (!match) {
+      continue;
+    }
+    const sceneFolder = match[1];
+    const room = match[2];
+    if (!sceneMap.has(sceneFolder)) {
+      sceneMap.set(sceneFolder, new Set());
+    }
+    sceneMap.get(sceneFolder).add(room);
+  }
+  return sceneMap;
+}
+
+function buildAs3SceneMap(entries) {
+  const sceneMap = new Map();
+  for (const entry of entries) {
+    const match = entry.match(/content\/www\.poptropica\.com\/game\/data\/scenes\/([^/]+)\/([^/]+)/iu);
+    if (!match) {
+      continue;
+    }
+    const sceneFolder = match[1];
+    const room = match[2];
+    if (!sceneMap.has(sceneFolder)) {
+      sceneMap.set(sceneFolder, new Set());
+    }
+    sceneMap.get(sceneFolder).add(room);
+  }
+  return sceneMap;
+}
+
+function chooseRoom(rooms, priorities) {
+  for (const candidate of priorities) {
+    if (rooms.has(candidate)) {
+      return candidate;
+    }
+  }
+  const viable = [...rooms].filter((room) => !/\.xml$/iu.test(room) && room !== "shared" && room !== "common");
+  return viable.sort((left, right) => left.localeCompare(right))[0] || null;
+}
+
+function buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath, as3TargetScene }) {
+  if (sourceGroup === "as3") {
+    return as3TargetScene
+      ? `http://www.poptropica.com/game/Shell.swf?island&overrideScene=${encodeURIComponent(as3TargetScene)}`
+      : "http://www.poptropica.com/base.php?room=FlashpointStart";
+  }
+
+  return `http://www.poptropica.com/base.php?room=${encodeURIComponent(roomParam)}&island=${encodeURIComponent(islandParam)}&startup_path=${encodeURIComponent(startupPath || "gameplay")}`;
+}
+
+function buildEntry({ catalogEntry, sourceGroup, sceneFolder, roomParam, islandParam, startupPath, discoveredRooms }) {
+  if (!sceneFolder || !roomParam || !islandParam || !discoveredRooms || discoveredRooms.size === 0) {
+    return {
+      canonicalKey: catalogEntry.canonicalKey,
+      sourceGroup,
+      runtime: "flash",
+      launchable: false,
+      fallbackMode: "unresolved",
+      startupPath: startupPath || "gameplay",
+      notes: ["No stable launch scene could be resolved from the current gamezip."]
+    };
+  }
+
+  const resolvedStartupPath = startupPath || "gameplay";
+  const as3TargetScene = sourceGroup === "as3" ? toAs3SceneClass(sceneFolder, roomParam) : null;
+
+  return {
+    canonicalKey: catalogEntry.canonicalKey,
+    sourceGroup,
+    runtime: "flash",
+    launchable: true,
+    islandParam,
+    roomParam,
+    startupPath: resolvedStartupPath,
+    sceneFolder,
+    discoveredRooms: discoveredRooms ? [...discoveredRooms].sort() : [],
+    fallbackMode: sourceGroup === "as3" ? "as3-direct-shell" : "base-php",
+    launchMode: sourceGroup === "as3" ? "as3-direct-scene" : "as2-scene",
+    launchUrl: buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath: resolvedStartupPath, as3TargetScene }),
+    ...(as3TargetScene ? { as3TargetScene } : {})
+  };
+}
+
+function discoverAs2Entries(as2Entries, sceneMap, overrides) {
+  return as2Entries.map((entry) => {
+    const override = overrides[entry.canonicalKey] || {};
+    const sceneFolder = override.sceneFolder || entry.launchId;
+    const discoveredRooms = sceneMap.get(sceneFolder) || new Set();
+    const roomParam = override.roomParam || chooseRoom(discoveredRooms, AS2_ROOM_PRIORITY);
+    const islandParam = override.islandParam || entry.launchId;
+    return buildEntry({
+      catalogEntry: entry,
+      sourceGroup: "as2",
+      sceneFolder,
+      roomParam,
+      islandParam,
+      startupPath: override.startupPath || "gameplay",
+      discoveredRooms
+    });
+  });
+}
+
+function discoverAs3Entries(as3Entries, sceneMap, overrides) {
+  return as3Entries.map((entry) => {
+    const override = overrides[entry.canonicalKey] || {};
+    const sceneFolder = override.sceneFolder || entry.launchId;
+    const discoveredRooms = sceneMap.get(sceneFolder) || new Set();
+    const roomParam = override.roomParam || chooseRoom(discoveredRooms, AS3_ROOM_PRIORITY);
+    const islandParam = override.islandParam || sceneFolder;
+    return buildEntry({
+      catalogEntry: entry,
+      sourceGroup: "as3",
+      sceneFolder,
+      roomParam,
+      islandParam,
+      startupPath: override.startupPath || "gameplay",
+      discoveredRooms
+    });
+  });
+}
+
+function generateLaunchManifest(config = loadConfig()) {
+  const { entries } = buildCatalogIndex();
+  const launchOverrides = loadLaunchOverrides();
+  const as2Catalog = entries.filter((entry) => entry.source === "as2");
+  const as3Catalog = entries.filter((entry) => entry.source === "as3");
+
+  const as2ArchiveEntries = listArchiveEntries(config.sources.as2Gamezip, config.tools.tarBin);
+  const as3ArchiveEntries = listArchiveEntries(config.sources.as3Gamezip, config.tools.tarBin);
+
+  const as2SceneMap = buildAs2SceneMap(as2ArchiveEntries);
+  const as3SceneMap = buildAs3SceneMap(as3ArchiveEntries);
+
+  const as2 = discoverAs2Entries(as2Catalog, as2SceneMap, launchOverrides.as2 || {});
+  const as3 = discoverAs3Entries(as3Catalog, as3SceneMap, launchOverrides.as3 || {});
+  const entriesOut = [...as2, ...as3];
+
+  const manifest = {
+    generatedAt: new Date().toISOString(),
+    sources: {
+      as2Configured: Boolean(config.sources.as2Gamezip),
+      as3Configured: Boolean(config.sources.as3Gamezip)
+    },
+    summary: {
+      totalEntries: entriesOut.length,
+      launchableCount: entriesOut.filter((entry) => entry.launchable).length,
+      unresolvedCount: entriesOut.filter((entry) => !entry.launchable).length
+    },
+    entries: entriesOut
+  };
+  writeJson(paths.launchManifestPath, manifest);
+  return manifest;
+}
+
+function loadLaunchManifest() {
+  return readJson(paths.launchManifestPath, null);
+}
+
+function getLaunchEntry(canonicalKey) {
+  const manifest = loadLaunchManifest();
+  return manifest?.entries?.find((entry) => entry.canonicalKey === canonicalKey) || null;
+}
+
+module.exports = {
+  generateLaunchManifest,
+  getLaunchEntry,
+  loadLaunchManifest
+};

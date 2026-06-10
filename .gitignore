@@ -1,0 +1,15 @@
+node_modules/
+AS2.zip
+AS3.zip
+tools/__pycache__/
+tools/native/**/__pycache__/
+tools/native/php-cgi-wrapper/bin/
+tools/native/php-cgi-wrapper/obj/
+catalog/coverage-matrix.json
+catalog/islands.json
+runtime-data/*
+!runtime-data/.gitkeep
+packs/zh-CN/as2/*
+packs/zh-CN/as3/*
+!packs/zh-CN/as2/.gitkeep
+!packs/zh-CN/as3/.gitkeep

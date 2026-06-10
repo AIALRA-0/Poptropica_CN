@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "native", "native", "{41AAA7D0-8ACF-5292-8BE0-025A51D98710}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "php-cgi-wrapper", "php-cgi-wrapper", "{4BD391C4-D81C-4BF6-4D09-93121780B5A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhpCgiWrapper", "tools\native\php-cgi-wrapper\PhpCgiWrapper.csproj", "{983BBD1C-8931-D0CF-093A-B32E87DB80CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{983BBD1C-8931-D0CF-093A-B32E87DB80CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{983BBD1C-8931-D0CF-093A-B32E87DB80CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{983BBD1C-8931-D0CF-093A-B32E87DB80CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{983BBD1C-8931-D0CF-093A-B32E87DB80CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{41AAA7D0-8ACF-5292-8BE0-025A51D98710} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
+		{4BD391C4-D81C-4BF6-4D09-93121780B5A4} = {41AAA7D0-8ACF-5292-8BE0-025A51D98710}
+		{983BBD1C-8931-D0CF-093A-B32E87DB80CD} = {4BD391C4-D81C-4BF6-4D09-93121780B5A4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2771E08B-CCF8-4AD6-BD9E-D5616BEE6CF3}
+	EndGlobalSection
+EndGlobal

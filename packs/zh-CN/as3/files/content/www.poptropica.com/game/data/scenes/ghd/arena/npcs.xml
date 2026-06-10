@@ -1,0 +1,127 @@
+<npcs>
+	<npc id="queen">
+		<skin>
+			<gender>female</gender>
+			<skinColor>0xf1d4f5</skinColor>
+			<hairColor>0xf5c454</hairColor>
+			<mouth>queen</mouth>
+			<head>queen</head>
+			<shirt>ad_gh_queendagger</shirt>
+			<pants>ad_gh_queendagger</pants>
+			<pack>ad_gh_queendagger</pack>
+			<item>ad_gh_queendagger</item>
+			<overshirt>ad_gh_queendagger</overshirt>
+			<eyeState>squint</eyeState>
+		</skin>
+		<talkMouth>queen_talk</talkMouth>
+		<position>
+			<x>2150</x>
+			<y>1325</y>
+		</position>
+		<range>
+			<x>0</x>
+			<y>0</y>
+		</range>
+		<direction>right</direction>
+		<costumizable>false</costumizable>
+	</npc>
+
+	<npc id="dagger">
+		<skin>
+			<gender>female</gender>
+			<skinColor>0xeab4f0</skinColor>
+			<hairColor>0x960e88</hairColor>
+			<head>dagger</head>
+			<hair>ad_gh_girl2</hair>
+			<mouth>dagger</mouth>
+			<pants>empty</pants>
+			<overshirt>ad_gh_girl2</overshirt>
+			<eyeState>squint</eyeState>
+		</skin>
+		<talkMouth>dagger_talk</talkMouth>
+		<position>
+			<x>2350</x>
+			<y>1325</y>
+		</position>
+		<range>
+			<x>0</x>
+			<y>0</y>
+		</range>
+		<direction>left</direction>
+		<costumizable>false</costumizable>
+		<faceSpeaker>false</faceSpeaker>
+	</npc>
+
+	<npc id="jack0">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0x00000</skinColor>
+			<hairColor>0x513b2b</hairColor>
+			<mouth>1</mouth>
+			<facial>ad_ghd_jack</facial>
+			<hair>ad_ghd_jack</hair>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<overshirt>ad_ghd_jack</overshirt>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>600</x>
+			<y>1325</y>
+		</position>
+		<range>
+			<x>0</x>
+			<y>0</y>
+		</range>
+		<direction>right</direction>
+		<costumizable>false</costumizable>
+	</npc>
+
+	<npc id="jack1">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0x00000</skinColor>
+			<hairColor>0x513b2b</hairColor>
+			<mouth>1</mouth>
+			<facial>ad_ghd_jack</facial>
+			<hair>ad_ghd_jack</hair>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<overshirt>ad_ghd_jack</overshirt>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>450</x>
+			<y>1325</y>
+		</position>
+		<range>
+			<x>0</x>
+			<y>0</y>
+		</range>
+		<direction>right</direction>
+		<costumizable>false</costumizable>
+	</npc>
+
+	<npc id="alien3">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0xFF9451</skinColor>
+			<hairColor>0x000000</hairColor>
+			<mouth>1</mouth>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>1200</x>
+			<y>1325</y>
+		</position>
+		<range>
+			<x>100</x>
+			<y>0</y>
+		</range>
+		<scale>.5</scale>
+		<direction>left</direction>
+		<costumizable>false</costumizable>
+	</npc>
+</npcs>

@@ -43,6 +43,24 @@ npm run launch
 
 也可以双击根目录里的 [Start-Poptropica-Flash.bat](E:/Poptropica/POPTROPICA_FLASH/Start-Poptropica-Flash.bat)。
 
+## 可选本地音频覆盖
+
+旧 AS2 岛屿的当前来源包里很多没有可恢复的原始音频。项目支持把你本机自备、可合法使用的音频放到被 Git 忽略的目录里，由本地运行时自动挂载到页面：
+
+```text
+runtime-data/user-audio/as2/<island>/<room>.mp3
+runtime-data/user-audio/as2/<island>/default.mp3
+runtime-data/user-audio/as2/_global/default.mp3
+```
+
+例如 Super Power 主街可使用：
+
+```text
+runtime-data/user-audio/as2/Super/DownTown.mp3
+```
+
+支持 `mp3`、`ogg`、`wav`、`m4a`。运行时会优先匹配 `<island>/<room>`，再退回 `<island>/default` 和 `_global/default`。该目录不会提交到 GitHub，避免把来源不明确的音频资产放进仓库。
+
 ## 典型工作流
 
 ```powershell

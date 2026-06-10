@@ -1,0 +1,65 @@
+<npcs>
+	<npc id="alien1">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0x9966CC</skinColor>
+			<hairColor>0x000000</hairColor>
+			<mouth>1</mouth>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>400</x>
+			<y>1390</y>
+		</position>
+		<range>
+			<x>100</x>
+			<y>0</y>
+		</range>
+		<scale>.5</scale>
+		<direction>left</direction>
+	</npc>
+	<npc id="alien2">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0x5D98FF</skinColor>
+			<hairColor>0x000000</hairColor>
+			<mouth>1</mouth>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>1300</x>
+			<y>1390</y>
+		</position>
+		<range>
+			<x>100</x>
+			<y>0</y>
+		</range>
+		<scale>.5</scale>
+		<direction>left</direction>
+	</npc>
+	<npc id="alien4">
+		<skin>
+			<gender>male</gender>
+			<skinColor>0x69E2FF</skinColor>
+			<hairColor>0x000000</hairColor>
+			<mouth>1</mouth>
+			<shirt>1</shirt>
+			<pants>1</pants>
+			<eyeState>squint</eyeState>
+		</skin>
+		<position>
+			<x>2200</x>
+			<y>1390</y>
+		</position>
+		<range>
+			<x>100</x>
+			<y>0</y>
+		</range>
+		<scale>.5</scale>
+		<direction>left</direction>
+	</npc>
+</npcs>
