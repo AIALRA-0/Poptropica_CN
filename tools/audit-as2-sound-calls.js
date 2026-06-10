@@ -575,6 +575,17 @@ function collectStringAssignmentsForName(scriptFiles, variableName) {
   return values;
 }
 
+function collectStringComparisonsForName(scriptFiles, variableName) {
+  const values = new Set();
+  const comparisonRe = new RegExp(`(?:\\.|\\b)${escapeRegExp(variableName)}\\s*={2,3}\\s*(["'])((?:\\\\.|(?!\\1)[^\\\\])*)\\1`, "gu");
+  for (const scriptFile of scriptFiles) {
+    for (const match of scriptFile.text.matchAll(comparisonRe)) {
+      addInferredCandidate(values, unescapeLiteral(match[2]));
+    }
+  }
+  return values;
+}
+
 function inferDynamicSoundNames({ rawFirstArg, lineNumber, lines, scriptFiles }) {
   const candidates = new Set();
   const assignment = findRecentStringAssignment(lines, rawFirstArg, lineNumber);
@@ -590,6 +601,7 @@ function inferDynamicSoundNames({ rawFirstArg, lineNumber, lines, scriptFiles })
   const containingFunction = findContainingFunction(lines, lineNumber, rawFirstArg);
   if (containingFunction) {
     const callRe = new RegExp(`(?:^|[^A-Za-z0-9_$])${escapeRegExp(containingFunction.functionName)}\\s*\\(([^;\\n]*)\\)`, "gu");
+    let usedPropertyComparison = false;
     for (const scriptFile of scriptFiles) {
       for (const match of scriptFile.text.matchAll(callRe)) {
         const before = scriptFile.text.slice(Math.max(0, match.index - 12), match.index);
@@ -608,7 +620,12 @@ function inferDynamicSoundNames({ rawFirstArg, lineNumber, lines, scriptFiles })
         }
         const propertyMatch = valueExpression.match(new RegExp(`\\.${escapeRegExp(rawFirstArg)}\\b`, "u"));
         if (propertyMatch) {
-          for (const value of collectStringAssignmentsForName(scriptFiles, rawFirstArg)) {
+          const assignmentCandidates = collectStringAssignmentsForName(scriptFiles, rawFirstArg);
+          const propertyCandidates = assignmentCandidates.size > 0
+            ? assignmentCandidates
+            : collectStringComparisonsForName(scriptFiles, rawFirstArg);
+          usedPropertyComparison = usedPropertyComparison || (assignmentCandidates.size === 0 && propertyCandidates.size > 0);
+          for (const value of propertyCandidates) {
             addInferredCandidate(candidates, value);
           }
         }
@@ -616,7 +633,7 @@ function inferDynamicSoundNames({ rawFirstArg, lineNumber, lines, scriptFiles })
     }
     if (candidates.size > 0) {
       return {
-        type: "function-argument",
+        type: usedPropertyComparison ? "function-argument-property-comparison" : "function-argument",
         candidates: [...candidates].sort((left, right) => left.localeCompare(right, "en")),
         evidence: containingFunction
       };
@@ -628,6 +645,17 @@ function inferDynamicSoundNames({ rawFirstArg, lineNumber, lines, scriptFiles })
     return {
       type: "asset-property-assignment",
       candidates: [...propertyCandidates].sort((left, right) => left.localeCompare(right, "en")),
+      evidence: {
+        variableName: rawFirstArg
+      }
+    };
+  }
+
+  const propertyComparisonCandidates = collectStringComparisonsForName(scriptFiles, rawFirstArg);
+  if (propertyComparisonCandidates.size > 0) {
+    return {
+      type: "asset-property-comparison",
+      candidates: [...propertyComparisonCandidates].sort((left, right) => left.localeCompare(right, "en")),
       evidence: {
         variableName: rawFirstArg
       }

@@ -535,3 +535,13 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Use `topKnownSoundNames` and `unresolvedDynamicCalls` to target the remaining high-volume `comicSound` patterns. The next likely improvement is smarter cross-script property inference for repeated `comicSound` calls that currently remain unresolved.
 - Keep `Alvin`, `tickle`, and `stingWimpy` unmapped until an original/local source is found or a context match becomes strong enough to justify a provenance-backed fallback.
+
+## 2026-06-10 AS2 Dynamic Property Comparison Audit
+
+- Extended `tools/audit-as2-sound-calls.js` again so dynamic property passthroughs can use same-asset string equality checks as evidence. This catches AS2 templates that check `_loc4_.comicSound == "zap"` and later pass `_loc3_.comicSound` into `enemyHit()` / `showSound()` without a direct assignment in the same exported script.
+- Re-ran the read-only AS2 sound-call audit. Dynamic inference increased from 32/373 calls to 230/373 calls; unresolved dynamic calls dropped from 341 to 143. The newly recovered inferred candidates are all `zap`, which is already covered by the tracked AS2 `_sounds/zap.mp3` seed.
+- Current unresolved dynamic calls are now concentrated in two runtime-parameter shapes: `comicSound` (72 calls) and `sound` (71 calls). Top remaining islands are Back Lot (23), Night Watch (23), Lunar Colony (22), Super Power (14), and SOS (8).
+
+## TODO AS2 Dynamic Property Comparison Audit
+
+- Continue reducing the remaining `comicSound`/`sound` unresolved set only where a script-local literal, property assignment, comparison, or callsite can prove the candidate. Do not map ambiguous runtime-only parameters directly to audio.
