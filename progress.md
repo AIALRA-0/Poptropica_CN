@@ -560,4 +560,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Use `topUnresolvedDynamicSites` to review high-count `comicSound` scenes such as SOS galley and Super Power downtown/skyscraper before adding any new sound mappings.
 - Do not globally map `knockBack(sound)` without stronger per-scene call evidence; current exported calls are too sparse and ambiguous.
+
+## 2026-06-10 AS2 Dynamic Asset String Candidate Reporting
+
+- Added raw SWF printable-string scanning for unresolved AS2 dynamic sound assets in `tools/audit-as2-sound-calls.js`. It decompresses CWS SWFs locally, extracts trimmed printable strings, and exact-matches them against the current known sound-name set.
+- The new report fields are explicitly advisory: `unresolvedDynamicAssetStringCandidates` rows carry `candidateEvidence: "raw-swf-printable-string-known-sound-name"` and `usedForInference: false`, so these hints do not change `inferredSoundNames` or runtime sound mappings.
+- Latest `npm run audit:as2-sound-calls` summary: 616 sound calls, 373 dynamic calls, 233 inferred dynamic calls, 140 unresolved dynamic calls, 198 inferred dynamic sites, 124 unresolved dynamic sites, and 83 unresolved assets with known sound-name string hints.
+- The candidate hint set currently has 133 asset/name rows across 13 unique known names. Top examples include Super Power `sceneDownTown.swf` (`crunch`), Super Power `sceneSkyscraper.swf` (`crunch`, `pow`), Lunar Colony `sceneRLvehicleBay.swf` (`pop`, `pow`), and Astro Knights `sceneMill1.swf` (`chomp`).
+- Validation passed in this chunk: `node --check tools/audit-as2-sound-calls.js`, `npm run audit:as2-sound-calls`, `npm run qa:as2-sound-bridge`, and `npm run verify:pack-inputs`.
+
+## TODO AS2 Dynamic Asset String Candidate Reporting
+
+- Treat raw SWF string candidates as triage hints only. Promote a candidate to an inferred or seeded sound only after finding function-local, callsite, comparison, assignment, embedded-audio, or original-source evidence.
 - On next resume, run `npm run verify:pack-inputs` and `npm run qa:as2-sound-bridge` again if runtime or seed files changed; this pause only changed the audit/reporting tool.

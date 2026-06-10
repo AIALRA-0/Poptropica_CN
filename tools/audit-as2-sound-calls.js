@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
+const zlib = require("node:zlib");
 const { spawnSync } = require("node:child_process");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
@@ -239,6 +240,51 @@ function soundNameCandidates(value) {
   const candidates = new Set();
   addSoundNameCandidates(candidates, value);
   return candidates;
+}
+
+function readSwfAnalysisBytes(swfPath) {
+  if (!fileExists(swfPath)) {
+    return null;
+  }
+  const bytes = fs.readFileSync(swfPath);
+  const signature = bytes.slice(0, 3).toString("ascii");
+  if (signature === "FWS") {
+    return bytes.slice(8);
+  }
+  if (signature === "CWS") {
+    return zlib.inflateSync(bytes.slice(8));
+  }
+  return null;
+}
+
+function extractPrintableSwfStrings(swfPath) {
+  let bytes = null;
+  try {
+    bytes = readSwfAnalysisBytes(swfPath);
+  } catch {
+    bytes = null;
+  }
+  if (!bytes) {
+    return [];
+  }
+  const strings = new Set();
+  let current = [];
+  const flush = () => {
+    const value = Buffer.from(current).toString("ascii").trim();
+    if (value.length >= 3) {
+      strings.add(value);
+    }
+    current = [];
+  };
+  for (const byte of bytes) {
+    if (byte >= 32 && byte <= 126) {
+      current.push(byte);
+    } else {
+      flush();
+    }
+  }
+  flush();
+  return [...strings].sort((left, right) => left.localeCompare(right, "en"));
 }
 
 function writeSoundExportMarker(outputDir, payload) {
@@ -968,6 +1014,75 @@ function normalizeSoundNameForCount(value) {
   return clean.includes("/") ? clean : clean.toLowerCase();
 }
 
+function buildUnresolvedDynamicAssetStringCandidates({ unresolvedDynamicCalls, swfAssetsByPath, extractedRoot, knownSoundNames }) {
+  const groupedCalls = new Map();
+  for (const call of unresolvedDynamicCalls) {
+    if (!call.assetPath) {
+      continue;
+    }
+    if (!groupedCalls.has(call.assetPath)) {
+      groupedCalls.set(call.assetPath, []);
+    }
+    groupedCalls.get(call.assetPath).push(call);
+  }
+
+  const rows = [];
+  for (const [assetPath, assetCalls] of groupedCalls.entries()) {
+    const asset = swfAssetsByPath.get(assetPath);
+    const swfPath = path.join(extractedRoot, assetPath);
+    const candidates = extractPrintableSwfStrings(swfPath)
+      .map((value) => ({
+        value,
+        normalizedSoundName: normalizeSoundNameForCount(value)
+      }))
+      .filter((candidate) => candidate.normalizedSoundName && knownSoundNames.has(candidate.normalizedSoundName));
+    const uniqueCandidates = new Map();
+    for (const candidate of candidates) {
+      if (!uniqueCandidates.has(candidate.normalizedSoundName)) {
+        uniqueCandidates.set(candidate.normalizedSoundName, candidate);
+      }
+    }
+    if (uniqueCandidates.size === 0) {
+      continue;
+    }
+    rows.push({
+      assetPath,
+      canonicalKey: asset?.canonicalKey || assetCalls[0]?.canonicalKey || null,
+      sceneFolder: asset?.sceneFolder || assetCalls[0]?.sceneFolder || null,
+      candidateEvidence: "raw-swf-printable-string-known-sound-name",
+      usedForInference: false,
+      unresolvedDynamicCallCount: assetCalls.length,
+      unresolvedDynamicFunctions: countBy(assetCalls, (call) => `${call.rawFirstArg} @ ${call.dynamicFunctionName || "(no function)"}`).slice(0, 20),
+      soundStringCandidates: [...uniqueCandidates.values()]
+        .sort((left, right) => left.normalizedSoundName.localeCompare(right.normalizedSoundName, "en"))
+    });
+  }
+  return rows.sort((left, right) => {
+    if (left.unresolvedDynamicCallCount !== right.unresolvedDynamicCallCount) {
+      return right.unresolvedDynamicCallCount - left.unresolvedDynamicCallCount;
+    }
+    return left.assetPath.localeCompare(right.assetPath, "en");
+  });
+}
+
+function unresolvedDynamicStringCandidateRows(rows) {
+  const candidates = [];
+  for (const row of rows) {
+    for (const candidate of row.soundStringCandidates || []) {
+      candidates.push({
+        soundName: candidate.normalizedSoundName,
+        rawValue: candidate.value,
+        assetPath: row.assetPath,
+        canonicalKey: row.canonicalKey,
+        sceneFolder: row.sceneFolder,
+        unresolvedDynamicCallCount: row.unresolvedDynamicCallCount,
+        unresolvedDynamicFunctions: row.unresolvedDynamicFunctions
+      });
+    }
+  }
+  return candidates;
+}
+
 function inferredSoundNameRows(calls) {
   const rows = [];
   for (const call of calls) {
@@ -1371,6 +1486,14 @@ function main() {
   const knownSoundRows = [...literalRows, ...inferredRows];
   const inferredDynamicSites = topDynamicCallSites(inferredDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
   const unresolvedDynamicSites = topDynamicCallSites(unresolvedDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
+  const knownSoundNames = new Set(knownSoundRows.map((row) => row.normalizedSoundName).filter(Boolean));
+  const unresolvedDynamicAssetStringCandidates = buildUnresolvedDynamicAssetStringCandidates({
+    unresolvedDynamicCalls,
+    swfAssetsByPath,
+    extractedRoot,
+    knownSoundNames
+  });
+  const unresolvedDynamicStringRows = unresolvedDynamicStringCandidateRows(unresolvedDynamicAssetStringCandidates);
   const embeddedSoundFiles = collectEmbeddedSoundFiles(islandSceneAssets);
   const embeddedSoundNameMatches = buildEmbeddedSoundNameMatches(literalCalls, embeddedSoundFiles);
   const missingScriptExports = swfAssets.filter((asset) => !asset.scriptExported);
@@ -1441,6 +1564,9 @@ function main() {
       inferredDynamicSoundCandidateCount: inferredRows.length,
       inferredDynamicSiteCount: inferredDynamicSites.length,
       unresolvedDynamicSiteCount: unresolvedDynamicSites.length,
+      unresolvedDynamicAssetsWithKnownSoundStrings: unresolvedDynamicAssetStringCandidates.length,
+      unresolvedDynamicKnownSoundStringCandidateCount: unresolvedDynamicStringRows.length,
+      uniqueUnresolvedDynamicKnownSoundStringCandidates: new Set(unresolvedDynamicStringRows.map((row) => row.soundName).filter(Boolean)).size,
       uniqueLiteralSoundNames: new Set(literalCalls.map((call) => call.soundName)).size,
       uniqueInferredDynamicSoundNames: new Set(inferredRows.map((row) => row.normalizedSoundName).filter(Boolean)).size,
       uniqueKnownSoundNames: new Set(knownSoundRows.map((row) => row.normalizedSoundName).filter(Boolean)).size,
@@ -1458,6 +1584,19 @@ function main() {
     topUnresolvedDynamicFunctions: countBy(unresolvedDynamicCalls, (call) => `${call.rawFirstArg} @ ${call.dynamicFunctionName || "(no function)"}`).slice(0, 80),
     topUnresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
     topInferredDynamicSites: inferredDynamicSites.slice(0, 80),
+    topUnresolvedDynamicKnownSoundStringCandidates: countBy(unresolvedDynamicStringRows, (row) => row.soundName).slice(0, 80),
+    topUnresolvedDynamicKnownSoundStringAssets: [...unresolvedDynamicAssetStringCandidates]
+      .sort((left, right) => {
+        if (left.unresolvedDynamicCallCount !== right.unresolvedDynamicCallCount) {
+          return right.unresolvedDynamicCallCount - left.unresolvedDynamicCallCount;
+        }
+        if (left.soundStringCandidates.length !== right.soundStringCandidates.length) {
+          return left.soundStringCandidates.length - right.soundStringCandidates.length;
+        }
+        return left.assetPath.localeCompare(right.assetPath, "en");
+      })
+      .slice(0, 80),
+    unresolvedDynamicAssetStringCandidates,
     topMethods: countBy(calls, (call) => call.method),
     byIsland,
     embeddedSoundFiles,
@@ -1493,6 +1632,8 @@ function main() {
         line: call.line
       })),
       unresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
+      unresolvedDynamicAssetStringCandidates: unresolvedDynamicAssetStringCandidates.slice(0, 80),
+      unresolvedDynamicKnownSoundStringCandidates: unresolvedDynamicStringRows.slice(0, 120),
       unresolvedDynamicCalls: unresolvedDynamicCalls.slice(0, 80).map((call) => ({
         assetPath: call.assetPath,
         rawFirstArg: call.rawFirstArg,
