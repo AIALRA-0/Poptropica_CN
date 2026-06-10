@@ -595,3 +595,13 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Early one-off scan found 15 unresolved dynamic calls with same-symbol literal candidates across 4 assets: Super Power downtown/skyscraper `crunch`, Nabooti mine `boom`, and Wimpy Greg house `zap`. On resume, validate the final report counts with `node tools/audit-as2-sound-calls.js --reportOnly=1`.
 - WIP also includes `tools/qa-as2-launch-smoke.js` plus `npm run qa:as2-launch-smoke`, a proxy-level AS2 launch smoke checker that fetches launch pages and scene SWFs without opening a visible browser. `catalog/launch-manifest.json` currently has only a regenerated timestamp change.
 - Fast shutdown validation only: syntax-check the modified Node tools, commit, and push. Full resume validation still needed: `node tools/audit-as2-sound-calls.js --reportOnly=1`, `npm run verify:pack-inputs`, `npm run qa:as2-sound-bridge`, and targeted `npm run qa:as2-launch-smoke -- --limit=...`.
+
+## 2026-06-10 AS3 Launch Smoke / Shutdown Commit
+
+- Added `tools/qa-as3-launch-smoke.js` and npm script `qa:as3-launch-smoke`. It mounts AS3 through the local Flashpoint proxy, fetches each direct `Shell.swf?overrideScene=...` launch URL, and fetches every actual XML file present in the selected AS3 start-scene folder from `AS3.zip`. It does not start Navigator or a visible game window.
+- Added a shared `acquireQaLock()` helper and wired the AS2 launch smoke, AS3 launch smoke, and AS2 sound-bridge QA to `flashpoint-runtime-qa.lock` so background proxy tests do not fight over the same Flashpoint mount/service.
+- Changed AS2 launch smoke to avoid rewriting `catalog/launch-manifest.json` by default; pass `--writeManifest` when a manifest refresh is intended.
+- Current AS3 full proxy smoke passed: `npm run qa:as3-launch-smoke` tested 12/12 AS3 direct-scene entries, passed 12, failed 0, with 129 expected XML resources and 0 failed XML resources. Report: `runtime-data/qa/as3/launch-smoke/as3-launch-smoke-1781098091008.json`.
+- Current AS2 full proxy smoke passed after the shared-lock change: `npm run qa:as2-launch-smoke` tested 34/34 AS2 launchable entries, passed 34, failed 0, with 0 base, scene, audio-bridge, or resize failures. Report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781098112556.json`.
+- Validation completed before shutdown request: `node --check tools/lib/qa.js`, `node --check tools/qa-as2-launch-smoke.js`, `node --check tools/qa-as2-sound-bridge.js`, `node --check tools/qa-as3-launch-smoke.js`, `npm run audit:as2-sound-calls`, and `npm run verify:pack-inputs`.
+- Shutdown interruption: `npm run qa:as2-sound-bridge` was not rerun after adding the shared lock; only syntax checking covered that file in this chunk. Run it first on next resume.

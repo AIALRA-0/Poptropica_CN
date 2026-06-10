@@ -5,6 +5,7 @@ const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
+const { acquireQaLock } = require("./lib/qa");
 const { readJson, writeJson } = require("./lib/fs-utils");
 const {
   ensureFlashpointServices,
@@ -173,9 +174,14 @@ async function main() {
   const launchUrl = String(args.url || DEFAULT_LAUNCH_URL);
   const reportPath = path.resolve(args.output || DEFAULT_REPORT_PATH);
   const manifestPath = path.join(paths.userAudioDir, "as2", "_sounds", ".embedded-sounds.json");
+  const lock = acquireQaLock("flashpoint-runtime-qa.lock", {
+    sourceGroup: "as2",
+    tool: "qa-as2-sound-bridge"
+  });
 
-  await ensureFlashpointServices(config);
-  await mountSourceZip(config, "as2");
+  try {
+    await ensureFlashpointServices(config);
+    await mountSourceZip(config, "as2");
 
   const manifest = readJson(manifestPath, null);
   const manifestEntries = manifest?.entries || {};
@@ -312,6 +318,9 @@ async function main() {
 
   if (!report.ok) {
     process.exitCode = 1;
+  }
+  } finally {
+    lock.release();
   }
 }
 

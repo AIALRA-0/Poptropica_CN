@@ -1,4 +1,5 @@
 const path = require("node:path");
+const fs = require("node:fs");
 const { spawn, spawnSync } = require("node:child_process");
 const paths = require("./paths");
 const { ensureDirSync, writeJson } = require("./fs-utils");
@@ -91,6 +92,90 @@ function ensureQaDir(...segments) {
   return ensureDirSync(path.join(paths.qaDir, ...segments));
 }
 
+function isProcessAlive(pid) {
+  const numericPid = Number(pid || 0);
+  if (!numericPid || numericPid === process.pid) {
+    return false;
+  }
+  try {
+    process.kill(numericPid, 0);
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+
+function readJsonIfExists(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (_error) {
+    return null;
+  }
+}
+
+function acquireQaLock(lockName, context = {}) {
+  const lockPath = path.join(paths.qaDir, lockName);
+  const payload = {
+    pid: process.pid,
+    startedAt: new Date().toISOString(),
+    command: process.argv.join(" "),
+    ...context
+  };
+
+  ensureDirSync(path.dirname(lockPath));
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    let fd = null;
+    try {
+      fd = fs.openSync(lockPath, "wx");
+      fs.writeFileSync(fd, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+      return {
+        lockPath,
+        release() {
+          const current = readJsonIfExists(lockPath);
+          if (!current || Number(current.pid) === process.pid) {
+            try {
+              fs.unlinkSync(lockPath);
+            } catch (_error) {
+              // Best effort cleanup only.
+            }
+          }
+        }
+      };
+    } catch (error) {
+      if (error?.code !== "EEXIST") {
+        throw error;
+      }
+      const existing = readJsonIfExists(lockPath);
+      if (existing && isProcessAlive(existing.pid)) {
+        const lockError = new Error(`QA lock is already held by pid ${existing.pid}: ${lockPath}`);
+        lockError.code = "QA_LOCKED";
+        lockError.lockPath = lockPath;
+        lockError.lock = existing;
+        throw lockError;
+      }
+      try {
+        fs.unlinkSync(lockPath);
+      } catch (_error) {
+        // Retry once; if that fails, surface a lock error below.
+      }
+    } finally {
+      if (fd !== null) {
+        try {
+          fs.closeSync(fd);
+        } catch (_error) {
+          // Already closed or invalid.
+        }
+      }
+    }
+  }
+
+  const lockError = new Error(`Unable to acquire QA lock: ${lockPath}`);
+  lockError.code = "QA_LOCKED";
+  lockError.lockPath = lockPath;
+  lockError.lock = readJsonIfExists(lockPath);
+  throw lockError;
+}
+
 function writeQaReport(name, payload) {
   const filePath = path.join(paths.qaDir, name);
   writeJson(filePath, payload);
@@ -98,6 +183,7 @@ function writeQaReport(name, payload) {
 }
 
 module.exports = {
+  acquireQaLock,
   ensureQaDir,
   runPythonQa,
   spawnPythonQa,

@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { ensureQaDir } = require("./lib/qa");
+const { acquireQaLock, ensureQaDir } = require("./lib/qa");
 const { writeJson } = require("./lib/fs-utils");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { mountSourceZip } = require("./lib/flashpoint-runtime");
@@ -21,13 +21,6 @@ function splitCsv(value) {
     .split(",")
     .map((entry) => entry.trim())
     .filter(Boolean);
-}
-
-function safeFileSegment(value) {
-  return String(value || "")
-    .replace(/[^a-z0-9_-]+/giu, "-")
-    .replace(/^-+|-+$/gu, "")
-    .slice(0, 80);
 }
 
 function httpGetViaProxy(url, { timeoutMs = 30000, maxBytes = 64 * 1024 * 1024 } = {}) {
@@ -254,65 +247,73 @@ function selectEntries(entries, args) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig();
-  const manifest = generateLaunchManifest(config, { write: !flagEnabled(args.noWriteManifest) });
-  const as2Entries = manifest.entries.filter((entry) => entry.sourceGroup === "as2");
-  const entries = selectEntries(manifest.entries, args);
-  const runToken = Date.now();
-  const qaDir = ensureQaDir("as2", "launch-smoke", `run-${runToken}`);
-  const reportName = `as2-launch-smoke-${runToken}.json`;
-  const reportPath = path.join(paths.qaDir, "as2", "launch-smoke", reportName);
-  const latestPath = path.join(paths.qaDir, "as2", "launch-smoke", "as2-launch-smoke-latest.json");
-
-  const mount = await mountSourceZip(config, "as2");
-  const results = [];
-  for (const entry of entries) {
-    results.push(await smokeEntry(entry, args));
-  }
-
-  const failed = results.filter((result) => !result.ok);
-  const baseFailures = results.filter((result) => !result.base?.ok);
-  const sceneFailures = results.filter((result) => !result.scene?.ok);
-  const audioBridgeFailures = results.filter((result) => !result.base?.checks?.hasFlashpointPlayAs2Sound);
-  const resizeFailures = results.filter((result) => !result.base?.checks?.hasResizeListener || !result.base?.checks?.hasGameViewport);
-  const report = {
-    ok: failed.length === 0,
-    generatedAt: new Date().toISOString(),
+  const lock = acquireQaLock("flashpoint-runtime-qa.lock", {
     sourceGroup: "as2",
-    mount,
-    artifactDir: qaDir,
-    summary: {
-      as2CatalogEntries: as2Entries.length,
-      as2LaunchableEntries: as2Entries.filter((entry) => entry.launchable).length,
-      as2UnresolvedEntries: as2Entries.filter((entry) => !entry.launchable).length,
-      testedEntries: entries.length,
-      passedEntries: results.filter((result) => result.ok).length,
-      failedEntries: failed.length,
-      baseFailures: baseFailures.length,
-      sceneFailures: sceneFailures.length,
-      audioBridgeFailures: audioBridgeFailures.length,
-      resizeFailures: resizeFailures.length
-    },
-    failures: failed.map((result) => ({
-      canonicalKey: result.canonicalKey,
-      failedChecks: result.failedChecks,
-      baseFailedChecks: result.base?.failedChecks || [],
-      sceneFailedChecks: result.scene?.failedChecks || [],
-      launchUrl: result.launchUrl,
-      sceneUrl: result.sceneUrl
-    })),
-    results
-  };
-
-  writeJson(reportPath, report);
-  writeJson(latestPath, report);
-  printJson({
-    ...report.summary,
-    ok: report.ok,
-    reportPath
+    tool: "qa-as2-launch-smoke"
   });
+  try {
+    const manifest = generateLaunchManifest(config, { write: flagEnabled(args.writeManifest) });
+    const as2Entries = manifest.entries.filter((entry) => entry.sourceGroup === "as2");
+    const entries = selectEntries(manifest.entries, args);
+    const runToken = Date.now();
+    const qaDir = ensureQaDir("as2", "launch-smoke", `run-${runToken}`);
+    const reportName = `as2-launch-smoke-${runToken}.json`;
+    const reportPath = path.join(paths.qaDir, "as2", "launch-smoke", reportName);
+    const latestPath = path.join(paths.qaDir, "as2", "launch-smoke", "as2-launch-smoke-latest.json");
 
-  if (!report.ok && !flagEnabled(args.allowFailures)) {
-    process.exitCode = 1;
+    const mount = await mountSourceZip(config, "as2");
+    const results = [];
+    for (const entry of entries) {
+      results.push(await smokeEntry(entry, args));
+    }
+
+    const failed = results.filter((result) => !result.ok);
+    const baseFailures = results.filter((result) => !result.base?.ok);
+    const sceneFailures = results.filter((result) => !result.scene?.ok);
+    const audioBridgeFailures = results.filter((result) => !result.base?.checks?.hasFlashpointPlayAs2Sound);
+    const resizeFailures = results.filter((result) => !result.base?.checks?.hasResizeListener || !result.base?.checks?.hasGameViewport);
+    const report = {
+      ok: failed.length === 0,
+      generatedAt: new Date().toISOString(),
+      sourceGroup: "as2",
+      mount,
+      artifactDir: qaDir,
+      summary: {
+        as2CatalogEntries: as2Entries.length,
+        as2LaunchableEntries: as2Entries.filter((entry) => entry.launchable).length,
+        as2UnresolvedEntries: as2Entries.filter((entry) => !entry.launchable).length,
+        testedEntries: entries.length,
+        passedEntries: results.filter((result) => result.ok).length,
+        failedEntries: failed.length,
+        baseFailures: baseFailures.length,
+        sceneFailures: sceneFailures.length,
+        audioBridgeFailures: audioBridgeFailures.length,
+        resizeFailures: resizeFailures.length
+      },
+      failures: failed.map((result) => ({
+        canonicalKey: result.canonicalKey,
+        failedChecks: result.failedChecks,
+        baseFailedChecks: result.base?.failedChecks || [],
+        sceneFailedChecks: result.scene?.failedChecks || [],
+        launchUrl: result.launchUrl,
+        sceneUrl: result.sceneUrl
+      })),
+      results
+    };
+
+    writeJson(reportPath, report);
+    writeJson(latestPath, report);
+    printJson({
+      ...report.summary,
+      ok: report.ok,
+      reportPath
+    });
+
+    if (!report.ok && !flagEnabled(args.allowFailures)) {
+      process.exitCode = 1;
+    }
+  } finally {
+    lock.release();
   }
 }
 
