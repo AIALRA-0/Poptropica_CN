@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T01:27:13.117Z",
+  "generatedAt": "2026-06-10T08:57:14.132Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 38,
+  "assetsPatched": 43,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -57,6 +57,11 @@
       "assetId": "4d5f48e8fbf88632a6123e098f1ec47065305dd1",
       "assetPath": "content/www.poptropica.com/get_inventory_menu.php",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\get_inventory_menu.php"
+    },
+    {
+      "assetId": "e3f8c1a9b6bfc5dfa9b886be25b7a1a20bffee36",
+      "assetPath": "content/www.poptropica.com/scenes/islandGameShow/assets/trivia_noItalics.xml",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\files\\content\\www.poptropica.com\\scenes\\islandGameShow\\assets\\trivia_noItalics.xml"
     },
     {
       "assetId": "97806a12b807de11355405cde747b505ddf30fcd",
@@ -89,11 +94,6 @@
       "assetId": "5f58825fec8af7f2e988f28517a6bffeb446de67",
       "assetPath": "content/www.poptropica.com/framework.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf"
-    },
-    {
-      "assetId": "5bdf976ac0d0dfd98dd44268e21f0f649ed6fb83",
-      "assetPath": "content/www.poptropica.com/popups/BlimpGame/dialog.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\BlimpGame\\dialog.swf"
     },
     {
       "assetId": "47d31e99c4f3517ddfce0429513c14471c1aee3d",
@@ -136,9 +136,34 @@
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\superfiles.swf"
     },
     {
+      "assetId": "97e903cf2e0d04ea5906f75189e12c11851a002d",
+      "assetPath": "content/www.poptropica.com/popups/superhandbook.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\superhandbook.swf"
+    },
+    {
+      "assetId": "2a0ff84b66546afbeae30fff38405beca0f615d7",
+      "assetPath": "content/www.poptropica.com/popups/supernews.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\supernews.swf"
+    },
+    {
+      "assetId": "f12eef6f22512d6a325fdd630825c3c3ceddca9a",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH34.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneAdGroundH34.swf"
+    },
+    {
+      "assetId": "0932521294936f851ad255daa0878f16d56523c3",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH4.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneAdGroundH4.swf"
+    },
+    {
       "assetId": "a5a0bb28c439372f8c27035441c0e0fb647063b7",
       "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneBank.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneBank.swf"
+    },
+    {
+      "assetId": "8037a84336e66a67bb8d2092260fd6e5a2b42be1",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneComic.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneComic.swf"
     },
     {
       "assetId": "3a0fe703ecf33108a49cf08ce067c7af3cc00559",
@@ -238,9 +263,9 @@
   ],
   "pendingSwfAssets": [
     {
-      "assetId": "8037a84336e66a67bb8d2092260fd6e5a2b42be1",
-      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneComic.swf",
-      "reason": "null [scripts/DefineSprite_175/frame_1/DoAction.as]"
+      "assetId": "5bdf976ac0d0dfd98dd44268e21f0f649ed6fb83",
+      "assetPath": "content/www.poptropica.com/popups/BlimpGame/dialog.swf",
+      "reason": "I/O error during writing [21.txt]"
     }
   ],
   "audioAuditReports": [
@@ -251,10 +276,10 @@
     }
   ],
   "runtimeZip": {
-    "status": "ready",
+    "status": "reused",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 37,
+    "replacementCount": 42,
     "swfRuntimeOverrides": "enabled"
   }
 }

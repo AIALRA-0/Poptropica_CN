@@ -2,10 +2,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 const net = require("node:net");
 const http = require("node:http");
+const crypto = require("node:crypto");
 const { spawn, spawnSync } = require("node:child_process");
 const { DatabaseSync } = require("node:sqlite");
 const paths = require("./paths");
-const { ensureDirSync, fileExists, hashFile, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
+const { ensureDirSync, fileExists, hashFile, hashString, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
 const { loadPlayerCompatibility } = require("./status-store");
 const { ensurePoptropicaAs2FlashState } = require("./flash-state");
 
@@ -36,6 +37,7 @@ const RUNTIME_CONTENT_BASE_HEIGHT = 645;
 const RUNTIME_BROWSER_ZOOM_MIN = 1;
 const RUNTIME_BROWSER_ZOOM_MAX = 1;
 const USER_AUDIO_EXTENSIONS = [".mp3", ".ogg", ".wav", ".m4a"];
+const GENERATED_AS2_SOUND_MANIFEST = ".embedded-sounds.json";
 
 function parsePositiveIntEnv(name) {
   const raw = process.env[name];
@@ -186,6 +188,91 @@ function ensureGeneratedAs2FallbackAudio() {
   return outputPath;
 }
 
+function sha256File(filePath) {
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex").toUpperCase();
+}
+
+function sanitizeAs2SoundName(value) {
+  const clean = String(value || "").replace(/[^A-Za-z0-9_-]+/gu, "_").replace(/^_+|_+$/gu, "").toLowerCase();
+  return clean || null;
+}
+
+function findExistingUserSound(soundRoot, soundKey) {
+  return USER_AUDIO_EXTENSIONS
+    .map((extension) => path.join(soundRoot, `${soundKey}${extension}`))
+    .find((candidate) => fileExists(candidate)) || null;
+}
+
+function syncRecoveredAs2EmbeddedSounds() {
+  const report = readJson(path.join(paths.qaDir, "as2-sound-calls-audit.json"), null);
+  const matches = Array.isArray(report?.embeddedSoundNameMatches) ? report.embeddedSoundNameMatches : [];
+  if (!report?.archivePath || !report?.extractedRoot || matches.length === 0) {
+    return { copied: 0, skipped: 0, reason: "no_as2_embedded_sound_matches" };
+  }
+
+  const soundRoot = path.join(paths.userAudioDir, "as2", "_sounds");
+  ensureDirSync(soundRoot);
+  const manifestPath = path.join(soundRoot, GENERATED_AS2_SOUND_MANIFEST);
+  const previousManifest = readJson(manifestPath, { entries: {} }) || { entries: {} };
+  const nextManifest = { generatedAt: new Date().toISOString(), entries: {} };
+  let copied = 0;
+  let skipped = 0;
+
+  for (const entry of matches) {
+    const soundKey = sanitizeAs2SoundName(entry.soundName);
+    const match = Array.isArray(entry.matches) ? entry.matches[0] : null;
+    if (!soundKey || !match?.assetPath || !match?.path) {
+      skipped += 1;
+      continue;
+    }
+
+    const extension = path.extname(match.path).toLowerCase();
+    if (!USER_AUDIO_EXTENSIONS.includes(extension)) {
+      skipped += 1;
+      continue;
+    }
+
+    const assetId = hashString(`as2::${report.archivePath}::${match.assetPath}`);
+    const sourcePath = path.join(report.extractedRoot, "__ffdec_sounds__", assetId, match.path.replace(/\//gu, path.sep));
+    if (!fileExists(sourcePath)) {
+      skipped += 1;
+      continue;
+    }
+
+    const sourceSha256 = sha256File(sourcePath);
+    const targetPath = path.join(soundRoot, `${soundKey}${extension}`);
+    const existingPath = findExistingUserSound(soundRoot, soundKey);
+    const previous = previousManifest.entries?.[soundKey];
+    if (existingPath && path.resolve(existingPath) !== path.resolve(targetPath)) {
+      skipped += 1;
+      continue;
+    }
+    if (fileExists(targetPath) && previous?.sha256 !== sourceSha256 && sha256File(targetPath) !== sourceSha256) {
+      skipped += 1;
+      continue;
+    }
+
+    if (!fileExists(targetPath) || sha256File(targetPath) !== sourceSha256) {
+      fs.copyFileSync(sourcePath, targetPath);
+      copied += 1;
+    } else {
+      skipped += 1;
+    }
+
+    nextManifest.entries[soundKey] = {
+      soundName: entry.soundName,
+      sourceAssetPath: match.assetPath,
+      sourceSoundPath: match.path,
+      fileName: path.basename(targetPath),
+      bytes: fs.statSync(targetPath).size,
+      sha256: sourceSha256
+    };
+  }
+
+  writeJson(manifestPath, nextManifest);
+  return { copied, skipped, manifestPath };
+}
+
 function copyDirSync(sourceDir, targetDir) {
   ensureDirSync(path.dirname(targetDir));
   fs.cpSync(sourceDir, targetDir, {
@@ -303,6 +390,7 @@ function syncUserAudioOverrides(managedLegacyDir) {
   }
 
   ensureGeneratedAs2FallbackAudio();
+  syncRecoveredAs2EmbeddedSounds();
   ensureDirSync(sourceRoot);
   ensureDirSync(path.dirname(targetRoot));
   ensureJunction(targetRoot, sourceRoot);

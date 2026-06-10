@@ -101,7 +101,7 @@ embed {
         </style>
     </head>
     <body>
-        <div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" menu="false" bgcolor="139ffd" hidden></div>
+        <div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="139ffd" hidden></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>
         <div id="errorText" hidden>Multiplayer features are unavailable.</div>
         <form method="POST">
@@ -135,6 +135,8 @@ const gameViewport = document.getElementById("gameViewport"),
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
+      as2SoundEffectPool = [],
+      AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 44, width: 1010, height: 500 };
 
 main();
@@ -212,6 +214,46 @@ function applyCurrentViewport() {
 function sanitizeAudioKeyPart(value) {
     return String(value || "").replace(/[^A-Za-z0-9_-]+/g, "_").replace(/^_+|_+$/g, "").toLowerCase();
 }
+
+function resolveAs2SoundEffect(soundName) {
+    const soundKey = sanitizeAudioKeyPart(soundName);
+    if(!soundKey)
+        return null;
+    return sceneAudioOverrides["_sounds/" + soundKey] || null;
+}
+
+function flashpointPlayAs2Sound(soundName) {
+    const audioSrc = resolveAs2SoundEffect(soundName);
+    if(!audioSrc)
+        return false;
+
+    try {
+        const soundAudio = new Audio(audioSrc);
+        soundAudio.preload = "auto";
+        soundAudio.autoplay = true;
+        soundAudio.loop = false;
+        soundAudio.muted = false;
+        soundAudio.volume = 0.55;
+        as2SoundEffectPool.push(soundAudio);
+        while(as2SoundEffectPool.length > AS2_SOUND_EFFECT_POOL_LIMIT) {
+            const oldAudio = as2SoundEffectPool.shift();
+            try { oldAudio.pause(); } catch(err) { }
+        }
+        soundAudio.addEventListener("ended", function() {
+            const index = as2SoundEffectPool.indexOf(soundAudio);
+            if(index >= 0)
+                as2SoundEffectPool.splice(index, 1);
+        });
+        const playResult = soundAudio.play();
+        if(playResult && typeof playResult.catch === "function")
+            playResult.catch(function() { });
+        return true;
+    } catch(err) {
+        return false;
+    }
+}
+
+window.flashpointPlayAs2Sound = flashpointPlayAs2Sound;
 
 function updateSceneAudio(island, scene, gameState) {
     if(!sceneAudio)
