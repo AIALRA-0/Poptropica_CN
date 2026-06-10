@@ -38,6 +38,11 @@ const AS2_SUPER_POWER_DOWNTOWN_PATH = "content/www.poptropica.com/scenes/islandS
 const AS2_STANDARD_GAMEPLAY_OFFSET_X = 186;
 const AS2_STANDARD_GAMEPLAY_OFFSET_Y = 322;
 const AS2_SUPER_POWER_SCENE_SWF_PATTERN = /content\/www\.poptropica\.com\/(?:flashpoint\/originalFiles\/)?scenes\/islandSuper\/scene[^/]+\.swf$/iu;
+const AS2_STATIC_PACK_RELATIVE_PATHS = [
+  "audio",
+  "provenance",
+  "files/content/www.poptropica.com/externalAssets/audio"
+];
 const AS2_SUPER_POWER_OPTIONAL_UI_SWF_PATTERN = /content\/www\.poptropica\.com\/popups\/super[^/]+\.swf$/iu;
 const AS2_SUPER_POWER_SENTINEL_TEXT = "原版气泡中文测试";
 const AS2_ROOM_NAME_LINE_PATTERN = /\broomName\s*=/iu;
@@ -5189,11 +5194,65 @@ function matchesPackFilter(assetRow, islandIds, assetPatterns) {
   return matchedIsland || matchedPattern;
 }
 
+function preserveStaticPackPaths({ outputDir, sourceGroup }) {
+  if (sourceGroup !== "as2") {
+    return null;
+  }
+
+  const tempRoot = path.join(paths.tempDir, `pack-static-${sourceGroup}-${process.pid}-${Date.now()}`);
+  const preserved = [];
+  for (const relativePath of AS2_STATIC_PACK_RELATIVE_PATHS) {
+    const sourcePath = path.join(outputDir, relativePath.replace(/\//gu, path.sep));
+    if (!fileExists(sourcePath)) {
+      continue;
+    }
+
+    const targetPath = path.join(tempRoot, relativePath.replace(/\//gu, path.sep));
+    ensureDirSync(path.dirname(targetPath));
+    fs.cpSync(sourcePath, targetPath, {
+      recursive: true,
+      force: true,
+      verbatimSymlinks: false
+    });
+    preserved.push(relativePath);
+  }
+
+  return { tempRoot, preserved };
+}
+
+function restoreStaticPackPaths({ outputDir, preservation }) {
+  if (!preservation) {
+    return;
+  }
+
+  for (const relativePath of preservation.preserved) {
+    const sourcePath = path.join(preservation.tempRoot, relativePath.replace(/\//gu, path.sep));
+    if (!fileExists(sourcePath)) {
+      continue;
+    }
+
+    const targetPath = path.join(outputDir, relativePath.replace(/\//gu, path.sep));
+    ensureDirSync(path.dirname(targetPath));
+    fs.cpSync(sourcePath, targetPath, {
+      recursive: true,
+      force: true,
+      verbatimSymlinks: false
+    });
+  }
+
+  if (fileExists(preservation.tempRoot)) {
+    removeDirContents(preservation.tempRoot);
+    fs.rmSync(preservation.tempRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 150 });
+  }
+}
+
 function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], assetPatterns = [] }) {
   const { baseDir: outputDir } = getPackPaths(sourceGroup);
   ensureDirSync(outputDir);
+  const staticPackPreservation = preserveStaticPackPaths({ outputDir, sourceGroup });
   removeDirContents(outputDir);
   ensureDirSync(outputDir);
+  restoreStaticPackPaths({ outputDir, preservation: staticPackPreservation });
   fs.writeFileSync(path.join(outputDir, ".gitkeep"), "", "utf8");
 
   const normalizedIslandIds = islandIds

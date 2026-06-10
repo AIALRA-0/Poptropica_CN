@@ -37,6 +37,7 @@
     "qa:audio-check": "node tools/qa-audio-check.js",
     "qa:validate-as3": "node tools/qa-validate-runtime.js --source as3",
     "qa:validate-as2": "node tools/qa-validate-runtime.js --source as2",
+    "qa:as2-sound-bridge": "node tools/qa-as2-sound-bridge.js",
     "qa:as3-islands-smoke": "node tools/qa-as3-islands-smoke.js"
   },
   "dependencies": {

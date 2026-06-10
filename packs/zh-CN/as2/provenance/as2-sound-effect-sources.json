@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-06-10T11:48:02.738Z",
+  "entries": [
+    {
+      "soundName": "zap",
+      "fileName": "zap.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/electric_zap_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/zap.mp3",
+      "bytes": 8968,
+      "sha256": "76A1F56200B8C408B12E24C8ED3916C5ABDC906F3EA6E1BA843ACDDF6124B4DA",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with matching zap token used by high-frequency AS2 showSound calls."
+    },
+    {
+      "soundName": "crunch",
+      "fileName": "crunch.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/crunch_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/crunch.mp3",
+      "bytes": 15162,
+      "sha256": "FF5E45AEB8DB6AAE7D18D702C8E21AF7103D7BABB5734B1A3A4D2AB41A182727",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact crunch token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "splat",
+      "fileName": "splat.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/splat_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/splat.mp3",
+      "bytes": 12528,
+      "sha256": "A86CD319755355A95FEB1A0E82068442DCFFC52E41826645F080CCE1455A74D2",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact splat token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "whack",
+      "fileName": "whack.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/whack_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/whack.mp3",
+      "bytes": 6411,
+      "sha256": "52EB51A74AB0F54ADE99C93D2856DE18AB949A9C5BC757840A63AEAED6F6740D",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact whack token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "pow",
+      "fileName": "pow.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/small_pow_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/pow.mp3",
+      "bytes": 6754,
+      "sha256": "1A6DA4A0EC18429897BB38E3CF0355521C05DB2ECAE6AA7E3FDE1B46FD8EB70F",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 comic-impact effect with matching pow token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "chomp",
+      "fileName": "chomp.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/chomp_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/chomp.mp3",
+      "bytes": 3935,
+      "sha256": "887093B98AC0BAB9AA5C7C9773AD777BDE7621180D1CDDC6E3496032999C2A69",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact chomp token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "poof",
+      "fileName": "poof.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/poof_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/poof.mp3",
+      "bytes": 4797,
+      "sha256": "56934DFB57A418C48F3B3326DF259FB7CDBC99693A3435E54EE7A315187EE1F4",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact poof token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "pop",
+      "fileName": "pop.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/pop_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/pop.mp3",
+      "bytes": 9618,
+      "sha256": "68EBC871F6E0FBD34F9ACC9EEED815B330A7FA8DFF89BFF51C8A02C875E17C83",
+      "confidence": "direct-token-match",
+      "mappingReason": "Official AS3 effect with exact pop token used by AS2 showSound calls."
+    }
+  ],
+  "pathEntries": [
+    {
+      "assetPath": "content/www.poptropica.com/externalAssets/audio/haunted_house.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-music-path-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/music/haunted_house.mp3",
+      "seedPath": "packs/zh-CN/as2/files/content/www.poptropica.com/externalAssets/audio/haunted_house.mp3",
+      "bytes": 1054304,
+      "sha256": "7B3B72DD82C1552C8EE93C8683742E0E6A618B22F28E5259BDA3D2229B9D706A",
+      "confidence": "script-path-match",
+      "mappingReason": "AS2 script loads externalAssets/audio/haunted_house.mp3 directly; the official AS3 archive includes the same haunted_house.mp3 music under game/sound/music."
+    }
+  ]
+}
