@@ -512,3 +512,13 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS2 Semantic Sound Seed Expansion
 
 - Keep `Alvin` and `tickle` unmapped until a stronger original/local source is found; the current local AS3 candidates are too ambiguous for automatic playback.
+
+## 2026-06-10 AS2 Sound Bridge Provenance Source QA
+
+- Hardened `tools/qa-as2-sound-bridge.js` so the AS2 sound-bridge QA now validates every provenance source against the declared local source archive. For each `entries` and `pathEntries` record, the script extracts `sourceAssetPath` from `AS2.zip` or `AS3.zip` with `tar -xOf` and compares byte count plus SHA-256 before checking the mounted runtime URL.
+- Re-ran `npm run qa:as2-sound-bridge`; it passes with `expectedSoundCount: 17`, `overrideSoundCount: 17`, `expectedPathCount: 2`, `expectedProvenanceSourceCount: 16`, and 0 failed checks. The new source checks cover 14 `_sounds` seed sources plus Haunted House and Night Watch elevator path audio.
+- Re-probed obvious old exact-name URL shapes for `ouch`, `thump`, `ring`, `shock`, `gr`, `raarr`, `Alvin`, and `tickle` through Internet Archive CDX. No stronger exact-name 200 snapshot was found in that pass; several CDX requests timed out, so this remains a lead rather than proof of absence.
+
+## TODO AS2 Sound Bridge Provenance Source QA
+
+- Keep `Alvin` and `tickle` unmapped. Continue looking for an original/local source before adding automatic playback for those one-off character sounds.

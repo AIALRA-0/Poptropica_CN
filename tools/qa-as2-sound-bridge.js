@@ -1,6 +1,7 @@
 const crypto = require("node:crypto");
 const http = require("node:http");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
@@ -15,6 +16,11 @@ const {
 const DEFAULT_LAUNCH_URL = "http://www.poptropica.com/base.php?room=Costume&island=Super&startup_path=gameplay";
 const DEFAULT_REPORT_PATH = path.join(paths.qaDir, "as2-sound-bridge-latest.json");
 const SEEDED_AS2_SOUND_PROVENANCE_PATH = path.join(paths.as2PackDir, "provenance", "as2-sound-effect-sources.json");
+const SOURCE_ZIP_PATHS = {
+  as2: path.join(paths.projectRoot, "AS2.zip"),
+  as3: path.join(paths.projectRoot, "AS3.zip")
+};
+const SOURCE_ZIP_ENTRY_MAX_BYTES = 32 * 1024 * 1024;
 
 function sha256Buffer(buffer) {
   return crypto.createHash("sha256").update(buffer).digest("hex").toUpperCase();
@@ -92,6 +98,75 @@ function asAssetUrl(assetPath) {
   return asAbsolutePoptropicaUrl(urlPath.startsWith("/") ? urlPath : `/${urlPath}`);
 }
 
+function normalizeAssetPath(assetPath) {
+  return String(assetPath || "").replace(/\\/gu, "/").replace(/^\/+/u, "");
+}
+
+function readSourceZipEntry(sourceGroup, sourceAssetPath) {
+  const zipPath = SOURCE_ZIP_PATHS[sourceGroup];
+  const entryPath = normalizeAssetPath(sourceAssetPath);
+  if (!zipPath || !entryPath) {
+    return {
+      ok: false,
+      error: zipPath ? "missing_source_asset_path" : `unsupported_source_group:${sourceGroup || ""}`
+    };
+  }
+
+  const result = spawnSync("tar", ["-xOf", zipPath, entryPath], {
+    encoding: null,
+    maxBuffer: SOURCE_ZIP_ENTRY_MAX_BYTES
+  });
+  if (result.status !== 0) {
+    return {
+      ok: false,
+      error: String(result.stderr || "").trim() || `tar exited with status ${result.status}`
+    };
+  }
+
+  return {
+    ok: true,
+    body: result.stdout
+  };
+}
+
+function buildProvenanceSourceChecks(entries, pathEntries) {
+  const sourceItems = [
+    ...entries.map((entry) => ({ type: "sound", entry })),
+    ...pathEntries.map((entry) => ({ type: "path", entry }))
+  ];
+
+  return sourceItems.map(({ type, entry }) => {
+    const sourceGroup = String(entry.sourceGroup || "");
+    const sourceAssetPath = normalizeAssetPath(entry.sourceAssetPath);
+    const check = {
+      type,
+      soundName: entry.soundName || null,
+      assetPath: entry.assetPath || null,
+      sourceGroup,
+      sourceAssetPath,
+      expectedBytes: entry.bytes ?? null,
+      expectedSha256: entry.sha256 || null,
+      bytes: null,
+      sha256: null,
+      ok: false
+    };
+
+    const source = readSourceZipEntry(sourceGroup, sourceAssetPath);
+    if (!source.ok) {
+      check.error = source.error;
+      return check;
+    }
+
+    check.bytes = source.body.length;
+    check.sha256 = sha256Buffer(source.body);
+    check.ok = check.bytes === entry.bytes && check.sha256 === entry.sha256;
+    if (!check.ok) {
+      check.error = "source_bytes_or_sha256_mismatch";
+    }
+    return check;
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig();
@@ -106,7 +181,9 @@ async function main() {
   const manifestEntries = manifest?.entries || {};
   const expectedKeys = Object.keys(manifestEntries).sort((left, right) => left.localeCompare(right, "en"));
   const provenance = readJson(SEEDED_AS2_SOUND_PROVENANCE_PATH, null);
+  const provenanceEntries = Array.isArray(provenance?.entries) ? provenance.entries : [];
   const pathEntries = Array.isArray(provenance?.pathEntries) ? provenance.pathEntries : [];
+  const sourceChecks = buildProvenanceSourceChecks(provenanceEntries, pathEntries);
 
   const basePage = await proxyRequest(launchUrl);
   const overrides = extractSceneAudioOverrides(basePage.body);
@@ -126,6 +203,11 @@ async function main() {
   if (!bridge.externalNamePresent) failedChecks.push("missing_flashpointPlayAs2Sound_export");
   if (!bridge.boundedPoolPresent) failedChecks.push("missing_bounded_audio_pool");
   if (!expectedKeys.length) failedChecks.push("missing_sound_manifest_entries");
+  for (const check of sourceChecks) {
+    if (!check.ok) {
+      failedChecks.push(`source_mismatch:${check.sourceGroup}:${check.sourceAssetPath}`);
+    }
+  }
 
   for (const soundKey of expectedKeys) {
     const manifestEntry = manifestEntries[soundKey];
@@ -209,8 +291,10 @@ async function main() {
     expectedSoundCount: expectedKeys.length,
     overrideSoundCount: Object.keys(overrides).filter((key) => key.startsWith("_sounds/")).length,
     expectedPathCount: pathEntries.length,
+    expectedProvenanceSourceCount: sourceChecks.length,
     bridge,
     failedChecks,
+    sourceChecks,
     checks,
     pathChecks
   };
@@ -221,6 +305,7 @@ async function main() {
     expectedSoundCount: report.expectedSoundCount,
     overrideSoundCount: report.overrideSoundCount,
     expectedPathCount: report.expectedPathCount,
+    expectedProvenanceSourceCount: report.expectedProvenanceSourceCount,
     failedChecks: report.failedChecks,
     reportPath
   });
