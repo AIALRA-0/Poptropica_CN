@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T08:57:14.132Z",
+  "generatedAt": "2026-06-10T10:13:18.571Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 43,
+  "assetsPatched": 44,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -94,6 +94,11 @@
       "assetId": "5f58825fec8af7f2e988f28517a6bffeb446de67",
       "assetPath": "content/www.poptropica.com/framework.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf"
+    },
+    {
+      "assetId": "5bdf976ac0d0dfd98dd44268e21f0f649ed6fb83",
+      "assetPath": "content/www.poptropica.com/popups/BlimpGame/dialog.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\BlimpGame\\dialog.swf"
     },
     {
       "assetId": "47d31e99c4f3517ddfce0429513c14471c1aee3d",
@@ -261,13 +266,7 @@
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\balloon.swf"
     }
   ],
-  "pendingSwfAssets": [
-    {
-      "assetId": "5bdf976ac0d0dfd98dd44268e21f0f649ed6fb83",
-      "assetPath": "content/www.poptropica.com/popups/BlimpGame/dialog.swf",
-      "reason": "I/O error during writing [21.txt]"
-    }
-  ],
+  "pendingSwfAssets": [],
   "audioAuditReports": [
     {
       "islandId": "super-power",

@@ -5,7 +5,7 @@ const { spawnSync } = require("node:child_process");
 const { XMLParser, XMLBuilder } = require("fast-xml-parser");
 const paths = require("./paths");
 const { ensureDirSync, fileExists, hashFile, listFilesRecursive, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
-const { normalizeTranslatedText } = require("./text-utils");
+const { containsCjk, normalizeTranslatedText } = require("./text-utils");
 const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
 
 const RUNTIME_FIX_VERSION = 20;
@@ -1373,8 +1373,12 @@ function buildTranslatedSwfFiles({ assetRows, sourceTextRoot, translatedTextRoot
     const sourceLines = fs.readFileSync(sourceFile, "utf8").split(/\r?\n/u);
     const lineIndex = Math.max(0, Number(context.lineNumber) - 1);
     const translatedLine = normalizeTranslatedText(row.translated_text, row.source_text);
+    const sourceLine = sourceLines[lineIndex] || "";
 
     if (lineIndex >= sourceLines.length || translatedLine === sourceLines[lineIndex]) {
+      continue;
+    }
+    if (!containsCjk(translatedLine) && sourceLine.trim().toLowerCase() === translatedLine.trim().toLowerCase()) {
       continue;
     }
 

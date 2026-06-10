@@ -456,3 +456,21 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Continue the remaining AS2 full-island script/sound-tag exports; coverage is still 553/980 scripts and 546/980 sound tags at this checkpoint.
 - Revisit `popups/BlimpGame/dialog.swf` separately with isolated FFDec output or an alternate patch path so the final AS2 pack has 0 pending SWF assets.
 - Expand AS2 sound mapping beyond the 3 direct literal-to-embedded matches after the full AS2 sound-call corpus is exported and ranked.
+
+## 2026-06-10 AS2 Full-Island Sound Coverage / Pending Pack Closure
+
+- Continued AS2 all-island script and sound-tag export batches to near-completion without launching the game. Final read-only audit now covers all 980/980 AS2 island scene SWFs for sound-tag export, with 0 partial sound exports and 0 failed sound exports.
+- Script export coverage is now 978/980 AS2 island scene SWFs, with 0 partial script exports and 2 cached failed script exports: `content/www.poptropica.com/scenes/islandCharlie/sceneCourtyard.swf` and `content/www.poptropica.com/scenes/islandZombie/sceneRomerosBunker.swf`.
+- The full AS2 script corpus found so far now has 616 sound API calls across 254 SWFs: 243 literal calls, 373 dynamic calls, 21 unique literal sound names, and 3 literal names with direct embedded-audio matches. All 34 launchable AS2 catalog entries now have sound-call evidence or an explicit no-call result.
+- Embedded AS2 scene audio increased to 25 exported sound files across 10 SWFs. Newly confirmed non-empty embedded audio includes Steamworks `sceneSteamShop.swf` `113.mp3` in addition to the earlier 24 Carrot, Cryptids, Ghost Story, Home, Mythology, Nabooti, and Super Power embedded sources.
+- Added a SWF text replacement guard in `tools/lib/pack.js` so English-only translations that only differ by case from the original line are skipped. This avoids unnecessary FFDec writes and allowed the previously pending AS2 `popups/BlimpGame/dialog.swf` to patch cleanly.
+- Regenerated the AS2 pack with `node tools/patch-pack.js --source as2`. AS2 now patches 44 assets: 7 external text assets and 37 SWF assets, with `pendingSwfAssets: []`. `content/www.poptropica.com/popups/BlimpGame/dialog.swf` is now included in `swfPatchedAssets`.
+- Validation passed after the rebuild: `npm run verify:pack-inputs` reports AS2 `replacementCount: 42` matching manifest and AS3 `replacementCount: 47` matching manifest; `node --check tools/lib/pack.js` passes; `git diff --check` reports only existing LF/CRLF warnings; Flashpoint 7-Zip validates `runtime-data/patched-zips/as2-runtime.zip` (`Everything is Ok`, 4,826 files, 634,747,396 bytes).
+- Re-ran scoped AS2 runtime QA with `npm run qa:validate-as2 -- --playerKey=flashpointnavigator-as2 --skipMaps=1 --skipStaticSigns=1 --skipPopupAudit=1`. It passed: Super Power window found, stage coverage `0.961228`, Chinese dialogue visible, and audio activity detected. Report: `runtime-data/qa/super-power/flashpointnavigator-as2-report-1781088589569.json`.
+- Retried both remaining AS2 script-export failures with isolated `POPTROPICA_FFDEC_EXPORT_TIMEOUT_MS=600000` runs and `--retryFailed=1`. `sceneCourtyard.swf` and `sceneRomerosBunker.swf` still failed script export after the longer FFDec attempts, while their sound-tag exports remain successful.
+
+## TODO AS2 Full-Island Sound Coverage / Pending Pack Closure
+
+- Revisit the two remaining AS2 script-export failures with alternate decompiler settings or manual SWF inspection; longer isolated FFDec runs have already failed, and both SWFs already have successful sound-tag exports.
+- Use the now-full AS2 sound-tag coverage and near-full script corpus to prioritize original-source searches for high-frequency literals: `zap`, `boom`, `crunch`, `ouch`, `splat`, `thump`, and `whack`.
+- Expand the AS2 runtime sound bridge beyond the current direct embedded matches (`boom`, `CoolHissSound.wav`, `croneLine`) only when a defensible local/original source mapping is found.
