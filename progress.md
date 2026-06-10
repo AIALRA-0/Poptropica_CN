@@ -377,6 +377,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Expand AS2 sound-call and embedded-sound export coverage beyond launch scenes to all island scene SWFs in serialized batches, then compare runtime audio output against scenes known to have calls or loose audio.
 - Investigate whether AS2 `showSound` should map to original named files, the generated `_global/default.wav` fallback, or recoverable Flashpoint/user-audio assets; do not treat fallback audio as proof that original AS2 effects are restored.
 
+## 2026-06-10 AS3 GHD Arena Skin Queue Fix
+
+- Diagnosed `game.scenes.ghd.arena.Arena` direct-launch hanging at the loading screen. Temporary Shell instrumentation showed `CharacterGroup` waited forever for NPC character completion, with `queen`, `jack1`, and sometimes `dagger` stuck after skin updates.
+- Isolated the engine bug in `game.components.entity.character.Skin.partLoaded()`: it called `partsLoading.splice(partsLoading.indexOf(param1.id), 1)` without checking the index. Extra loaded signals for non-waited child parts could remove the wrong queued part, while already-processed stale entries such as `queen:eyes` or `jack1:hand2` could remain forever.
+- Added a formal AS3 Shell patch that guards the splice and prunes completed stale skin parts before dispatching `lookLoadComplete`. The pack builder now generates `content/www.poptropica.com/game/Shell.swf` with only this `Skin` class patch and includes it in the safe AS3 runtime SWF override set.
+- Rebuilt AS3 runtime with `replacementCount: 47`. Validated `runtime-data/patched-zips/as3-runtime.zip` with 7-Zip, `npm run verify:pack-inputs`, AS3 sound-reference audit (`missing: 0`), and GHD Arena smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781079070802.json` passed with `withMissingLogRequests: 0`.
+- Regenerated AS3 aggregate latest with `--aggregateLatest=1 --aggregatePreferAudio=1`: 12/12 AS3 direct-scene islands passing, 12/12 with active audio evidence, 0 missing keys. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-aggregate-1781079154861.json`.
+
 ## 2026-06-10 AS2 Full-Island Sound Batch Audit
 
 - Extended `tools/audit-as2-sound-calls.js` with all-island batch controls: `--ensureIslandScripts=1`, `--ensureIslandSounds=1`, `--exportBatchSize=N`, `--exportOffset=N`, and optional `--island=<canonicalKey|sceneFolder>`. This lets AS2 scene SWFs be exported and audited in resumable background batches without launching Navigator.

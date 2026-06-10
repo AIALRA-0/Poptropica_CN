@@ -15,10 +15,12 @@ const RUNTIME_FIX_VERSION = 20;
 // the default runtime zip to external text assets until a dedicated SWF/font
 // patch path is ready.
 const SAFE_RUNTIME_SWF_PATTERNS = [
+  /content\/www\.poptropica\.com\/game\/Shell\.swf$/iu,
   /content\/www\.poptropica\.com\/scenes\/islandHome\/sceneHome\.swf$/iu,
   /content\/www\.poptropica\.com\/game\/assets\/scenes\/map\/map\/interactive\.swf$/iu,
   /content\/www\.poptropica\.com\/game\/assets\/scenes\/map\/map\/islands\/[^/]+\/logo\.swf$/iu
 ];
+const AS3_SHELL_PATH = "content/www.poptropica.com/game/Shell.swf";
 const AS2_SUPER_POWER_GAMEPLAY_PATH = "content/www.poptropica.com/gameplay.swf";
 const AS2_SUPER_POWER_FRAMEWORK_PATH = "content/www.poptropica.com/framework.swf";
 const AS2_SUPER_POWER_BASE_PAGE_PATH = "content/www.poptropica.com/base.php";
@@ -1671,10 +1673,15 @@ const AS2_SUPER_POWER_SCENE_DIALOGUE_REPLACEMENTS = [
     ["COMMON ROOM", "公共休息室"]
   ];
 
-function exportSwfScriptsForPatch({ ffdecCli, inputSwf, outputDir }) {
+function exportSwfScriptsForPatch({ ffdecCli, inputSwf, outputDir, selectClasses = null }) {
   removeDirContents(outputDir);
   ensureDirSync(outputDir);
-  return runFfdecCommand(ffdecCli, ["-cli", "-export", "script", outputDir, inputSwf]);
+  const args = ["-cli"];
+  if (selectClasses) {
+    args.push("-selectclass", selectClasses);
+  }
+  args.push("-export", "script", outputDir, inputSwf);
+  return runFfdecCommand(ffdecCli, args);
 }
 
 function extractZipEntryToTemp({ archivePath, entryName, outputDir, tarBin }) {
@@ -1691,6 +1698,133 @@ function extractZipEntryToTemp({ archivePath, entryName, outputDir, tarBin }) {
     };
   }
   return { ok: true };
+}
+
+function applyAs3SkinPartLoadedPatch(content) {
+  const nextContent = normalizeScriptContent(content);
+  const original = `      public function partLoaded(param1:SkinPart) : void
+      {
+         partsLoading.splice(partsLoading.indexOf(param1.id),1);
+         if(partsLoading.length == 0)
+         {
+            partsMetaComplete();
+         }
+      }`;
+  const replacement = `      public function partLoaded(param1:SkinPart) : void
+      {
+         var _loc2_:int = partsLoading.indexOf(param1.id);
+         if(_loc2_ >= 0)
+         {
+            partsLoading.splice(_loc2_,1);
+         }
+         pruneCompletedParts();
+         if(partsLoading.length == 0)
+         {
+            partsMetaComplete();
+         }
+      }
+
+      private function pruneCompletedParts() : void
+      {
+         var _loc2_:Entity = null;
+         var _loc3_:SkinPart = null;
+         var _loc1_:int = int(partsLoading.length - 1);
+         while(_loc1_ >= 0)
+         {
+            _loc2_ = getSkinPartEntity(partsLoading[_loc1_]);
+            _loc3_ = _loc2_ ? _loc2_.get(SkinPart) as SkinPart : null;
+            if(_loc3_ == null || !_loc3_._invalidate && !_loc3_.reload && !_loc3_.refreshDisplay)
+            {
+               partsLoading.splice(_loc1_,1);
+            }
+            _loc1_--;
+         }
+      }`;
+  if (!nextContent.includes(original)) {
+    throw new Error("Unable to locate AS3 Skin.partLoaded queue block");
+  }
+  return nextContent.replace(original, replacement);
+}
+
+function buildAs3ShellSkinPatch({ config, outputDir, manifest }) {
+  const sourceZip = config.sources?.as3Gamezip;
+  const ffdecCli = config.tools?.ffdecCli;
+  if (!sourceZip || !fileExists(sourceZip) || !ffdecCli || !fileExists(ffdecCli)) {
+    return;
+  }
+
+  const sharedTempRoot = path.join(paths.tempDir, "as3-shell-skin-patch");
+  removeDirContents(sharedTempRoot);
+  ensureDirSync(sharedTempRoot);
+
+  const extractRoot = path.join(sharedTempRoot, "shell-source");
+  const extractResult = extractZipEntryToTemp({
+    archivePath: sourceZip,
+    entryName: AS3_SHELL_PATH,
+    outputDir: extractRoot,
+    tarBin: config.tools.tarBin
+  });
+  if (!extractResult.ok) {
+    manifest.pendingSwfAssets.push({
+      assetId: "as3-shell:skin-load-queue",
+      assetPath: AS3_SHELL_PATH,
+      reason: extractResult.error
+    });
+    return;
+  }
+
+  const sourceSwf = path.join(extractRoot, AS3_SHELL_PATH.replace(/\//gu, path.sep));
+  const scriptRoot = path.join(sharedTempRoot, "shell-skin-source");
+  const scriptExport = exportSwfScriptsForPatch({
+    ffdecCli,
+    inputSwf: sourceSwf,
+    outputDir: scriptRoot,
+    selectClasses: "game.components.entity.character.Skin"
+  });
+  if (!scriptExport.ok) {
+    manifest.pendingSwfAssets.push({
+      assetId: "as3-shell:skin-load-queue",
+      assetPath: AS3_SHELL_PATH,
+      reason: scriptExport.error || "Unable to export Shell Skin script"
+    });
+    return;
+  }
+
+  const patchRoot = path.join(sharedTempRoot, "shell-skin-patch");
+  const skinScript = ensureTranslatedScriptFromSource({
+    sourceScriptRoot: scriptRoot,
+    translatedScriptRoot: patchRoot,
+    exportPath: path.join("scripts", "game", "components", "entity", "character", "Skin.as")
+  });
+  writeText(skinScript, applyAs3SkinPartLoadedPatch(fs.readFileSync(skinScript, "utf8")));
+
+  const outputSwf = path.join(outputDir, "swf", AS3_SHELL_PATH.replace(/\//gu, path.sep));
+  ensureDirSync(path.dirname(outputSwf));
+  const replaceResult = replaceSwfScriptExports({
+    ffdecCli,
+    inputSwf: sourceSwf,
+    outputSwf,
+    translatedFiles: [{
+      filePath: skinScript,
+      exportPath: "scripts/game/components/entity/character/Skin.as",
+      replaceTarget: "game.components.entity.character.Skin"
+    }]
+  });
+  if (!replaceResult.ok) {
+    manifest.pendingSwfAssets.push({
+      assetId: "as3-shell:skin-load-queue",
+      assetPath: AS3_SHELL_PATH,
+      reason: replaceResult.error || "Unable to rebuild Shell Skin script"
+    });
+    return;
+  }
+
+  manifest.assetsPatched += 1;
+  manifest.swfPatchedAssets.push({
+    assetId: "as3-shell:skin-load-queue",
+    assetPath: AS3_SHELL_PATH,
+    outputPath: outputSwf
+  });
 }
 
 function applyAs2SuperPowerSceneValidationPatch({ sourceScriptRoot, translatedScriptRoot, assetPath }) {
@@ -5203,6 +5337,11 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
   manifest.canonicalKeys = [...seenCanonical].sort();
 
   if (sourceGroup === "as3") {
+    buildAs3ShellSkinPatch({
+      config,
+      outputDir,
+      manifest
+    });
     const logoOverrides = generateAs3MapLogoOverrides({ config, outputDir });
     for (const result of logoOverrides.results || []) {
       manifest.assetsPatched += 1;
