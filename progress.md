@@ -362,3 +362,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS3 Sound Reference Repair Continuation
 
 - Keep AS3 sound-reference audit in the validation loop. It now proves XML references resolve, but it does not by itself prove runtime playback volume/mixing in every scene.
+
+## 2026-06-10 AS2 Sound Call Audit
+
+- Added `tools/audit-as2-sound-calls.js` and `npm run audit:as2-sound-calls` to inventory AS2 SWF `showSound` / `attachSound` / `loadSound` calls from FFDec-exported scripts, correlate them to launch-manifest islands, and list loose AS2 audio/video assets in the archive.
+- Hardened AS2 FFDec script export handling for Windows: launch-scene scripts are exported to a temp directory first, then moved into the cache; partial or locked export directories are reported instead of aborting the audit.
+- Ran `npm run audit:as2-sound-calls -- --ensureLaunchScripts=1 --output=runtime-data\qa\as2-sound-calls-audit.json`. Current AS2 baseline: 4,672 SWFs, 34/34 launch-scene SWFs with script exports, 9 loose audio/video assets, 52 detected `showSound` calls, 31 literal sound-name calls, 21 dynamic calls, and no partial script exports.
+- AS2 entry-scene sound calls currently appear in Back Lot, Big Nate, Game Show, Lunar Colony, Mythology, Night Watch, and Super Power; loose media appears in Back Lot, Night Watch, and Vampire. The remaining launchable AS2 entries need deeper non-entry scene traversal and runtime playback checks before declaring sound coverage complete.
+
+## TODO AS2 Sound Call Audit
+
+- Extend AS2 sound-call coverage beyond launch scenes by exporting and scanning island subscene SWFs, then separate embedded-linkage sound effects from external audio loads.
+- Use the AS2 audit report to drive runtime sound probes; static `showSound` calls prove references exist, but do not prove every scene plays audible output in the local Flash player.

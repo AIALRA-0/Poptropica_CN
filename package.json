@@ -21,6 +21,7 @@
     "doctor:flashpoint": "node tools/doctor-flashpoint.js",
     "inventory:sources": "node tools/inventory-sources.js",
     "audit:audio-assets": "node tools/audit-audio-assets.js",
+    "audit:as2-sound-calls": "node tools/audit-as2-sound-calls.js",
     "audit:sound-refs": "node tools/audit-sound-references.js",
     "extract:text": "node tools/extract-text.js",
     "generate:as3-logos": "node tools/generate-as3-logo-overrides.js",
