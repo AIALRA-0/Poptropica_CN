@@ -12,6 +12,33 @@ const SOUND_DIR_BY_TYPE = {
   effects: "effects",
   music: "music"
 };
+const KNOWN_UNRESOLVED_NOTES = new Map([
+  ["carrot/computer/music/train_finale_b.mp3", {
+    note: "Public Poptropica music listings mention Train Finale B, but no repository-safe original file is present in the local AS3 archive.",
+    sourceLeads: [
+      "https://poptropi.ca/pop-plus/music/",
+      "https://btspoptropica.weebly.com/music.html"
+    ]
+  }],
+  ["ghd/mushroom2/music/kaya_forest.mp3", {
+    note: "Scene-specific Galactic Hot Dogs music is referenced, but no exact local archive file or repository-safe source has been found."
+  }],
+  ["mocktropica/mainstreet/effects/waterfall_02_l.mp3", {
+    note: "The local AS3 archive has waterfall.mp3 and ambient/waterfall_01_loop.mp3, but neither is an exact same-name/same-role replacement for this effects reference."
+  }],
+  ["mocktropica/server/music/brainiacs.mp3", {
+    note: "Public Poptropica music and gamerip listings mention Brainiacs, but no repository-safe original file is present in the local AS3 archive.",
+    sourceLeads: [
+      "https://poptropi.ca/pop-plus/music/",
+      "https://btspoptropica.weebly.com/music.html",
+      "https://downloads.khinsider.com/game-soundtracks/album/poptropica-ost-gamerip-online-2007"
+    ]
+  }],
+  ["virushunter/shipdemo/effects/clear_wave.mp3", {
+    note: "The local AS3 archive has beach_waves ambient loops, but no exact effects/clear_wave.mp3 replacement has been found."
+  }]
+]);
+const ARCHIVE_RETRY_RE = /(?:failed to open|error opening archive|cannot open)/iu;
 
 function parseArgs(argv) {
   const args = {};
@@ -25,6 +52,31 @@ function parseArgs(argv) {
   return args;
 }
 
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function runTarWithArchiveRetry(tarBin, args, options = {}) {
+  const retries = Number.isFinite(options.retries) ? options.retries : 5;
+  const retryDelayMs = Number.isFinite(options.retryDelayMs) ? options.retryDelayMs : 250;
+  let result = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    result = spawnSync(tarBin, args, {
+      encoding: "utf8",
+      windowsHide: true,
+      maxBuffer: options.maxBuffer || 1024 * 1024
+    });
+    const output = `${result.stderr || ""}${result.stdout || ""}`;
+    if (result.status === 0 || !ARCHIVE_RETRY_RE.test(output) || attempt >= retries) {
+      return result;
+    }
+    sleepSync(retryDelayMs * Math.min(attempt + 1, 4));
+  }
+
+  return result;
+}
+
 function listArchiveEntries(archivePath, tarBin) {
   if (!archivePath || !fileExists(archivePath)) {
     throw new Error(`Archive not found: ${archivePath || "(empty)"}`);
@@ -32,9 +84,7 @@ function listArchiveEntries(archivePath, tarBin) {
   if (!tarBin || !fileExists(tarBin)) {
     throw new Error("A tar executable is required to list zip contents.");
   }
-  const result = spawnSync(tarBin, ["-tf", archivePath], {
-    encoding: "utf8",
-    windowsHide: true,
+  const result = runTarWithArchiveRetry(tarBin, ["-tf", archivePath], {
     maxBuffer: 1024 * 1024 * 256
   });
   if (result.status !== 0) {
@@ -47,9 +97,7 @@ function listArchiveEntries(archivePath, tarBin) {
 }
 
 function readArchiveEntry(archivePath, tarBin, entry) {
-  const result = spawnSync(tarBin, ["-xOf", archivePath, entry], {
-    encoding: "utf8",
-    windowsHide: true,
+  const result = runTarWithArchiveRetry(tarBin, ["-xOf", archivePath, entry], {
     maxBuffer: 1024 * 1024
   });
   if (result.status !== 0) {
@@ -149,6 +197,16 @@ function classifyReference(ref, fileIndex) {
   return { status: "missing" };
 }
 
+function knownUnresolvedNote(ref) {
+  const key = [
+    String(ref.sceneFolder || "").toLowerCase(),
+    String(ref.sceneRoom || "").toLowerCase(),
+    String(ref.type || "").toLowerCase(),
+    String(ref.name || "").toLowerCase()
+  ].join("/");
+  return KNOWN_UNRESOLVED_NOTES.get(key) || null;
+}
+
 function extractSoundReferences(xml, soundsXmlPath) {
   const refs = [];
   const pathParts = soundsXmlPath.split("/");
@@ -215,9 +273,12 @@ function main() {
   for (const entry of soundXmlEntries) {
     const xml = readArchiveEntry(archivePath, config.tools.tarBin, entry);
     for (const ref of extractSoundReferences(xml, entry)) {
+      const classification = classifyReference(ref, fileIndex);
+      const review = classification.status === "missing" ? knownUnresolvedNote(ref) : null;
       findings.push({
         ...ref,
-        ...classifyReference(ref, fileIndex)
+        ...classification,
+        ...(review ? { review } : {})
       });
     }
   }

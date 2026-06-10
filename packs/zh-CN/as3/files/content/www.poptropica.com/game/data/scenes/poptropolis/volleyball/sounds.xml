@@ -1,0 +1,16 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">Poptropolis_Main_Theme_Full.mp3</asset>
+	</sound>
+	<sound type="ambient">
+		<asset loop="true" fade="true">arena_crowd_01_L.mp3</asset>
+		<asset loop="true" fade="true">dripping_scenery_01_L.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="floor">fs_swim_water_01.mp3,fs_swim_water_02.mp3,fs_swim_water_03.mp3</asset>
+	</sound>
+	<sound type="effects">
+		<asset triggeredByEvent="ballHit">rubber_ball_bounce_01.mp3,rubber_ball_bounce_02.mp3,rubber_ball_bounce_03.mp3,rubber_ball_bounce_04.mp3</asset>
+		<asset triggeredByEvent="point">points_ping_01a.mp3</asset>
+	</sound>
+</sounds>

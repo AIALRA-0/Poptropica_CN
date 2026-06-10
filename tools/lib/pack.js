@@ -694,6 +694,37 @@ function validateZipArchive(sevenZip, zipPath) {
   return result.status === 0;
 }
 
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function replaceFileWithRetry(sourcePath, targetPath, options = {}) {
+  const retries = Number.isFinite(options.retries) ? options.retries : 8;
+  const retryDelayMs = Number.isFinite(options.retryDelayMs) ? options.retryDelayMs : 500;
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      if (fileExists(targetPath)) {
+        fs.rmSync(targetPath, { force: true, maxRetries: 5, retryDelay: 150 });
+      }
+      fs.renameSync(sourcePath, targetPath);
+      return { ok: true, attempts: attempt + 1 };
+    } catch (error) {
+      lastError = error;
+      if (!fileExists(sourcePath) || attempt >= retries) {
+        break;
+      }
+      sleepSync(retryDelayMs * Math.min(attempt + 1, 4));
+    }
+  }
+
+  return {
+    ok: false,
+    error: lastError instanceof Error ? lastError.message : String(lastError || "Unable to replace file")
+  };
+}
+
 function hashReplacementSet(replacements) {
   const hash = crypto.createHash("sha256");
   for (const replacement of [...replacements].sort((left, right) => left.entryName.localeCompare(right.entryName, "en"))) {
@@ -4879,10 +4910,11 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
       fs.rmSync(tempRuntimeZipPath, { force: true });
     }
 
-    const createResult = spawnSync(sevenZip, ["a", "-tzip", tempRuntimeZipPath, ".\\*", "-mx=1"], {
+    const createResult = spawnSync(sevenZip, ["a", "-tzip", tempRuntimeZipPath, ".\\*", "-mx=1", "-bsp0"], {
       cwd: workingDir,
       encoding: "utf8",
-      windowsHide: true
+      windowsHide: true,
+      maxBuffer: 1024 * 1024 * 64
     });
     if (createResult.status !== 0) {
       manifest.runtimeZip = {
@@ -4908,10 +4940,18 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
       return manifest.runtimeZip;
     }
 
-    if (fileExists(packPaths.runtimeZipPath)) {
-      fs.rmSync(packPaths.runtimeZipPath, { force: true });
+    const replaceResult = replaceFileWithRetry(tempRuntimeZipPath, packPaths.runtimeZipPath);
+    if (!replaceResult.ok) {
+      manifest.runtimeZip = {
+        status: "patch_failed",
+        sourceZip,
+        runtimeZipPath: packPaths.runtimeZipPath,
+        tempRuntimeZipPath,
+        replacementCount: replacements.length,
+        error: replaceResult.error || "Failed to replace runtime zip."
+      };
+      return manifest.runtimeZip;
     }
-    fs.renameSync(tempRuntimeZipPath, packPaths.runtimeZipPath);
     removeDirContents(workingDir);
     fs.rmSync(workingDir, { recursive: true, force: true });
 
