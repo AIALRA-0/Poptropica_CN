@@ -2788,7 +2788,7 @@ function applyAs2BasePageMinimalPatch(content) {
       `<?php
 function flashpoint_audio_sanitize($value) {
     $clean = preg_replace('/[^A-Za-z0-9_-]+/', '_', (string)$value);
-    $clean = trim($clean, '_');
+    $clean = trim($clean);
     return $clean === '' ? null : $clean;
 }
 
@@ -2851,7 +2851,7 @@ function flashpoint_collect_audio_overrides() {
   nextContent = nextContent.replace(
     primaryEmbedPattern,
     `<div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" menu="false" bgcolor="139ffd" hidden></div>
-        <audio id="flashpointSceneAudio" preload="auto" loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>`
+        <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>`
   );
   nextContent = nextContent.replace(
     /body,\s*embed\s*\{\s*background-color:\s*#139ffd;\s*\}\s*embed\s*\{\s*outline-width:\s*0;\s*position:\s*absolute;\s*\}/u,
@@ -2915,13 +2915,13 @@ function computeScaledViewport(baseWidth, baseHeight, gameState) {
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(1, Math.max(window.innerWidth / STANDARD_GAMEPLAY_VIEWPORT.width, window.innerHeight / STANDARD_GAMEPLAY_VIEWPORT.height));
+        viewportScale = Math.max(0.25, Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
-        viewportWidth = STANDARD_GAMEPLAY_VIEWPORT.width;
-        viewportHeight = STANDARD_GAMEPLAY_VIEWPORT.height;
+        viewportWidth = baseWidth;
+        viewportHeight = baseHeight;
         offsetLeft = Math.round((window.innerWidth - viewportWidth * viewportScale) / 2);
-        offsetTop = Math.round(window.innerHeight - viewportHeight * viewportScale);
+        offsetTop = Math.round((window.innerHeight - viewportHeight * viewportScale) / 2);
         useViewportCrop = true;
     }
 
@@ -2942,8 +2942,8 @@ function applyGameViewport(viewport, gameState) {
         gameViewport.style.top = "0px";
         gameViewport.style.transformOrigin = "top left";
         gameViewport.style.transform = \`translate(\${ viewport.offsetLeft }px, \${ viewport.offsetTop }px) scale(\${ viewport.viewportScale })\`;
-        game.style.left = \`-\${ STANDARD_GAMEPLAY_VIEWPORT.x }px\`;
-        game.style.top = \`-\${ STANDARD_GAMEPLAY_VIEWPORT.y }px\`;
+        game.style.left = "0px";
+        game.style.top = "0px";
     } else {
         gameViewport.style.width = \`\${ viewport.displayWidth }px\`;
         gameViewport.style.height = \`\${ viewport.displayHeight }px\`;
@@ -3007,13 +3007,21 @@ function updateSceneAudio(island, scene, gameState) {
     }
 
     if(sceneAudio.getAttribute("src") !== audioSrc) {
+        sceneAudio.autoplay = true;
+        sceneAudio.loop = true;
+        sceneAudio.muted = false;
+        sceneAudio.volume = 0.35;
+        sceneAudio.setAttribute("autoplay", "autoplay");
         sceneAudio.setAttribute("src", audioSrc);
+        sceneAudio.src = audioSrc;
         sceneAudio.load();
     }
 
-    const playResult = sceneAudio.play();
-    if(playResult && typeof playResult.catch === "function")
-        playResult.catch(function() { });
+    try {
+        const playResult = sceneAudio.play();
+        if(playResult && typeof playResult.catch === "function")
+            playResult.catch(function() { });
+    } catch(err) { }
 }
 
 function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,

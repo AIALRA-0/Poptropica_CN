@@ -61,6 +61,8 @@ runtime-data/user-audio/as2/Super/DownTown.mp3
 
 支持 `mp3`、`ogg`、`wav`、`m4a`。运行时会优先匹配 `<island>/<room>`，再退回 `<island>/default` 和 `_global/default`。该目录不会提交到 GitHub，避免把来源不明确的音频资产放进仓库。
 
+如果 `_global/default.*` 不存在，运行时会自动生成一个低音量的本地 WAV fallback，使缺少原始声音资产的 AS2 场景仍有可检测音频。用户提供的 `_global/default` 或岛屿/场景专用音频始终优先。
+
 ## 典型工作流
 
 ```powershell

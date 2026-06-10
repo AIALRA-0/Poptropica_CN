@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-06-10T01:58:48.957Z",
+  "sourceGroup": "as2",
+  "islandId": "super-power",
+  "conclusion": "missing_original_audio_assets",
+  "summary": "Super Power AS2 still calls the shared showSound chain, but the shipped AS2 resources do not contain recoverable sound payloads for those calls.",
+  "evidence": [
+    {
+      "type": "scene-script-call",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSuperMain.swf",
+      "notes": "_root.showSound(\"ring\", ...) is present in scene scripts."
+    },
+    {
+      "type": "scene-script-call",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
+      "notes": "_root.showSound(\"crunch\", ...) and comicSound-based calls are present in scene scripts."
+    },
+    {
+      "type": "shared-api",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "notes": "gameplay.swf exports SoundBubble and routes showSound(frameName, ...) through attachMovie(\"SoundBubble\")."
+    },
+    {
+      "type": "missing-sound-tags",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "notes": "FFDec sound export is empty, and gameplay/framework/super scene tag dumps do not contain DefineSound, StartSound, or SoundStream tags."
+    },
+    {
+      "type": "missing-external-audio",
+      "assetPath": "content/www.poptropica.com/scenes/islandSuper/assets/",
+      "notes": "AS2.zip does not ship islandSuper mp3/wav/flv audio assets, unlike some other islands."
+    }
+  ],
+  "recoveryPolicy": "Original Super Power AS2 audio cannot be restored from the current archive. Any future audible version would require newly supplied replacement audio assets."
+}

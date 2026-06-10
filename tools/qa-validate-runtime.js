@@ -662,10 +662,11 @@ function clickMaps(qaDir, reportStem, runtimeWindow, capture, stage) {
   const postMapStagePath = path.join(qaDir, `${reportStem}-maps-stage.json`);
   const postMapOcrPath = path.join(qaDir, `${reportStem}-maps-ocr.json`);
   const postMapServerLogPath = path.join(qaDir, `${reportStem}-maps-server.log`);
+  let logOffset = 0;
 
   try {
     const activeRuntimeWindow = reacquireRuntimeWindow(runtimeWindow, postMapWindowPath);
-    const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
+    logOffset = getFileSize(GAME_SERVER_LOG_PATH);
     runPythonQa([
       "click-window",
       "--handle",
@@ -742,11 +743,18 @@ function clickMaps(qaDir, reportStem, runtimeWindow, capture, stage) {
       reason: mapRequestSeen ? null : "map_swf_request_not_seen_after_click"
     };
   } catch (error) {
+    const serverLogSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
+    fs.writeFileSync(postMapServerLogPath, serverLogSegment, "utf8");
+    const mapRequestSeen = hasMapSwfRequest(serverLogSegment);
     return {
       ok: false,
       clickPoint: point,
       reason: "maps_click_or_recapture_failed",
-      error: String(error.message || error)
+      error: String(error.message || error),
+      clickMetaPath,
+      windowPath: postMapWindowPath,
+      serverLogPath: postMapServerLogPath,
+      mapRequestSeen
     };
   }
 }
@@ -804,7 +812,7 @@ function buildVerdict({ player, launch, runtimeWindow, popupAudit, captureBundle
 
 async function validateSuperPowerCandidate(player, args) {
   const qaDir = ensureQaDir("super-power");
-  const reportStem = `super-power-${player.playerKey}`;
+  const reportStem = `super-power-${player.playerKey}-${Date.now()}`;
   const popupAuditPath = path.join(qaDir, `${reportStem}-window-audit.json`);
   const runtimeWindowPath = path.join(qaDir, `${reportStem}-window.json`);
   const audioPath = path.join(qaDir, `${reportStem}-audio.json`);

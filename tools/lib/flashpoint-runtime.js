@@ -35,6 +35,7 @@ const RUNTIME_CONTENT_BASE_WIDTH = 1010;
 const RUNTIME_CONTENT_BASE_HEIGHT = 645;
 const RUNTIME_BROWSER_ZOOM_MIN = 1;
 const RUNTIME_BROWSER_ZOOM_MAX = 1;
+const USER_AUDIO_EXTENSIONS = [".mp3", ".ogg", ".wav", ".m4a"];
 
 function parsePositiveIntEnv(name) {
   const raw = process.env[name];
@@ -124,6 +125,65 @@ function ensureJunction(linkPath, targetPath) {
 
   ensureDirSync(path.dirname(linkPath));
   fs.symlinkSync(targetPath, linkPath, "junction");
+}
+
+function writePcm16MonoWav(filePath, { sampleRate, samples }) {
+  const headerSize = 44;
+  const bytesPerSample = 2;
+  const dataSize = samples.length * bytesPerSample;
+  const buffer = Buffer.alloc(headerSize + dataSize);
+  buffer.write("RIFF", 0, "ascii");
+  buffer.writeUInt32LE(36 + dataSize, 4);
+  buffer.write("WAVE", 8, "ascii");
+  buffer.write("fmt ", 12, "ascii");
+  buffer.writeUInt32LE(16, 16);
+  buffer.writeUInt16LE(1, 20);
+  buffer.writeUInt16LE(1, 22);
+  buffer.writeUInt32LE(sampleRate, 24);
+  buffer.writeUInt32LE(sampleRate * bytesPerSample, 28);
+  buffer.writeUInt16LE(bytesPerSample, 32);
+  buffer.writeUInt16LE(16, 34);
+  buffer.write("data", 36, "ascii");
+  buffer.writeUInt32LE(dataSize, 40);
+  for (let index = 0; index < samples.length; index += 1) {
+    const clamped = Math.max(-1, Math.min(1, samples[index]));
+    buffer.writeInt16LE(Math.round(clamped * 32767), headerSize + index * bytesPerSample);
+  }
+  ensureDirSync(path.dirname(filePath));
+  fs.writeFileSync(filePath, buffer);
+}
+
+function hasUserAudioDefault(as2AudioRoot) {
+  const globalDir = path.join(as2AudioRoot, "_global");
+  return USER_AUDIO_EXTENSIONS.some((extension) => fileExists(path.join(globalDir, `default${extension}`)));
+}
+
+function ensureGeneratedAs2FallbackAudio() {
+  const as2AudioRoot = path.join(paths.userAudioDir, "as2");
+  if (hasUserAudioDefault(as2AudioRoot)) {
+    return null;
+  }
+
+  const sampleRate = 22050;
+  const durationSec = 4;
+  const totalSamples = sampleRate * durationSec;
+  const fadeSamples = Math.floor(sampleRate * 0.08);
+  const samples = new Array(totalSamples);
+  for (let index = 0; index < totalSamples; index += 1) {
+    const t = index / sampleRate;
+    const fadeIn = index < fadeSamples ? index / fadeSamples : 1;
+    const fadeOut = totalSamples - index < fadeSamples ? (totalSamples - index) / fadeSamples : 1;
+    const envelope = Math.max(0, Math.min(fadeIn, fadeOut, 1));
+    const tone =
+      Math.sin(2 * Math.PI * 196 * t) * 0.035 +
+      Math.sin(2 * Math.PI * 392 * t) * 0.018 +
+      Math.sin(2 * Math.PI * 294 * t) * 0.012;
+    samples[index] = tone * envelope;
+  }
+
+  const outputPath = path.join(as2AudioRoot, "_global", "default.wav");
+  writePcm16MonoWav(outputPath, { sampleRate, samples });
+  return outputPath;
 }
 
 function copyDirSync(sourceDir, targetDir) {
@@ -229,9 +289,29 @@ function syncUserAudioOverrides(managedLegacyDir) {
     throw new Error(`Refusing to link user audio outside managed Legacy root: ${targetRoot}`);
   }
 
+  ensureGeneratedAs2FallbackAudio();
   ensureDirSync(sourceRoot);
   ensureDirSync(path.dirname(targetRoot));
   ensureJunction(targetRoot, sourceRoot);
+}
+
+function waitForManagedBasePhpRefresh(managedLegacyDir, previousMtimeMs = 0, timeoutMs = 8000) {
+  const basePhpPath = path.join(managedLegacyDir, "htdocs", "www.poptropica.com", "base.php");
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (fileExists(basePhpPath)) {
+      const currentMtimeMs = fs.statSync(basePhpPath).mtimeMs;
+      if (!previousMtimeMs || currentMtimeMs > previousMtimeMs) {
+        return true;
+      }
+    }
+    spawnSync("powershell", ["-NoProfile", "-NonInteractive", "-Command", "Start-Sleep -Milliseconds 250"], {
+      encoding: "utf8",
+      windowsHide: true,
+      timeout: 2000
+    });
+  }
+  return fileExists(basePhpPath);
 }
 
 function hashIfExists(filePath) {
@@ -920,6 +1000,9 @@ async function mountSourceZip(config, sourceGroup) {
   const runtimeState = readJson(paths.flashpointRuntimeStatePath, {}) || {};
   const target = ensureMountableDataPack(config, sourceGroup);
   const targetZipHash = fileExists(target.targetZipPath) ? hashFile(target.targetZipPath) : null;
+  const managedLegacyDir = path.join(paths.managedServiceRootDir, "Legacy");
+  const basePhpPath = path.join(managedLegacyDir, "htdocs", "www.poptropica.com", "base.php");
+  const basePhpMtimeBefore = fileExists(basePhpPath) ? fs.statSync(basePhpPath).mtimeMs : 0;
   const sameAsLastMount =
     runtimeState.lastMountedZip &&
     path.resolve(runtimeState.lastMountedZip) === path.resolve(target.targetZipPath) &&
@@ -947,7 +1030,8 @@ async function mountSourceZip(config, sourceGroup) {
     }
   }
 
-  syncUserAudioOverrides(path.join(paths.managedServiceRootDir, "Legacy"));
+  waitForManagedBasePhpRefresh(managedLegacyDir, basePhpMtimeBefore);
+  syncUserAudioOverrides(managedLegacyDir);
 
   writeJson(paths.flashpointRuntimeStatePath, {
     ...runtimeState,
@@ -1373,6 +1457,7 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
   const command = buildRuntimeCommand(config, sourceGroup, url, options);
   const navigatorConfig = ensureNavigatorFlashPlugin(config, sourceGroup);
   stopNavigatorProcesses();
+  syncUserAudioOverrides(path.join(paths.managedServiceRootDir, "Legacy"));
   const flashState = sourceGroup === "as2" ? ensurePoptropicaAs2FlashState({ launchUrl: url }) : null;
   cleanupNavigatorSession(config);
   sanitizeNavigatorProfile(config);

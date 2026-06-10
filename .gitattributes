@@ -1,0 +1,2 @@
+*.swf binary
+packs/zh-CN/as2/files/**/*.xml -whitespace
