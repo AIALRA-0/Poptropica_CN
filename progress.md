@@ -411,3 +411,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue batch-exporting the remaining 780 AS2 island-scene scripts and 796 sound-tag exports.
 - Treat the 24 Carrot `sceneSurplus.swf` embedded `191.mp3` as native embedded playback evidence unless runtime testing shows it fails to play; do not use it as a `showSound` replacement unless a script-level reference is found.
+
+## 2026-06-10 AS2 Full-Island Sound Batch Audit Continuation 2
+
+- Confirmed the hardened AS2 sound audit state with no lingering FFDec process chain, then ran the next hidden all-island batch with `--ensureIslandScripts=1 --ensureIslandSounds=1 --exportBatchSize=50`. The planned batch completed 50/50 script exports and 50/50 sound-tag exports with 0 failures.
+- Extended per-island AS2 sound audit summaries with script/sound exported, pending, failed, and coverage-ratio fields so future batches can identify which islands still need extraction without manually comparing the global missing lists.
+- Found and stopped stale concurrent island-scoped audit chains (`--sceneFolder=Cryptid`, queued `--sceneFolder=Wimpy` batches, and a later `--sceneFolder=Super` sound-only batch) so they would not keep competing for FFDec/Java resources or rewriting the report. They had already populated valid cache entries before termination, so the final read-only audit now reports 365/980 AS2 island scene SWFs with script exports and 356/980 with sound-tag exports.
+- Current final AS2 sound audit totals: 0 partial script exports, 0 partial sound exports, 1 cached failed script export (`islandCharlie/sceneCourtyard.swf`), 0 failed sound exports, 395 sound API calls across 133 SWFs, 148 literal calls, 247 dynamic calls, and 13 unique literal sound names. The most common literal is still `zap` with 90 calls.
+- Newly covered sound-call islands include Cryptids, Early Poptropica, and Wimpy Wonderland. AS2 entries with sound calls now include 24 Carrot, Astro Knights, Back Lot, Big Nate, Charlie and the Chocolate Factory, Counterfeit, Cryptids, Early Poptropica, Game Show, Lunar Colony, Mythology, Night Watch, Super Power, Wimpy Boardwalk, and Wimpy Wonderland, plus one uncataloged Demo scene-folder call bucket.
+- Found a second AS2 SWF with embedded timeline/tag audio: Cryptids `scenePROutcrop.swf` exported `1_boom.mp3` (2,496 bytes, SHA-256 `3D68D19EB3B652C2D47420805E09CAD1189EA0E124B1DC602053AA28ECBC1AEF`, MP3 11.025 kHz mono, 16 kbps, 1.248 seconds) plus a zero-length 44-byte WAV wrapper. The Super sound-only cache also found duplicate embedded MP3 content in `sceneComic.swf` (`173.mp3`) and `sceneCostume.swf` (`175.mp3`), both 49,528 bytes with SHA-256 `9A2FC676EF2E7435D768A7B86AE7F4E4D96CD672CF1F50337194F6B4F4AF8E08`, plus one 44-byte WAV wrapper each. Total embedded AS2 scene sound files are now 8 across 4 SWFs: 24 Carrot `sceneSurplus.swf`, Cryptids `scenePROutcrop.swf`, Super Power `sceneComic.swf`, and Super Power `sceneCostume.swf`.
+
+## TODO AS2 Full-Island Sound Batch Audit Continuation 2
+
+- Continue batch-exporting the remaining 615 AS2 island-scene scripts and 624 sound-tag exports, keeping normal batches at modest sizes so FFDec timeout failures are isolated and cached instead of stalling the full run.
+- After script coverage is complete, rank the 13 literal AS2 sound names and the dynamic call sites by island and scene, then search local/runtime/original sources for defensible audio mappings.

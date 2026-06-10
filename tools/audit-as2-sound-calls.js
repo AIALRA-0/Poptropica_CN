@@ -453,6 +453,11 @@ function makeIslandBucket(key, entry = null) {
     launchable: Boolean(entry?.launchable),
     swfCount: 0,
     scriptExportedSwfCount: 0,
+    scriptPendingSwfCount: 0,
+    scriptFailedSwfCount: 0,
+    soundExportedSwfCount: 0,
+    soundPendingSwfCount: 0,
+    soundFailedSwfCount: 0,
     assetsWithSoundCalls: 0,
     soundCallCount: 0,
     literalSoundCallCount: 0,
@@ -493,6 +498,21 @@ function summarizeByIsland({ launchIndex, swfAssets, looseAudioEntries, callsByA
     bucket.swfCount += 1;
     if (asset.scriptExported) {
       bucket.scriptExportedSwfCount += 1;
+    }
+    if (!asset.scriptExported) {
+      bucket.scriptPendingSwfCount += 1;
+    }
+    if (asset.scriptCacheState === "failed") {
+      bucket.scriptFailedSwfCount += 1;
+    }
+    if (asset.soundExported) {
+      bucket.soundExportedSwfCount += 1;
+    }
+    if (!asset.soundExported) {
+      bucket.soundPendingSwfCount += 1;
+    }
+    if (asset.soundCacheState === "failed") {
+      bucket.soundFailedSwfCount += 1;
     }
     const assetCalls = callsByAsset.get(asset.assetId) || [];
     if (assetCalls.length > 0) {
@@ -544,6 +564,12 @@ function summarizeByIsland({ launchIndex, swfAssets, looseAudioEntries, callsByA
   return [...buckets.values(), ...folderOnlyBuckets.values()]
     .map((bucket) => ({
       ...bucket,
+      scriptExportCoverageRatio: bucket.swfCount
+        ? Number((bucket.scriptExportedSwfCount / bucket.swfCount).toFixed(6))
+        : 0,
+      soundExportCoverageRatio: bucket.swfCount
+        ? Number((bucket.soundExportedSwfCount / bucket.swfCount).toFixed(6))
+        : 0,
       literalSoundNames: bucket.literalSoundNames.sort((left, right) => left.localeCompare(right, "en"))
     }))
     .sort((left, right) => {
