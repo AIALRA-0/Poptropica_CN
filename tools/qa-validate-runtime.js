@@ -26,8 +26,11 @@ const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-se
 
 const SUPER_POWER_TARGET = {
   islandId: "super-power",
+  defaultDialogueRoom: "Costume",
+  defaultDialogueClick: { x: 0.24, y: 0.67, waitMs: 700, holdMs: 0 },
   dialogueRoi: { left: 0.25, top: 0.43, width: 0.60, height: 0.15 },
   staticSigns: {
+    costumeCounter: { left: 0.22, top: 0.62, width: 0.23, height: 0.16 },
     mainStreet: { left: 0.18, top: 0.46, width: 0.18, height: 0.18 },
     shop: { left: 0.52, top: 0.03, width: 0.39, height: 0.20 },
     comicShop: { left: 0.60, top: 0.40, width: 0.24, height: 0.14 },
@@ -38,6 +41,10 @@ const SUPER_POWER_TARGET = {
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
+}
+
+function hasArg(args, key) {
+  return Object.prototype.hasOwnProperty.call(args, key);
 }
 
 function parseRelativeCoordinate(value, fallback = null) {
@@ -809,7 +816,7 @@ function buildVerdict({ player, launch, runtimeWindow, popupAudit, captureBundle
   if (flashpointLibrarySeen) failedChecks.push("落到了 Flashpoint 游戏库，而不是 Poptropica 游戏画面");
   if (stageCoverageRatio < 0.35) failedChecks.push("游戏舞台仍然太小，没有达到可玩级放大");
   if (dialogueHexSeen) failedChecks.push("对话气泡仍然显示十六进制垃圾");
-  if (!dialogueChineseVisible) failedChecks.push("固定对话气泡里还没看到中文");
+  if (!dialogueChineseVisible) failedChecks.push("点击后的对话区域里还没看到中文");
   if (!staticSignsSkipped && !staticSignZhSeen) failedChecks.push("主街静态招牌还没出现中文");
   if (!audioSkipped && !audioActive) failedChecks.push("没有检测到真实音频活动");
   if (!mapsSkipped && !mapsClickable) failedChecks.push("Maps 点击后没有通过基本交互验证");
@@ -845,12 +852,16 @@ async function validateSuperPowerCandidate(player, args) {
 
   try {
     stopTargetProcesses();
-    if (flagEnabled(args.clearFlashState)) {
+    const explicitRoomParam = args.room || args.roomParam;
+    const useDefaultDialogueProof = !explicitRoomParam && !hasArg(args, "dialogueClickSequence");
+    const shouldClearFlashState = flagEnabled(args.clearFlashState) ||
+      (useDefaultDialogueProof && !hasArg(args, "clearFlashState"));
+    if (shouldClearFlashState) {
       clearPoptropicaFlashStateForQa();
     }
 
     const launch = await launchRuntimeForQa("as2", player, SUPER_POWER_TARGET.islandId, {
-      roomParam: args.room || args.roomParam,
+      roomParam: explicitRoomParam || SUPER_POWER_TARGET.defaultDialogueRoom,
       islandParam: args.islandParam,
       startupPath: args.startupPath,
       startX: args.startX || args.xPos,
@@ -910,7 +921,12 @@ async function validateSuperPowerCandidate(player, args) {
     }
 
     const captureBundle = await captureStageArtifacts(qaDir, reportStem, runtimeWindow);
-    const dialogueClickSequence = parseClickSequence(args, "dialogueClick");
+    const parsedDialogueClickSequence = parseClickSequence(args, "dialogueClick");
+    const dialogueClickSequence = parsedDialogueClickSequence.length
+      ? parsedDialogueClickSequence
+      : useDefaultDialogueProof
+        ? [SUPER_POWER_TARGET.defaultDialogueClick]
+        : [];
     const dialogueClicks = [];
     let activeRuntimeWindow = captureBundle.runtimeWindow || runtimeWindow;
     let dialogueCaptureBundle = captureBundle;

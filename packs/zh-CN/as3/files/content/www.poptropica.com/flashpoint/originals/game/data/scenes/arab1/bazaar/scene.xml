@@ -1,0 +1,49 @@
+<scene>
+	<sceneType>短主线</sceneType>
+	<cameraLimits>
+		<left>0</left>
+		<top>0</top>
+		<right>3640</right>
+		<bottom>1620</bottom>
+	</cameraLimits>
+	<bounds>
+		<left>-100</left>
+		<top>0</top>
+		<right>3750</right>
+		<bottom>1550</bottom>
+	</bounds>
+	<data>dialog.xml,doors.xml,npcs.xml,sounds.xml,hits.xml</data>
+	<absoluteFilePaths>scenes/arab1/shared/dialog.xml</absoluteFilePaths>
+	<assets></assets>
+	<layers>
+		<layer>
+			<asset>backdrop.swf</asset>
+			<rate>.75</rate>
+		</layer>
+		<layer>
+			<condition type="platform">mobile</condition>
+			<asset>background.swf</asset>
+			<rate>1</rate>
+		</layer>
+		<layer>
+			<condition type="platform">desktop</condition>
+			<asset>background_live.swf</asset>
+			<rate>1</rate>
+		</layer>
+		<layer hit="true">
+			<asset>interactive.swf</asset>
+			<rate>1</rate>
+		</layer>
+		<layer>
+			<asset>foreground.swf</asset>
+			<rate>1</rate>
+		</layer>
+	</layers>
+	<player>
+		<defaultPosition>
+			<x>3400</x>
+			<y>1550</y>
+		</defaultPosition>
+		<defaultDirection>left</defaultDirection>
+	</player>
+</scene>

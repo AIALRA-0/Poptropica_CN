@@ -27,6 +27,7 @@
     "patch:pack": "node tools/patch-pack.js",
     "rebuild:runtime-zip": "node tools/rebuild-runtime-zip.js",
     "rebuild:pack": "node tools/rebuild-pack.js",
+    "verify:pack-inputs": "node tools/verify-pack-runtime-inputs.js",
     "as3:full-localize": "node tools/as3-full-localize.js",
     "qa:window-audit": "node tools/window-audit.js",
     "qa:capture": "node tools/qa-capture.js",

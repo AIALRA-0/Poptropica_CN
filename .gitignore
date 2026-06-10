@@ -13,3 +13,13 @@ packs/zh-CN/as2/*
 packs/zh-CN/as3/*
 !packs/zh-CN/as2/.gitkeep
 !packs/zh-CN/as3/.gitkeep
+!packs/zh-CN/as2/manifest.json
+!packs/zh-CN/as2/reports/
+!packs/zh-CN/as2/reports/**
+!packs/zh-CN/as2/files/
+!packs/zh-CN/as2/files/**
+!packs/zh-CN/as2/swf/
+!packs/zh-CN/as2/swf/**
+!packs/zh-CN/as3/manifest.json
+!packs/zh-CN/as3/files/
+!packs/zh-CN/as3/files/**

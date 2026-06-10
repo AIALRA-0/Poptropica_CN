@@ -716,6 +716,44 @@ function shouldIncludeRuntimeFileOverride(entryName) {
   return !SKIP_RUNTIME_FILE_PATTERNS.some((pattern) => pattern.test(entryName));
 }
 
+function collectRuntimeReplacementsForSourceGroup(sourceGroup, options = {}) {
+  const packPaths = getPackPaths(sourceGroup);
+  const includeSwfRuntimeOverrides = options.includeSwfRuntimeOverrides ?? (
+    sourceGroup === "as2" || process.env.POPTROPICA_ENABLE_SWF_RUNTIME_OVERRIDES === "1"
+  );
+  const replacements = [];
+
+  if (fileExists(packPaths.filesDir)) {
+    for (const filePath of listFilesRecursive(packPaths.filesDir)) {
+      const entryName = path.relative(packPaths.filesDir, filePath).replace(/\\/gu, "/");
+      if (!shouldIncludeRuntimeFileOverride(entryName)) {
+        continue;
+      }
+      replacements.push({
+        type: "file",
+        entryName,
+        sourceFilePath: filePath
+      });
+    }
+  }
+
+  if (fileExists(packPaths.swfDir)) {
+    for (const filePath of listFilesRecursive(packPaths.swfDir)) {
+      const entryName = path.relative(packPaths.swfDir, filePath).replace(/\\/gu, "/");
+      if (!shouldIncludeRuntimeSwfOverride(entryName, includeSwfRuntimeOverrides)) {
+        continue;
+      }
+      replacements.push({
+        type: "swf",
+        entryName,
+        sourceFilePath: filePath
+      });
+    }
+  }
+
+  return replacements;
+}
+
 function patchRuntimeRenderMode(workingDir) {
   const runtimeRoot = path.join(workingDir, "content", "www.poptropica.com");
   if (!fileExists(runtimeRoot)) {
@@ -4769,33 +4807,7 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
   const packPaths = getPackPaths(sourceGroup);
   const sevenZip = findSevenZip(config);
   const includeSwfRuntimeOverrides = sourceGroup === "as2" || process.env.POPTROPICA_ENABLE_SWF_RUNTIME_OVERRIDES === "1";
-  const replacements = [];
-
-  if (fileExists(packPaths.filesDir)) {
-    for (const filePath of listFilesRecursive(packPaths.filesDir)) {
-      const entryName = path.relative(packPaths.filesDir, filePath).replace(/\\/gu, "/");
-      if (!shouldIncludeRuntimeFileOverride(entryName)) {
-        continue;
-      }
-      replacements.push({
-        entryName,
-        sourceFilePath: filePath
-      });
-    }
-  }
-
-  if (fileExists(packPaths.swfDir)) {
-    for (const filePath of listFilesRecursive(packPaths.swfDir)) {
-      const entryName = path.relative(packPaths.swfDir, filePath).replace(/\\/gu, "/");
-      if (!shouldIncludeRuntimeSwfOverride(entryName, includeSwfRuntimeOverrides)) {
-        continue;
-      }
-      replacements.push({
-        entryName,
-        sourceFilePath: filePath
-      });
-    }
-  }
+  const replacements = collectRuntimeReplacementsForSourceGroup(sourceGroup, { includeSwfRuntimeOverrides });
 
   if (replacements.length === 0) {
     manifest.runtimeZip = {
@@ -5180,5 +5192,6 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
 
 module.exports = {
   buildPackForSourceGroup,
-  buildRuntimeZipForSourceGroup
+  buildRuntimeZipForSourceGroup,
+  collectRuntimeReplacementsForSourceGroup
 };
