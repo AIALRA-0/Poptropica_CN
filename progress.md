@@ -390,3 +390,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue running `npm run audit:as2-sound-calls -- --ensureIslandScripts=1 --ensureIslandSounds=1 --exportBatchSize=50` until all 980 AS2 island scene SWFs have script and sound-tag coverage.
 - Once the full AS2 script corpus is covered, rank literal/dynamic `showSound` names and search local/Wayback/original sources for defensible original AS2 sound mappings instead of relying on `_global/default.wav`.
+
+## 2026-06-10 AS2 Full-Island Sound Batch Audit Continuation
+
+- Ran the next AS2 all-island batch with `--ensureIslandScripts=1 --ensureIslandSounds=1 --exportBatchSize=100`. Script coverage increased from 100/980 to 200/980 island scene SWFs, and sound-tag export coverage increased from 84/980 to 184/980. Both script and sound exports succeeded 100/100 with 0 failures.
+- The expanded script corpus now finds 285 sound API calls across 94 SWFs, with 107 literal calls, 178 dynamic calls, and 13 unique literal sound names. Newly covered calls include large Big Nate and Wimpy Boardwalk clusters; the most frequent literal sound is now `zap`.
+- First embedded AS2 scene audio was found: 24 Carrot `sceneSurplus.swf` exported 2 sound files through FFDec, including `191.mp3` (49,528 bytes, SHA-256 `9A2FC676EF2E7435D768A7B86AE7F4E4D96CD672CF1F50337194F6B4F4AF8E08`, MP3 44.1 kHz stereo, 96 kbps, 4.127 seconds) and a zero-length WAV wrapper. The scene's exported scripts do not contain explicit `showSound` / `attachSound` / `loadSound` calls, so this is likely native timeline/tag audio rather than AS2 user-audio fallback.
+
+## TODO AS2 Full-Island Sound Batch Audit Continuation
+
+- Continue batch-exporting the remaining 780 AS2 island-scene scripts and 796 sound-tag exports.
+- Treat the 24 Carrot `sceneSurplus.swf` embedded `191.mp3` as native embedded playback evidence unless runtime testing shows it fails to play; do not use it as a `showSound` replacement unless a script-level reference is found.
