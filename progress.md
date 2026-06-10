@@ -575,6 +575,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Treat raw SWF string candidates as triage hints only. Promote a candidate to an inferred or seeded sound only after finding function-local, callsite, comparison, assignment, embedded-audio, or original-source evidence.
 - On next resume, run `npm run verify:pack-inputs` and `npm run qa:as2-sound-bridge` again if runtime or seed files changed; this pause only changed the audit/reporting tool.
 
+## 2026-06-10 AS2 Launch Smoke Matrix
+
+- Added `tools/qa-as2-launch-smoke.js` and npm script `qa:as2-launch-smoke`. The tool mounts the AS2 runtime and verifies every launchable AS2 catalog entry through the local Flashpoint proxy without starting Navigator.
+- The AS2 launch smoke checks each island's generated `base.php` launch URL for stable HTML/embed markers, matching `room`/`island`/`startup_path` input JSON, viewport/resize handling, `allowScriptAccess="always"`, `sceneAudioOverrides`, `_global/default`, `_sounds/*`, and `flashpointPlayAs2Sound`.
+- It also fetches the resolved `scenes/island*/scene*.swf` URL for each island and verifies HTTP 200, non-trivial bytes, and a valid SWF signature (`FWS`, `CWS`, or `ZWS`).
+- Full run passed with no game window: `npm run qa:as2-launch-smoke` tested 34/34 AS2 launchable entries, passed 34, failed 0, with 0 base failures, 0 scene failures, 0 audio-bridge failures, and 0 resize failures. Latest report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781097530651.json`.
+- Extended the AS2 sound-call audit with same-DefineSprite literal-call hints for unresolved dynamic sounds. Current audit reports 4 assets, 8 same-symbol sites, 15 unresolved dynamic calls, and 8 candidate rows; these are advisory only (`usedForInference: false`) and not runtime mappings.
+- Validation passed: `node --check tools/qa-as2-launch-smoke.js`, `node --check tools/audit-as2-sound-calls.js`, `npm run audit:as2-sound-calls`, `npm run qa:as2-launch-smoke -- --limit=2`, full `npm run qa:as2-launch-smoke`, `npm run qa:as2-sound-bridge`, `npm run verify:pack-inputs`, and `git diff --check`.
+
+## TODO AS2 Launch Smoke Matrix
+
+- This launch smoke proves AS2 local HTTP/base/scene/audio-bridge/resize serviceability, not visual gameplay. Follow up with a smaller Navigator-backed AS2 visual smoke matrix for representative islands once window interference can be controlled with locks and per-island artifact directories.
+
 ## 2026-06-10 Shutdown Pause Checkpoint
 
 - Paused for machine shutdown with active WIP still in progress. Current branch was `main` tracking `origin/main`.
