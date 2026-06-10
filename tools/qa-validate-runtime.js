@@ -52,7 +52,7 @@ function parseClickSequence(args, prefix) {
   const rawSequence = args[`${prefix}Sequence`];
   if (rawSequence) {
     return String(rawSequence).split(";").map((step) => {
-      const [rawX, rawY, rawWaitMs] = step.split(",");
+      const [rawX, rawY, rawWaitMs, rawHoldMs] = step.split(",");
       const x = parseRelativeCoordinate(rawX);
       const y = parseRelativeCoordinate(rawY);
       if (x === null || y === null) {
@@ -61,7 +61,8 @@ function parseClickSequence(args, prefix) {
       return {
         x,
         y,
-        waitMs: Number(rawWaitMs || args[`${prefix}WaitMs`] || 1800)
+        waitMs: Number(rawWaitMs || args[`${prefix}WaitMs`] || 1800),
+        holdMs: Number(rawHoldMs || args[`${prefix}HoldMs`] || 0)
       };
     }).filter(Boolean);
   }
@@ -74,7 +75,8 @@ function parseClickSequence(args, prefix) {
   return [{
     x,
     y,
-    waitMs: Number(args[`${prefix}WaitMs`] || 1800)
+    waitMs: Number(args[`${prefix}WaitMs`] || 1800),
+    holdMs: Number(args[`${prefix}HoldMs`] || 0)
   }];
 }
 
@@ -330,6 +332,11 @@ function reacquireRuntimeWindow(runtimeWindow, outputPath, timeoutMs = 10000) {
   }
 }
 
+function runtimeWindowPidArgs(runtimeWindow) {
+  const pid = runtimeWindow?.searched?.pid || runtimeWindow?.match?.pid || null;
+  return pid ? ["--pid", String(pid)] : [];
+}
+
 function buildIslandVerification(candidateReport, sourceGroup) {
   const verdict = candidateReport.verdict;
   const failedChecks = verdict.failedChecks || [];
@@ -437,7 +444,10 @@ async function launchRuntimeForQa(sourceGroup, player, islandId, options = {}) {
 
   const runtime = spawnManagedRuntime(config, sourceGroup, launchUrl, {
     detach: true,
-    playerKey: player.playerKey
+    playerKey: player.playerKey,
+    as2StartX: options.startX,
+    as2StartY: options.startY,
+    forceAs2CharState: Boolean(options.forceAs2CharState)
   });
 
   return {
@@ -452,7 +462,7 @@ async function launchRuntimeForQa(sourceGroup, player, islandId, options = {}) {
   };
 }
 
-function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relativePoint, label, waitMs = 1800) {
+function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relativePoint, label, waitMs = 1800, holdMs = 0) {
   const stageRect = stage?.stageRect;
   if (!stageRect) {
     return {
@@ -486,6 +496,9 @@ function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relat
       "--output",
       clickMetaPath
     ];
+    if (holdMs > 0) {
+      clickArgs.push("--hold-ms", String(Math.max(0, Number(holdMs) || 0)));
+    }
     if (activePid) {
       clickArgs.push("--pid", String(activePid));
     }
@@ -507,6 +520,7 @@ function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relat
       postClickWindow.searched.processNames.join(","),
       "--title-contains",
       postClickWindow.searched.titleContains.join(","),
+      ...runtimeWindowPidArgs(postClickWindow),
       "--output",
       postClickScreenshotPath,
       "--maximize",
@@ -561,6 +575,7 @@ async function captureStageArtifacts(qaDir, reportStem, runtimeWindow) {
     activeRuntimeWindow.searched.processNames.join(","),
     "--title-contains",
     activeRuntimeWindow.searched.titleContains.join(","),
+    ...runtimeWindowPidArgs(activeRuntimeWindow),
     "--output",
     screenshotPath,
     "--metadata-output",
@@ -709,6 +724,7 @@ function clickMaps(qaDir, reportStem, runtimeWindow, capture, stage) {
       postMapWindow.searched.processNames.join(","),
       "--title-contains",
       postMapWindow.searched.titleContains.join(","),
+      ...runtimeWindowPidArgs(postMapWindow),
       "--output",
       postMapScreenshotPath,
       "--maximize",
@@ -836,7 +852,10 @@ async function validateSuperPowerCandidate(player, args) {
     const launch = await launchRuntimeForQa("as2", player, SUPER_POWER_TARGET.islandId, {
       roomParam: args.room || args.roomParam,
       islandParam: args.islandParam,
-      startupPath: args.startupPath
+      startupPath: args.startupPath,
+      startX: args.startX || args.xPos,
+      startY: args.startY || args.yPos,
+      forceAs2CharState: Boolean(args.startX || args.xPos || args.startY || args.yPos || flagEnabled(args.forceAs2CharState))
     });
     await new Promise((resolve) => setTimeout(resolve, Number(args.afterLaunchWaitMs || 9000)));
 
@@ -859,9 +878,36 @@ async function validateSuperPowerCandidate(player, args) {
       "--output",
       runtimeWindowPath
     );
-    const runtimeWindow = runPythonQa(waitArgs, {
-      timeoutMs: Number(args.windowTimeoutMs || 40000) + 5000
-    });
+    let runtimeWindow;
+    try {
+      runtimeWindow = runPythonQa(waitArgs, {
+        timeoutMs: Number(args.windowTimeoutMs || 40000) + 5000
+      });
+    } catch (error) {
+      if (!player.titleContains || !launch.runtime.pid) {
+        throw error;
+      }
+      const pidOnlyWindowPath = runtimeWindowPath.replace(/\.json$/i, "-pid-only.json");
+      runtimeWindow = runPythonQa([
+        "wait-window",
+        "--process-names",
+        player.processNames,
+        "--pid",
+        String(launch.runtime.pid),
+        "--timeout-ms",
+        String(Math.min(Number(args.windowTimeoutMs || 40000), 15000)),
+        "--poll-ms",
+        String(args.windowPollMs || 250),
+        "--output",
+        pidOnlyWindowPath
+      ], {
+        timeoutMs: Math.min(Number(args.windowTimeoutMs || 40000), 15000) + 5000
+      });
+      runtimeWindow.titleFallback = {
+        reason: "strict-title-wait-failed",
+        originalError: String(error.message || error)
+      };
+    }
 
     const captureBundle = await captureStageArtifacts(qaDir, reportStem, runtimeWindow);
     const dialogueClickSequence = parseClickSequence(args, "dialogueClick");
@@ -878,7 +924,8 @@ async function validateSuperPowerCandidate(player, args) {
         dialogueCaptureBundle.stage,
         { x: step.x, y: step.y },
         `dialogue-trigger-${index + 1}`,
-        step.waitMs
+        step.waitMs,
+        step.holdMs
       );
       dialogueClicks.push(dialogueClick);
       if (dialogueClick?.ok) {

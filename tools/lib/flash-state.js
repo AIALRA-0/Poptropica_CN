@@ -203,7 +203,14 @@ function readAs2CharGender(charSolPath) {
   return gender === 0 || gender === 1 ? gender : null;
 }
 
-function buildDefaultAs2Char(room, island) {
+function parseFiniteNumber(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function buildDefaultAs2Char(room, island, options = {}) {
+  const xPos = parseFiniteNumber(options.xPos, 600);
+  const yPos = parseFiniteNumber(options.yPos, 430);
   return {
     gender: 1,
     skinColor: 16776160,
@@ -227,21 +234,27 @@ function buildDefaultAs2Char(room, island) {
     firstAs3Load: true,
     last_island: island,
     last_room: room,
-    [`${room}xPos`]: 600,
-    [`${room}yPos`]: 430,
+    lastIsland: island,
+    lastRoom: room,
+    xPos,
+    yPos,
+    [`${room}xPos`]: xPos,
+    [`${room}yPos`]: yPos,
     dir: -1,
     login: "default2",
     completedEvents: {}
   };
 }
 
-function buildAs2TransitToken(room, island) {
+function buildAs2TransitToken(room, island, options = {}) {
+  const hasX = Number.isFinite(Number(options.xPos));
+  const hasY = Number.isFinite(Number(options.yPos));
   return {
     nextScene: room,
     nextIsland: island,
     prevDir: "left",
-    nextX: null,
-    nextY: null,
+    nextX: hasX ? Number(options.xPos) : null,
+    nextY: hasY ? Number(options.yPos) : null,
     dbid: null,
     pass_hash: null,
     look: "g1,16776160,7340000,0,0,1,empty,astrofarmer,4,26,lc_slayton,1,,empty,,none:"
@@ -278,14 +291,15 @@ function ensurePoptropicaAs2FlashState(options = {}) {
   const backupPath = path.join(domainDir, "Backup.sol");
   const genderBefore = readAs2CharGender(charPath);
   let charAction = "preserved";
+  const forceDefaultChar = Boolean(options.forceDefaultChar);
 
-  if (genderBefore === null) {
+  if (forceDefaultChar || genderBefore === null) {
     if (options.useTemplateChar && fileExists(AS2_CHAR_TEMPLATE_PATH)) {
       fs.copyFileSync(AS2_CHAR_TEMPLATE_PATH, charPath);
       charAction = "restored-template";
     } else {
-      fs.writeFileSync(charPath, buildSol("Char", buildDefaultAs2Char(target.room, target.island)));
-      charAction = "generated-target-default";
+      fs.writeFileSync(charPath, buildSol("Char", buildDefaultAs2Char(target.room, target.island, options)));
+      charAction = forceDefaultChar && genderBefore !== null ? "generated-target-forced" : "generated-target-default";
     }
   }
 
@@ -293,7 +307,7 @@ function ensurePoptropicaAs2FlashState(options = {}) {
     fs.copyFileSync(AS2_BACKUP_TEMPLATE_PATH, backupPath);
   }
 
-  fs.writeFileSync(transitTokenPath, buildSol("TransitToken", buildAs2TransitToken(target.room, target.island)));
+  fs.writeFileSync(transitTokenPath, buildSol("TransitToken", buildAs2TransitToken(target.room, target.island, options)));
   return {
     ok: true,
     reason: "as2-flash-state-prepared",

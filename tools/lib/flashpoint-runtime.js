@@ -1458,7 +1458,12 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
   const navigatorConfig = ensureNavigatorFlashPlugin(config, sourceGroup);
   stopNavigatorProcesses();
   syncUserAudioOverrides(path.join(paths.managedServiceRootDir, "Legacy"));
-  const flashState = sourceGroup === "as2" ? ensurePoptropicaAs2FlashState({ launchUrl: url }) : null;
+  const flashState = sourceGroup === "as2" ? ensurePoptropicaAs2FlashState({
+    launchUrl: url,
+    xPos: options.as2StartX,
+    yPos: options.as2StartY,
+    forceDefaultChar: Boolean(options.forceAs2CharState)
+  }) : null;
   cleanupNavigatorSession(config);
   sanitizeNavigatorProfile(config);
   prepareNavigatorWindowGeometry(config, command);

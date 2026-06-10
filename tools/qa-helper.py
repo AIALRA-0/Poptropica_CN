@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import psutil
 import soundcard as sc
+import win32api
 import win32con
 import win32gui
 import win32process
@@ -636,7 +637,15 @@ def command_click_window(args):
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     hwnd = int(row["handle"])
     point = win32gui.ClientToScreen(hwnd, (int(args.x), int(args.y)))
-    mouse.click(coords=point)
+    hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
+    if hold_ms > 0:
+        win32api.SetCursorPos(point)
+        time.sleep(0.08)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        time.sleep(hold_ms / 1000.0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    else:
+        mouse.click(coords=point)
     payload = {
         "ok": True,
         "generatedAt": now_iso(),
@@ -646,6 +655,7 @@ def command_click_window(args):
             "y": point[1],
             "relativeX": int(args.x),
             "relativeY": int(args.y),
+            "holdMs": hold_ms,
         },
     }
     write_json_if_needed(payload, args.output)
@@ -801,6 +811,7 @@ def main():
     click_parser.add_argument("--process-names", default="")
     click_parser.add_argument("--title-contains", default="")
     click_parser.add_argument("--pid", type=int)
+    click_parser.add_argument("--hold-ms", type=int, default=0)
     click_parser.set_defaults(func=command_click_window)
 
     ocr_parser = subparsers.add_parser("ocr-image")
