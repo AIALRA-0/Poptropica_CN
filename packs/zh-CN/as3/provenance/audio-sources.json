@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "entryName": "content/www.poptropica.com/game/sound/music/Train_Finale_B.mp3",
+      "source": "Internet Archive Wayback Machine original Poptropica URL snapshot",
+      "originalUrl": "https://www.poptropica.com/game/sound/music/Train_Finale_B.mp3",
+      "waybackRawUrl": "http://web.archive.org/web/20200130214312id_/https://www.poptropica.com/game/sound/music/Train_Finale_B.mp3",
+      "waybackTimestamp": "20200130214312",
+      "length": 958394,
+      "sha256": "c91c69d2ef84959995eeb8af589ace722959320371cd76f06494fd04417bb485",
+      "addedFor": "AS3 sounds.xml missing-reference repair"
+    },
+    {
+      "entryName": "content/www.poptropica.com/game/sound/music/kaya_forest.mp3",
+      "source": "Internet Archive Wayback Machine original Poptropica URL snapshot",
+      "originalUrl": "https://www.poptropica.com/game/sound/music/kaya_forest.mp3",
+      "waybackRawUrl": "http://web.archive.org/web/20200201192200id_/https://www.poptropica.com/game/sound/music/kaya_forest.mp3",
+      "waybackTimestamp": "20200201192200",
+      "length": 948803,
+      "sha256": "9c9b3812ef3ea5cba30bc10ef13b4970064562ef3c57b20506f0790eac9d738b",
+      "addedFor": "AS3 sounds.xml missing-reference repair"
+    }
+  ]
+}

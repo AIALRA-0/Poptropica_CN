@@ -13,16 +13,6 @@ const SOUND_DIR_BY_TYPE = {
   music: "music"
 };
 const KNOWN_UNRESOLVED_NOTES = new Map([
-  ["carrot/computer/music/train_finale_b.mp3", {
-    note: "Public Poptropica music listings mention Train Finale B, but no repository-safe original file is present in the local AS3 archive.",
-    sourceLeads: [
-      "https://poptropi.ca/pop-plus/music/",
-      "https://btspoptropica.weebly.com/music.html"
-    ]
-  }],
-  ["ghd/mushroom2/music/kaya_forest.mp3", {
-    note: "Scene-specific Galactic Hot Dogs music is referenced, but no exact local archive file or repository-safe source has been found."
-  }],
   ["mocktropica/mainstreet/effects/waterfall_02_l.mp3", {
     note: "The local AS3 archive has waterfall.mp3 and ambient/waterfall_01_loop.mp3, but neither is an exact same-name/same-role replacement for this effects reference."
   }],

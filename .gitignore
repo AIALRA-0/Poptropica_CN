@@ -1,6 +1,7 @@
 node_modules/
 AS2.zip
 AS3.zip
+hs_err_pid*.log
 tools/__pycache__/
 tools/native/**/__pycache__/
 tools/native/php-cgi-wrapper/bin/
@@ -23,3 +24,5 @@ packs/zh-CN/as3/*
 !packs/zh-CN/as3/manifest.json
 !packs/zh-CN/as3/files/
 !packs/zh-CN/as3/files/**
+!packs/zh-CN/as3/provenance/
+!packs/zh-CN/as3/provenance/**
