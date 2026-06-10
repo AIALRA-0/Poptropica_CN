@@ -371,10 +371,12 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Added `--ensureLaunchSounds=1` to export embedded sound tags for those same 34 AS2 entry scenes. FFDec exported successfully for all 34, but `launchSceneEmbeddedSoundFileCount` is `0`, confirming these entry scenes do not carry embedded audio files.
 - AS2 entry-scene sound calls currently appear in Back Lot, Big Nate, Game Show, Lunar Colony, Mythology, Night Watch, and Super Power; loose media appears in Back Lot, Night Watch, and Vampire.
 - Current loose AS2 audio inventory remains small: 9 loose audio/video files total, covering Back Lot final movies, Night Watch elevator music, Vampire rain/thunder, and two shared videos. This supports treating AS2 audio as a separate runtime/playback problem rather than an AS3-style missing `sounds.xml` asset problem.
+- Extended the AS2 audit toward full island-scene coverage with cached FFDec export markers, export batching, and timeout/error markers. Current partial full-island baseline covers 980 AS2 island-scene SWFs: 210 have script exports, 190 have sound exports, 94 SWFs contain sound API calls, and one heavy script export (`islandCharlie/sceneCourtyard.swf`) is cached as a 120s FFDec timeout while its sound export succeeds.
 
 ## TODO AS2 Sound Surface Audit
 
 - Expand AS2 sound-call and embedded-sound export coverage beyond launch scenes to all island scene SWFs in serialized batches, then compare runtime audio output against scenes known to have calls or loose audio.
+- Revisit `islandCharlie/sceneCourtyard.swf` with a longer isolated FFDec timeout or alternate decompiler settings; keep the failure marker so normal batches do not repeatedly hang on it.
 - Investigate whether AS2 `showSound` should map to original named files, the generated `_global/default.wav` fallback, or recoverable Flashpoint/user-audio assets; do not treat fallback audio as proof that original AS2 effects are restored.
 
 ## 2026-06-10 AS3 GHD Arena Skin Queue Fix

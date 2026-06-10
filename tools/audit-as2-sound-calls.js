@@ -22,7 +22,10 @@ const STRING_LITERAL_RE = /^\s*(["'])((?:\\.|(?!\1)[^\\])*)\1/u;
 const AS_EXTENSION_SET = new Set([".as"]);
 const EXPORTED_SOUND_EXTENSION_SET = new Set([".flv", ".mp3", ".ogg", ".wav"]);
 const SCRIPT_EXPORT_MARKER = ".ffdec-script-export.json";
+const SCRIPT_EXPORT_ERROR_MARKER = ".ffdec-script-export-error.json";
 const SOUND_EXPORT_MARKER = ".ffdec-sound-export.json";
+const SOUND_EXPORT_ERROR_MARKER = ".ffdec-sound-export-error.json";
+const FFDEC_EXPORT_TIMEOUT_MS = Number.parseInt(process.env.POPTROPICA_FFDEC_EXPORT_TIMEOUT_MS || "120000", 10);
 
 function parseArgs(argv) {
   const args = {};
@@ -109,6 +112,18 @@ function writeScriptExportMarker(outputDir, payload) {
   );
 }
 
+function writeScriptExportErrorMarker(outputDir, payload) {
+  ensureDirSync(outputDir);
+  fs.writeFileSync(
+    path.join(outputDir, SCRIPT_EXPORT_ERROR_MARKER),
+    `${JSON.stringify({
+      failedAt: new Date().toISOString(),
+      ...payload
+    }, null, 2)}\n`,
+    "utf8"
+  );
+}
+
 function exportSwfScripts(swfPath, outputDir, ffdecCli) {
   const tempDir = path.join(
     paths.tempDir,
@@ -120,13 +135,24 @@ function exportSwfScripts(swfPath, outputDir, ffdecCli) {
   const result = spawnSync(ffdecCli, ["-cli", "-export", "script", tempDir, swfPath], {
     encoding: "utf8",
     windowsHide: true,
-    maxBuffer: 1024 * 1024 * 16
+    maxBuffer: 1024 * 1024 * 16,
+    timeout: FFDEC_EXPORT_TIMEOUT_MS
   });
   if (result.status !== 0) {
     fs.rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 150 });
+    const error = (result.stderr || result.stdout || result.error?.message || "FFDec script export failed").trim();
+    const timedOut = result.error?.code === "ETIMEDOUT" || result.signal === "SIGTERM";
+    writeScriptExportErrorMarker(outputDir, {
+      swfPath,
+      timedOut,
+      timeoutMs: FFDEC_EXPORT_TIMEOUT_MS,
+      error
+    });
     return {
       ok: false,
-      error: (result.stderr || result.stdout || "FFDec script export failed").trim()
+      outputDir,
+      timedOut,
+      error
     };
   }
 
@@ -189,6 +215,18 @@ function writeSoundExportMarker(outputDir, payload) {
   );
 }
 
+function writeSoundExportErrorMarker(outputDir, payload) {
+  ensureDirSync(outputDir);
+  fs.writeFileSync(
+    path.join(outputDir, SOUND_EXPORT_ERROR_MARKER),
+    `${JSON.stringify({
+      failedAt: new Date().toISOString(),
+      ...payload
+    }, null, 2)}\n`,
+    "utf8"
+  );
+}
+
 function exportSwfSounds(swfPath, outputDir, ffdecCli) {
   const tempDir = path.join(
     paths.tempDir,
@@ -200,13 +238,24 @@ function exportSwfSounds(swfPath, outputDir, ffdecCli) {
   const result = spawnSync(ffdecCli, ["-cli", "-export", "sound", tempDir, swfPath], {
     encoding: "utf8",
     windowsHide: true,
-    maxBuffer: 1024 * 1024 * 16
+    maxBuffer: 1024 * 1024 * 16,
+    timeout: FFDEC_EXPORT_TIMEOUT_MS
   });
   if (result.status !== 0) {
     fs.rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 150 });
+    const error = (result.stderr || result.stdout || result.error?.message || "FFDec sound export failed").trim();
+    const timedOut = result.error?.code === "ETIMEDOUT" || result.signal === "SIGTERM";
+    writeSoundExportErrorMarker(outputDir, {
+      swfPath,
+      timedOut,
+      timeoutMs: FFDEC_EXPORT_TIMEOUT_MS,
+      error
+    });
     return {
       ok: false,
-      error: (result.stderr || result.stdout || "FFDec sound export failed").trim()
+      outputDir,
+      timedOut,
+      error
     };
   }
   writeJson(path.join(tempDir, SOUND_EXPORT_MARKER), {
@@ -250,6 +299,9 @@ function exportSwfSounds(swfPath, outputDir, ffdecCli) {
 }
 
 function soundExportCacheState(soundRoot) {
+  if (fileExists(path.join(soundRoot, SOUND_EXPORT_ERROR_MARKER))) {
+    return "failed";
+  }
   if (fileExists(path.join(soundRoot, SOUND_EXPORT_MARKER))) {
     return "ready";
   }
@@ -267,6 +319,9 @@ function hasExportedScripts(scriptRoot) {
 }
 
 function scriptExportCacheState(scriptRoot) {
+  if (fileExists(path.join(scriptRoot, SCRIPT_EXPORT_ERROR_MARKER))) {
+    return "failed";
+  }
   if (hasExportedScripts(scriptRoot)) {
     return "ready";
   }
@@ -532,9 +587,16 @@ function selectExportTargets({ assets, args, kind }) {
   const limit = parsePositiveInt(args.exportBatchSize || args.batchSize, Infinity);
   const islandFilter = args.island || args.sceneFolder || args.canonicalKey || "";
   const force = flagEnabled(args.forceExport);
+  const retryFailed = flagEnabled(args.retryFailed);
   const missingOnly = (asset) => {
     if (force) {
       return true;
+    }
+    if (!retryFailed) {
+      const state = kind === "script" ? asset.scriptCacheState : asset.soundCacheState;
+      if (state === "failed") {
+        return false;
+      }
     }
     return kind === "script" ? !asset.scriptExported : !asset.soundExported;
   };
@@ -572,7 +634,7 @@ function ensureAssetScriptExports({ config, archivePath, extractedRoot, assets }
     asset.scriptRoot = exportResult.outputDir || asset.scriptRoot;
     asset.scriptCacheState = exportResult.ok
       ? (exportResult.cacheUpdated === false ? "ready_uncached" : "ready")
-      : "missing";
+      : "failed";
     results.push({
       ...exportResult,
       skipped: false,
@@ -613,7 +675,7 @@ function ensureAssetSoundExports({ config, archivePath, extractedRoot, assets })
     asset.embeddedSoundFiles = exportResult.soundFiles || [];
     asset.soundCacheState = exportResult.ok
       ? (exportResult.cacheUpdated === false ? "ready_uncached" : "ready")
-      : "missing";
+      : "failed";
     results.push({
       ...exportResult,
       skipped: false,
@@ -677,7 +739,7 @@ function ensureLaunchScriptExports({ args, config, archivePath, extractedRoot, l
     asset.scriptRoot = exportResult.outputDir || asset.scriptRoot;
     asset.scriptCacheState = exportResult.ok
       ? (exportResult.cacheUpdated === false ? "ready_uncached" : "ready")
-      : "missing";
+      : "failed";
     results.push({
       ...exportResult,
       skipped: false,
@@ -742,7 +804,7 @@ function ensureLaunchSoundExports({ args, config, archivePath, extractedRoot, la
     asset.embeddedSoundFiles = exportResult.soundFiles || [];
     asset.soundCacheState = exportResult.ok
       ? (exportResult.cacheUpdated === false ? "ready_uncached" : "ready")
-      : "missing";
+      : "failed";
     results.push({
       ...exportResult,
       skipped: false,
@@ -834,6 +896,8 @@ function main() {
   const unmappedScriptDirs = exportedScriptDirs.filter((assetId) => !knownAssetIds.has(assetId));
   const partialScriptExports = swfAssets.filter((asset) => asset.scriptCacheState === "empty_or_partial");
   const partialSoundExports = swfAssets.filter((asset) => asset.soundCacheState === "empty_or_partial");
+  const failedScriptExports = swfAssets.filter((asset) => asset.scriptCacheState === "failed");
+  const failedSoundExports = swfAssets.filter((asset) => asset.soundCacheState === "failed");
   const calls = [];
   const callsByAsset = new Map();
 
@@ -866,18 +930,22 @@ function main() {
       islandSceneSwfCount: islandSceneAssets.length,
       scriptExportedSwfCount: swfAssets.filter((asset) => asset.scriptExported).length,
       partialScriptExportSwfCount: partialScriptExports.length,
+      failedScriptExportSwfCount: failedScriptExports.length,
       soundExportedSwfCount: swfAssets.filter((asset) => asset.soundExported).length,
       partialSoundExportSwfCount: partialSoundExports.length,
+      failedSoundExportSwfCount: failedSoundExports.length,
       scriptExportCoverageRatio: swfEntries.length
         ? Number((swfAssets.filter((asset) => asset.scriptExported).length / swfEntries.length).toFixed(6))
         : 0,
       islandSceneScriptExportedSwfCount: islandSceneAssets.filter((asset) => asset.scriptExported).length,
       islandSceneScriptExportPendingCount: islandSceneAssets.filter((asset) => !asset.scriptExported).length,
+      islandSceneScriptExportFailedCachedCount: islandSceneAssets.filter((asset) => asset.scriptCacheState === "failed").length,
       islandSceneScriptExportCoverageRatio: islandSceneAssets.length
         ? Number((islandSceneAssets.filter((asset) => asset.scriptExported).length / islandSceneAssets.length).toFixed(6))
         : 0,
       islandSceneSoundExportedSwfCount: islandSceneAssets.filter((asset) => asset.soundExported).length,
       islandSceneSoundExportPendingCount: islandSceneAssets.filter((asset) => !asset.soundExported).length,
+      islandSceneSoundExportFailedCachedCount: islandSceneAssets.filter((asset) => asset.soundCacheState === "failed").length,
       islandSceneSoundExportCoverageRatio: islandSceneAssets.length
         ? Number((islandSceneAssets.filter((asset) => asset.soundExported).length / islandSceneAssets.length).toFixed(6))
         : 0,
@@ -920,6 +988,8 @@ function main() {
       unmappedScriptDirs: unmappedScriptDirs.slice(0, 40),
       partialScriptExports: partialScriptExports.slice(0, 40).map((asset) => asset.assetPath),
       partialSoundExports: partialSoundExports.slice(0, 40).map((asset) => asset.assetPath),
+      failedScriptExports: failedScriptExports.slice(0, 40).map((asset) => asset.assetPath),
+      failedSoundExports: failedSoundExports.slice(0, 40).map((asset) => asset.assetPath),
       missingScriptExports: missingScriptExports.slice(0, 40).map((asset) => asset.assetPath),
       missingIslandSceneScriptExports: islandSceneAssets.filter((asset) => !asset.scriptExported).slice(0, 40).map((asset) => asset.assetPath),
       missingIslandSceneSoundExports: islandSceneAssets.filter((asset) => !asset.soundExported).slice(0, 40).map((asset) => asset.assetPath),
