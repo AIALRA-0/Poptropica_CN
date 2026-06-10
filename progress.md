@@ -545,3 +545,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS2 Dynamic Property Comparison Audit
 
 - Continue reducing the remaining `comicSound`/`sound` unresolved set only where a script-local literal, property assignment, comparison, or callsite can prove the candidate. Do not map ambiguous runtime-only parameters directly to audio.
+
+## 2026-06-10 AS2 Dynamic Sound Site Reporting
+
+- Re-ran `npm run audit:as2-sound-calls` after the AS2 `comicSound` comparison inference. The read-only audit still covers 978/980 AS2 island scene script exports and 980/980 sound exports, with 616 total sound API calls.
+- Dynamic AS2 sound inference resolves 230/373 dynamic calls, leaving 143 unresolved. The dominant inferred dynamic name is `zap` (199 inferred calls), backed by local script comparisons such as `_loc4_.comicSound == "zap"` before `enemyHit(..., _loc3_.comicSound)`.
+- Added dynamic function context to every dynamic `showSound` / `attachSound` / `loadSound` call in `runtime-data/qa/as2-sound-calls-audit.json`, including the nearest function name, line, and parameter list.
+- Added report rankings for `topUnresolvedDynamicFunctions`, `topUnresolvedDynamicSites`, and `topInferredDynamicSites`. Current unresolved hotspots are `sound @ knockBack` (71 calls), `comicSound @ enemyHit` (34), and `comicSound @ hitChar` (34), spread across 127 unresolved dynamic sites.
+- Searched the exported AS2 script corpus for explicit `knockBack(...)` call sites. Only 7 calls were found, mostly `none`, empty, missing, or one isolated `"ouch"` argument, so no automatic mapping was added for the 71 unresolved `knockBack(sound)` method definitions.
+- Validation passed: `node --check tools/audit-as2-sound-calls.js`, `npm run audit:as2-sound-calls`, `npm run qa:as2-sound-bridge`, `npm run verify:pack-inputs`, and `git diff --check` (LF/CRLF warnings only).
+
+## TODO AS2 Dynamic Sound Site Reporting
+
+- Use `topUnresolvedDynamicSites` to review high-count `comicSound` scenes such as SOS galley and Super Power downtown/skyscraper before adding any new sound mappings.
+- Do not globally map `knockBack(sound)` without stronger per-scene call evidence; current exported calls are too sparse and ambiguous.

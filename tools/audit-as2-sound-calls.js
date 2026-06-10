@@ -537,22 +537,45 @@ function findRecentStringAssignment(lines, variableName, lineNumber) {
   return null;
 }
 
-function findContainingFunction(lines, lineNumber, variableName) {
+function findNearestFunction(lines, lineNumber) {
   for (let index = lineNumber - 1; index >= 0; index -= 1) {
-    const match = lines[index]?.match(/\bfunction\s+([A-Za-z_$][\w$]*)\s*\(([^)]*)\)/u);
+    const line = lines[index] || "";
+    const assignedMatch = line.match(/\b([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*=\s*function\s*\(([^)]*)\)/u);
+    if (assignedMatch) {
+      return {
+        functionName: assignedMatch[1],
+        params: assignedMatch[2].split(",").map((param) => param.trim()),
+        lineNumber: index + 1,
+        functionKind: "assigned-function"
+      };
+    }
+    const match = line.match(/\bfunction\s+([A-Za-z_$][\w$]*)\s*\(([^)]*)\)/u);
     if (!match) {
       continue;
     }
     const params = match[2].split(",").map((param) => param.trim());
-    const paramIndex = params.indexOf(variableName);
+    return {
+      functionName: match[1],
+      params,
+      lineNumber: index + 1,
+      functionKind: "named-function"
+    };
+  }
+  return null;
+}
+
+function findContainingFunction(lines, lineNumber, variableName) {
+  const nearestFunction = findNearestFunction(lines, lineNumber);
+  if (nearestFunction) {
+    const paramIndex = nearestFunction.params.indexOf(variableName);
     if (paramIndex >= 0) {
       return {
-        functionName: match[1],
+        functionName: nearestFunction.functionName,
         paramIndex,
-        lineNumber: index + 1
+        lineNumber: nearestFunction.lineNumber,
+        functionKind: nearestFunction.functionKind
       };
     }
-    return null;
   }
   return null;
 }
@@ -699,6 +722,7 @@ function collectSoundCalls(scriptRoot, asset) {
     lines.forEach((line, index) => {
       for (const match of line.matchAll(SOUND_CALL_RE)) {
         const parsed = parseSoundCall(match);
+        const functionContext = parsed.dynamic ? findNearestFunction(lines, index + 1) : null;
         const inferred = parsed.dynamic
           ? inferDynamicSoundNames({
             rawFirstArg: parsed.rawFirstArg,
@@ -712,6 +736,10 @@ function collectSoundCalls(scriptRoot, asset) {
           inferredSoundNames: inferred?.candidates || [],
           dynamicInferenceType: inferred?.type || null,
           dynamicInferenceEvidence: inferred?.evidence || null,
+          dynamicFunctionName: functionContext?.functionName || null,
+          dynamicFunctionLineNumber: functionContext?.lineNumber || null,
+          dynamicFunctionKind: functionContext?.functionKind || null,
+          dynamicFunctionParams: functionContext?.params || [],
           assetId: asset.assetId,
           assetPath: asset.assetPath,
           canonicalKey: asset.canonicalKey,
@@ -896,6 +924,40 @@ function countBy(items, keyFn) {
   return [...counts.entries()]
     .map(([key, count]) => ({ key, count }))
     .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key, "en"));
+}
+
+function topDynamicCallSites(calls, { limit = 80 } = {}) {
+  const sites = new Map();
+  for (const call of calls) {
+    const functionName = call.dynamicFunctionName || "(no function)";
+    const key = [
+      call.rawFirstArg || "(empty)",
+      call.assetPath || "(unknown asset)",
+      functionName
+    ].join(" @ ");
+    const existing = sites.get(key);
+    if (existing) {
+      existing.count += 1;
+      continue;
+    }
+    sites.set(key, {
+      key,
+      count: 1,
+      rawFirstArg: call.rawFirstArg,
+      assetPath: call.assetPath,
+      canonicalKey: call.canonicalKey,
+      sceneFolder: call.sceneFolder,
+      dynamicFunctionName: call.dynamicFunctionName || null,
+      dynamicFunctionLineNumber: call.dynamicFunctionLineNumber || null,
+      dynamicFunctionKind: call.dynamicFunctionKind || null,
+      sampleScriptPath: call.scriptPath,
+      sampleLineNumber: call.lineNumber,
+      sampleLine: call.line
+    });
+  }
+  return [...sites.values()]
+    .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key, "en"))
+    .slice(0, limit);
 }
 
 function normalizeSoundNameForCount(value) {
@@ -1307,6 +1369,8 @@ function main() {
     call
   }));
   const knownSoundRows = [...literalRows, ...inferredRows];
+  const inferredDynamicSites = topDynamicCallSites(inferredDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
+  const unresolvedDynamicSites = topDynamicCallSites(unresolvedDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
   const embeddedSoundFiles = collectEmbeddedSoundFiles(islandSceneAssets);
   const embeddedSoundNameMatches = buildEmbeddedSoundNameMatches(literalCalls, embeddedSoundFiles);
   const missingScriptExports = swfAssets.filter((asset) => !asset.scriptExported);
@@ -1375,6 +1439,8 @@ function main() {
       inferredDynamicSoundCallCount: inferredDynamicCalls.length,
       unresolvedDynamicSoundCallCount: unresolvedDynamicCalls.length,
       inferredDynamicSoundCandidateCount: inferredRows.length,
+      inferredDynamicSiteCount: inferredDynamicSites.length,
+      unresolvedDynamicSiteCount: unresolvedDynamicSites.length,
       uniqueLiteralSoundNames: new Set(literalCalls.map((call) => call.soundName)).size,
       uniqueInferredDynamicSoundNames: new Set(inferredRows.map((row) => row.normalizedSoundName).filter(Boolean)).size,
       uniqueKnownSoundNames: new Set(knownSoundRows.map((row) => row.normalizedSoundName).filter(Boolean)).size,
@@ -1389,6 +1455,9 @@ function main() {
     topDynamicRawFirstArgs: countBy(dynamicCalls, (call) => call.rawFirstArg).slice(0, 40),
     topDynamicInferenceTypes: countBy(inferredDynamicCalls, (call) => call.dynamicInferenceType).slice(0, 40),
     topUnresolvedDynamicRawFirstArgs: countBy(unresolvedDynamicCalls, (call) => call.rawFirstArg).slice(0, 40),
+    topUnresolvedDynamicFunctions: countBy(unresolvedDynamicCalls, (call) => `${call.rawFirstArg} @ ${call.dynamicFunctionName || "(no function)"}`).slice(0, 80),
+    topUnresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
+    topInferredDynamicSites: inferredDynamicSites.slice(0, 80),
     topMethods: countBy(calls, (call) => call.method),
     byIsland,
     embeddedSoundFiles,
@@ -1415,13 +1484,22 @@ function main() {
         inferredSoundNames: call.inferredSoundNames,
         dynamicInferenceType: call.dynamicInferenceType,
         dynamicInferenceEvidence: call.dynamicInferenceEvidence,
+        dynamicFunctionName: call.dynamicFunctionName,
+        dynamicFunctionLineNumber: call.dynamicFunctionLineNumber,
+        dynamicFunctionKind: call.dynamicFunctionKind,
+        dynamicFunctionParams: call.dynamicFunctionParams,
         scriptPath: call.scriptPath,
         lineNumber: call.lineNumber,
         line: call.line
       })),
+      unresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
       unresolvedDynamicCalls: unresolvedDynamicCalls.slice(0, 80).map((call) => ({
         assetPath: call.assetPath,
         rawFirstArg: call.rawFirstArg,
+        dynamicFunctionName: call.dynamicFunctionName,
+        dynamicFunctionLineNumber: call.dynamicFunctionLineNumber,
+        dynamicFunctionKind: call.dynamicFunctionKind,
+        dynamicFunctionParams: call.dynamicFunctionParams,
         scriptPath: call.scriptPath,
         lineNumber: call.lineNumber,
         line: call.line
@@ -1431,6 +1509,9 @@ function main() {
         rawFirstArg: call.rawFirstArg,
         inferredSoundNames: call.inferredSoundNames,
         dynamicInferenceType: call.dynamicInferenceType,
+        dynamicFunctionName: call.dynamicFunctionName,
+        dynamicFunctionLineNumber: call.dynamicFunctionLineNumber,
+        dynamicFunctionKind: call.dynamicFunctionKind,
         scriptPath: call.scriptPath,
         lineNumber: call.lineNumber,
         line: call.line
