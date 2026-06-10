@@ -14,10 +14,10 @@ const SOUND_DIR_BY_TYPE = {
 };
 const KNOWN_UNRESOLVED_NOTES = new Map([
   ["mocktropica/mainstreet/effects/waterfall_02_l.mp3", {
-    note: "The local AS3 archive has waterfall.mp3 and ambient/waterfall_01_loop.mp3, but neither is an exact same-name/same-role replacement for this effects reference."
+    note: "The source archive is missing waterfall_02_L.mp3. The runtime pack maps Mocktropica's positional looping waterfall event to the local same-source effects/waterfall.mp3 asset."
   }],
   ["virushunter/shipdemo/effects/clear_wave.mp3", {
-    note: "The local AS3 archive has beach_waves ambient loops, but no exact effects/clear_wave.mp3 replacement has been found."
+    note: "The source archive is missing clear_wave.mp3. The runtime pack maps Virus Hunter's clearWave completion event to the local same-source effects/puzzle_complete_01.mp3 feedback sound."
   }]
 ]);
 const ARCHIVE_RETRY_RE = /(?:failed to open|error opening archive|cannot open)/iu;

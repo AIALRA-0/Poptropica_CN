@@ -1,0 +1,80 @@
+<sounds>
+	<sound type="ambient">
+		<asset event="set_rain" loop="true" faded="true" exclusiveType="true">rain_light.mp3</asset>
+		<asset event="set_night" loop="true" faded="true" exclusiveType="true">cricket_chirp_loop_01.mp3</asset>
+	</sound>
+
+	<sound type="music">
+		<asset loop="true" event="set_day">MocktropicaMainThemeGlitched.mp3</asset>
+		<asset loop="true" event ="developer_returned">MocktropicaMainTheme.mp3</asset>
+		<asset loop="true" event ="set_night">night_theme.mp3</asset>
+		<asset loop="true" triggeredByEvent="show_evil_managers" exclusiveType="true">mfb_battle_variation.mp3</asset>
+		<asset loop="false" triggeredByEvent="show_cutscene" exclusiveType="true">mfb_battle_intro_loud.mp3</asset>
+		<asset loop="true" triggeredByEvent="boss_transformed" exclusiveType="true">mfb_battle_variation.mp3</asset>
+	</sound>
+
+	<!-- hydrant -->
+	<sound type="effects" action="roar">
+		<asset id="hydrant" modifiers="position">bear_growl_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="hop">
+		<asset id="hydrant" modifiers="position">pick_axe_impact_01.mp3,pick_axe_impact_02.mp3,pick_axe_impact_03.mp3</asset>
+	</sound>
+	<sound type="effects" action="appear">
+		<asset id="hydrant" modifiers="position">squish_07.mp3</asset>
+	</sound>
+
+	<sound type="effects">
+		<asset triggeredByEvent="waterfall" modifiers="position" loop="true">waterfall.mp3</asset>
+		<asset triggeredByEvent="planeFly" exclusiveType="true">short_engine_burst_01.mp3</asset>
+		<asset triggeredByEvent="planeDescend" loop="true" exclusiveType="true">rocket_engines_01_loop.mp3</asset>
+		<asset triggeredByEvent="planeLand" exclusiveType="true">rocket_engines_01_loop.mp3</asset>
+		<asset triggeredByEvent="planeClose" exclusiveType="true">menu_panel_close_01.mp3</asset>
+		<asset triggeredByEvent="planetransform" loop="false" exclusiveType="true">aircraft_transform.mp3</asset>
+	</sound>
+
+	<!-- potted plants -->
+	<sound type="effects" action="buzz">
+		<asset id="tree1" modifiers="position">static_01.mp3</asset>
+		<asset id="tree2" modifiers="position">static_01.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="step">
+		<asset id="baseGround">fs_concrete_01.mp3, fs_concrete_02.mp3, fs_concrete_03.mp3, fs_concrete_04.mp3</asset>
+		<asset id="rock">fs_concrete_01.mp3, fs_concrete_02.mp3, fs_concrete_03.mp3, fs_concrete_04.mp3</asset>
+		<asset id="wood">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
+		<asset id="grass">fs_hard_grass_01.mp3, fs_hard_grass_02.mp3, fs_hard_grass_03.mp3, fs_hard_grass_04.mp3</asset>
+		<asset id="metal">fs_metal_shelf_01.mp3, fs_metal_shelf_02.mp3, fs_metal_shelf_03.mp3, fs_metal_shelf_04.mp3</asset>
+		<asset id="truck">fs_car_hood_01.mp3, fs_car_hood_02.mp3, fs_car_hood_03.mp3, fs_car_hood_04.mp3</asset>
+		<asset id="glass">fs_glass_01.mp3, fs_glass_02.mp3, fs_glass_03.mp3, fs_glass_04.mp3</asset>
+		<asset id="hay">fs_hard_grass_01.mp3, fs_hard_grass_02.mp3, fs_hard_grass_03.mp3, fs_hard_grass_04.mp3</asset>
+		<asset id="blimp">fs_wicker_01.mp3, fs_wicker_02.mp3, fs_wicker_03.mp3, fs_wicker_04.mp3</asset>
+		<asset id="plastic">fs_porcelain_tap_01.mp3, fs_porcelain_tap_02.mp3, fs_porcelain_tap_03.mp3, fs_porcelain_tap_04.mp3</asset>
+		<asset id="awning">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
+		<asset id="crateTop">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="baseGround">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+		<asset id="rock">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+		<asset id="wood">ls_wood_01.mp3, ls_wood_02.mp3</asset>
+		<asset id="grass">ls_hard_grass_01.mp3, ls_hard_grass_02.mp3</asset>
+		<asset id="metal">ls_metal_shelf_01.mp3, ls_metal_shelf_02.mp3</asset>
+		<asset id="truck">ls_car_hood_01.mp3, ls_car_hood_02.mp3</asset>
+		<asset id="glass">ls_glass_01.mp3, ls_glass_02.mp3</asset>
+		<asset id="hay">ls_hard_grass_01.mp3, ls_hard_grass_02.mp3</asset>
+		<asset id="blimp">ls_wicker_01.mp3, ls_wicker_02.mp3</asset>
+		<asset id="plastic">ls_claypot_01.mp3, ls_claypot_02.mp3</asset>
+		<asset id="awning">ls_cloth_01.mp3, ls_cloth_02.mp3</asset>
+		<asset id="crateTop">ls_wood_01.mp3, ls_wood_02.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="climb">
+		<asset id="climb1" allowOverlap="false">ls_rope_01.mp3, ls_rope_02.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="climbDown">
+		<asset id="climb1" allowOverlap="false">slide_down_rope_01.mp3</asset>
+	</sound>
+
+</sounds>

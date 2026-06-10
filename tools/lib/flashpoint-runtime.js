@@ -254,12 +254,25 @@ function mirrorPhpScriptsIntoCgiBin(managedLegacyDir) {
 }
 
 function writeManagedPoptropicaEndpointStubs(managedLegacyDir) {
+  const crashLogPath = path.join(paths.managedLogsDir, "poptropica-crash-record.jsonl").replace(/\\/gu, "/");
   const stubs = new Map([
     [
       "crash-record.php",
       [
         "<?php",
         "header('Content-Type: text/plain; charset=utf-8');",
+        `$logPath = '${crashLogPath.replace(/'/gu, "\\'")}';`,
+        "$entry = array(",
+        "  'time' => gmdate('c'),",
+        "  'method' => $_SERVER['REQUEST_METHOD'] ?? '',",
+        "  'uri' => $_SERVER['REQUEST_URI'] ?? '',",
+        "  'query' => $_GET,",
+        "  'post' => $_POST,",
+        "  'raw' => file_get_contents('php://input')",
+        ");",
+        "$logDir = dirname($logPath);",
+        "if (!is_dir($logDir)) { mkdir($logDir, 0777, true); }",
+        "file_put_contents($logPath, json_encode($entry, JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND | LOCK_EX);",
         "http_response_code(200);",
         "echo 'OK';",
         ""
