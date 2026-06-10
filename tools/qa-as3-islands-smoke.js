@@ -228,6 +228,7 @@ function summarizeLaunchHealth(launchHealth) {
   return {
     statusCode: launchHealth.statusCode ?? null,
     error: launchHealth.error || null,
+    attempt: launchHealth.attempt ?? null,
     headers: launchHealth.headers
       ? {
           "content-type": launchHealth.headers["content-type"] || null,
@@ -237,6 +238,45 @@ function summarizeLaunchHealth(launchHealth) {
       : null,
     bodyBytes: typeof launchHealth.body === "string" ? launchHealth.body.length : 0
   };
+}
+
+function isLaunchHealthOk(launchHealth) {
+  return Number(launchHealth?.statusCode || 0) === 200;
+}
+
+function isProxyUnavailable(launchHealth) {
+  if (!launchHealth || Number(launchHealth.statusCode || 0) !== 0) {
+    return false;
+  }
+  return /(?:ECONNREFUSED|ECONNRESET|ETIMEDOUT|EHOSTUNREACH|ENOTFOUND|proxy server is refusing connections)/iu.test(String(launchHealth.error || ""));
+}
+
+async function requestLaunchHealth(url, args) {
+  const attempts = Math.max(1, Number(args.launchHealthAttempts || 3));
+  const retryDelayMs = Math.max(0, Number(args.launchHealthRetryDelayMs || 1500));
+  let lastResult = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const result = await proxyRequest(url);
+      lastResult = {
+        ...result,
+        attempt
+      };
+      if (Number(result.statusCode || 0) > 0) {
+        return lastResult;
+      }
+    } catch (error) {
+      lastResult = {
+        statusCode: 0,
+        error: String(error.message || error),
+        attempt
+      };
+    }
+    if (attempt < attempts) {
+      await sleep(retryDelayMs);
+    }
+  }
+  return lastResult;
 }
 
 function hasSceneProgressSignal(logSummary) {
@@ -374,14 +414,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
   clearPoptropicaFlashState({ reason: `qa-as3-island-smoke:${entry.canonicalKey}` });
   let launchHealth = null;
-  try {
-    launchHealth = await proxyRequest(entry.launchUrl);
-  } catch (error) {
-    launchHealth = {
-      statusCode: 0,
-      error: String(error.message || error)
-    };
-  }
+  launchHealth = await requestLaunchHealth(entry.launchUrl, args);
 
   const runtime = spawnManagedRuntime(config, "as3", entry.launchUrl, {
     detach: true,
@@ -539,6 +572,12 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
   }
+  if (!isLaunchHealthOk(launchHealth)) {
+    failedChecks.push("launch_health_failed");
+    if (isProxyUnavailable(launchHealth)) {
+      failedChecks.push("runtime_proxy_unavailable");
+    }
+  }
   if (isSafeModePrompt(runtimeWindow, ocr)) {
     failedChecks.push("safe_mode_prompt");
   }
@@ -547,6 +586,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (!stage?.stageRect || Number(stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
+  }
+  if (isLaunchHealthOk(launchHealth) && !flagEnabled(args.allowNoSceneProgress) && !hasSceneProgressSignal(logSummary)) {
+    failedChecks.push("scene_progress_missing");
   }
   if (isLikelyLoadingScreen(ocr, logSummary)) {
     failedChecks.push("loading_screen_stuck");
@@ -635,6 +677,34 @@ function writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir, repo
   return summary;
 }
 
+function formatFatalError(error) {
+  return {
+    message: String(error?.message || error),
+    stack: error?.stack ? String(error.stack).slice(0, 8000) : "",
+    status: error?.status ?? null,
+    stdout: error?.stdout ? String(error.stdout).slice(0, 2000) : "",
+    stderr: error?.stderr ? String(error.stderr).slice(0, 4000) : ""
+  };
+}
+
+function writeFatalSmokeReport({ reportPath, latestPath, startedAt, artifactDir, error, reports = [] }) {
+  const summary = buildSummary(startedAt, reports);
+  const report = {
+    ...summary,
+    ok: false,
+    generatedAt: new Date().toISOString(),
+    failed: Math.max(summary.failed, 1),
+    failedChecks: ["as3_smoke_fatal_error"],
+    fatal: true,
+    artifactDir,
+    reports,
+    error: formatFatalError(error)
+  };
+  writeJson(reportPath, report);
+  writeJson(latestPath, report);
+  return report;
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig();
@@ -683,100 +753,117 @@ async function main() {
     return;
   }
 
-  try {
-  if (!flagEnabled(args.ignoreRuntimeConflicts)) {
-    const runtimeConflicts = detectRuntimeConflicts();
-    if (runtimeConflicts.length > 0) {
-      const report = {
-        ok: false,
-        generatedAt: new Date().toISOString(),
-        startedAt,
-        total: 0,
-        passed: 0,
-        failed: 0,
-        audioActive: 0,
-        audioInactive: 0,
-        withMissingLogRequests: 0,
-        failedKeys: [],
-        blocked: true,
-        failedChecks: ["runtime_conflict"],
-        artifactDir: runDir,
-        runtimeConflicts
-      };
-      writeJson(reportPath, report);
-      writeJson(latestPath, report);
-      printJson({
-        ...report,
-        reportPath,
-        latestPath
-      });
-      process.exitCode = 2;
-      return;
-    }
-  }
-  ensureManagedWorkspace(config);
-  await ensureFlashpointServices(config);
-  await mountSourceZip(config, "as3");
-
-  const selectedIds = new Set(splitCsv(args.islands || args.island || ""));
-  const limit = Number(args.limit || 0);
-  const manifest = generateLaunchManifest(config);
-  let entries = manifest.entries
-    .filter((entry) => entry.sourceGroup === "as3" && entry.launchable && entry.launchMode === "as3-direct-scene")
-    .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));
-  if (selectedIds.size > 0) {
-    entries = entries.filter((entry) => selectedIds.has(entry.canonicalKey));
-  }
-  if (limit > 0) {
-    entries = entries.slice(0, limit);
-  }
-  if (args.overrideScene) {
-    if (entries.length !== 1) {
-      throw new Error("--overrideScene requires exactly one selected AS3 island.");
-    }
-    const overrideScene = String(args.overrideScene);
-    const sceneParts = overrideScene.split(".");
-    entries = [{
-      ...entries[0],
-      as3TargetScene: overrideScene,
-      roomParam: sceneParts.length >= 2 ? sceneParts[sceneParts.length - 2] : entries[0].roomParam,
-      launchUrl: `http://www.poptropica.com/game/Shell.swf?island&overrideScene=${encodeURIComponent(overrideScene)}`
-    }];
-  }
-  if (!entries.length) {
-    throw new Error("No AS3 direct-launch islands matched the requested filters.");
-  }
-
   const reports = [];
-  for (let index = 0; index < entries.length; index += 1) {
-    const entry = entries[index];
-    try {
-      reports.push(await smokeIsland({ config, qaDir, runDir, entry, index, total: entries.length, args }));
-    } catch (error) {
-      reports.push({
-        ok: false,
-        generatedAt: new Date().toISOString(),
-        index: index + 1,
-        total: entries.length,
-        canonicalKey: entry.canonicalKey,
-        launchUrl: entry.launchUrl,
-        as3TargetScene: entry.as3TargetScene,
-        failedChecks: [String(error.message || error)],
-        error: String(error.stack || error)
-      });
-    } finally {
-      stopNavigatorProcesses();
-      await sleep(Number(args.betweenMs || 1000));
-      writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
+  try {
+    if (!flagEnabled(args.ignoreRuntimeConflicts)) {
+      const runtimeConflicts = detectRuntimeConflicts();
+      if (runtimeConflicts.length > 0) {
+        const report = {
+          ok: false,
+          generatedAt: new Date().toISOString(),
+          startedAt,
+          total: 0,
+          passed: 0,
+          failed: 0,
+          audioActive: 0,
+          audioInactive: 0,
+          withMissingLogRequests: 0,
+          failedKeys: [],
+          blocked: true,
+          failedChecks: ["runtime_conflict"],
+          artifactDir: runDir,
+          runtimeConflicts
+        };
+        writeJson(reportPath, report);
+        writeJson(latestPath, report);
+        printJson({
+          ...report,
+          reportPath,
+          latestPath
+        });
+        process.exitCode = 2;
+        return;
+      }
     }
-  }
 
-  const summary = writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
-  printJson({
-    ...summary,
-    reportPath,
-    latestPath
-  });
+    ensureManagedWorkspace(config);
+    await ensureFlashpointServices(config);
+    await mountSourceZip(config, "as3");
+
+    const selectedIds = new Set(splitCsv(args.islands || args.island || ""));
+    const limit = Number(args.limit || 0);
+    const manifest = generateLaunchManifest(config);
+    let entries = manifest.entries
+      .filter((entry) => entry.sourceGroup === "as3" && entry.launchable && entry.launchMode === "as3-direct-scene")
+      .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));
+    if (selectedIds.size > 0) {
+      entries = entries.filter((entry) => selectedIds.has(entry.canonicalKey));
+    }
+    if (limit > 0) {
+      entries = entries.slice(0, limit);
+    }
+    if (args.overrideScene) {
+      if (entries.length !== 1) {
+        throw new Error("--overrideScene requires exactly one selected AS3 island.");
+      }
+      const overrideScene = String(args.overrideScene);
+      const sceneParts = overrideScene.split(".");
+      entries = [{
+        ...entries[0],
+        as3TargetScene: overrideScene,
+        roomParam: sceneParts.length >= 2 ? sceneParts[sceneParts.length - 2] : entries[0].roomParam,
+        launchUrl: `http://www.poptropica.com/game/Shell.swf?island&overrideScene=${encodeURIComponent(overrideScene)}`
+      }];
+    }
+    if (!entries.length) {
+      throw new Error("No AS3 direct-launch islands matched the requested filters.");
+    }
+
+    for (let index = 0; index < entries.length; index += 1) {
+      const entry = entries[index];
+      try {
+        reports.push(await smokeIsland({ config, qaDir, runDir, entry, index, total: entries.length, args }));
+      } catch (error) {
+        reports.push({
+          ok: false,
+          generatedAt: new Date().toISOString(),
+          index: index + 1,
+          total: entries.length,
+          canonicalKey: entry.canonicalKey,
+          launchUrl: entry.launchUrl,
+          as3TargetScene: entry.as3TargetScene,
+          failedChecks: [String(error.message || error)],
+          error: String(error.stack || error)
+        });
+      } finally {
+        stopNavigatorProcesses();
+        await sleep(Number(args.betweenMs || 1000));
+        writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
+      }
+    }
+
+    const summary = writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
+    printJson({
+      ...summary,
+      reportPath,
+      latestPath
+    });
+  } catch (error) {
+    stopNavigatorProcesses();
+    const report = writeFatalSmokeReport({
+      reportPath,
+      latestPath,
+      startedAt,
+      artifactDir: runDir,
+      error,
+      reports
+    });
+    printJson({
+      ...report,
+      reportPath,
+      latestPath
+    });
+    process.exitCode = 1;
   } finally {
     if (releaseSmokeLock) {
       releaseSmokeLock();
