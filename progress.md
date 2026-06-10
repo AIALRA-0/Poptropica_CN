@@ -363,14 +363,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keep AS3 sound-reference audit in the validation loop. It now proves XML references resolve, but it does not by itself prove runtime playback volume/mixing in every scene.
 
-## 2026-06-10 AS2 Sound Call Audit
+## 2026-06-10 AS2 Sound Surface Audit
 
-- Added `tools/audit-as2-sound-calls.js` and `npm run audit:as2-sound-calls` to inventory AS2 SWF `showSound` / `attachSound` / `loadSound` calls from FFDec-exported scripts, correlate them to launch-manifest islands, and list loose AS2 audio/video assets in the archive.
-- Hardened AS2 FFDec script export handling for Windows: launch-scene scripts are exported to a temp directory first, then moved into the cache; partial or locked export directories are reported instead of aborting the audit.
-- Ran `npm run audit:as2-sound-calls -- --ensureLaunchScripts=1 --output=runtime-data\qa\as2-sound-calls-audit.json`. Current AS2 baseline: 4,672 SWFs, 34/34 launch-scene SWFs with script exports, 9 loose audio/video assets, 52 detected `showSound` calls, 31 literal sound-name calls, 21 dynamic calls, and no partial script exports.
-- AS2 entry-scene sound calls currently appear in Back Lot, Big Nate, Game Show, Lunar Colony, Mythology, Night Watch, and Super Power; loose media appears in Back Lot, Night Watch, and Vampire. The remaining launchable AS2 entries need deeper non-entry scene traversal and runtime playback checks before declaring sound coverage complete.
+- Added `tools/audit-as2-sound-calls.js` and npm script `audit:as2-sound-calls` to audit AS2 audio separately from AS3. AS2 has no `sounds.xml` files in `AS2.zip`, so the AS3 sound-reference model does not apply.
+- The AS2 audit maps FFDec script-export directories back to source SWFs with the same `as2::archive::assetPath` hash used by extraction, parses `showSound` / `attachSound` / `loadSound` calls, records literal and dynamic sound names, and summarizes coverage by launchable AS2 island.
+- Added `--ensureLaunchScripts=1` so the audit can export scripts for all 34 launchable AS2 island entry scenes without starting Navigator. Current result: 34/34 AS2 launch-scene SWFs have script exports, 0 failed exports, 52 sound API calls across 14 SWFs, 31 literal calls, 21 dynamic calls, and 10 unique literal sound names.
+- Added `--ensureLaunchSounds=1` to export embedded sound tags for those same 34 AS2 entry scenes. FFDec exported successfully for all 34, but `launchSceneEmbeddedSoundFileCount` is `0`, confirming these entry scenes do not carry embedded audio files.
+- AS2 entry-scene sound calls currently appear in Back Lot, Big Nate, Game Show, Lunar Colony, Mythology, Night Watch, and Super Power; loose media appears in Back Lot, Night Watch, and Vampire.
+- Current loose AS2 audio inventory remains small: 9 loose audio/video files total, covering Back Lot final movies, Night Watch elevator music, Vampire rain/thunder, and two shared videos. This supports treating AS2 audio as a separate runtime/playback problem rather than an AS3-style missing `sounds.xml` asset problem.
 
-## TODO AS2 Sound Call Audit
+## TODO AS2 Sound Surface Audit
 
-- Extend AS2 sound-call coverage beyond launch scenes by exporting and scanning island subscene SWFs, then separate embedded-linkage sound effects from external audio loads.
-- Use the AS2 audit report to drive runtime sound probes; static `showSound` calls prove references exist, but do not prove every scene plays audible output in the local Flash player.
+- Expand AS2 sound-call and embedded-sound export coverage beyond launch scenes to all island scene SWFs in serialized batches, then compare runtime audio output against scenes known to have calls or loose audio.
+- Investigate whether AS2 `showSound` should map to original named files, the generated `_global/default.wav` fallback, or recoverable Flashpoint/user-audio assets; do not treat fallback audio as proof that original AS2 effects are restored.
