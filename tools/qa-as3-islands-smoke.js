@@ -19,6 +19,7 @@ const {
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const AS3_SMOKE_LOCK_NAME = ".qa-as3-islands-smoke.lock";
+const AS3_SMOKE_REPORT_RE = /^as3-island-smoke-\d+\.json$/u;
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
@@ -160,6 +161,8 @@ Get-CimInstance Win32_Process |
     $_.ProcessId -ne $nodePid -and
     $_.ParentProcessId -ne $nodePid -and
     $_.CommandLine -and
+    $_.CommandLine -notmatch 'Get-CimInstance Win32_Process' -and
+    $_.CommandLine -notmatch 'Where-Object' -and
     (
       $_.CommandLine -match 'qa:validate-as2' -or
       $_.CommandLine -match 'qa-validate-runtime\\.js --source as2' -or
@@ -710,6 +713,143 @@ function writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir, repo
   return summary;
 }
 
+function reportSortTime(reportPath, topLevelReport, islandReport) {
+  const candidates = [
+    islandReport?.generatedAt,
+    topLevelReport?.generatedAt
+  ];
+  for (const candidate of candidates) {
+    const time = Date.parse(candidate || "");
+    if (Number.isFinite(time)) {
+      return time;
+    }
+  }
+  try {
+    return fs.statSync(reportPath).mtimeMs;
+  } catch (_error) {
+    return 0;
+  }
+}
+
+function isAggregateCandidateReport(topLevelReport) {
+  return topLevelReport &&
+    !topLevelReport.blocked &&
+    !topLevelReport.fatal &&
+    Array.isArray(topLevelReport.reports);
+}
+
+function isPassingIslandReport(report) {
+  return Boolean(report?.canonicalKey) &&
+    report.ok === true &&
+    Array.isArray(report.failedChecks) &&
+    report.failedChecks.length === 0;
+}
+
+function collectAggregateCandidates(qaDir) {
+  const candidates = [];
+  for (const fileName of fs.readdirSync(qaDir)) {
+    if (!AS3_SMOKE_REPORT_RE.test(fileName)) {
+      continue;
+    }
+    const reportPath = path.join(qaDir, fileName);
+    const topLevelReport = readJsonIfExists(reportPath);
+    if (!isAggregateCandidateReport(topLevelReport)) {
+      continue;
+    }
+    for (const islandReport of topLevelReport.reports) {
+      if (!isPassingIslandReport(islandReport)) {
+        continue;
+      }
+      candidates.push({
+        key: islandReport.canonicalKey,
+        report: {
+          ...islandReport,
+          aggregateSource: {
+            reportPath,
+            reportFileName: fileName,
+            reportGeneratedAt: topLevelReport.generatedAt || null
+          }
+        },
+        sortTime: reportSortTime(reportPath, topLevelReport, islandReport)
+      });
+    }
+  }
+  return candidates;
+}
+
+function chooseAggregateReports({ expectedKeys, candidates, preferAudio }) {
+  const byKey = new Map();
+  for (const candidate of candidates) {
+    if (!expectedKeys.has(candidate.key)) {
+      continue;
+    }
+    const existing = byKey.get(candidate.key);
+    if (!existing) {
+      byKey.set(candidate.key, candidate);
+      continue;
+    }
+    const candidateHasAudio = Boolean(candidate.report.audio?.active);
+    const existingHasAudio = Boolean(existing.report.audio?.active);
+    if (preferAudio && candidateHasAudio !== existingHasAudio) {
+      if (candidateHasAudio) {
+        byKey.set(candidate.key, candidate);
+      }
+      continue;
+    }
+    if (candidate.sortTime > existing.sortTime) {
+      byKey.set(candidate.key, candidate);
+    }
+  }
+  return [...expectedKeys].map((key) => byKey.get(key)).filter(Boolean);
+}
+
+function writeAggregateSmokeReport({ config, args, qaDir, startedAt }) {
+  const manifest = generateLaunchManifest(config, { write: false });
+  const expectedEntries = manifest.entries
+    .filter((entry) => entry.sourceGroup === "as3" && entry.launchable && entry.launchMode === "as3-direct-scene")
+    .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));
+  const expectedKeys = new Set(expectedEntries.map((entry) => entry.canonicalKey));
+  const candidates = collectAggregateCandidates(qaDir);
+  const chosen = chooseAggregateReports({
+    expectedKeys,
+    candidates,
+    preferAudio: flagEnabled(args.aggregatePreferAudio)
+  });
+  const reports = chosen.map((candidate) => candidate.report);
+  const presentKeys = new Set(reports.map((report) => report.canonicalKey));
+  const missingKeys = [...expectedKeys].filter((key) => !presentKeys.has(key));
+  const summary = buildSummary(startedAt, reports);
+  const runToken = String(Date.now());
+  const reportPath = path.join(qaDir, `as3-island-smoke-aggregate-${runToken}.json`);
+  const latestPath = path.join(qaDir, "as3-island-smoke-latest.json");
+  const report = {
+    ...summary,
+    ok: summary.ok && missingKeys.length === 0,
+    aggregate: true,
+    aggregateMode: "latest-passing-per-island",
+    aggregatePreferAudio: flagEnabled(args.aggregatePreferAudio),
+    expectedTotal: expectedEntries.length,
+    expectedKeys: [...expectedKeys],
+    missingKeys,
+    candidateCount: candidates.length,
+    artifactDir: qaDir,
+    reports
+  };
+  if (missingKeys.length > 0) {
+    report.failedChecks = ["aggregate_missing_expected_islands"];
+  }
+  writeJson(reportPath, report);
+  if (!flagEnabled(args.noUpdateLatest)) {
+    writeJson(latestPath, report);
+  }
+  return {
+    ...report,
+    reportPath,
+    latestPath,
+    latestUpdated: !flagEnabled(args.noUpdateLatest)
+  };
+}
+
 function formatFatalError(error) {
   return {
     message: String(error?.message || error),
@@ -743,6 +883,14 @@ async function main() {
   const config = loadConfig();
   const qaDir = ensureQaDir("as3", "islands-smoke");
   const startedAt = new Date().toISOString();
+  if (flagEnabled(args.aggregateLatest) || flagEnabled(args.aggregate)) {
+    const report = writeAggregateSmokeReport({ config, args, qaDir, startedAt });
+    printJson(report);
+    if (!report.ok) {
+      process.exitCode = 1;
+    }
+    return;
+  }
   const runToken = String(Date.now());
   const reportPath = path.join(qaDir, `as3-island-smoke-${runToken}.json`);
   const latestPath = path.join(qaDir, "as3-island-smoke-latest.json");
