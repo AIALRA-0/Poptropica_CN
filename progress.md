@@ -442,14 +442,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 ## 2026-06-10 AS2 Runtime Sound Bridge / Pack Repair
 
-- Repaired the dirty AS2 pack-input state by regenerating `packs/zh-CN/as2` with `npm run patch:pack -- --source as2`. The npm wrapper disconnected after a long FFDec run, but the child `patch-pack.js` process completed and wrote a valid AS2 manifest/runtime zip.
+- Repaired the dirty AS2 pack-input state by regenerating `packs/zh-CN/as2` with `node tools/patch-pack.js --source as2`. A second accidentally queued npm wrapper for the same AS2 pack job was stopped so only one FFDec chain wrote the pack directory; the remaining `patch-pack.js` process completed and wrote a valid AS2 manifest/runtime zip.
 - AS2 pack generation now patches 43 assets: 7 external text assets, 36 SWF assets, and 1 pending SWF asset. The previous pending Super Power `sceneComic.swf` patch succeeded; the remaining pending item is `content/www.poptropica.com/popups/BlimpGame/dialog.swf` with `I/O error during writing [21.txt]`.
 - Added an AS2 `showSound` bridge for Super Power `gameplay.swf`: `showSound()` now calls `ExternalInterface.flashpointPlayAs2Sound`, `base.php` allows script access, and the page plays matched recovered sound effects through a bounded JavaScript audio pool.
 - Added runtime syncing for AS2 embedded sound recoveries. `tools/lib/flashpoint-runtime.js` reads `runtime-data/qa/as2-sound-calls-audit.json`, copies direct literal-to-embedded matches into `runtime-data/user-audio/as2/_sounds`, writes `.embedded-sounds.json`, and exposes them through the existing managed `www.poptropica.com/flashpoint/user-audio` junction.
 - Current recovered direct AS2 sound mappings are `boom`, `CoolHissSound.wav`, and `croneLine`, sourced from the local FFDec embedded-sound exports with SHA-256 recorded in the generated manifest.
 - Validated the repaired pack state with `npm run verify:pack-inputs -- --source as2` and full `npm run verify:pack-inputs`: AS2 runtime replacements now match the manifest at 42, AS3 remains matched at 47, and both source groups have 0 untracked runtime inputs.
 - Validated `runtime-data/patched-zips/as2-runtime.zip` with Flashpoint's bundled 7-Zip (`Everything is Ok`, 4,826 files, 634,748,307 bytes), and confirmed the recovered AS2 `_sounds` directory is reachable through the managed `www.poptropica.com/flashpoint/user-audio` junction.
-- Ran scoped AS2 runtime validation with `npm run qa:validate-as2 -- --playerKey=flashpointnavigator-as2 --skipMaps=1 --skipStaticSigns=1 --skipPopupAudit=1`. Result: pass, Super Power window found, stage coverage `0.961228`, Chinese dialogue visible, and audio activity detected.
+- Ran scoped AS2 runtime validation with `npm run qa:validate-as2 -- --playerKey=flashpointnavigator-as2 --skipMaps=1 --skipStaticSigns=1 --skipPopupAudit=1`. Latest passing report `runtime-data/qa/super-power/flashpointnavigator-as2-report-1781084342227.json` found the Super Power window, stage coverage `0.961228`, visible Chinese dialogue, and active audio. A later duplicate scoped QA attempt exited without writing a newer report while a Navigator session was already present; the visible Navigator process was then closed.
 
 ## TODO AS2 Runtime Sound Bridge / Pack Repair
 
