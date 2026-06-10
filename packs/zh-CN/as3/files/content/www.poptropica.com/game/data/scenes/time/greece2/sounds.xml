@@ -1,0 +1,18 @@
+<sounds>
+	<sound type="ambient">
+		<asset loop="true" fade="true" exclusiveType="true">temple.mp3</asset>
+	</sound>
+	<sound type="effects" action="doorOpened">
+		<asset>enter_temple_01.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="marble">fs_concrete_verb_01.mp3, fs_concrete_verb_02.mp3, fs_concrete_verb_03.mp3, fs_concrete_verb_04.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="marble">ls_concrete_verb_01.mp3, ls_concrete_verb_02.mp3</asset>
+		<asset id="pottery">ls_claypot_01.mp3, ls_claypot_02.mp3</asset>
+	</sound>
+		<sound type = "effects">
+		<asset id="fire">effects/fire_01_L.mp3</asset>
+	</sound>
+</sounds>

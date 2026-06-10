@@ -152,7 +152,8 @@ function classifyReference(ref, fileIndex) {
 function extractSoundReferences(xml, soundsXmlPath) {
   const refs = [];
   const pathParts = soundsXmlPath.split("/");
-  for (const soundMatch of String(xml || "").matchAll(/<sound\b([^>]*)>([\s\S]*?)<\/sound>/giu)) {
+  const uncommentedXml = String(xml || "").replace(/<!--[\s\S]*?-->/gu, "");
+  for (const soundMatch of uncommentedXml.matchAll(/<sound\b([^>]*)>([\s\S]*?)<\/sound>/giu)) {
     const soundAttrs = soundMatch[1] || "";
     const soundBody = soundMatch[2] || "";
     const type = getAttr(soundAttrs, "type");

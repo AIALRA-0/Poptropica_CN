@@ -1,0 +1,13 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" triggeredByEvent="boss_battle_started" exclusiveType="true">Boss_Battle_Theme.mp3</asset>
+	</sound>
+
+	<sound type="ambient">
+		<asset loop="true" fade="true" exclusiveType="true">effects/heart_beat_01_L.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="radial" allowOverlap="false">squish_01.mp3, squish_02.mp3, squish_03.mp3, squish_04.mp3</asset>
+	</sound>
+</sounds>

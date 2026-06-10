@@ -1,0 +1,30 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true">Survival_3_Main_Theme.mp3</asset>
+	</sound>
+	<sound type="ambient">
+	<asset loop="true">forest_ambiance_01_loop.mp3</asset>
+    </sound>
+	<sound type="effects" action="step">
+		<asset id="grass">fs_grass_01.mp3,fs_grass_02.mp3,fs_grass_03.mp3,fs_grass_04.mp3</asset>
+		<asset id="snow">fs_snow_01.mp3,fs_snow_02.mp3,fs_snow_03.mp3,fs_snow_04.mp3</asset>
+		<asset id="rock">fs_cobble_01.mp3,fs_cobble_02.mp3,fs_cobble_03.mp3,fs_cobble_04.mp3</asset>
+		<asset id="tree">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="fallenTree">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="wing">fs_machinery_01.mp3,fs_machinery_02.mp3,fs_machinery_03.mp3,fs_machinery_04.mp3</asset>
+		<asset id="tipWing">fs_machinery_01.mp3,fs_machinery_02.mp3,fs_machinery_03.mp3,fs_machinery_04.mp3</asset>
+		<asset id="seesaw">fs_machinery_01.mp3,fs_machinery_02.mp3,fs_machinery_03.mp3,fs_machinery_04.mp3</asset>
+		<asset id="water">fs_swim_water_01.mp3, fs_swim_water_02.mp3, fs_swim_water_03.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="grass">ls_grass_01.mp3,ls_grass_02.mp3</asset>
+		<asset id="snow">ls_snow_01.mp3,ls_snow_02.mp3</asset>
+		<asset id="rock">ls_cobble_01.mp3,ls_cobble_02.mp3</asset>
+		<asset id="tree">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="fallenTree">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="wing">ls_machinery_01.mp3,ls_machinery_02.mp3</asset>
+		<asset id="tipWing">ls_machinery_01.mp3,ls_machinery_02.mp3</asset>
+		<asset id="seesaw">ls_machinery_01.mp3,ls_machinery_02.mp3</asset>
+		<asset id="water">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+	</sound>
+</sounds>

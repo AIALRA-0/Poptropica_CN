@@ -1,0 +1,21 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">mfb_battle_variation.mp3</asset>
+	</sound>
+	<!-- boss -->
+	<sound type="effects">
+		<asset triggeredByEvent="throw_coin">coin_toss_01.mp3,coin_toss_02.mp3,coin_toss_03.mp3,coin_toss_04.mp3</asset>
+		<asset triggeredByEvent="hit_boss">machine_impact_01.mp3,machine_impact_02.mp3,machine_impact_03.mp3,machine_impact_04.mp3,machine_impact_05.mp3,machine_impact_06.mp3</asset>
+		<asset triggeredByEvent="break_achievement" exclusiveType="true">enemy_explode_01.mp3</asset>
+		<asset triggeredByEvent="boss_explodes" exclusiveType="true">small_explosion_01.mp3,small_explosion_02.mp3,small_explosion_03.mp3,small_explosion_04.mp3</asset>
+		<asset triggeredByEvent="boss_flying" exclusiveType="true">rocket_engines_01_loop.mp3</asset>
+		<asset triggeredByEvent="boss_has_rock" loop="true" exclusiveType="true">thrusters_loop_01_loop.mp3</asset>
+		<asset triggeredByEvent="throw_rock" exclusiveType="true">whoosh_04.mp3</asset>
+		<asset triggeredByEvent="rock_hit_player" exclusiveType="true">cannon_shot_01.mp3</asset>
+		<asset triggeredByEvent="boss_dash" exclusiveType="true">short_engine_burst_01.mp3</asset>
+		<asset triggeredByEvent="launch_fists" exclusiveType="true">rocket_launch_01.mp3</asset>
+		<asset triggeredByEvent="fist_hit_player" exclusiveType="true">explosion_04.mp3</asset>
+		<asset triggeredByEvent="break_fists" exclusiveType="true">metal_impact_verb_04.mp3</asset>
+	</sound>
+
+</sounds>

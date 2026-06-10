@@ -1,0 +1,44 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true">Survival_2_Main_Theme.mp3</asset>
+	</sound>
+	<sound type="ambient">
+	<asset loop="true">cold_winds.mp3</asset>
+    </sound>
+	<sound type="effects" action="step">
+		<asset id="water">fs_swim_water_01.mp3, fs_swim_water_02.mp3, fs_swim_water_03.mp3</asset>
+		<asset id="snow">fs_snow_01.mp3, fs_snow_02.mp3, fs_snow_03.mp3, fs_snow_04.mp3</asset>
+		<asset id="grass">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="tree">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treeRaft">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="raftPlatform">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="tree0platform">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="tree1platform">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="tree2platform">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="holePlatform">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="rock">fs_concrete_01.mp3,fs_concrete_02.mp3,fs_concrete_03.mp3,fs_concrete_04.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="water">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+		<asset id="snow">ls_snow_01.mp3, ls_snow_02.mp3</asset>
+		<asset id="grass">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="tree">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treeRaft">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="raftPlatform">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="tree0platform">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="tree1platform">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="tree2platform">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="holePlatform">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="rock">ls_concrete_01.mp3,ls_concrete_02.mp3</asset>
+		<asset id="bounce0">ls_bounce_01.mp3,ls_bounce_02.mp3</asset>
+		<asset id="bounce1">ls_bounce_01.mp3,ls_bounce_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="randomEvents">
+		<asset triggeredByEvent="treetip">wood_break_05.mp3</asset>
+		<asset triggeredByEvent="loghittree">wood_heavy_impact_01.mp3</asset>
+		<asset triggeredByEvent="loghitsnow">snow_large_impact_03.mp3</asset>
+		<asset triggeredByEvent="loghitwater">water_splash_01.mp3</asset>
+		<asset triggeredByEvent="freeze">freeze_01.mp3</asset>
+		<asset triggeredByEvent="owl">owl_hoot_01.mp3,owl_hoot_02.mp3,owl_hoot_03.mp3,owl_hoot_04.mp3,owl_hoot_05.mp3</asset>
+	</sound>
+</sounds>

@@ -1,0 +1,32 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">mystery_of_map_main_theme.mp3</asset>
+	</sound>
+	<sound type="ambient">
+		<asset loop="true">jungle_02_loop.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="sand">ls_fine_sand_01.mp3, ls_fine_sand_02.mp3</asset>
+		<asset id="grass">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="wood">ls_wood_01.mp3, ls_wood_02.mp3</asset>
+		<asset id="rock">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="sand">fs_fine_sand_01.mp3, fs_fine_sand_02.mp3, fs_fine_sand_03.mp3, fs_fine_sand_04.mp3</asset>
+		<asset id="grass">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="wood">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
+		<asset id="rock">fs_concrete_01.mp3, fs_concrete_02.mp3, fs_concrete_03.mp3, fs_concrete_04.mp3</asset>
+	</sound>
+	<sound type="effects">
+		<asset triggeredByEvent="mapFall">falling_paper_01.mp3</asset>
+		<asset triggeredByEvent="chop">wood_axe_impact_01.mp3, wood_axe_impact_03.mp3</asset>
+		<asset triggeredByEvent="bird">small_creature_squeak_01.mp3</asset>
+	</sound>
+	<sound type="effects" action="climb">
+		<asset id="climb" allowOverlap="false">ls_rope_01.mp3, ls_rope_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="climbDown">
+		<asset id="climb" allowOverlap="false">slide_down_rope_01.mp3</asset>
+	</sound>
+</sounds>

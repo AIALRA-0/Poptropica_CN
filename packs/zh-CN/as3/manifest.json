@@ -10,7 +10,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 27,
+    "replacementCount": 40,
     "swfRuntimeOverrides": "safe_subset"
   }
 }

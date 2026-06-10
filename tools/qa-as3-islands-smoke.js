@@ -31,6 +31,39 @@ function splitCsv(value) {
     .filter(Boolean);
 }
 
+function parseNumberOverrideMap(value) {
+  const overrides = new Map();
+  for (const entry of splitCsv(value)) {
+    const match = entry.match(/^([^:=]+)[:=](\d+)$/u);
+    if (!match) {
+      continue;
+    }
+    overrides.set(match[1].trim().toLowerCase(), Number(match[2]));
+  }
+  return overrides;
+}
+
+function resolveIslandNumberOverride(args, entry, name, fallback) {
+  const overrides = parseNumberOverrideMap(args[name] || "");
+  if (!overrides.size) {
+    return fallback;
+  }
+  const candidates = [
+    entry.canonicalKey,
+    entry.islandParam,
+    entry.roomParam,
+    entry.as3TargetScene
+  ]
+    .map((value) => String(value || "").trim().toLowerCase())
+    .filter(Boolean);
+  for (const candidate of candidates) {
+    if (overrides.has(candidate)) {
+      return overrides.get(candidate);
+    }
+  }
+  return fallback;
+}
+
 function safeFileSegment(value) {
   return String(value || "")
     .replace(/[^a-z0-9_-]+/giu, "-")
@@ -406,7 +439,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   const ocrPath = path.join(islandDir, `${safeStem}-ocr.json`);
   const audioPath = path.join(islandDir, `${safeStem}-audio.json`);
   const logSegmentPath = path.join(islandDir, `${safeStem}-server.log`);
-  const settleMs = Number(args.settleMs || 22000);
+  const settleMs = resolveIslandNumberOverride(args, entry, "settleMsOverrides", Number(args.settleMs || 22000));
   const windowTimeoutMs = Number(args.windowTimeoutMs || 60000);
 
   await ensureFlashpointServices(config);

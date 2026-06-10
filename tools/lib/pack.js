@@ -4846,7 +4846,9 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
       return manifest.runtimeZip;
     }
 
-    const workingDir = path.join(paths.tempDir, `runtime-zip-${sourceGroup}`);
+    const buildToken = `${process.pid}-${Date.now()}`;
+    const workingDir = path.join(paths.tempDir, `runtime-zip-${sourceGroup}-${buildToken}`);
+    const tempRuntimeZipPath = `${packPaths.runtimeZipPath}.${buildToken}.tmp`;
     removeDirContents(workingDir);
     ensureDirSync(workingDir);
 
@@ -4873,11 +4875,11 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
 
     const runtimeFix = patchRuntimeRenderMode(workingDir);
 
-    if (fileExists(packPaths.runtimeZipPath)) {
-      fs.rmSync(packPaths.runtimeZipPath, { force: true });
+    if (fileExists(tempRuntimeZipPath)) {
+      fs.rmSync(tempRuntimeZipPath, { force: true });
     }
 
-    const createResult = spawnSync(sevenZip, ["a", "-tzip", packPaths.runtimeZipPath, ".\\*", "-mx=1"], {
+    const createResult = spawnSync(sevenZip, ["a", "-tzip", tempRuntimeZipPath, ".\\*", "-mx=1"], {
       cwd: workingDir,
       encoding: "utf8",
       windowsHide: true
@@ -4887,11 +4889,31 @@ function buildRuntimeZipForSourceGroup({ config, sourceGroup, manifest }) {
         status: "patch_failed",
         sourceZip,
         runtimeZipPath: packPaths.runtimeZipPath,
+        tempRuntimeZipPath,
         replacementCount: replacements.length,
         error: (createResult.stderr || createResult.stdout || "Failed to write runtime zip").trim()
       };
       return manifest.runtimeZip;
     }
+
+    if (!validateZipArchive(sevenZip, tempRuntimeZipPath)) {
+      manifest.runtimeZip = {
+        status: "patch_failed",
+        sourceZip,
+        runtimeZipPath: packPaths.runtimeZipPath,
+        tempRuntimeZipPath,
+        replacementCount: replacements.length,
+        error: "Generated runtime zip failed 7-Zip validation."
+      };
+      return manifest.runtimeZip;
+    }
+
+    if (fileExists(packPaths.runtimeZipPath)) {
+      fs.rmSync(packPaths.runtimeZipPath, { force: true });
+    }
+    fs.renameSync(tempRuntimeZipPath, packPaths.runtimeZipPath);
+    removeDirContents(workingDir);
+    fs.rmSync(workingDir, { recursive: true, force: true });
 
     writeJson(metadataPath, {
       generatedAt: new Date().toISOString(),

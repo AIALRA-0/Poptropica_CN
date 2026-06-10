@@ -17,7 +17,7 @@
 		<asset id="baseGround">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
 		<asset id="telescope">fs_plastic_01.mp3, fs_plastic_02.mp3, fs_plastic_03.mp3, fs_plastic_04.mp3</asset>
 		<asset id="bookshelf">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
-		<asset id="bedBounce">fs_cloth1_01.mp3, fs_cloth1_02.mp3, fs_cloth1_03.mp3, fs_cloth1_04.mp3</asset>
+		<asset id="bedBounce">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
 		<asset id="dresser">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
 		<asset id="bedroomTable">fs_linoleum_01.mp3, fs_linoleum_02.mp3, fs_linoleum_03.mp3, fs_linoleum_04.mp3</asset>
 		<asset id="bedroomFloor">fs_wood_plank_01.mp3, fs_wood_plank_02.mp3, fs_wood_plank_03.mp3, fs_wood_plank_04.mp3</asset>
