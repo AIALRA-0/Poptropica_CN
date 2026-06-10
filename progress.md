@@ -563,11 +563,12 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 ## 2026-06-10 AS2 Dynamic Asset String Candidate Reporting
 
-- Added raw SWF printable-string scanning for unresolved AS2 dynamic sound assets in `tools/audit-as2-sound-calls.js`. It decompresses CWS SWFs locally, extracts trimmed printable strings, and exact-matches them against the current known sound-name set.
-- The new report fields are explicitly advisory: `unresolvedDynamicAssetStringCandidates` rows carry `candidateEvidence: "raw-swf-printable-string-known-sound-name"` and `usedForInference: false`, so these hints do not change `inferredSoundNames` or runtime sound mappings.
-- Latest `npm run audit:as2-sound-calls` summary: 616 sound calls, 373 dynamic calls, 233 inferred dynamic calls, 140 unresolved dynamic calls, 198 inferred dynamic sites, 124 unresolved dynamic sites, and 83 unresolved assets with known sound-name string hints.
+- Fixed and extended raw SWF printable-string scanning for unresolved AS2 dynamic sound assets in `tools/audit-as2-sound-calls.js`. It now imports Node `zlib`, inflates compressed `CWS` SWFs locally, extracts trimmed printable strings, and exact-matches them against the current known sound-name set.
+- The new report fields are explicitly advisory: `unresolvedDynamicAssetStringCandidates` rows carry `candidateEvidence: "raw-swf-printable-string-known-sound-name"` and `usedForInference: false`, so these hints do not change `inferredSoundNames` or runtime sound mappings. Added top-level candidate summaries for `topUnresolvedDynamicKnownSoundStringCandidates` and `topUnresolvedDynamicKnownSoundStringAssets`.
+- Latest `node tools/audit-as2-sound-calls.js --reportOnly=1` summary: 616 sound calls, 373 dynamic calls, 233 inferred dynamic calls, 140 unresolved dynamic calls, 198 inferred dynamic sites, 124 unresolved dynamic sites, and 83 unresolved assets with known sound-name string hints.
 - The candidate hint set currently has 133 asset/name rows across 13 unique known names. Top examples include Super Power `sceneDownTown.swf` (`crunch`), Super Power `sceneSkyscraper.swf` (`crunch`, `pow`), Lunar Colony `sceneRLvehicleBay.swf` (`pop`, `pow`), and Astro Knights `sceneMill1.swf` (`chomp`).
-- Validation passed in this chunk: `node --check tools/audit-as2-sound-calls.js`, `npm run audit:as2-sound-calls`, `npm run qa:as2-sound-bridge`, and `npm run verify:pack-inputs`.
+- A fresh external search did not find an official/source-backed `tickle` audio match; results were fan walkthroughs or third-party generic SFX, so `tickle` remains unmapped.
+- Validation passed in this chunk: `node --check tools/audit-as2-sound-calls.js`, `node tools/audit-as2-sound-calls.js --reportOnly=1`, `npm run qa:as2-sound-bridge`, `npm run verify:pack-inputs`, and `git diff --check` (LF/CRLF warnings only).
 
 ## TODO AS2 Dynamic Asset String Candidate Reporting
 
