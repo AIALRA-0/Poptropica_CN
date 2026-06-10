@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T11:48:02.738Z",
+  "generatedAt": "2026-06-10T12:39:04.798Z",
   "entries": [
     {
       "soundName": "zap",
@@ -96,6 +96,78 @@
       "sha256": "68EBC871F6E0FBD34F9ACC9EEED815B330A7FA8DFF89BFF51C8A02C875E17C83",
       "confidence": "direct-token-match",
       "mappingReason": "Official AS3 effect with exact pop token used by AS2 showSound calls."
+    },
+    {
+      "soundName": "ouch",
+      "fileName": "ouch.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/getHit.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/ouch.mp3",
+      "bytes": 6264,
+      "sha256": "F2C156B92A3CAB802881B98AF9BB6A2A2BB2B71A6F41E4BA3983130C51813C3E",
+      "confidence": "semantic-context-match",
+      "mappingReason": "AS2 ouch calls occur when the player or bat enters a hurt state; official AS3 getHit.mp3 is the closest local Poptropica hit reaction effect."
+    },
+    {
+      "soundName": "thump",
+      "fileName": "thump.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/deep_impact_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/thump.mp3",
+      "bytes": 37928,
+      "sha256": "2FAEA1BADB58A462168097B012D2013E40DBA801648E28280BBEC80F1C9979F0",
+      "confidence": "semantic-context-match",
+      "mappingReason": "AS2 thump calls are used for heavy falls, impacts, stomps, and scene shakes; official AS3 deep_impact_01.mp3 matches the heavy thump/impact context."
+    },
+    {
+      "soundName": "ring",
+      "fileName": "ring.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/bells_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/ring.mp3",
+      "bytes": 20461,
+      "sha256": "B23D7E32C701A715893D4569896DFD21E65A5C4D2E5E6852301A9214E974FA89",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 ring calls are mainly bell, buzzer, and phone-ring interactions; official AS3 bells_01.mp3 is the broadest local ringing/bell effect for these contexts."
+    },
+    {
+      "soundName": "shock",
+      "fileName": "shock.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/electrical_impact_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/shock.mp3",
+      "bytes": 17319,
+      "sha256": "5359B825D0F5001B872A89D00319C9B299922316C27988D0A3BF6D8A867575EE",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 shock is triggered when the Spy satellite arm hurts the player; official AS3 electrical_impact_01.mp3 matches the electric impact context."
+    },
+    {
+      "soundName": "gr",
+      "fileName": "gr.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/gorilla_grunts_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/gr.mp3",
+      "bytes": 18747,
+      "sha256": "7F06DD6E0A092CABC9096442C73D646EFF278E2CD5D3DE80C71BF86C99E3E444",
+      "confidence": "semantic-context-match",
+      "mappingReason": "AS2 gr is used for giant, boss, and creature stomp/growl moments; official AS3 gorilla_grunts_01.mp3 is the closest local creature-grunt source."
+    },
+    {
+      "soundName": "raarr",
+      "fileName": "raarr.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/lion_roar_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/raarr.mp3",
+      "bytes": 10395,
+      "sha256": "5F6D2AC57FA17D4F9DC860F87A05633EDFDFCE815DDBD685FC80E84ABAD15886",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 raarr is emitted by a function named lionRoar; official AS3 lion_roar_01.mp3 directly matches that script context."
     }
   ],
   "pathEntries": [
@@ -109,6 +181,17 @@
       "sha256": "7B3B72DD82C1552C8EE93C8683742E0E6A618B22F28E5259BDA3D2229B9D706A",
       "confidence": "script-path-match",
       "mappingReason": "AS2 script loads externalAssets/audio/haunted_house.mp3 directly; the official AS3 archive includes the same haunted_house.mp3 music under game/sound/music."
+    },
+    {
+      "assetPath": "content/www.poptropica.com/scenes/islandNightWatch/assets/elevatorMusic.mp3",
+      "sourceGroup": "as2",
+      "sourceType": "native-as2-path-present",
+      "sourceAssetPath": "content/www.poptropica.com/scenes/islandNightWatch/assets/elevatorMusic.mp3",
+      "seedPath": null,
+      "bytes": 29257,
+      "sha256": "F32572749D4F81A7B7F2274865F1BA7BFBEB001E7861F3C9C3812828CAEF1D76",
+      "confidence": "script-path-present",
+      "mappingReason": "AS2 sharedContent.swf loads this path directly and the original AS2 archive already contains the matching Night Watch elevator music file."
     }
   ]
 }

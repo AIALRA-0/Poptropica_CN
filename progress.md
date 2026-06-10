@@ -501,3 +501,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS2 Seeded Sound QA / Haunted House Path Audio
 
 - Continue searching for stronger sources for `ouch`, `thump`, `ring`, `gr`, `raarr`, `shock`, `tickle`, and `Alvin`.
+
+## 2026-06-10 AS2 Semantic Sound Seed Expansion
+
+- Re-audited the remaining unmapped AS2 literal calls against the full AS2 sound-call report and local official AS3 effect library. Added tracked seed mappings for six more AS2 sound keys where script context was strong enough to justify an official AS3 fallback: `ouch` -> `getHit.mp3`, `thump` -> `deep_impact_01.mp3`, `ring` -> `bells_01.mp3`, `shock` -> `electrical_impact_01.mp3`, `gr` -> `gorilla_grunts_01.mp3`, and `raarr` -> `lion_roar_01.mp3`.
+- The `raarr` mapping is backed by AS2 functions named `lionRoar`; `shock` is backed by the Spy satellite hurt/electric context; `ring` is used by bell, buzzer, and phone-ring interactions; `ouch`, `thump`, and `gr` are recorded as semantic context matches rather than exact token matches.
+- Recorded the native AS2 `content/www.poptropica.com/scenes/islandNightWatch/assets/elevatorMusic.mp3` path in the same provenance file. This path was already present in the original AS2 archive and is now covered by the path-entry QA alongside the previously seeded Haunted House music path.
+- `npm run qa:as2-sound-bridge` now passes with `expectedSoundCount: 17`, `overrideSoundCount: 17`, `expectedPathCount: 2`, and 0 failed checks, confirming the mounted local runtime exposes and serves every tracked `_sounds` mapping and path-entry audio with matching bytes/SHA-256.
+
+## TODO AS2 Semantic Sound Seed Expansion
+
+- Keep `Alvin` and `tickle` unmapped until a stronger original/local source is found; the current local AS3 candidates are too ambiguous for automatic playback.
