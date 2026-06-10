@@ -19,6 +19,14 @@
       "length": 948803,
       "sha256": "9c9b3812ef3ea5cba30bc10ef13b4970064562ef3c57b20506f0790eac9d738b",
       "addedFor": "AS3 sounds.xml missing-reference repair"
+    },
+    {
+      "entryName": "content/www.poptropica.com/game/sound/music/Brainiacs.mp3",
+      "source": "Current original Poptropica resource URL",
+      "originalUrl": "https://www.poptropica.com/cmg/play/resources/sound/music/Brainiacs.mp3",
+      "length": 479889,
+      "sha256": "ca1acc9d1e234bd9a64c37f0d5f103f15cf23370b01e6dc8dc8d42c12058bf04",
+      "addedFor": "AS3 sounds.xml missing-reference repair"
     }
   ]
 }

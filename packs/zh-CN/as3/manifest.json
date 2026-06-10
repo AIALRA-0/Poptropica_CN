@@ -7,10 +7,10 @@
   "swfPatchedAssets": [],
   "pendingSwfAssets": [],
   "runtimeZip": {
-    "status": "ready",
+    "status": "reused",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 43,
+    "replacementCount": 44,
     "swfRuntimeOverrides": "safe_subset"
   }
 }

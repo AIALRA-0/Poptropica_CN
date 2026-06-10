@@ -16,14 +16,6 @@ const KNOWN_UNRESOLVED_NOTES = new Map([
   ["mocktropica/mainstreet/effects/waterfall_02_l.mp3", {
     note: "The local AS3 archive has waterfall.mp3 and ambient/waterfall_01_loop.mp3, but neither is an exact same-name/same-role replacement for this effects reference."
   }],
-  ["mocktropica/server/music/brainiacs.mp3", {
-    note: "Public Poptropica music and gamerip listings mention Brainiacs, but no repository-safe original file is present in the local AS3 archive.",
-    sourceLeads: [
-      "https://poptropi.ca/pop-plus/music/",
-      "https://btspoptropica.weebly.com/music.html",
-      "https://downloads.khinsider.com/game-soundtracks/album/poptropica-ost-gamerip-online-2007"
-    ]
-  }],
   ["virushunter/shipdemo/effects/clear_wave.mp3", {
     note: "The local AS3 archive has beach_waves ambient loops, but no exact effects/clear_wave.mp3 replacement has been found."
   }]
