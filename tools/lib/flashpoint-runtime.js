@@ -38,6 +38,48 @@ const RUNTIME_BROWSER_ZOOM_MIN = 1;
 const RUNTIME_BROWSER_ZOOM_MAX = 1;
 const USER_AUDIO_EXTENSIONS = [".mp3", ".ogg", ".wav", ".m4a"];
 const GENERATED_AS2_SOUND_MANIFEST = ".embedded-sounds.json";
+const AS2_AS3_FALLBACK_SOUND_MAPPINGS = [
+  {
+    soundName: "zap",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/electric_zap_01.mp3",
+    reason: "Official AS3 effect with matching zap token."
+  },
+  {
+    soundName: "crunch",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/crunch_01.mp3",
+    reason: "Official AS3 effect with exact crunch token."
+  },
+  {
+    soundName: "splat",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/splat_01.mp3",
+    reason: "Official AS3 effect with exact splat token."
+  },
+  {
+    soundName: "whack",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/whack_01.mp3",
+    reason: "Official AS3 effect with exact whack token."
+  },
+  {
+    soundName: "pow",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/small_pow_01.mp3",
+    reason: "Official AS3 comic-impact effect with matching pow token."
+  },
+  {
+    soundName: "chomp",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/chomp_01.mp3",
+    reason: "Official AS3 effect with exact chomp token."
+  },
+  {
+    soundName: "poof",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/poof_01.mp3",
+    reason: "Official AS3 effect with exact poof token."
+  },
+  {
+    soundName: "pop",
+    sourceAssetPath: "content/www.poptropica.com/game/sound/effects/pop_01.mp3",
+    reason: "Official AS3 effect with exact pop token."
+  }
+];
 
 function parsePositiveIntEnv(name) {
   const raw = process.env[name];
@@ -203,13 +245,130 @@ function findExistingUserSound(soundRoot, soundKey) {
     .find((candidate) => fileExists(candidate)) || null;
 }
 
+function copyGeneratedSound({ sourcePath, soundRoot, soundKey, sourceSha256, previousEntry, entry }) {
+  const extension = path.extname(sourcePath).toLowerCase();
+  if (!USER_AUDIO_EXTENSIONS.includes(extension)) {
+    return "skipped";
+  }
+
+  const targetPath = path.join(soundRoot, `${soundKey}${extension}`);
+  const existingPath = findExistingUserSound(soundRoot, soundKey);
+  if (existingPath && path.resolve(existingPath) !== path.resolve(targetPath)) {
+    return "skipped";
+  }
+
+  if (fileExists(targetPath)) {
+    const targetSha256 = sha256File(targetPath);
+    if (targetSha256 === sourceSha256) {
+      entry.copied = false;
+      return "present";
+    }
+    if (!previousEntry || previousEntry.sha256 !== targetSha256) {
+      return "skipped";
+    }
+    fs.copyFileSync(sourcePath, targetPath);
+    entry.copied = true;
+    return "copied";
+  }
+
+  if (!fileExists(targetPath)) {
+    fs.copyFileSync(sourcePath, targetPath);
+    entry.copied = true;
+    return "copied";
+  }
+}
+
+function extractZipEntryToTemp({ archivePath, tarBin, entryName, tempRoot }) {
+  removeDirContents(tempRoot);
+  ensureDirSync(tempRoot);
+  const result = spawnSync(tarBin || "tar", ["-xf", archivePath, "-C", tempRoot, entryName], {
+    encoding: "utf8",
+    windowsHide: true,
+    maxBuffer: 1024 * 1024 * 32
+  });
+  if (result.status !== 0) {
+    return {
+      ok: false,
+      error: (result.stderr || result.stdout || `Unable to extract ${entryName}`).trim()
+    };
+  }
+  return { ok: true };
+}
+
+function syncAs2As3FallbackSounds({ soundRoot, previousManifest, nextManifest }) {
+  const config = readJson(paths.configPath, null);
+  const as3Gamezip = config?.sources?.as3Gamezip;
+  const tarBin = config?.tools?.tarBin;
+  if (!as3Gamezip || !fileExists(as3Gamezip) || !tarBin || !fileExists(tarBin)) {
+    return { copied: 0, skipped: AS2_AS3_FALLBACK_SOUND_MAPPINGS.length };
+  }
+
+  const tempRoot = path.join(paths.tempDir, `as2-as3-sound-fallbacks-${process.pid}-${Date.now()}`);
+  let copied = 0;
+  let skipped = 0;
+  try {
+    for (const mapping of AS2_AS3_FALLBACK_SOUND_MAPPINGS) {
+      const soundKey = sanitizeAs2SoundName(mapping.soundName);
+      if (!soundKey) {
+        skipped += 1;
+        continue;
+      }
+
+      const extractResult = extractZipEntryToTemp({
+        archivePath: as3Gamezip,
+        tarBin,
+        entryName: mapping.sourceAssetPath,
+        tempRoot
+      });
+      if (!extractResult.ok) {
+        skipped += 1;
+        continue;
+      }
+
+      const sourcePath = path.join(tempRoot, mapping.sourceAssetPath.replace(/\//gu, path.sep));
+      if (!fileExists(sourcePath)) {
+        skipped += 1;
+        continue;
+      }
+
+      const sourceSha256 = sha256File(sourcePath);
+      const manifestEntry = {
+        soundName: mapping.soundName,
+        sourceType: "as3-official-fallback",
+        sourceAssetPath: mapping.sourceAssetPath,
+        sourceSoundPath: path.basename(mapping.sourceAssetPath),
+        fileName: `${soundKey}${path.extname(mapping.sourceAssetPath).toLowerCase()}`,
+        bytes: fs.statSync(sourcePath).size,
+        sha256: sourceSha256,
+        reason: mapping.reason
+      };
+      const status = copyGeneratedSound({
+        sourcePath,
+        soundRoot,
+        soundKey,
+        sourceSha256,
+        previousEntry: previousManifest.entries?.[soundKey],
+        entry: manifestEntry
+      });
+      if (status === "copied") {
+        copied += 1;
+      } else if (status === "skipped") {
+        skipped += 1;
+        continue;
+      }
+      nextManifest.entries[soundKey] = manifestEntry;
+    }
+  } finally {
+    removeDirContents(tempRoot);
+    fs.rmSync(tempRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 150 });
+  }
+
+  return { copied, skipped };
+}
+
 function syncRecoveredAs2EmbeddedSounds() {
   const report = readJson(path.join(paths.qaDir, "as2-sound-calls-audit.json"), null);
   const matches = Array.isArray(report?.embeddedSoundNameMatches) ? report.embeddedSoundNameMatches : [];
-  if (!report?.archivePath || !report?.extractedRoot || matches.length === 0) {
-    return { copied: 0, skipped: 0, reason: "no_as2_embedded_sound_matches" };
-  }
-
   const soundRoot = path.join(paths.userAudioDir, "as2", "_sounds");
   ensureDirSync(soundRoot);
   const manifestPath = path.join(soundRoot, GENERATED_AS2_SOUND_MANIFEST);
@@ -218,56 +377,53 @@ function syncRecoveredAs2EmbeddedSounds() {
   let copied = 0;
   let skipped = 0;
 
-  for (const entry of matches) {
-    const soundKey = sanitizeAs2SoundName(entry.soundName);
-    const match = Array.isArray(entry.matches) ? entry.matches[0] : null;
-    if (!soundKey || !match?.assetPath || !match?.path) {
-      skipped += 1;
-      continue;
-    }
+  if (report?.archivePath && report?.extractedRoot) {
+    for (const entry of matches) {
+      const soundKey = sanitizeAs2SoundName(entry.soundName);
+      const match = Array.isArray(entry.matches) ? entry.matches[0] : null;
+      if (!soundKey || !match?.assetPath || !match?.path) {
+        skipped += 1;
+        continue;
+      }
 
-    const extension = path.extname(match.path).toLowerCase();
-    if (!USER_AUDIO_EXTENSIONS.includes(extension)) {
-      skipped += 1;
-      continue;
-    }
+      const assetId = hashString(`as2::${report.archivePath}::${match.assetPath}`);
+      const sourcePath = path.join(report.extractedRoot, "__ffdec_sounds__", assetId, match.path.replace(/\//gu, path.sep));
+      if (!fileExists(sourcePath)) {
+        skipped += 1;
+        continue;
+      }
 
-    const assetId = hashString(`as2::${report.archivePath}::${match.assetPath}`);
-    const sourcePath = path.join(report.extractedRoot, "__ffdec_sounds__", assetId, match.path.replace(/\//gu, path.sep));
-    if (!fileExists(sourcePath)) {
-      skipped += 1;
-      continue;
+      const sourceSha256 = sha256File(sourcePath);
+      const manifestEntry = {
+        soundName: entry.soundName,
+        sourceType: "as2-embedded-match",
+        sourceAssetPath: match.assetPath,
+        sourceSoundPath: match.path,
+        fileName: `${soundKey}${path.extname(match.path).toLowerCase()}`,
+        bytes: fs.statSync(sourcePath).size,
+        sha256: sourceSha256
+      };
+      const status = copyGeneratedSound({
+        sourcePath,
+        soundRoot,
+        soundKey,
+        sourceSha256,
+        previousEntry: previousManifest.entries?.[soundKey],
+        entry: manifestEntry
+      });
+      if (status === "copied") {
+        copied += 1;
+      } else if (status === "skipped") {
+        skipped += 1;
+        continue;
+      }
+      nextManifest.entries[soundKey] = manifestEntry;
     }
-
-    const sourceSha256 = sha256File(sourcePath);
-    const targetPath = path.join(soundRoot, `${soundKey}${extension}`);
-    const existingPath = findExistingUserSound(soundRoot, soundKey);
-    const previous = previousManifest.entries?.[soundKey];
-    if (existingPath && path.resolve(existingPath) !== path.resolve(targetPath)) {
-      skipped += 1;
-      continue;
-    }
-    if (fileExists(targetPath) && previous?.sha256 !== sourceSha256 && sha256File(targetPath) !== sourceSha256) {
-      skipped += 1;
-      continue;
-    }
-
-    if (!fileExists(targetPath) || sha256File(targetPath) !== sourceSha256) {
-      fs.copyFileSync(sourcePath, targetPath);
-      copied += 1;
-    } else {
-      skipped += 1;
-    }
-
-    nextManifest.entries[soundKey] = {
-      soundName: entry.soundName,
-      sourceAssetPath: match.assetPath,
-      sourceSoundPath: match.path,
-      fileName: path.basename(targetPath),
-      bytes: fs.statSync(targetPath).size,
-      sha256: sourceSha256
-    };
   }
+
+  const fallbackResult = syncAs2As3FallbackSounds({ soundRoot, previousManifest, nextManifest });
+  copied += fallbackResult.copied;
+  skipped += fallbackResult.skipped;
 
   writeJson(manifestPath, nextManifest);
   return { copied, skipped, manifestPath };

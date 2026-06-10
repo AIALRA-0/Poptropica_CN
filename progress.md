@@ -474,3 +474,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Revisit the two remaining AS2 script-export failures with alternate decompiler settings or manual SWF inspection; longer isolated FFDec runs have already failed, and both SWFs already have successful sound-tag exports.
 - Use the now-full AS2 sound-tag coverage and near-full script corpus to prioritize original-source searches for high-frequency literals: `zap`, `boom`, `crunch`, `ouch`, `splat`, `thump`, and `whack`.
 - Expand the AS2 runtime sound bridge beyond the current direct embedded matches (`boom`, `CoolHissSound.wav`, `croneLine`) only when a defensible local/original source mapping is found.
+
+## 2026-06-10 AS2 Official Fallback Sound Mapping
+
+- Ranked the complete AS2 literal `showSound` corpus. The highest-frequency names are `zap` (110 calls), `boom` (26), `crunch` (16), `ouch` (15), `splat` (11), `thump` (11), `whack` (11), `ring` (9), `pow` (8), and `chomp` (5).
+- Searched local project media, `AS2.zip`, `AS3.zip`, and Flashpoint audio caches for those names. AS2 still only has the 9 loose media files plus the recovered embedded SWF sounds, but the official AS3 archive contains strong token/exact matches for several comic-effect names.
+- Extended `tools/lib/flashpoint-runtime.js` so AS2 `_sounds` generation now includes official AS3 fallback effects when no user override exists: `zap` -> `electric_zap_01.mp3`, `crunch` -> `crunch_01.mp3`, `splat` -> `splat_01.mp3`, `whack` -> `whack_01.mp3`, `pow` -> `small_pow_01.mp3`, `chomp` -> `chomp_01.mp3`, `poof` -> `poof_01.mp3`, and `pop` -> `pop_01.mp3`.
+- The generated `runtime-data/user-audio/as2/_sounds/.embedded-sounds.json` now records 11 playable AS2 sound keys: the 3 direct AS2 embedded matches plus 8 official AS3 fallback mappings, each with source path, byte count, SHA-256, and reason. Audio bodies remain ignored under `runtime-data/user-audio/` and are regenerated from local official archives.
+- Verified the AS2 base page exposes all 11 `_sounds/*` keys through `sceneAudioOverrides`, and direct proxy requests to representative sound URLs (`zap`, `crunch`, `pow`, `boom`, `croneLine`) return HTTP 200 with the expected byte counts.
+
+## TODO AS2 Official Fallback Sound Mapping
+
+- Keep `ouch`, `thump`, `ring`, `gr`, `raarr`, `shock`, `tickle`, and `Alvin` unmapped until a stronger original/local source is identified; AS3 has plausible near-matches for some of these but not enough confidence for automatic playback.
+- Runtime-test scenes that trigger the newly mapped high-frequency names, especially `zap` and `crunch`, to confirm the AS2 JavaScript audio pool handles repeated rapid effects without clipping or UI regressions.
