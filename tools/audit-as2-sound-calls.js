@@ -1006,12 +1006,96 @@ function topDynamicCallSites(calls, { limit = 80 } = {}) {
     .slice(0, limit);
 }
 
+function scriptSymbolKey(scriptPath) {
+  const parts = String(scriptPath || "").split("/");
+  if (parts[0] !== "scripts" || !/^DefineSprite_/u.test(parts[1] || "")) {
+    return null;
+  }
+  return parts.slice(0, 2).join("/");
+}
+
 function normalizeSoundNameForCount(value) {
   const clean = String(value || "").replace(/\\/gu, "/").trim();
   if (!clean || /^(?:none|null|undefined)$/iu.test(clean)) {
     return null;
   }
   return clean.includes("/") ? clean : clean.toLowerCase();
+}
+
+function buildUnresolvedDynamicSameSymbolLiteralCandidates({ unresolvedDynamicCalls, literalCalls }) {
+  const literalByAssetSymbol = new Map();
+  for (const call of literalCalls) {
+    const symbolKey = scriptSymbolKey(call.scriptPath);
+    if (!symbolKey || !call.soundName) {
+      continue;
+    }
+    const key = `${call.assetId}\t${symbolKey}`;
+    if (!literalByAssetSymbol.has(key)) {
+      literalByAssetSymbol.set(key, new Map());
+    }
+    literalByAssetSymbol.get(key).set(normalizeSoundNameForCount(call.soundName), {
+      soundName: call.soundName,
+      normalizedSoundName: normalizeSoundNameForCount(call.soundName),
+      scriptPath: call.scriptPath,
+      lineNumber: call.lineNumber,
+      line: call.line
+    });
+  }
+
+  const groupedRows = new Map();
+  for (const call of unresolvedDynamicCalls) {
+    const symbolKey = scriptSymbolKey(call.scriptPath);
+    if (!symbolKey) {
+      continue;
+    }
+    const literalCandidates = literalByAssetSymbol.get(`${call.assetId}\t${symbolKey}`);
+    if (!literalCandidates?.size) {
+      continue;
+    }
+    const rowKey = `${call.assetId}\t${symbolKey}`;
+    if (!groupedRows.has(rowKey)) {
+      groupedRows.set(rowKey, {
+        assetPath: call.assetPath,
+        canonicalKey: call.canonicalKey,
+        sceneFolder: call.sceneFolder,
+        symbolKey,
+        candidateEvidence: "same-define-sprite-literal-sound-call",
+        usedForInference: false,
+        unresolvedDynamicCallCount: 0,
+        unresolvedDynamicFunctions: new Map(),
+        soundLiteralCandidates: [...literalCandidates.values()]
+          .sort((left, right) => left.normalizedSoundName.localeCompare(right.normalizedSoundName, "en")),
+        sampleDynamicCall: {
+          rawFirstArg: call.rawFirstArg,
+          dynamicFunctionName: call.dynamicFunctionName,
+          scriptPath: call.scriptPath,
+          lineNumber: call.lineNumber,
+          line: call.line
+        }
+      });
+    }
+    const row = groupedRows.get(rowKey);
+    row.unresolvedDynamicCallCount += 1;
+    const functionKey = `${call.rawFirstArg} @ ${call.dynamicFunctionName || "(no function)"}`;
+    row.unresolvedDynamicFunctions.set(functionKey, (row.unresolvedDynamicFunctions.get(functionKey) || 0) + 1);
+  }
+
+  return [...groupedRows.values()]
+    .map((row) => ({
+      ...row,
+      unresolvedDynamicFunctions: [...row.unresolvedDynamicFunctions.entries()]
+        .map(([key, count]) => ({ key, count }))
+        .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key, "en"))
+    }))
+    .sort((left, right) => {
+      if (left.unresolvedDynamicCallCount !== right.unresolvedDynamicCallCount) {
+        return right.unresolvedDynamicCallCount - left.unresolvedDynamicCallCount;
+      }
+      if (left.soundLiteralCandidates.length !== right.soundLiteralCandidates.length) {
+        return left.soundLiteralCandidates.length - right.soundLiteralCandidates.length;
+      }
+      return left.assetPath.localeCompare(right.assetPath, "en");
+    });
 }
 
 function buildUnresolvedDynamicAssetStringCandidates({ unresolvedDynamicCalls, swfAssetsByPath, extractedRoot, knownSoundNames }) {
@@ -1486,6 +1570,22 @@ function main() {
   const knownSoundRows = [...literalRows, ...inferredRows];
   const inferredDynamicSites = topDynamicCallSites(inferredDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
   const unresolvedDynamicSites = topDynamicCallSites(unresolvedDynamicCalls, { limit: Number.MAX_SAFE_INTEGER });
+  const unresolvedDynamicSameSymbolLiteralCandidates = buildUnresolvedDynamicSameSymbolLiteralCandidates({
+    unresolvedDynamicCalls,
+    literalCalls
+  });
+  const unresolvedDynamicSameSymbolLiteralRows = unresolvedDynamicSameSymbolLiteralCandidates.flatMap((row) =>
+    row.soundLiteralCandidates.map((candidate) => ({
+      soundName: candidate.normalizedSoundName,
+      rawValue: candidate.soundName,
+      assetPath: row.assetPath,
+      canonicalKey: row.canonicalKey,
+      sceneFolder: row.sceneFolder,
+      symbolKey: row.symbolKey,
+      unresolvedDynamicCallCount: row.unresolvedDynamicCallCount,
+      unresolvedDynamicFunctions: row.unresolvedDynamicFunctions
+    }))
+  );
   const knownSoundNames = new Set(knownSoundRows.map((row) => row.normalizedSoundName).filter(Boolean));
   const unresolvedDynamicAssetStringCandidates = buildUnresolvedDynamicAssetStringCandidates({
     unresolvedDynamicCalls,
@@ -1564,6 +1664,10 @@ function main() {
       inferredDynamicSoundCandidateCount: inferredRows.length,
       inferredDynamicSiteCount: inferredDynamicSites.length,
       unresolvedDynamicSiteCount: unresolvedDynamicSites.length,
+      unresolvedDynamicAssetsWithSameSymbolLiteralSounds: new Set(unresolvedDynamicSameSymbolLiteralCandidates.map((row) => row.assetPath)).size,
+      unresolvedDynamicSameSymbolLiteralSiteCount: unresolvedDynamicSameSymbolLiteralCandidates.length,
+      unresolvedDynamicSameSymbolLiteralCallCount: unresolvedDynamicSameSymbolLiteralCandidates.reduce((total, row) => total + row.unresolvedDynamicCallCount, 0),
+      unresolvedDynamicSameSymbolLiteralCandidateCount: unresolvedDynamicSameSymbolLiteralRows.length,
       unresolvedDynamicAssetsWithKnownSoundStrings: unresolvedDynamicAssetStringCandidates.length,
       unresolvedDynamicKnownSoundStringCandidateCount: unresolvedDynamicStringRows.length,
       uniqueUnresolvedDynamicKnownSoundStringCandidates: new Set(unresolvedDynamicStringRows.map((row) => row.soundName).filter(Boolean)).size,
@@ -1584,6 +1688,8 @@ function main() {
     topUnresolvedDynamicFunctions: countBy(unresolvedDynamicCalls, (call) => `${call.rawFirstArg} @ ${call.dynamicFunctionName || "(no function)"}`).slice(0, 80),
     topUnresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
     topInferredDynamicSites: inferredDynamicSites.slice(0, 80),
+    topUnresolvedDynamicSameSymbolLiteralCandidates: countBy(unresolvedDynamicSameSymbolLiteralRows, (row) => row.soundName).slice(0, 80),
+    topUnresolvedDynamicSameSymbolLiteralAssets: unresolvedDynamicSameSymbolLiteralCandidates.slice(0, 80),
     topUnresolvedDynamicKnownSoundStringCandidates: countBy(unresolvedDynamicStringRows, (row) => row.soundName).slice(0, 80),
     topUnresolvedDynamicKnownSoundStringAssets: [...unresolvedDynamicAssetStringCandidates]
       .sort((left, right) => {
@@ -1632,6 +1738,7 @@ function main() {
         line: call.line
       })),
       unresolvedDynamicSites: unresolvedDynamicSites.slice(0, 80),
+      unresolvedDynamicSameSymbolLiteralCandidates: unresolvedDynamicSameSymbolLiteralCandidates.slice(0, 80),
       unresolvedDynamicAssetStringCandidates: unresolvedDynamicAssetStringCandidates.slice(0, 80),
       unresolvedDynamicKnownSoundStringCandidates: unresolvedDynamicStringRows.slice(0, 120),
       unresolvedDynamicCalls: unresolvedDynamicCalls.slice(0, 80).map((call) => ({
