@@ -318,6 +318,41 @@ function formatQaError(step, error) {
   };
 }
 
+function captureWindowMatchesRuntime(capture, runtime) {
+  const expectedPid = Number(runtime?.pid || 0);
+  if (!expectedPid) {
+    return true;
+  }
+  const actualPid = Number(capture?.window?.pid || 0);
+  return actualPid === expectedPid;
+}
+
+function formatCapturePidMismatch(capture, runtime) {
+  const expectedPid = Number(runtime?.pid || 0) || null;
+  const actualPid = Number(capture?.window?.pid || 0) || null;
+  const actualCmdline = Array.isArray(capture?.window?.cmdline)
+    ? capture.window.cmdline.join(" ")
+    : "";
+  return {
+    step: "capture-window-pid-mismatch",
+    message: `Captured window pid ${actualPid || "unknown"} does not match launched runtime pid ${expectedPid || "unknown"}.`,
+    status: null,
+    stdout: "",
+    stderr: "",
+    expectedPid,
+    actualPid,
+    actualCmdline: actualCmdline.slice(0, 1000)
+  };
+}
+
+function rejectMismatchedCapture(capture, runtime, qaErrors) {
+  if (!capture || captureWindowMatchesRuntime(capture, runtime)) {
+    return capture;
+  }
+  qaErrors.push(formatCapturePidMismatch(capture, runtime));
+  return null;
+}
+
 async function smokeIsland({ config, qaDir, runDir, entry, index, total, args }) {
   const overrideSuffix = args.overrideScene ? `-${safeFileSegment(entry.roomParam || entry.as3TargetScene || "override")}` : "";
   const safeStem = `${String(index + 1).padStart(2, "0")}-${entry.canonicalKey}${overrideSuffix}`;
@@ -377,6 +412,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       }), {
         timeoutMs: 40000
       });
+      capture = rejectMismatchedCapture(capture, runtime, qaErrors);
     } catch (error) {
       let recoveredWindow = null;
       try {
@@ -414,6 +450,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
           }), {
             timeoutMs: 40000
           });
+          capture = rejectMismatchedCapture(capture, runtime, qaErrors);
         } catch (retryError) {
           qaErrors.push(formatQaError("capture-window", retryError));
           qaErrors.push(formatQaError("capture-window-initial", error));

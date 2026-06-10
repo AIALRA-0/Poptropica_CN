@@ -470,7 +470,8 @@ function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relat
 
   try {
     const activeRuntimeWindow = reacquireRuntimeWindow(runtimeWindow, postClickWindowPath);
-    runPythonQa([
+    const activePid = activeRuntimeWindow?.searched?.pid || activeRuntimeWindow?.match?.pid || null;
+    const clickArgs = [
       "click-window",
       "--handle",
       String(activeRuntimeWindow.match.handle),
@@ -484,7 +485,11 @@ function clickStagePoint(qaDir, reportStem, runtimeWindow, capture, stage, relat
       String(point.y),
       "--output",
       clickMetaPath
-    ], {
+    ];
+    if (activePid) {
+      clickArgs.push("--pid", String(activePid));
+    }
+    runPythonQa(clickArgs, {
       timeoutMs: 20000
     });
 
@@ -667,7 +672,8 @@ function clickMaps(qaDir, reportStem, runtimeWindow, capture, stage) {
   try {
     const activeRuntimeWindow = reacquireRuntimeWindow(runtimeWindow, postMapWindowPath);
     logOffset = getFileSize(GAME_SERVER_LOG_PATH);
-    runPythonQa([
+    const activePid = activeRuntimeWindow?.searched?.pid || activeRuntimeWindow?.match?.pid || null;
+    const clickArgs = [
       "click-window",
       "--handle",
       String(activeRuntimeWindow.match.handle),
@@ -681,7 +687,11 @@ function clickMaps(qaDir, reportStem, runtimeWindow, capture, stage) {
       String(point.y),
       "--output",
       clickMetaPath
-    ], {
+    ];
+    if (activePid) {
+      clickArgs.push("--pid", String(activePid));
+    }
+    runPythonQa(clickArgs, {
       timeoutMs: 20000
     });
 

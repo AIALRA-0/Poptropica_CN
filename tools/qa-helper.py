@@ -193,9 +193,10 @@ def guess_runtime_window(process_names=None, title_contains=None, pid=None):
     process_names = process_names or set()
     title_contains = title_contains or []
 
-    exact = best_window_match(rows, process_names, title_contains, pid)
-    if exact:
-        return exact
+    if process_names or title_contains or pid is not None:
+        exact = best_window_match(rows, process_names, title_contains, pid)
+        if exact:
+            return exact
 
     candidates = []
     for row in rows:
@@ -223,9 +224,14 @@ def guess_runtime_window(process_names=None, title_contains=None, pid=None):
 
 
 def resolve_window_row(hwnd, process_names=None, title_contains=None, pid=None):
+    process_names = process_names or set()
+    title_contains = title_contains or []
     row = window_row(hwnd)
-    if row and not is_transient_runtime_wrapper(row) and (pid is None or int(row.get("pid") or -1) == pid):
+    if row and match_window(row, process_names, title_contains, pid):
         return row
+
+    if not process_names and not title_contains and pid is None:
+        return None
 
     for _ in range(5):
         time.sleep(0.25)
@@ -623,8 +629,9 @@ def command_click_window(args):
     hwnd = int(args.handle)
     process_names = parse_csv(getattr(args, "process_names", ""))
     title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
+    pid = int(args.pid) if getattr(args, "pid", None) else None
     bring_to_front(hwnd)
-    row = resolve_window_row(hwnd, process_names, title_contains)
+    row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     hwnd = int(row["handle"])
@@ -793,6 +800,7 @@ def main():
     click_parser.add_argument("--output")
     click_parser.add_argument("--process-names", default="")
     click_parser.add_argument("--title-contains", default="")
+    click_parser.add_argument("--pid", type=int)
     click_parser.set_defaults(func=command_click_window)
 
     ocr_parser = subparsers.add_parser("ocr-image")

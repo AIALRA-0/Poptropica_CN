@@ -25,6 +25,7 @@ const LAUNCHER_ACTION_POINTS = {
 
 const SUPER_POWER_VIEWPORT_WIDTH = 1010;
 const SUPER_POWER_VIEWPORT_HEIGHT = 645;
+const RUNTIME_CLICK_PROCESS_NAMES = "flashpointnavigator.exe,fpnavigator.exe,flashpointsecureplayer.exe,basilisk.exe,basiliskii.exe,firefox.exe";
 
 const SUPER_POWER_ACTIONS = {
   "downtown-left": {
@@ -411,26 +412,46 @@ function getStageViewportRect(stage, stepDefinition, captureMeta) {
   };
 }
 
+function captureClickOffset(captureMeta) {
+  const mode = String(captureMeta?.captureMode || "").toLowerCase();
+  const className = String(captureMeta?.window?.className || "").toLowerCase();
+  if (mode === "client" && className.includes("mozillawindowclass")) {
+    return { x: 0, y: 110 };
+  }
+  return { x: 0, y: 0 };
+}
+
 function stagePointToWindowPoint(stage, relativePoint, stepDefinition, captureMeta) {
   const viewportRect = getStageViewportRect(stage, stepDefinition, captureMeta);
+  const clickOffset = captureClickOffset(captureMeta);
   return {
-    x: Math.round(viewportRect.left + viewportRect.width * relativePoint.x),
-    y: Math.round(viewportRect.top + viewportRect.height * relativePoint.y)
+    x: Math.round(clickOffset.x + viewportRect.left + viewportRect.width * relativePoint.x),
+    y: Math.round(clickOffset.y + viewportRect.top + viewportRect.height * relativePoint.y)
   };
 }
 
-function captureStageBundle(handle, reportDir, stem) {
+function captureStageBundle(handle, reportDir, stem, options = {}) {
   const screenshotPath = path.join(reportDir, `${stem}.png`);
   const captureMetaPath = path.join(reportDir, `${stem}-capture.json`);
   const stageMetaPath = path.join(reportDir, `${stem}-stage.json`);
   const ocrMetaPath = path.join(reportDir, `${stem}-ocr.json`);
-  const capture = runPythonQa([
+  const captureArgs = [
     "capture-window",
     "--handle", String(handle),
     "--client-only",
     "--output", screenshotPath,
     "--metadata-output", captureMetaPath
-  ], 70000);
+  ];
+  if (options.processNames) {
+    captureArgs.push("--process-names", String(options.processNames));
+  }
+  if (options.titleContains) {
+    captureArgs.push("--title-contains", String(options.titleContains));
+  }
+  if (options.pid) {
+    captureArgs.push("--pid", String(options.pid));
+  }
+  const capture = runPythonQa(captureArgs, 70000);
   const stage = runPythonQa([
     "analyze-stage",
     "--input", screenshotPath,
@@ -452,13 +473,23 @@ function captureStageBundle(handle, reportDir, stem) {
   };
 }
 
-function clickWindowPoint(handle, point) {
-  const click = runPythonQa([
+function clickWindowPoint(handle, point, options = {}) {
+  const args = [
     "click-window",
     "--handle", String(handle),
     "--x", String(point.x),
     "--y", String(point.y)
-  ], 20000);
+  ];
+  if (options.processNames) {
+    args.push("--process-names", String(options.processNames));
+  }
+  if (options.titleContains) {
+    args.push("--title-contains", String(options.titleContains));
+  }
+  if (options.pid) {
+    args.push("--pid", String(options.pid));
+  }
+  const click = runPythonQa(args, 20000);
   return {
     point,
     output: click
@@ -524,6 +555,7 @@ function classifyStepSuccess(stepDefinition, logResult, afterBundle) {
 async function runStageAction({
   actionName,
   handle,
+  runtimePid,
   reportDir,
   sequenceIndex,
   delayMs,
@@ -534,15 +566,20 @@ async function runStageAction({
     throw new Error(`Unsupported action: ${actionName}`);
   }
 
-  const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`);
+  const windowFilter = {
+    processNames: RUNTIME_CLICK_PROCESS_NAMES,
+    pid: runtimePid
+  };
+  const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`, windowFilter);
+  const activeHandle = Number(beforeBundle.capture?.window?.handle || handle);
   const logStartOffset = fs.existsSync(GAME_SERVER_LOG_PATH) ? fs.statSync(GAME_SERVER_LOG_PATH).size : 0;
   const clickPlan = (Array.isArray(stepDefinition.points) ? stepDefinition.points : [stepDefinition.point]).filter(Boolean);
   const clickSequence = [];
   const followupDelayMs = Number(stepDefinition.followupDelayMs || Math.min(1800, Math.max(600, Math.round((stepDefinition.settleMs || fallbackWaitMs) / 8))));
   for (let index = 0; index < clickPlan.length; index += 1) {
-    focusWindow(handle);
+    focusWindow(activeHandle);
     const point = stagePointToWindowPoint(beforeBundle.stage, clickPlan[index], stepDefinition, beforeBundle.capture);
-    clickSequence.push(clickWindowPoint(handle, point));
+    clickSequence.push(clickWindowPoint(activeHandle, point, windowFilter));
     if (index + 1 < clickPlan.length) {
       await sleep(followupDelayMs);
     }
@@ -553,7 +590,7 @@ async function runStageAction({
     : null;
 
   await sleep(stepDefinition.settleMs || fallbackWaitMs);
-  const afterBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-after`);
+  const afterBundle = captureStageBundle(activeHandle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-after`, windowFilter);
   const verdict = classifyStepSuccess(stepDefinition, logResult, afterBundle);
 
   return {
@@ -584,6 +621,7 @@ async function runStageAction({
 async function runKeyAction({
   actionName,
   handle,
+  runtimePid,
   reportDir,
   sequenceIndex,
   fallbackWaitMs
@@ -593,23 +631,29 @@ async function runKeyAction({
     throw new Error(`Unsupported action: ${actionName}`);
   }
 
-  const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`);
+  const windowFilter = {
+    processNames: RUNTIME_CLICK_PROCESS_NAMES,
+    pid: runtimePid
+  };
+  const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`, windowFilter);
+  const activeHandle = Number(beforeBundle.capture?.window?.handle || handle);
   const beforeViewport = getStageViewportRect(beforeBundle.stage, stepDefinition, beforeBundle.capture);
   const logStartOffset = fs.existsSync(GAME_SERVER_LOG_PATH) ? fs.statSync(GAME_SERVER_LOG_PATH).size : 0;
-  focusWindow(handle);
+  focusWindow(activeHandle);
   if (beforeViewport.width > 0 && beforeViewport.height > 0) {
-    clickWindowPoint(handle, {
-      x: Math.round(beforeViewport.left + beforeViewport.width / 2),
-      y: Math.round(beforeViewport.top + beforeViewport.height / 2)
-    });
+    const clickOffset = captureClickOffset(beforeBundle.capture);
+    clickWindowPoint(activeHandle, {
+      x: Math.round(clickOffset.x + beforeViewport.left + beforeViewport.width / 2),
+      y: Math.round(clickOffset.y + beforeViewport.top + beforeViewport.height / 2)
+    }, windowFilter);
     await sleep(220);
   }
-  const keyResult = sendWindowKeys(handle, stepDefinition.key, 400);
+  const keyResult = sendWindowKeys(activeHandle, stepDefinition.key, 400);
   const logResult = stepDefinition.expectedLogFragment
     ? await waitForLogFragment(GAME_SERVER_LOG_PATH, logStartOffset, stepDefinition.expectedLogFragment, stepDefinition.settleMs || fallbackWaitMs)
     : null;
   await sleep(stepDefinition.settleMs || fallbackWaitMs);
-  const afterBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-after`);
+  const afterBundle = captureStageBundle(activeHandle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-after`, windowFilter);
   const verdict = classifyStepSuccess(stepDefinition, logResult, afterBundle);
 
   return {
@@ -730,35 +774,45 @@ async function main() {
       throw new Error("No visible runtime window was found.");
     }
 
-    const handle = Number(runtimeWindow.MainWindowHandle.value || runtimeWindow.MainWindowHandle);
+    let handle = Number(runtimeWindow.MainWindowHandle.value || runtimeWindow.MainWindowHandle);
+    const runtimePid = Number(runtimeWindow.Id?.value || runtimeWindow.Id || 0) || null;
+    const runtimeWindowFilter = {
+      processNames: RUNTIME_CLICK_PROCESS_NAMES,
+      pid: runtimePid
+    };
     focusWindow(handle);
     await sleep(startupWaitMs);
 
-    const initialBundle = captureStageBundle(handle, reportDir, `${sourceGroup}-initial`);
+    const initialBundle = captureStageBundle(handle, reportDir, `${sourceGroup}-initial`, runtimeWindowFilter);
+    handle = Number(initialBundle.capture?.window?.handle || handle);
     const actionResults = [];
 
     for (let index = 0; index < actions.length; index += 1) {
       const actionName = actions[index];
       const stepDefinition = getStageAction(actionName);
-      const result = !stepDefinition
-        ? await runLauncherAction(actionName, handle, perActionDelayMs, perActionWaitMs)
-        : stepDefinition.kind === "key"
-          ? await runKeyAction({
-              actionName,
-              handle,
-              reportDir,
-              sequenceIndex: index + 1,
-              fallbackWaitMs: perActionWaitMs
-            })
-          : await runStageAction({
-            actionName,
-            handle,
-            reportDir,
-            sequenceIndex: index + 1,
-            delayMs: perActionDelayMs,
-            fallbackWaitMs: perActionWaitMs
-          })
-        ;
+      let result;
+      if (!stepDefinition) {
+        result = await runLauncherAction(actionName, handle, perActionDelayMs, perActionWaitMs);
+      } else if (stepDefinition.kind === "key") {
+        result = await runKeyAction({
+          actionName,
+          handle,
+          runtimePid,
+          reportDir,
+          sequenceIndex: index + 1,
+          fallbackWaitMs: perActionWaitMs
+        });
+      } else {
+        result = await runStageAction({
+          actionName,
+          handle,
+          runtimePid,
+          reportDir,
+          sequenceIndex: index + 1,
+          delayMs: perActionDelayMs,
+          fallbackWaitMs: perActionWaitMs
+        });
+      }
       actionResults.push(result);
       focusWindow(handle);
     }
