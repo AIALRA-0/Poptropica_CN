@@ -792,7 +792,7 @@ async function main() {
 
     const selectedIds = new Set(splitCsv(args.islands || args.island || ""));
     const limit = Number(args.limit || 0);
-    const manifest = generateLaunchManifest(config);
+    const manifest = generateLaunchManifest(config, { write: false });
     let entries = manifest.entries
       .filter((entry) => entry.sourceGroup === "as3" && entry.launchable && entry.launchMode === "as3-direct-scene")
       .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));

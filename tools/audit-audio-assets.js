@@ -149,7 +149,7 @@ function sum(buckets, key) {
 
 function main() {
   const config = loadConfig();
-  const manifest = generateLaunchManifest(config);
+  const manifest = generateLaunchManifest(config, { write: false });
   const as2Entries = listArchiveEntries(config.sources.as2Gamezip, config.tools.tarBin);
   const as3Entries = listArchiveEntries(config.sources.as3Gamezip, config.tools.tarBin);
   const as2Buckets = collectAs2(as2Entries);

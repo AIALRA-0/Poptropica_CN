@@ -1012,22 +1012,24 @@ async function mountSourceZip(config, sourceGroup) {
     await postZipServer("unmountzip", runtimeState.lastMountedZip).catch(() => null);
   }
 
-  let response = await postZipServer("mountzip", target.targetZipPath);
+  let response = null;
   let body = "";
-  if (!response.ok) {
-    body = await response.text().catch(() => "");
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    response = await postZipServer("mountzip", target.targetZipPath);
+    body = response.ok ? "" : await response.text().catch(() => "");
+    if (response.ok || /already mounted/iu.test(body)) {
+      break;
+    }
+    await postZipServer("unmountzip", target.targetZipPath).catch(() => null);
+    if (attempt < 3) {
+      await sleep(750);
+    }
   }
 
   if (!response.ok && !/already mounted/iu.test(body)) {
-    await postZipServer("unmountzip", target.targetZipPath).catch(() => null);
-    response = await postZipServer("mountzip", target.targetZipPath);
-    body = response.ok ? "" : await response.text().catch(() => "");
-  }
-
-  if (!response.ok) {
-    if (!/already mounted/iu.test(body)) {
-      throw new Error(`mountzip failed for ${sourceGroup} with status ${response.status}`);
-    }
+    throw new Error(
+      `mountzip failed for ${sourceGroup} with status ${response.status}; target=${target.targetZipPath}; body=${String(body || "").slice(0, 500)}`
+    );
   }
 
   waitForManagedBasePhpRefresh(managedLegacyDir, basePhpMtimeBefore);

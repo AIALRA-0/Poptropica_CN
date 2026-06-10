@@ -199,7 +199,7 @@ function discoverAs3Entries(as3Entries, sceneMap, overrides) {
   });
 }
 
-function generateLaunchManifest(config = loadConfig()) {
+function generateLaunchManifest(config = loadConfig(), options = {}) {
   const { entries } = buildCatalogIndex();
   const launchOverrides = loadLaunchOverrides();
   const as2Catalog = entries.filter((entry) => entry.source === "as2");
@@ -228,7 +228,9 @@ function generateLaunchManifest(config = loadConfig()) {
     },
     entries: entriesOut
   };
-  writeJson(paths.launchManifestPath, manifest);
+  if (options.write !== false) {
+    writeJson(paths.launchManifestPath, manifest);
+  }
   return manifest;
 }
 
