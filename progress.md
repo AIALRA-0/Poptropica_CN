@@ -426,3 +426,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue batch-exporting the remaining 527 AS2 island-scene scripts and 534 sound-tag exports, keeping normal batches at modest sizes so FFDec timeout failures are isolated and cached instead of stalling the full run.
 - After script coverage is complete, rank the 16 literal AS2 sound names and the dynamic call sites by island and scene, then search local/runtime/original sources for defensible audio mappings.
+
+## 2026-06-10 AS2 Full-Island Sound Batch Audit Continuation 3
+
+- Ran two more foreground all-island batches with `--ensureIslandScripts=1 --ensureIslandSounds=1 --exportBatchSize=50`. Both batches completed 50/50 script exports and 50/50 sound-tag exports with 0 failures, moving AS2 island scene coverage from 453/980 scripts and 446/980 sound tags to 553/980 scripts and 546/980 sound tags.
+- Current final AS2 sound audit totals: 0 partial script exports, 0 partial sound exports, 1 cached failed script export (`islandCharlie/sceneCourtyard.swf`), 0 failed sound exports, 462 sound API calls across 175 SWFs, 173 literal calls, 289 dynamic calls, 16 unique literal sound names, and 3 literal names with direct embedded-audio matches. The top literal names are now `zap` (96), `boom` (17), `thump` (11), `crunch` (10), and `ouch` (9).
+- Newly covered launchable AS2 islands with sound-call evidence include Lunar Colony, Mythology, Nabooti, and Legendary Swords coverage under its uncataloged scene-folder bucket. Lunar Colony and Mythology are now fully covered for both scripts and sound tags; Nabooti is 21/21 scripts and 20/21 sound tags; Night Watch remains partially covered at 8/43 scripts and 1/43 sound tags.
+- Embedded AS2 scene audio increased from 16 files across 7 SWFs to 23 files across 9 SWFs. New embedded sources include Mythology `sceneApollo.swf` (`116.mp3`, `117.mp3`, `118.mp3`, `119.mp3`, plus the 44-byte WAV wrapper) and Nabooti `sceneNabootiStore.swf` (`197.mp3` plus the 44-byte WAV wrapper). The direct literal-to-embedded matches are still `boom`, `CoolHissSound.wav`, and `croneLine`; the new Mythology/Nabooti files do not yet match a literal `showSound` name.
+- During validation, unrelated working-tree AS2 pack inputs were found deleted and `npm run verify:pack-inputs` currently fails for AS2 (`replacementCount: 0`, `manifestReplacementCount: -1`). These dirty AS2 pack deletions and the uncommitted runtime/pack bridge edits were not staged in this batch; they need a separate repair/validation pass before they can be safely synchronized.
+
+## TODO AS2 Full-Island Sound Batch Audit Continuation 3
+
+- Continue batch-exporting the remaining 427 AS2 island-scene scripts and 434 sound-tag exports.
+- Separately resolve the dirty AS2 pack-input state before running pack/runtime rebuild validations; do not mix the current deleted AS2 pack inputs into sound-audit progress commits.
