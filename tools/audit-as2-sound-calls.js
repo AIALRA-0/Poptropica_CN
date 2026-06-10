@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
@@ -199,9 +200,45 @@ function listExportedSoundFiles(soundRoot) {
     .filter((filePath) => EXPORTED_SOUND_EXTENSION_SET.has(path.extname(filePath).toLowerCase()))
     .map((filePath) => ({
       path: path.relative(soundRoot, filePath).replace(/\\/gu, "/"),
-      bytes: fs.statSync(filePath).size
+      bytes: fs.statSync(filePath).size,
+      sha256: crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex").toUpperCase()
     }))
     .sort((left, right) => left.path.localeCompare(right.path, "en"));
+}
+
+function stripSoundExtensions(value) {
+  let current = String(value || "");
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const extension of EXPORTED_SOUND_EXTENSION_SET) {
+      if (current.endsWith(extension)) {
+        current = current.slice(0, -extension.length);
+        changed = true;
+        break;
+      }
+    }
+  }
+  return current;
+}
+
+function addSoundNameCandidates(candidates, value) {
+  const normalized = String(value || "").replace(/\\/gu, "/").trim().toLowerCase();
+  if (!normalized) {
+    return;
+  }
+  for (const candidate of [normalized, path.posix.basename(normalized)]) {
+    candidates.add(candidate);
+    const stripped = stripSoundExtensions(candidate);
+    candidates.add(stripped);
+    candidates.add(stripped.replace(/^\d+_/u, ""));
+  }
+}
+
+function soundNameCandidates(value) {
+  const candidates = new Set();
+  addSoundNameCandidates(candidates, value);
+  return candidates;
 }
 
 function writeSoundExportMarker(outputDir, payload) {
@@ -594,6 +631,40 @@ function countBy(items, keyFn) {
     .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key, "en"));
 }
 
+function collectEmbeddedSoundFiles(assets) {
+  return assets.flatMap((asset) => (asset.embeddedSoundFiles || []).map((soundFile) => ({
+    canonicalKey: asset.canonicalKey,
+    sceneFolder: asset.sceneFolder,
+    assetPath: asset.assetPath,
+    ...soundFile
+  })));
+}
+
+function buildEmbeddedSoundNameMatches(literalCalls, embeddedSoundFiles) {
+  const callCounts = new Map();
+  for (const call of literalCalls) {
+    callCounts.set(call.soundName, (callCounts.get(call.soundName) || 0) + 1);
+  }
+  const embeddedWithCandidates = embeddedSoundFiles.map((soundFile) => ({
+    soundFile,
+    candidates: soundNameCandidates(soundFile.path)
+  }));
+  return [...callCounts.entries()]
+    .map(([soundName, callCount]) => {
+      const candidates = soundNameCandidates(soundName);
+      const matches = embeddedWithCandidates
+        .filter((item) => [...candidates].some((candidate) => item.candidates.has(candidate)))
+        .map((item) => item.soundFile);
+      return {
+        soundName,
+        callCount,
+        matches: matches.slice(0, 20)
+      };
+    })
+    .filter((entry) => entry.matches.length > 0)
+    .sort((left, right) => right.callCount - left.callCount || left.soundName.localeCompare(right.soundName, "en"));
+}
+
 function isAs2IslandSceneSwf(assetPath) {
   return AS2_ISLAND_SCENE_SWF_RE.test(String(assetPath || "").replace(/\\/gu, "/"));
 }
@@ -938,6 +1009,8 @@ function main() {
   const byIsland = summarizeByIsland({ launchIndex, swfAssets, looseAudioEntries, callsByAsset });
   const literalCalls = calls.filter((call) => !call.dynamic && call.soundName);
   const dynamicCalls = calls.filter((call) => call.dynamic);
+  const embeddedSoundFiles = collectEmbeddedSoundFiles(islandSceneAssets);
+  const embeddedSoundNameMatches = buildEmbeddedSoundNameMatches(literalCalls, embeddedSoundFiles);
   const missingScriptExports = swfAssets.filter((asset) => !asset.scriptExported);
   const launchSceneAssets = launchIndex.as2Entries
     .map((entry) => resolveLaunchSceneEntry(entry, swfEntryIndex))
@@ -1002,6 +1075,7 @@ function main() {
       literalSoundCallCount: literalCalls.length,
       dynamicSoundCallCount: dynamicCalls.length,
       uniqueLiteralSoundNames: new Set(literalCalls.map((call) => call.soundName)).size,
+      uniqueLiteralSoundNamesWithEmbeddedMatches: embeddedSoundNameMatches.length,
       catalogEntriesWithSoundCalls: byIsland.filter((entry) => entry.launchable && entry.soundCallCount > 0).length,
       catalogEntriesWithLooseAudio: byIsland.filter((entry) => entry.launchable && entry.looseAudioFiles > 0).length,
       catalogEntriesWithoutScriptSoundCalls: byIsland.filter((entry) => entry.launchable && entry.soundCallCount === 0).length
@@ -1009,8 +1083,12 @@ function main() {
     topLiteralSoundNames: countBy(literalCalls, (call) => call.soundName).slice(0, 80),
     topMethods: countBy(calls, (call) => call.method),
     byIsland,
+    embeddedSoundFiles,
+    embeddedSoundNameMatches,
     samples: {
       looseAudio: looseAudioEntries.slice(0, 80),
+      embeddedSoundFiles: embeddedSoundFiles.slice(0, 80),
+      embeddedSoundNameMatches: embeddedSoundNameMatches.slice(0, 40),
       unmappedScriptDirs: unmappedScriptDirs.slice(0, 40),
       partialScriptExports: partialScriptExports.slice(0, 40).map((asset) => asset.assetPath),
       partialSoundExports: partialSoundExports.slice(0, 40).map((asset) => asset.assetPath),
