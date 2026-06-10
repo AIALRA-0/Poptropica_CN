@@ -522,3 +522,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS2 Sound Bridge Provenance Source QA
 
 - Keep `Alvin` and `tickle` unmapped. Continue looking for an original/local source before adding automatic playback for those one-off character sounds.
+
+## 2026-06-10 AS2 Dynamic Sound Name Audit / Vampire Path Audio
+
+- Extended `tools/audit-as2-sound-calls.js` to infer some dynamic AS2 sound names from nearby string assignments, function arguments, and asset property assignments. The report now includes `inferredDynamicSoundCallCount`, `unresolvedDynamicSoundCallCount`, `inferredDynamicSoundCandidateCount`, `uniqueInferredDynamicSoundNames`, `uniqueKnownSoundNames`, `topInferredDynamicSoundNames`, `topKnownSoundNames`, plus inferred/unresolved dynamic samples.
+- Re-ran the read-only AS2 sound-call audit. It still covers 978/980 island scene script exports and 980/980 sound exports, with 616 total sound API calls. Of 373 dynamic calls, 32 are now inferred, producing 36 candidates across 10 normalized names; combined literal+inferred known sound names are now 24. The top inferred names are `ouch` (18), `chomp` (5), `whack` (3), `shock` (2), `stingwimpy` (2), plus Vampire rain/thunder path audio.
+- Added provenance `pathEntries` for native AS2 `content/www.poptropica.com/scenes/islandVampire/assets/RainSound.mp3` and `ThunderSound.mp3`. These are inferred from `sharedContent.swf` dynamic `loadSound()` paths and already exist in `AS2.zip`; no replacement audio file was added.
+- Re-ran `npm run qa:as2-sound-bridge`; it passes with `expectedSoundCount: 17`, `overrideSoundCount: 17`, `expectedPathCount: 4`, `expectedProvenanceSourceCount: 18`, and 0 failed checks. The path-entry QA now covers Haunted House, Night Watch elevator music, and Vampire rain/thunder audio.
+- Searched AS2 and AS3 local source archives for `stingWimpy` / sting-like sources. No exact `stingWimpy` audio exists locally; AS3 only has broad buzz/stinger candidates, so `stingWimpy` remains unmapped until a stronger source is found.
+
+## TODO AS2 Dynamic Sound Name Audit / Vampire Path Audio
+
+- Use `topKnownSoundNames` and `unresolvedDynamicCalls` to target the remaining high-volume `comicSound` patterns. The next likely improvement is smarter cross-script property inference for repeated `comicSound` calls that currently remain unresolved.
+- Keep `Alvin`, `tickle`, and `stingWimpy` unmapped until an original/local source is found or a context match becomes strong enough to justify a provenance-backed fallback.

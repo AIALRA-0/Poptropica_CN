@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T12:39:04.798Z",
+  "generatedAt": "2026-06-10T12:53:17.436Z",
   "entries": [
     {
       "soundName": "zap",
@@ -192,6 +192,28 @@
       "sha256": "F32572749D4F81A7B7F2274865F1BA7BFBEB001E7861F3C9C3812828CAEF1D76",
       "confidence": "script-path-present",
       "mappingReason": "AS2 sharedContent.swf loads this path directly and the original AS2 archive already contains the matching Night Watch elevator music file."
+    },
+    {
+      "assetPath": "content/www.poptropica.com/scenes/islandVampire/assets/RainSound.mp3",
+      "sourceGroup": "as2",
+      "sourceType": "native-as2-path-present",
+      "sourceAssetPath": "content/www.poptropica.com/scenes/islandVampire/assets/RainSound.mp3",
+      "seedPath": null,
+      "bytes": 49780,
+      "sha256": "18413412111AE9DD24385D5986C4082C61F6FBE0480B1AA67FD56347FC88DA68",
+      "confidence": "dynamic-loadsound-path-present",
+      "mappingReason": "AS2 Vampire sharedContent.swf builds scenes/islandVampire/assets/RainSound.mp3 and loads it through loadSound(); the original AS2 archive contains the matching rain audio file."
+    },
+    {
+      "assetPath": "content/www.poptropica.com/scenes/islandVampire/assets/ThunderSound.mp3",
+      "sourceGroup": "as2",
+      "sourceType": "native-as2-path-present",
+      "sourceAssetPath": "content/www.poptropica.com/scenes/islandVampire/assets/ThunderSound.mp3",
+      "seedPath": null,
+      "bytes": 119579,
+      "sha256": "1D50AD95736BB2F637D8EBB6A7F7D1063790130B49BDCCE7B06BDE2917FDB93D",
+      "confidence": "dynamic-loadsound-path-present",
+      "mappingReason": "AS2 Vampire sharedContent.swf builds scenes/islandVampire/assets/ThunderSound.mp3 and loads it through loadSound(); the original AS2 archive contains the matching thunder audio file."
     }
   ]
 }
