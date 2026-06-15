@@ -639,3 +639,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO G32QC AS3 Visible Smoke Batch 1
 
 - Continue AS3 G32QC visible batches for the remaining direct-scene islands: `mocktropica`, `monkey-wrench`, `monster-carnival`, `mystery-of-the-map`, `poptropicon`, `survival`, `timmy-failure`, and `virus-hunter`.
+
+## 2026-06-15 G32QC AS3 Valid Foreground Visual Smoke
+
+- Corrected the AS3 visible QA method: `--noForegroundCapture` keeps interference low but can capture another window covering the G32QC area, so those runs are useful for placement/log smoke but not for final visual evidence. Valid visual smoke now allows target-window foregrounding on G32QC while still avoiding mouse movement.
+- Re-ran AS3 Navigator-backed visible smoke on G32QC without `--noForegroundCapture`, with audio still skipped. Batches passed for all 12 direct-scene AS3 entries: `arabian-nights`, `escape-from-pelican-rock`, `galactic-hot-dogs`, `mission-atlantis`, `mocktropica`, `monkey-wrench`, `monster-carnival`, `mystery-of-the-map`, `poptropicon`, `survival`, `timmy-failure`, and `virus-hunter`.
+- Aggregated latest passing foreground visual reports with `node tools/qa-as3-islands-smoke.js --aggregateLatest --targetMonitor G32QC --skipAudio`. Latest aggregate: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-aggregate-1781534254061.json`.
+- Aggregate summary: 12/12 passed, 0 failed, no missing AS3 direct-scene keys, all runtime placement devices were `DISPLAY1`, and no `noForegroundCapture` reports were selected.
+
+## TODO G32QC AS3 Valid Foreground Visual Smoke
+
+- Re-enable audio on a small AS3 foreground visual batch to separate real audio playback issues from startup/placement issues. The server logs already show AS3 sound requests for scenes such as Arabian Nights and Virus Hunter.
+- Move to AS2 G32QC validation next, starting with post-message clicks to avoid cursor movement; only use `--allowMouseClicks` for targeted checks if Flash ignores message clicks.
