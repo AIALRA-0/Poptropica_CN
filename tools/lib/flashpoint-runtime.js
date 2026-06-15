@@ -1431,13 +1431,39 @@ function sanitizeNavigatorProfile(config) {
 function readPrimaryScreenWorkArea() {
   const script = [
     "Add-Type -AssemblyName System.Windows.Forms;",
-    "$workArea = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea;",
-    "@{",
-    "  left = $workArea.Left;",
-    "  top = $workArea.Top;",
-    "  width = $workArea.Width;",
-    "  height = $workArea.Height",
-    "} | ConvertTo-Json -Compress"
+    "$target = [Environment]::GetEnvironmentVariable('POPTROPICA_QA_MONITOR');",
+    "$screens = @([System.Windows.Forms.Screen]::AllScreens | ForEach-Object {",
+    "  @{",
+    "    deviceName = $_.DeviceName;",
+    "    primary = $_.Primary;",
+    "    left = $_.WorkingArea.Left;",
+    "    top = $_.WorkingArea.Top;",
+    "    width = $_.WorkingArea.Width;",
+    "    height = $_.WorkingArea.Height;",
+    "    boundsLeft = $_.Bounds.Left;",
+    "    boundsTop = $_.Bounds.Top;",
+    "    boundsWidth = $_.Bounds.Width;",
+    "    boundsHeight = $_.Bounds.Height",
+    "  }",
+    "});",
+    "$selected = $screens | Where-Object { $_.primary } | Select-Object -First 1;",
+    "if ($target) {",
+    "  $normalized = ($target.ToLowerInvariant() -replace '[^a-z0-9]+', '');",
+    "  $exact = $screens | Where-Object { (($_.deviceName.ToLowerInvariant() -replace '[^a-z0-9]+', '') -eq $normalized) -or (($_.deviceName -replace '^.*DISPLAY', 'display') -eq $target.ToLowerInvariant()) } | Select-Object -First 1;",
+    "  if ($exact) { $selected = $exact }",
+    "  elseif ($normalized -eq 'primary' -or $normalized -eq 'main') { $selected = $screens | Where-Object { $_.primary } | Select-Object -First 1 }",
+    "  elseif ($normalized -eq 'left' -or $normalized -eq 'side') { $selected = $screens | Where-Object { -not $_.primary } | Sort-Object boundsLeft | Select-Object -First 1 }",
+    "  elseif ($normalized -like '*g32qc*') {",
+    "    $g32 = $screens | Where-Object { -not $_.primary -and $_.boundsWidth -eq 2560 -and $_.boundsHeight -eq 1440 } | Sort-Object boundsLeft | Select-Object -First 1;",
+    "    if ($g32) { $selected = $g32 }",
+    "  }",
+    "  elseif ($normalized -like '*34gp950g*') {",
+    "    $lg = $screens | Where-Object { $_.primary -or ($_.boundsWidth -eq 2752 -and $_.boundsHeight -eq 1152) } | Select-Object -First 1;",
+    "    if ($lg) { $selected = $lg }",
+    "  }",
+    "}",
+    "if (-not $selected) { $selected = $screens | Select-Object -First 1 }",
+    "$selected | ConvertTo-Json -Compress"
   ].join("\n");
 
   const result = spawnSync("powershell", [
@@ -1470,7 +1496,11 @@ function readPrimaryScreenWorkArea() {
         left: Number(parsed.left),
         top: Number(parsed.top),
         width: Number(parsed.width),
-        height: Number(parsed.height)
+        height: Number(parsed.height),
+        deviceName: parsed.deviceName || null,
+        primary: Boolean(parsed.primary),
+        boundsWidth: Number(parsed.boundsWidth || 0),
+        boundsHeight: Number(parsed.boundsHeight || 0)
       };
     }
   } catch (_error) {

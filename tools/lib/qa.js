@@ -4,6 +4,8 @@ const { spawn, spawnSync } = require("node:child_process");
 const paths = require("./paths");
 const { ensureDirSync, writeJson } = require("./fs-utils");
 
+const WINDOW_MONITOR_COMMANDS = new Set(["wait-window", "capture-window", "click-window"]);
+
 function getPythonBinary() {
   return process.env.PYTHON || "python";
 }
@@ -12,9 +14,45 @@ function getQaHelperPath() {
   return path.join(paths.toolsRoot, "qa-helper.py");
 }
 
+function hasCliArg(args, name) {
+  return args.includes(name) || args.some((arg) => String(arg).startsWith(`${name}=`));
+}
+
+function flagEnabled(value) {
+  return /^(1|true|yes|y)$/iu.test(String(value || ""));
+}
+
+function withDefaultWindowQaArgs(args) {
+  const normalized = [...args];
+  const command = normalized[0];
+  const targetMonitor = String(process.env.POPTROPICA_QA_MONITOR || "").trim();
+  if (targetMonitor && WINDOW_MONITOR_COMMANDS.has(command) && !hasCliArg(normalized, "--target-monitor")) {
+    normalized.push("--target-monitor", targetMonitor);
+  }
+
+  if (
+    command === "capture-window" &&
+    flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND) &&
+    !hasCliArg(normalized, "--no-foreground")
+  ) {
+    normalized.push("--no-foreground");
+  }
+
+  if (
+    command === "click-window" &&
+    flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) &&
+    !hasCliArg(normalized, "--post-message")
+  ) {
+    normalized.push("--post-message");
+  }
+
+  return normalized;
+}
+
 function runPythonQa(args, options = {}) {
   const pythonBinary = getPythonBinary();
-  const result = spawnSync(pythonBinary, [getQaHelperPath(), ...args], {
+  const helperArgs = withDefaultWindowQaArgs(args);
+  const result = spawnSync(pythonBinary, [getQaHelperPath(), ...helperArgs], {
     cwd: paths.projectRoot,
     encoding: "utf8",
     windowsHide: true,
@@ -50,7 +88,8 @@ function runPythonQa(args, options = {}) {
 
 function spawnPythonQa(args, options = {}) {
   const pythonBinary = getPythonBinary();
-  return spawn(pythonBinary, [getQaHelperPath(), ...args], {
+  const helperArgs = withDefaultWindowQaArgs(args);
+  return spawn(pythonBinary, [getQaHelperPath(), ...helperArgs], {
     cwd: paths.projectRoot,
     windowsHide: true,
     stdio: ["ignore", "pipe", "pipe"],

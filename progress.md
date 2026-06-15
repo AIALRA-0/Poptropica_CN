@@ -605,3 +605,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current AS2 full proxy smoke passed after the shared-lock change: `npm run qa:as2-launch-smoke` tested 34/34 AS2 launchable entries, passed 34, failed 0, with 0 base, scene, audio-bridge, or resize failures. Report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781098112556.json`.
 - Validation completed before shutdown request: `node --check tools/lib/qa.js`, `node --check tools/qa-as2-launch-smoke.js`, `node --check tools/qa-as2-sound-bridge.js`, `node --check tools/qa-as3-launch-smoke.js`, `npm run audit:as2-sound-calls`, and `npm run verify:pack-inputs`.
 - Shutdown interruption: `npm run qa:as2-sound-bridge` was not rerun after adding the shared lock; only syntax checking covered that file in this chunk. Run it first on next resume.
+
+## 2026-06-15 G32QC-Safe Visible QA Prep / No-Window Revalidation
+
+- New user constraint for continued iteration: avoid using the main display for visible QA/CUA and avoid hijacking the mouse. This chunk did not launch a visible game window or use CUA; all validation was background CLI/HTTP.
+- Added `tools/qa-helper.py list-monitors` plus npm script `qa:monitors`. The current machine resolves `G32QC` to non-primary `DISPLAY1` at `left=-2560, top=0, width=2560, height=1440`, with Windows model hint `G32QC A`.
+- Extended `wait-window`, `capture-window`, and `click-window` so future visible QA can force a `--target-monitor`, move windows before capture/click, record the placement metadata, and optionally use `--post-message` clicks without moving the system cursor.
+- Added shared JS QA defaults so `POPTROPICA_QA_MONITOR` is automatically passed into window wait/capture/click helpers. `qa-validate-runtime.js` and `qa-as3-islands-smoke.js` now default visible QA to `G32QC`; AS2 click validation defaults to post-message clicks unless `--allowMouseClicks` is passed. `tools/launch.js` and `qa:capture` also accept `--targetMonitor`.
+- Revalidated the no-window runtime surface after this change: `npm run verify:pack-inputs` passed with AS2 43/43 and AS3 47/47 replacements, `npm run qa:as2-launch-smoke` passed 34/34 AS2 entries (`runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781532778032.json`), `npm run qa:as3-launch-smoke` passed 12/12 AS3 direct-scene entries with 129/129 XML resources (`runtime-data/qa/as3/launch-smoke/as3-launch-smoke-1781532799010.json`), and `npm run qa:as2-sound-bridge` passed with 17 overrides, 4 path entries, 18 provenance sources, and 0 failed checks.
+
+## TODO G32QC-Safe Visible QA Prep / No-Window Revalidation
+
+- Before resuming Navigator-backed visual smoke, run a single low-risk visible test on G32QC only and inspect the placement metadata. If Flash does not accept post-message clicks, use `--allowMouseClicks` only for targeted clicks after confirming the window is on `DISPLAY1`.
+- Keep the proxy/no-window launch smoke as the default regression path while expanding visible coverage island-by-island to avoid interrupting the user's main display workflow.

@@ -43,6 +43,24 @@ function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
 }
 
+function applyVisibleQaDefaults(args) {
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  if (!flagEnabled(args.allowMouseClicks) && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
+    process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
+  }
+  if (flagEnabled(args.noForegroundCapture)) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
+  return {
+    targetMonitor: targetMonitor || null,
+    postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
+    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND)
+  };
+}
+
 function hasArg(args, key) {
   return Object.prototype.hasOwnProperty.call(args, key);
 }
@@ -1028,6 +1046,7 @@ async function validateSuperPowerCandidate(player, args) {
       generatedAt: new Date().toISOString(),
       islandId: SUPER_POWER_TARGET.islandId,
       sourceGroup: "as2",
+      visibleQaDefaults: args.visibleQaDefaults || null,
       player,
       launch,
       runtimeWindow: activeRuntimeWindow,
@@ -1049,6 +1068,7 @@ async function validateSuperPowerCandidate(player, args) {
       generatedAt: new Date().toISOString(),
       islandId: SUPER_POWER_TARGET.islandId,
       sourceGroup: "as2",
+      visibleQaDefaults: args.visibleQaDefaults || null,
       player,
       processSnapshot: collectProcessSnapshot(),
       verdict: {
@@ -1169,6 +1189,7 @@ async function validateAs3Runtime(args) {
     ok: verdict.verdict === "pass",
     generatedAt: new Date().toISOString(),
     sourceGroup: "as3",
+    visibleQaDefaults: args.visibleQaDefaults || null,
     launch,
     runtimeWindow: activeRuntimeWindow,
     capture: captureBundle.capture,
@@ -1212,6 +1233,8 @@ async function validateAs3Runtime(args) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  const visibleQaDefaults = applyVisibleQaDefaults(args);
+  args.visibleQaDefaults = visibleQaDefaults;
   const sourceGroup = String(args.source || "as3").toLowerCase();
 
   if (sourceGroup === "as3") {
@@ -1257,6 +1280,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     islandId: SUPER_POWER_TARGET.islandId,
     sourceGroup: "as2",
+    visibleQaDefaults,
     chosenPlayer,
     candidateCount: reports.length,
     candidates: reports.map((report) => ({

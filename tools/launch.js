@@ -9,6 +9,14 @@ const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
 const paths = require("./lib/paths");
 
+function applyTargetMonitorEnv(args) {
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  return targetMonitor || null;
+}
+
 async function launchRuntimeFromCli(sourceGroup) {
   const normalized = String(sourceGroup || "").toLowerCase();
   if (!["as2", "as3"].includes(normalized)) {
@@ -39,6 +47,7 @@ async function launchRuntimeFromCli(sourceGroup) {
     source: normalized,
     runtimeTitle: normalized === "as2" ? "AS2 经典旧版" : "AS3 旧版世界",
     launchUrl: record.launchCommand,
+    targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
     mounted: {
       targetZipPath: mounted.targetZipPath,
       mountFileName: mounted.mountFileName
@@ -93,6 +102,7 @@ async function launchIslandFromCli(islandId) {
     ok: true,
     islandId,
     source: island.preferredSource,
+    targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
     launchEntry,
     ...(flashStateReset ? { flashStateReset } : {}),
     mounted: {
@@ -141,6 +151,7 @@ function launchElectron(args) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  applyTargetMonitorEnv(args);
   if (args.runtime) {
     await launchRuntimeFromCli(String(args.runtime));
     return;

@@ -12,6 +12,10 @@ function main() {
   const stem = String(args.name || "capture");
   const outputPath = args.output || path.join(qaDir, `${stem}.png`);
   const metadataPath = args.metadataOutput || path.join(qaDir, `${stem}.json`);
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
   const payload = runPythonQa([
     "capture-window",
     "--handle",

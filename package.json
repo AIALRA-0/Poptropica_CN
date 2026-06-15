@@ -32,6 +32,7 @@
     "verify:pack-inputs": "node tools/verify-pack-runtime-inputs.js",
     "as3:full-localize": "node tools/as3-full-localize.js",
     "qa:window-audit": "node tools/window-audit.js",
+    "qa:monitors": "python tools/qa-helper.py list-monitors --target-monitor G32QC",
     "qa:capture": "node tools/qa-capture.js",
     "qa:ocr": "node tools/qa-ocr.js",
     "qa:audio-check": "node tools/qa-audio-check.js",

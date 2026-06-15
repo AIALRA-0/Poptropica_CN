@@ -1,6 +1,8 @@
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -35,6 +37,12 @@ RUNTIME_BROWSER_PROCESS_NAMES = {
     "basiliskii.exe",
     "firefox.exe",
 }
+KNOWN_MODEL_SIZE_HINTS = {
+    "g32qc": (2560, 1440),
+    "g32qc a": (2560, 1440),
+    "34gp950g": (2752, 1152),
+    "b226hql": (1920, 1080),
+}
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -56,6 +64,256 @@ def write_json_if_needed(payload, output_path):
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def normalize_token(value):
+    return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
+
+
+def rect_payload(rect):
+    left, top, right, bottom = [int(item) for item in rect]
+    return {
+        "left": left,
+        "top": top,
+        "right": right,
+        "bottom": bottom,
+        "width": max(0, right - left),
+        "height": max(0, bottom - top),
+    }
+
+
+def read_active_monitor_models():
+    script = (
+        "Get-CimInstance -Namespace root\\wmi -ClassName WmiMonitorID | "
+        "Where-Object { $_.Active } | "
+        "Select-Object InstanceName,"
+        "@{Name='UserFriendlyName';Expression={($_.UserFriendlyName | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
+        "@{Name='ManufacturerName';Expression={($_.ManufacturerName | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
+        "@{Name='ProductCodeID';Expression={($_.ProductCodeID | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
+        "@{Name='SerialNumberID';Expression={($_.SerialNumberID | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}} | "
+        "ConvertTo-Json -Compress"
+    )
+    try:
+        result = subprocess.run(
+            [
+                "powershell",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                script,
+            ],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=8,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            check=False,
+        )
+    except Exception:
+        return []
+    if result.returncode != 0 or not result.stdout.strip():
+        return []
+    try:
+        payload = json.loads(result.stdout)
+    except Exception:
+        return []
+    rows = payload if isinstance(payload, list) else [payload]
+    return [
+        {
+            "instanceName": row.get("InstanceName"),
+            "userFriendlyName": row.get("UserFriendlyName"),
+            "manufacturerName": row.get("ManufacturerName"),
+            "productCodeId": row.get("ProductCodeID"),
+            "serialNumberId": row.get("SerialNumberID"),
+        }
+        for row in rows
+        if isinstance(row, dict)
+    ]
+
+
+def enum_monitors():
+    rows = []
+    models = read_active_monitor_models()
+    for index, (handle, _hdc, _rect) in enumerate(win32api.EnumDisplayMonitors(), start=1):
+        info = win32api.GetMonitorInfo(handle)
+        device = str(info.get("Device") or "")
+        match = re.search(r"DISPLAY\d+", device, flags=re.IGNORECASE)
+        device_short = match.group(0).upper() if match else device
+        monitor_rect = rect_payload(info["Monitor"])
+        work_rect = rect_payload(info["Work"])
+        row = {
+            "index": index,
+            "deviceName": device,
+            "deviceShortName": device_short,
+            "primary": bool(info.get("Flags", 0) & 1),
+            "rect": monitor_rect,
+            "workArea": work_rect,
+            "modelHint": None,
+        }
+        row["aliases"] = monitor_aliases(row)
+        rows.append(row)
+
+    for model in models:
+        name = str(model.get("userFriendlyName") or "")
+        normalized_name = normalize_token(name)
+        size_hint = next(
+            (size for key, size in KNOWN_MODEL_SIZE_HINTS.items() if normalize_token(key) in normalized_name),
+            None,
+        )
+        if not size_hint:
+            continue
+        width, height = size_hint
+        candidates = [
+            row for row in rows
+            if row["rect"]["width"] == width and row["rect"]["height"] == height
+        ]
+        if "g32qc" in normalized_name:
+            candidates = [row for row in candidates if not row["primary"]] or candidates
+        if "34gp950g" in normalized_name:
+            candidates = [row for row in candidates if row["primary"]] or candidates
+        if "b226hql" in normalized_name:
+            candidates = sorted(candidates, key=lambda row: (row["rect"]["top"], row["rect"]["left"]), reverse=True)
+        else:
+            candidates = sorted(candidates, key=lambda row: (row["primary"], row["rect"]["left"]))
+        if candidates:
+            candidates[0]["modelHint"] = model
+
+    for row in rows:
+        row["aliases"] = monitor_aliases(row)
+    return rows
+
+
+def monitor_aliases(row):
+    rect = row["rect"]
+    aliases = {
+        str(row.get("index") or ""),
+        str(row.get("deviceName") or ""),
+        str(row.get("deviceShortName") or ""),
+    }
+    aliases.add("primary" if row.get("primary") else "nonprimary")
+    aliases.add("main" if row.get("primary") else "side")
+    if rect["left"] < 0:
+        aliases.update({"left", "leftmonitor"})
+    if rect["top"] > 0:
+        aliases.update({"bottom", "lower", "below"})
+    model = row.get("modelHint") or {}
+    for value in model.values():
+        if value:
+            aliases.add(str(value))
+    return sorted({alias for alias in aliases if alias})
+
+
+def resolve_monitor_target(target):
+    requested = str(target or os.environ.get("POPTROPICA_QA_MONITOR") or "").strip()
+    if not requested:
+        return None
+
+    rows = enum_monitors()
+    normalized_requested = normalize_token(requested)
+    if not rows:
+        raise RuntimeError(f"No monitors were reported by Windows while resolving target monitor {requested!r}.")
+
+    for row in rows:
+        for alias in row.get("aliases") or []:
+            if normalize_token(alias) == normalized_requested:
+                return {
+                    "requested": requested,
+                    "matchReason": "alias",
+                    "monitor": row,
+                    "availableMonitors": rows,
+                }
+
+    for row in rows:
+        tokens = [normalize_token(alias) for alias in row.get("aliases") or []]
+        if any(normalized_requested and normalized_requested in token for token in tokens):
+            return {
+                "requested": requested,
+                "matchReason": "alias-substring",
+                "monitor": row,
+                "availableMonitors": rows,
+            }
+
+    for model_name, size_hint in KNOWN_MODEL_SIZE_HINTS.items():
+        if normalize_token(model_name) not in normalized_requested:
+            continue
+        width, height = size_hint
+        candidates = [
+            row for row in rows
+            if row["rect"]["width"] == width and row["rect"]["height"] == height
+        ]
+        if "g32qc" in normalize_token(model_name):
+            candidates = [row for row in candidates if not row["primary"]] or candidates
+            candidates = sorted(candidates, key=lambda row: (row["rect"]["left"], row["rect"]["top"]))
+        elif "34gp950g" in normalize_token(model_name):
+            candidates = [row for row in candidates if row["primary"]] or candidates
+        else:
+            candidates = sorted(candidates, key=lambda row: (row["rect"]["top"], row["rect"]["left"]), reverse=True)
+        if candidates:
+            return {
+                "requested": requested,
+                "matchReason": f"known-size:{model_name}",
+                "monitor": candidates[0],
+                "availableMonitors": rows,
+            }
+
+    available = ", ".join(row["deviceShortName"] for row in rows)
+    raise RuntimeError(f"Target monitor {requested!r} was not found. Available monitor devices: {available}.")
+
+
+def command_list_monitors(args):
+    target = getattr(args, "target_monitor", None)
+    payload = {
+        "ok": True,
+        "generatedAt": now_iso(),
+        "targetMonitor": target or None,
+        "monitors": enum_monitors(),
+    }
+    if target:
+        payload["resolvedTarget"] = resolve_monitor_target(target)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+
+
+def position_window_on_target_monitor(hwnd, target, width=None, height=None, maximize=False):
+    resolved = resolve_monitor_target(target)
+    monitor = resolved["monitor"]
+    work_area = monitor["workArea"]
+    before = window_row(hwnd)
+    if not before:
+        raise RuntimeError(f"Window handle {hwnd} is not valid.")
+
+    try:
+        win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+        time.sleep(0.1)
+    except Exception:
+        pass
+
+    rect = win32gui.GetWindowRect(hwnd)
+    current_width = max(100, int(rect[2] - rect[0]))
+    current_height = max(100, int(rect[3] - rect[1]))
+    target_width = int(width or current_width)
+    target_height = int(height or current_height)
+    target_width = max(100, min(target_width, int(work_area["width"])))
+    target_height = max(100, min(target_height, int(work_area["height"])))
+    target_left = int(work_area["left"]) + max(0, int((int(work_area["width"]) - target_width) / 2))
+    target_top = int(work_area["top"]) + max(0, int((int(work_area["height"]) - target_height) / 2))
+    flags = win32con.SWP_NOACTIVATE | win32con.SWP_NOZORDER
+    win32gui.SetWindowPos(hwnd, 0, target_left, target_top, target_width, target_height, flags)
+    time.sleep(0.2)
+    if maximize:
+        win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+        time.sleep(0.25)
+
+    return {
+        "requested": resolved["requested"],
+        "matchReason": resolved["matchReason"],
+        "monitor": monitor,
+        "windowBeforeMove": before,
+        "windowAfterMove": window_row(hwnd),
+    }
 
 
 def safe_process_row(pid):
@@ -348,21 +606,34 @@ def command_wait_window(args):
     pid = int(args.pid) if args.pid else None
     deadline = time.time() + (args.timeout_ms / 1000.0)
     match = None
+    placement = None
     while time.time() < deadline:
         match = guess_runtime_window(process_names, title_contains, pid)
         if match:
             break
         time.sleep(args.poll_ms / 1000.0)
 
+    if match and getattr(args, "target_monitor", None):
+        placement = position_window_on_target_monitor(
+            int(match["handle"]),
+            args.target_monitor,
+            width=getattr(args, "window_width", None),
+            height=getattr(args, "window_height", None),
+            maximize=getattr(args, "maximize", False),
+        )
+        match = placement.get("windowAfterMove") or window_row(int(match["handle"])) or match
+
     payload = {
         "ok": bool(match),
         "generatedAt": now_iso(),
         "match": match,
+        "placement": placement,
         "searched": {
             "processNames": sorted(process_names),
             "titleContains": title_contains,
             "pid": pid,
             "timeoutMs": args.timeout_ms,
+            "targetMonitor": getattr(args, "target_monitor", None),
         },
     }
     write_json_if_needed(payload, args.output)
@@ -376,13 +647,23 @@ def command_capture_window(args):
     process_names = parse_csv(getattr(args, "process_names", ""))
     title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
     pid = int(args.pid) if getattr(args, "pid", None) else None
-    if args.maximize:
+    placement = None
+    if getattr(args, "target_monitor", None):
+        placement = position_window_on_target_monitor(
+            hwnd,
+            args.target_monitor,
+            width=getattr(args, "window_width", None),
+            height=getattr(args, "window_height", None),
+            maximize=args.maximize,
+        )
+    elif args.maximize:
         try:
             win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
             time.sleep(0.35)
         except Exception:
             pass
-    bring_to_front(hwnd)
+    if not getattr(args, "no_foreground", False):
+        bring_to_front(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
@@ -397,6 +678,7 @@ def command_capture_window(args):
         "generatedAt": now_iso(),
         "savedTo": str(output),
         "window": row,
+        "placement": placement,
         "captureMode": "client" if args.client_only else "window",
         "captureBox": {
             "left": int(bbox[0]),
@@ -631,14 +913,35 @@ def command_click_window(args):
     process_names = parse_csv(getattr(args, "process_names", ""))
     title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
     pid = int(args.pid) if getattr(args, "pid", None) else None
-    bring_to_front(hwnd)
+    placement = None
+    if getattr(args, "target_monitor", None):
+        placement = position_window_on_target_monitor(
+            hwnd,
+            args.target_monitor,
+            width=getattr(args, "window_width", None),
+            height=getattr(args, "window_height", None),
+            maximize=getattr(args, "maximize", False),
+        )
+    if not getattr(args, "post_message", False):
+        bring_to_front(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     hwnd = int(row["handle"])
     point = win32gui.ClientToScreen(hwnd, (int(args.x), int(args.y)))
     hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
-    if hold_ms > 0:
+    delivery = "post-message" if getattr(args, "post_message", False) else "cursor"
+    if getattr(args, "post_message", False):
+        lparam = (int(args.y) & 0xFFFF) << 16 | (int(args.x) & 0xFFFF)
+        win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, 0, lparam)
+        time.sleep(0.03)
+        win32gui.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, lparam)
+        if hold_ms > 0:
+            time.sleep(hold_ms / 1000.0)
+        else:
+            time.sleep(0.08)
+        win32gui.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, lparam)
+    elif hold_ms > 0:
         win32api.SetCursorPos(point)
         time.sleep(0.08)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
@@ -650,6 +953,8 @@ def command_click_window(args):
         "ok": True,
         "generatedAt": now_iso(),
         "window": row,
+        "placement": placement,
+        "delivery": delivery,
         "point": {
             "x": point[0],
             "y": point[1],
@@ -759,6 +1064,11 @@ def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    monitors_parser = subparsers.add_parser("list-monitors")
+    monitors_parser.add_argument("--target-monitor")
+    monitors_parser.add_argument("--output")
+    monitors_parser.set_defaults(func=command_list_monitors)
+
     audit_parser = subparsers.add_parser("window-audit")
     audit_parser.add_argument("--duration-ms", type=int, default=5000)
     audit_parser.add_argument("--interval-ms", type=int, default=200)
@@ -772,6 +1082,10 @@ def main():
     wait_parser.add_argument("--timeout-ms", type=int, default=30000)
     wait_parser.add_argument("--poll-ms", type=int, default=250)
     wait_parser.add_argument("--output")
+    wait_parser.add_argument("--target-monitor")
+    wait_parser.add_argument("--window-width", type=int)
+    wait_parser.add_argument("--window-height", type=int)
+    wait_parser.add_argument("--maximize", action="store_true")
     wait_parser.set_defaults(func=command_wait_window)
 
     capture_parser = subparsers.add_parser("capture-window")
@@ -783,6 +1097,10 @@ def main():
     capture_parser.add_argument("--process-names", default="")
     capture_parser.add_argument("--title-contains", default="")
     capture_parser.add_argument("--pid", type=int)
+    capture_parser.add_argument("--target-monitor")
+    capture_parser.add_argument("--window-width", type=int)
+    capture_parser.add_argument("--window-height", type=int)
+    capture_parser.add_argument("--no-foreground", action="store_true")
     capture_parser.set_defaults(func=command_capture_window)
 
     analyze_parser = subparsers.add_parser("analyze-stage")
@@ -812,6 +1130,11 @@ def main():
     click_parser.add_argument("--title-contains", default="")
     click_parser.add_argument("--pid", type=int)
     click_parser.add_argument("--hold-ms", type=int, default=0)
+    click_parser.add_argument("--target-monitor")
+    click_parser.add_argument("--window-width", type=int)
+    click_parser.add_argument("--window-height", type=int)
+    click_parser.add_argument("--maximize", action="store_true")
+    click_parser.add_argument("--post-message", action="store_true")
     click_parser.set_defaults(func=command_click_window)
 
     ocr_parser = subparsers.add_parser("ocr-image")

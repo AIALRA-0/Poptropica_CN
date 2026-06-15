@@ -25,6 +25,20 @@ function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
 }
 
+function applyVisibleQaDefaults(args) {
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  if (flagEnabled(args.noForegroundCapture)) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
+  return {
+    targetMonitor: targetMonitor || null,
+    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND)
+  };
+}
+
 function splitCsv(value) {
   return String(value || "")
     .split(",")
@@ -644,6 +658,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
     canonicalKey: entry.canonicalKey,
     islandParam: entry.islandParam,
     roomParam: entry.roomParam,
+    visibleQaDefaults: args.visibleQaDefaults || null,
     launchUrl: entry.launchUrl,
     launchHealth: summarizeLaunchHealth(launchHealth),
     as3TargetScene: entry.as3TargetScene,
@@ -880,6 +895,7 @@ function writeFatalSmokeReport({ reportPath, latestPath, startedAt, artifactDir,
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  args.visibleQaDefaults = applyVisibleQaDefaults(args);
   const config = loadConfig();
   const qaDir = ensureQaDir("as3", "islands-smoke");
   const startedAt = new Date().toISOString();
