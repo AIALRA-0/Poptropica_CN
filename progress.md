@@ -771,3 +771,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add targeted per-island interaction points for first-screen NPCs/signs/dialogue where available, using the same post-message delivery path.
 - Consider adding a report aggregate helper for AS2 interaction runs, analogous to AS3 aggregate, if multiple batch runs become common.
+
+## 2026-06-15 Full AS3 G32QC Audio Matrix
+
+- Re-audited monitors before visible testing; `G32QC` still resolves to non-primary `DISPLAY1`, while the primary work monitor is `DISPLAY2`.
+- Ran a four-island AS3 audio batch first: `npm run qa:as3-islands-smoke -- --islands=arabian-nights,virus-hunter,poptropicon,timmy-failure --targetMonitor G32QC --requireAudio --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000`. Result passed 4/4 with `audioActive: 4`, `withMissingLogRequests: 0`, and all runtime/capture devices on non-primary `DISPLAY1`. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781542991899.json`.
+- Expanded to the full AS3 direct-scene audio matrix on G32QC: `npm run qa:as3-islands-smoke -- --targetMonitor G32QC --requireAudio --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000`.
+- Result passed 12/12 with `audioActive: 12`, `audioInactive: 0`, `withMissingLogRequests: 0`, and `failedKeys: []`. Exact report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781543201991.json`.
+- Report audit confirmed every AS3 direct-scene entry had real sound requests, successful scene media requests, and loopback audio activity. RMS/peak examples: `galactic-hot-dogs` `0.093568/0.424434`, `mission-atlantis` `0.083579/0.450702`, `survival` `0.085512/0.438332`, `timmy-failure` `0.089569/0.487143`, and `virus-hunter` `0.084114/0.464873`.
+- Opened and visually inspected all 12 screenshots from `runtime-data/qa/as3/islands-smoke/run-1781543201991/`. The top menu/UI remained visible and aligned, scenes rendered real game art, and no white screen, room-unavailable fallback, or obvious UI overlap was observed.
+- `survival` captured a dark sky/cloud intro frame, but the log proves it was not stuck: it loaded `CrashLanding`, then `Woods`, served `woods/introPopup.swf`, HUD assets, `cold_winds.mp3`, `Survival_1_Main_Theme.mp3`, and `owl_hoot_02.mp3` with no missing requests.
+- No CUA or cursor-moving click path was used in this chunk; testing used the existing Flashpoint Navigator launch/capture/audio helpers targeted at G32QC.
+
+## TODO Full AS3 G32QC Audio Matrix
+
+- Add an AS3 interaction smoke tool or option mirroring `qa:as2-interaction-smoke`, using post-message clicks first and scene-specific targets only after coordinates are proven stable on G32QC.
+- Add targeted checks for AS3 intro/popup-heavy islands such as `survival` so a post-load screenshot can distinguish "valid intro/popup phase" from a truly stalled first scene.
