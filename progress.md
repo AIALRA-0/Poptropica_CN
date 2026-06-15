@@ -674,3 +674,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Run AS2 Super Power again with audio enabled on G32QC to see whether the current AS2 bridge produces loopback audio during interaction.
 - Extend AS2 visible/post-message probes beyond Super Power after confirming scene-specific launch points and low-interference click reliability.
+
+## 2026-06-15 G32QC AS2 Audio Interaction Probe
+
+- Re-ran AS2 Super Power on G32QC with post-message clicks and audio enabled: `npm run qa:validate-as2 -- --maxCandidates=1 --targetMonitor G32QC --noSaveCompatibility --afterLaunchWaitMs=9000 --windowTimeoutMs=45000 --audioDurationSec=3 --audioTimeoutMs=30000`.
+- Result passed with `flashpointnavigator-as2`, score `100`, `audioActive: true`, `mapsClickable: true`, Chinese dialogue/static proof present, and `failedChecks: []`. Report: `runtime-data/qa/super-power/flashpointnavigator-as2-report-1781534680113.json`.
+- Audio details: one `flashpointnavigator.exe` audio session, unmuted volume `1`, loopback speaker `扬声器 (2- AudioBox Go)`, `rms: 0.004373`, `peak: 0.008874`.
+- Placement stayed on `DISPLAY1`/G32QC and dialogue click metadata still recorded `delivery: "post-message"`, so this AS2 audio+interaction pass did not move the system cursor.
+
+## TODO G32QC AS2 Audio Interaction Probe
+
+- Save the current passing AS2 compatibility state in the project status store, either by rerunning without `--noSaveCompatibility` or by promoting the verified report carefully.
+- Build an AS2 island visual/post-message matrix analogous to the AS3 direct-scene smoke, starting with a small set of representative AS2 launchable entries.
