@@ -757,3 +757,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Expand `qa:as2-interaction-smoke -- --all` in batches after confirming the representative post-message click remains low-interference on G32QC.
 - Add scene-specific interaction probes for islands with known first-screen NPC/sign/dialogue targets instead of relying only on generic post-click stage stability.
+
+## 2026-06-15 Full AS2 G32QC Interaction/Audio Matrix
+
+- Ran the full AS2 interaction/audio matrix across all 34 AS2 launchable islands on G32QC with no cursor-moving clicks: `npm run qa:as2-interaction-smoke -- --all --targetMonitor G32QC --requireAudio --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --skipOcr`.
+- Result passed 34/34 with `audioActive: 34`, `mapClicksPassed: 34`, `withMissingLogRequests: 0`, and `failedKeys: []`. Exact report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781541580600.json`.
+- Report audit confirmed all runtime/capture devices were non-primary `DISPLAY1`, and every click metadata file recorded `delivery: "post-message"`.
+- The run covered every AS2 launchable key in sorted manifest order from `24-carrot` through `zomberry`; no island showed missing resources, audio inactivity, post-click stage loss, or failed checks.
+- Visual spot checks were opened for `24-carrot` and `zomberry` post-click screenshots from `runtime-data/qa/as2/interaction-smoke/run-1781541580600/`; both retained stable stage/UI on the G32QC capture.
+- Background run artifacts: stdout `runtime-data/qa/as2/interaction-smoke/full-as2-interaction-all-1781541580004.stdout.log`, stderr `runtime-data/qa/as2/interaction-smoke/full-as2-interaction-all-1781541580004.stderr.log` (only the expected Node SQLite experimental warning).
+
+## TODO Full AS2 G32QC Interaction/Audio Matrix
+
+- Add targeted per-island interaction points for first-screen NPCs/signs/dialogue where available, using the same post-message delivery path.
+- Consider adding a report aggregate helper for AS2 interaction runs, analogous to AS3 aggregate, if multiple batch runs become common.
