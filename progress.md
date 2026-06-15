@@ -742,3 +742,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add a small AS3 audio batch across multiple direct-scene islands with known sound requests, building on the earlier Arabian Nights audio proof.
 - Start the AS2 multi-island post-message interaction/audio matrix now that AS2/AS3 strict visual coverage has no missing resource requests.
+
+## 2026-06-15 AS2 G32QC Interaction/Audio Matrix
+
+- Added `tools/qa-as2-interaction-smoke.js` and npm script `qa:as2-interaction-smoke`. The tool launches AS2 islands through Flashpoint Navigator on `G32QC`, captures the initial scene, checks real loopback audio, sends a low-interference post-message click, recaptures/analyzes the stage, and records server-log missing requests. It defaults to representative AS2 entries (`super-power`, `time-tangled`, `astro-knights`, `zomberry`) unless `--islands=...` or `--all` is supplied.
+- The click path defaults to `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`; no cursor-moving click was used in this chunk. Reports record the click metadata, including `delivery: "post-message"`.
+- The generic multi-island pass treats post-click stage stability as the cross-island interaction proof. `--requireMapRequest` remains available for targeted scenes where a known map request is expected; this is not assumed for every island because top UI/sign coordinates differ by scene.
+- G32QC representative run passed: `npm run qa:as2-interaction-smoke -- --targetMonitor G32QC --requireAudio --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --skipOcr`. Result: 4/4 passed, `audioActive: 4`, `mapClicksPassed: 4`, `withMissingLogRequests: 0`, all window/capture devices on non-primary `DISPLAY1`, and click delivery `post-message`. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781541134453.json`.
+- Super Power strong map-request run also passed with `--requireMapRequest`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781541322491.json`. Its map-click log showed `popups/map.swf` and `popups/maps/Super.swf` served successfully.
+- Visual spot checks were opened for Super Power, Astro Knights, and Zomberry post-click screenshots from `runtime-data/qa/as2/interaction-smoke/run-1781541134453/`; all retained a stable game stage/UI, and Super Power opened the map overlay.
+- Regression validation passed: `node --check tools/qa-as2-interaction-smoke.js`, `npm run verify:pack-inputs` with AS2 48/48 and AS3 47/47, `npm run qa:as2-sound-bridge`, and `npm run qa:as2-launch-smoke` with 34/34 entries. Latest AS2 launch report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781541399885.json`.
+
+## TODO AS2 G32QC Interaction/Audio Matrix
+
+- Expand `qa:as2-interaction-smoke -- --all` in batches after confirming the representative post-message click remains low-interference on G32QC.
+- Add scene-specific interaction probes for islands with known first-screen NPC/sign/dialogue targets instead of relying only on generic post-click stage stability.
