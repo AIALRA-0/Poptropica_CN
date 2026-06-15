@@ -616,5 +616,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 ## TODO G32QC-Safe Visible QA Prep / No-Window Revalidation
 
-- Before resuming Navigator-backed visual smoke, run a single low-risk visible test on G32QC only and inspect the placement metadata. If Flash does not accept post-message clicks, use `--allowMouseClicks` only for targeted clicks after confirming the window is on `DISPLAY1`.
 - Keep the proxy/no-window launch smoke as the default regression path while expanding visible coverage island-by-island to avoid interrupting the user's main display workflow.
+
+## 2026-06-15 G32QC Minimal Visible AS3 Smoke
+
+- Ran one Navigator-backed visible smoke with `npm run qa:as3-islands-smoke -- --limit=1 --targetMonitor G32QC --skipAudio --noForegroundCapture --settleMs=9000 --windowTimeoutMs=45000 --allowNoSceneProgress`.
+- The test passed 1/1 for `arabian-nights` with `failedChecks: []`. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781532989706.json`.
+- Placement metadata confirmed both wait/capture phases targeted non-primary `DISPLAY1` (`G32QC A`) and the capture box stayed fully inside the side monitor's negative-X coordinate range: left `-1867`, right `-693`, width `1174`, height `620`.
+- No cursor-moving click path was used in this smoke; audio was intentionally skipped to keep this first side-monitor probe low-interference.
+
+## TODO G32QC Minimal Visible AS3 Smoke
+
+- Expand AS3 visible smoke in small batches on G32QC with `--skipAudio` until placement and scene stability are boring, then re-enable audio where scene startup is expected to produce sound.
+- Start AS2 G32QC validation with post-message clicks first. If Flash ignores those messages, use `--allowMouseClicks` only after confirming placement metadata keeps the target window on `DISPLAY1`.
