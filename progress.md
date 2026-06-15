@@ -868,3 +868,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue looking for non-flaky semantic strong evidence for `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mystery-of-the-map`; all three still pass ordinary G32QC interaction/audio, but not stable strong evidence.
 - If post-message mouse input remains too weak for these scenes, add a target-specific multi-step interaction runner or investigate AS3-level automation hooks before using real cursor input.
+
+## 2026-06-15 AS3 Post-Message Keyboard Probe
+
+- Added `tools/qa-helper.py key-window`, a window-message keyboard sender that supports `--key`, `--hold-ms`, `--repeat-interval-ms`, `--largest-child`, and `--child-class-contains`. `tools/lib/qa.js` now treats `key-window` like other window-targeted QA commands, so G32QC placement and post-message defaults apply.
+- AS3 interaction smoke now accepts `--interactionKey`, `--interactionKeyHoldMs`, `--interactionKeyRepeatIntervalMs`, `--interactionKeyTarget=largest-child`, and `--interactionKeyChildClassContains=...`. This allows keyboard probes without foreground SendKeys or real cursor movement.
+- Tested `mystery-of-the-map` with post-message Right key held/repeated against the Navigator top-level window (`as3-interaction-smoke-1781558711834.json`) and against the largest child window (`as3-interaction-smoke-1781559107310.json`). The largest child was `GeckoPluginWindow` in `plugin-container.exe`, but the visual diff stayed below `0.001`, so AS3 does not currently accept this keyboard path as useful strong evidence.
+- Stable AS3 strong matrix still passed 9/9 after the helper changes with `audioActive: 9`, `interactionEvidencePassed: 9`, no missing requests, all `post-message`, and all placements on `DISPLAY1`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781559218444.json`.
+- Full AS3 G32QC interaction/audio regression still passed 12/12 with `audioActive: 12`, `interactionsPassed: 12`, `withMissingLogRequests: 0`, and `failedKeys: []`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781559781950.json`.
+- Validation passed: `python -m py_compile tools/qa-helper.py`, `node --check tools/qa-as3-islands-smoke.js`, `node --check tools/lib/qa.js`, `npm run verify:pack-inputs`, and `git diff --check` with only CRLF warnings.
+
+## TODO AS3 Post-Message Keyboard Probe
+
+- Keyboard post-message is not enough for `mystery-of-the-map`; next route should be a target-specific multi-step mouse runner or AS3 runtime instrumentation rather than more single-key probes.
+- Keep `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mystery-of-the-map` out of required strong-target matrices until a repeatable semantic signal is found.

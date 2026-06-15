@@ -572,6 +572,21 @@ function interactionTargetFor(entry, args) {
       : args.clickMoveIntervalMs !== undefined
         ? Number(args.clickMoveIntervalMs)
         : Number(target.moveIntervalMs || 0),
+    key: args.interactionKey !== undefined
+      ? String(args.interactionKey)
+      : target.key || null,
+    keyHoldMs: args.interactionKeyHoldMs !== undefined
+      ? Number(args.interactionKeyHoldMs)
+      : Number(target.keyHoldMs || 0),
+    keyRepeatIntervalMs: args.interactionKeyRepeatIntervalMs !== undefined
+      ? Number(args.interactionKeyRepeatIntervalMs)
+      : Number(target.keyRepeatIntervalMs || 0),
+    keyTarget: args.interactionKeyTarget !== undefined
+      ? String(args.interactionKeyTarget)
+      : target.keyTarget || null,
+    keyChildClassContains: args.interactionKeyChildClassContains !== undefined
+      ? String(args.interactionKeyChildClassContains)
+      : target.keyChildClassContains || null,
     expectedOcrPattern: args.expectedInteractionOcr
       ? String(args.expectedInteractionOcr)
       : target.expectedOcrPattern || null,
@@ -624,32 +639,63 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     };
   }
 
-  const clickPoint = stageRelativeToWindow(capture, stageRect, {
-    x: target.x,
-    y: target.y
-  });
+  const clickPoint = target.key
+    ? null
+    : stageRelativeToWindow(capture, stageRect, {
+        x: target.x,
+        y: target.y
+      });
 
   try {
-    const clickArgs = [
-      "click-window",
-      "--handle",
-      String(runtimeWindow.match.handle),
-      "--process-names",
-      runtime.processNames.join(","),
-      "--title-contains",
-      "poptropica",
-      "--x",
-      String(clickPoint.x),
-      "--y",
-      String(clickPoint.y),
-      "--output",
-      clickPath
-    ];
-    if (Number(target.holdMs || 0) > 0) {
-      clickArgs.push("--hold-ms", String(Math.round(Number(target.holdMs))));
-    }
-    if (Number(target.moveIntervalMs || 0) > 0) {
-      clickArgs.push("--move-interval-ms", String(Math.round(Number(target.moveIntervalMs))));
+    const clickArgs = target.key
+      ? [
+          "key-window",
+          "--handle",
+          String(runtimeWindow.match.handle),
+          "--process-names",
+          runtime.processNames.join(","),
+          "--title-contains",
+          "poptropica",
+          "--key",
+          String(target.key),
+          "--output",
+          clickPath
+        ]
+      : [
+          "click-window",
+          "--handle",
+          String(runtimeWindow.match.handle),
+          "--process-names",
+          runtime.processNames.join(","),
+          "--title-contains",
+          "poptropica",
+          "--x",
+          String(clickPoint.x),
+          "--y",
+          String(clickPoint.y),
+          "--output",
+          clickPath
+        ];
+    if (target.key) {
+      if (Number(target.keyHoldMs || 0) > 0) {
+        clickArgs.push("--hold-ms", String(Math.round(Number(target.keyHoldMs))));
+      }
+      if (Number(target.keyRepeatIntervalMs || 0) > 0) {
+        clickArgs.push("--repeat-interval-ms", String(Math.round(Number(target.keyRepeatIntervalMs))));
+      }
+      if (String(target.keyTarget || "").toLowerCase() === "largest-child") {
+        clickArgs.push("--largest-child");
+      }
+      if (target.keyChildClassContains) {
+        clickArgs.push("--child-class-contains", String(target.keyChildClassContains));
+      }
+    } else {
+      if (Number(target.holdMs || 0) > 0) {
+        clickArgs.push("--hold-ms", String(Math.round(Number(target.holdMs))));
+      }
+      if (Number(target.moveIntervalMs || 0) > 0) {
+        clickArgs.push("--move-interval-ms", String(Math.round(Number(target.moveIntervalMs))));
+      }
     }
     if (runtime.pid) {
       clickArgs.push("--pid", String(runtime.pid));

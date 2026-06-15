@@ -501,6 +501,19 @@ def resolve_window_row(hwnd, process_names=None, title_contains=None, pid=None):
     return None
 
 
+def child_window_rows(hwnd):
+    rows = []
+
+    def callback(child_hwnd, _):
+        row = window_row(child_hwnd)
+        if row:
+            rows.append(row)
+
+    win32gui.EnumChildWindows(int(hwnd), callback, None)
+    rows.sort(key=lambda item: (item["rect"]["top"], item["rect"]["left"], item["handle"]))
+    return rows
+
+
 def bring_to_front(hwnd):
     win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
     try:
@@ -927,6 +940,7 @@ def command_click_window(args):
     row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
+    target_row = row
     hwnd = int(row["handle"])
     point = win32gui.ClientToScreen(hwnd, (int(args.x), int(args.y)))
     hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
@@ -964,6 +978,7 @@ def command_click_window(args):
         "ok": True,
         "generatedAt": now_iso(),
         "window": row,
+        "targetWindow": target_row,
         "placement": placement,
         "delivery": delivery,
         "point": {
@@ -974,6 +989,155 @@ def command_click_window(args):
             "holdMs": hold_ms,
             "moveIntervalMs": max(0, int(getattr(args, "move_interval_ms", 0) or 0)),
         },
+    }
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+
+
+KEY_CODE_ALIASES = {
+    "BACKSPACE": win32con.VK_BACK,
+    "BKSP": win32con.VK_BACK,
+    "BS": win32con.VK_BACK,
+    "TAB": win32con.VK_TAB,
+    "ENTER": win32con.VK_RETURN,
+    "RETURN": win32con.VK_RETURN,
+    "SHIFT": win32con.VK_SHIFT,
+    "CTRL": win32con.VK_CONTROL,
+    "CONTROL": win32con.VK_CONTROL,
+    "ALT": win32con.VK_MENU,
+    "ESC": win32con.VK_ESCAPE,
+    "ESCAPE": win32con.VK_ESCAPE,
+    "SPACE": win32con.VK_SPACE,
+    "LEFT": win32con.VK_LEFT,
+    "RIGHT": win32con.VK_RIGHT,
+    "UP": win32con.VK_UP,
+    "DOWN": win32con.VK_DOWN,
+    "A": ord("A"),
+    "D": ord("D"),
+    "S": ord("S"),
+    "W": ord("W"),
+}
+
+
+def resolve_key_code(value):
+    key = str(value or "").strip()
+    normalized = key.upper()
+    if normalized in KEY_CODE_ALIASES:
+        return int(KEY_CODE_ALIASES[normalized])
+    if len(key) == 1:
+        return int(ord(key.upper()))
+    if normalized.startswith("VK_") and hasattr(win32con, normalized):
+        return int(getattr(win32con, normalized))
+    if normalized.startswith("0X"):
+        return int(normalized, 16)
+    return int(normalized, 10)
+
+
+def key_lparam(vk, is_keyup=False):
+    scan = int(win32api.MapVirtualKey(int(vk), 0)) & 0xFF
+    lparam = 1 | (scan << 16)
+    if int(vk) in {win32con.VK_LEFT, win32con.VK_RIGHT, win32con.VK_UP, win32con.VK_DOWN}:
+        lparam |= 1 << 24
+    if is_keyup:
+        lparam |= (1 << 30) | (1 << 31)
+    return lparam
+
+
+def command_key_window(args):
+    hwnd = int(args.handle)
+    process_names = parse_csv(getattr(args, "process_names", ""))
+    title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
+    pid = int(args.pid) if getattr(args, "pid", None) else None
+    placement = None
+    if getattr(args, "target_monitor", None):
+        placement = position_window_on_target_monitor(
+            hwnd,
+            args.target_monitor,
+            width=getattr(args, "window_width", None),
+            height=getattr(args, "window_height", None),
+            maximize=getattr(args, "maximize", False),
+        )
+    if not getattr(args, "post_message", False):
+        bring_to_front(hwnd)
+    row = resolve_window_row(hwnd, process_names, title_contains, pid)
+    if not row:
+        raise RuntimeError(f"Window handle {hwnd} is not valid.")
+    target_row = row
+    child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
+    if getattr(args, "largest_child", False) or child_class_contains:
+        candidates = child_window_rows(int(row["handle"]))
+        if child_class_contains:
+            candidates = [
+                child for child in candidates
+                if child_class_contains in str(child.get("className") or "").lower()
+            ]
+        if candidates:
+            candidates.sort(key=lambda child: child["rect"]["width"] * child["rect"]["height"], reverse=True)
+            target_row = candidates[0]
+    hwnd = int(target_row["handle"])
+    vk = resolve_key_code(args.key)
+    hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
+    repeat_interval_ms = max(0, int(getattr(args, "repeat_interval_ms", 0) or 0))
+    delivery = "post-message" if getattr(args, "post_message", False) else "keyboard-event"
+    down_lparam = key_lparam(vk, is_keyup=False)
+    up_lparam = key_lparam(vk, is_keyup=True)
+    if getattr(args, "post_message", False):
+        win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, vk, down_lparam)
+        if hold_ms > 0:
+            if repeat_interval_ms > 0:
+                deadline = time.monotonic() + (hold_ms / 1000.0)
+                interval_sec = max(0.01, repeat_interval_ms / 1000.0)
+                while True:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        break
+                    win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, vk, down_lparam)
+                    time.sleep(min(interval_sec, remaining))
+            else:
+                time.sleep(hold_ms / 1000.0)
+        else:
+            time.sleep(0.08)
+        win32gui.PostMessage(hwnd, win32con.WM_KEYUP, vk, up_lparam)
+    else:
+        win32api.keybd_event(vk, 0, 0, 0)
+        if hold_ms > 0:
+            time.sleep(hold_ms / 1000.0)
+        else:
+            time.sleep(0.08)
+        win32api.keybd_event(vk, 0, win32con.KEYEVENTF_KEYUP, 0)
+    payload = {
+        "ok": True,
+        "generatedAt": now_iso(),
+        "window": row,
+        "targetWindow": target_row,
+        "placement": placement,
+        "delivery": delivery,
+        "key": {
+            "value": str(args.key),
+            "vk": vk,
+            "holdMs": hold_ms,
+            "repeatIntervalMs": repeat_interval_ms,
+        },
+    }
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+
+
+def command_list_child_windows(args):
+    hwnd = int(args.handle)
+    process_names = parse_csv(getattr(args, "process_names", ""))
+    title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
+    pid = int(args.pid) if getattr(args, "pid", None) else None
+    row = resolve_window_row(hwnd, process_names, title_contains, pid)
+    if not row:
+        raise RuntimeError(f"Window handle {hwnd} is not valid.")
+    children = child_window_rows(int(row["handle"]))
+    payload = {
+        "ok": True,
+        "generatedAt": now_iso(),
+        "window": row,
+        "children": children,
+        "childCount": len(children),
     }
     write_json_if_needed(payload, args.output)
     to_json(payload)
@@ -1191,6 +1355,32 @@ def main():
     click_parser.add_argument("--maximize", action="store_true")
     click_parser.add_argument("--post-message", action="store_true")
     click_parser.set_defaults(func=command_click_window)
+
+    key_parser = subparsers.add_parser("key-window")
+    key_parser.add_argument("--handle", required=True)
+    key_parser.add_argument("--key", required=True)
+    key_parser.add_argument("--output")
+    key_parser.add_argument("--process-names", default="")
+    key_parser.add_argument("--title-contains", default="")
+    key_parser.add_argument("--pid", type=int)
+    key_parser.add_argument("--hold-ms", type=int, default=0)
+    key_parser.add_argument("--repeat-interval-ms", type=int, default=0)
+    key_parser.add_argument("--target-monitor")
+    key_parser.add_argument("--window-width", type=int)
+    key_parser.add_argument("--window-height", type=int)
+    key_parser.add_argument("--maximize", action="store_true")
+    key_parser.add_argument("--post-message", action="store_true")
+    key_parser.add_argument("--largest-child", action="store_true")
+    key_parser.add_argument("--child-class-contains", default="")
+    key_parser.set_defaults(func=command_key_window)
+
+    child_parser = subparsers.add_parser("list-child-windows")
+    child_parser.add_argument("--handle", required=True)
+    child_parser.add_argument("--output")
+    child_parser.add_argument("--process-names", default="")
+    child_parser.add_argument("--title-contains", default="")
+    child_parser.add_argument("--pid", type=int)
+    child_parser.set_defaults(func=command_list_child_windows)
 
     ocr_parser = subparsers.add_parser("ocr-image")
     ocr_parser.add_argument("--input", required=True)
