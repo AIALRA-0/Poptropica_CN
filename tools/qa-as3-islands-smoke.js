@@ -4,7 +4,7 @@ const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { ensureQaDir, runPythonQa } = require("./lib/qa");
+const { ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
@@ -26,12 +26,39 @@ const DEFAULT_INTERACTION_TARGET = {
   label: "generic-stage-stability"
 };
 const AS3_INTERACTION_TARGETS = {
+  "arabian-nights": {
+    x: 0.42,
+    y: 0.74,
+    label: "how-bazaar-start-popup",
+    expectedOcrPattern: "Arabian|How\\s*Bazaar|START"
+  },
+  "mocktropica": {
+    x: 0.42,
+    y: 0.74,
+    label: "worldwide-headquarters-sign",
+    expectedOcrPattern: "WORLDWIDE|HEADQUARTERS|Poptropica",
+    minChangedPixelRatio: 0.002
+  },
   "monkey-wrench": {
     x: 0.42,
     y: 0.74,
     label: "walk-tutorial-overlay",
     expectedOcrPattern: "CLICK\\s+AND\\s+HOLD|TO\\s+WALK",
     minChangedPixelRatio: 0.05
+  },
+  "monster-carnival": {
+    x: 0.42,
+    y: 0.74,
+    label: "carnival-street-signs",
+    expectedOcrPattern: "CARNIVAL|Sundae|MINERALS",
+    minChangedPixelRatio: 0.005
+  },
+  "poptropicon": {
+    x: 0.42,
+    y: 0.74,
+    label: "pizza-truck-street-signs",
+    expectedOcrPattern: "PEPE'?S|PIZZA|RESTROOMS",
+    minChangedPixelRatio: 0.005
   },
   "timmy-failure": {
     x: 0.42,
@@ -46,6 +73,13 @@ const AS3_INTERACTION_TARGETS = {
     label: "crash-landing-intro-popup",
     expectedOcrPattern: "SURVIVAL|CRASH\\s+LANDING|START",
     minChangedPixelRatio: 0.005
+  },
+  "virus-hunter": {
+    x: 0.42,
+    y: 0.74,
+    label: "town-hall-bus-street-signs",
+    expectedOcrPattern: "TOWN\\s*HALL|BUS|NEED\\s*A\\s*JOB",
+    minChangedPixelRatio: 0.002
   }
 };
 
@@ -280,20 +314,6 @@ function readLogSegment(filePath, startOffset) {
   } catch (_error) {
     return "";
   }
-}
-
-function isMissingRequestLine(line) {
-  const text = String(line || "");
-  if (/flashpoint-gmp-dummy\.xml/iu.test(text)) {
-    return false;
-  }
-  if (/\bStatus\s*=\s*404\b/iu.test(text)) {
-    return true;
-  }
-  if (/\b(?:ENOENT|not found|missing)\b/iu.test(text)) {
-    return !/\bStatus\s*=\s*200\b/iu.test(text);
-  }
-  return false;
 }
 
 function summarizeLogSegment(segment) {

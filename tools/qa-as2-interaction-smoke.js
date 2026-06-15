@@ -3,7 +3,7 @@ const path = require("node:path");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { acquireQaLock, ensureQaDir, runPythonQa } = require("./lib/qa");
+const { acquireQaLock, ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
@@ -101,20 +101,6 @@ function readLogSegment(filePath, startOffset) {
   } catch (_error) {
     return "";
   }
-}
-
-function isMissingRequestLine(line) {
-  const text = String(line || "");
-  if (/flashpoint-gmp-dummy\.xml/iu.test(text)) {
-    return false;
-  }
-  if (/\bStatus\s*=\s*404\b/iu.test(text)) {
-    return true;
-  }
-  if (/\b(?:ENOENT|not found|missing)\b/iu.test(text)) {
-    return !/\bStatus\s*=\s*200\b/iu.test(text);
-  }
-  return false;
 }
 
 function summarizeLogSegment(segment) {

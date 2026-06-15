@@ -22,6 +22,20 @@ function flagEnabled(value) {
   return /^(1|true|yes|y)$/iu.test(String(value || ""));
 }
 
+function isMissingRequestLine(line) {
+  const text = String(line || "");
+  if (/flashpoint-gmp-dummy\.xml/iu.test(text)) {
+    return false;
+  }
+  if (/\bStatus\s*=\s*404\b/iu.test(text)) {
+    return true;
+  }
+  if (/\b(?:ENOENT|not found|missing)\b/iu.test(text)) {
+    return !/\bStatus\s*=\s*200\b/iu.test(text);
+  }
+  return false;
+}
+
 function withDefaultWindowQaArgs(args) {
   const normalized = [...args];
   const command = normalized[0];
@@ -224,6 +238,7 @@ function writeQaReport(name, payload) {
 module.exports = {
   acquireQaLock,
   ensureQaDir,
+  isMissingRequestLine,
   runPythonQa,
   spawnPythonQa,
   waitForPythonChild,
