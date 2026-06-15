@@ -419,6 +419,122 @@ function hasSceneProgressSignal(logSummary) {
   return Number(logSummary.sceneLoadedCount || 0) > 0 || Number(logSummary.sceneMediaRequestCount || 0) > 0;
 }
 
+function decodeLogLine(line) {
+  let decoded = String(line || "");
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const next = decodeURIComponent(decoded);
+      if (next === decoded) {
+        break;
+      }
+      decoded = next;
+    } catch (_error) {
+      break;
+    }
+  }
+  return decoded.replace(/\\/gu, "/");
+}
+
+function lineHasQueryValue(decodedLine, name, expectedValue) {
+  const pattern = new RegExp(`(?:[?&]|\\b)${escapeRegExp(name)}=${escapeRegExp(expectedValue)}(?:[&#\\s]|$)`, "iu");
+  return pattern.test(decodedLine);
+}
+
+function as3SceneClassName(entry) {
+  const targetScene = String(entry.as3TargetScene || "");
+  if (targetScene.includes(".")) {
+    return targetScene.split(".").filter(Boolean).pop();
+  }
+  return String(entry.roomParam || "")
+    .split(/[^a-z0-9]+/iu)
+    .filter(Boolean)
+    .map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
+    .join("");
+}
+
+function buildSceneEvidence(entry, segment, args) {
+  const lines = String(segment || "")
+    .split(/\r?\n/gu)
+    .filter(Boolean);
+  const decodedLines = lines.map((line) => ({
+    raw: line,
+    decoded: decodeLogLine(line)
+  }));
+  const sceneFolder = String(entry.sceneFolder || entry.islandParam || "").trim();
+  const roomParam = String(entry.roomParam || "").trim();
+  const sceneClass = as3SceneClassName(entry);
+  const dataPrefix = sceneFolder && roomParam
+    ? `/game/data/scenes/${sceneFolder}/${roomParam}/`
+    : null;
+  const assetPrefix = sceneFolder && roomParam
+    ? `/game/assets/scenes/${sceneFolder}/${roomParam}/`
+    : null;
+  const sceneDataLines = dataPrefix
+    ? decodedLines
+        .filter((line) => line.decoded.toLowerCase().includes(dataPrefix.toLowerCase()))
+        .map((line) => line.raw)
+    : [];
+  const sceneAssetLines = assetPrefix
+    ? decodedLines
+        .filter((line) => line.decoded.toLowerCase().includes(assetPrefix.toLowerCase()))
+        .map((line) => line.raw)
+    : [];
+  const targetSceneTrackLines = decodedLines
+    .filter((line) => {
+      const decoded = line.decoded;
+      return /brain\/track\.php/iu.test(decoded) &&
+        (
+          lineHasQueryValue(decoded, "event", "SceneLoaded") ||
+          lineHasQueryValue(decoded, "event", "TimeSpentInScene")
+        ) &&
+        (!sceneFolder || lineHasQueryValue(decoded, "cluster", sceneFolder)) &&
+        (!sceneClass || lineHasQueryValue(decoded, "scene", sceneClass));
+    })
+    .map((line) => line.raw);
+  const checks = [
+    {
+      name: "target_scene_data_request",
+      ok: sceneDataLines.length > 0,
+      expectedPrefix: dataPrefix,
+      count: sceneDataLines.length,
+      samples: sceneDataLines.slice(0, 6)
+    },
+    {
+      name: "target_scene_tracking_signal",
+      ok: targetSceneTrackLines.length > 0,
+      expected: {
+        cluster: sceneFolder || null,
+        scene: sceneClass || null,
+        events: ["SceneLoaded", "TimeSpentInScene"]
+      },
+      count: targetSceneTrackLines.length,
+      samples: targetSceneTrackLines.slice(0, 6)
+    },
+    {
+      name: "target_scene_asset_request",
+      ok: sceneAssetLines.length > 0,
+      informational: true,
+      expectedPrefix: assetPrefix,
+      count: sceneAssetLines.length,
+      samples: sceneAssetLines.slice(0, 6)
+    }
+  ];
+  const requiredChecks = checks.filter((check) => !check.informational);
+  const ok = requiredChecks.length > 0 && requiredChecks.every((check) => check.ok);
+  return {
+    required: flagEnabled(args.requireSceneEvidence),
+    ok,
+    target: {
+      sceneFolder: sceneFolder || null,
+      roomParam: roomParam || null,
+      sceneClass: sceneClass || null,
+      dataPrefix,
+      assetPrefix
+    },
+    checks
+  };
+}
+
 function isLikelyLoadingScreen(ocr, logSummary = null) {
   if (ocr?.skipped) {
     return false;
@@ -1169,6 +1285,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
   fs.writeFileSync(logSegmentPath, logSegment, "utf8");
   const logSummary = summarizeLogSegment(logSegment);
+  const sceneEvidence = buildSceneEvidence(entry, logSegment, args);
   const failedChecks = [];
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
@@ -1190,6 +1307,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (isLaunchHealthOk(launchHealth) && !flagEnabled(args.allowNoSceneProgress) && !hasSceneProgressSignal(logSummary)) {
     failedChecks.push("scene_progress_missing");
+  }
+  if (flagEnabled(args.requireSceneEvidence) && !sceneEvidence.ok) {
+    failedChecks.push("scene_evidence_missing");
   }
   if (isLikelyLoadingScreen(ocr, logSummary)) {
     failedChecks.push("loading_screen_stuck");
@@ -1253,6 +1373,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       attempt: audio?.attempt ?? null
     },
     interaction,
+    sceneEvidence,
     logSummary,
     qaErrors,
     failedChecks
@@ -1270,7 +1391,12 @@ function buildSummary(startedAt, reports) {
     audioActive: reports.filter((report) => report.audio?.active).length,
     audioInactive: reports.filter((report) => report.audio && !report.audio.skipped && !report.audio.active).length,
     interactionsPassed: reports.filter((report) => report.interaction && !report.interaction.skipped && report.interaction.ok).length,
-    interactionEvidencePassed: reports.filter((report) => report.interaction?.evidence?.ok).length,
+    interactionEvidencePassed: reports.filter((report) =>
+      report.interaction?.evidence?.ok &&
+      Array.isArray(report.interaction.evidence.checks) &&
+      report.interaction.evidence.checks.length > 0
+    ).length,
+    sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };
