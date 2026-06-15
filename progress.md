@@ -882,3 +882,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keyboard post-message is not enough for `mystery-of-the-map`; next route should be a target-specific multi-step mouse runner or AS3 runtime instrumentation rather than more single-key probes.
 - Keep `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mystery-of-the-map` out of required strong-target matrices until a repeatable semantic signal is found.
+
+## 2026-06-15 AS3 Multi-Step Post-Message Probe
+
+- Added AS3 interaction smoke support for JSON `--interactionSteps` / `--clickSteps`. Each step can be a post-message click or key action with per-step hold/repeat/move timing and `waitMs`; single-step behavior remains backward-compatible.
+- Multi-step runs now write every action into the interaction report with per-step artifact paths. Multi-step click artifacts use `*-interaction-step-01.json`, `*-interaction-step-02.json`, etc.; single-step runs keep the existing `*-interaction-click.json` path.
+- Probed `mystery-of-the-map` with a two-click right-side sequence on G32QC: `npm run qa:as3-interaction-smoke -- --islands=mystery-of-the-map --targetMonitor G32QC --skipAudio --skipOcr --settleMs=10000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=500 --interactionWaitMs=3500 --interactionSteps='[{"x":0.82,"y":0.329,"holdMs":1600,"moveIntervalMs":50,"waitMs":600},{"x":0.97,"y":0.30,"holdMs":1200,"moveIntervalMs":50}]' --minInteractionChangedPixelRatio=0.01 --requireInteractionEvidence`.
+- The two-step Mystery probe produced both post-message action artifacts and a stable post-click stage, but still did not meet strong evidence: `changedPixelRatio: 0.003248 < 0.01`, no missing requests, report `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781560853784.json`. It remains out of the required strong-target matrix.
+- Stable AS3 strong matrix passed again on G32QC: `npm run qa:as3-interaction-smoke -- --islands=arabian-nights,mission-atlantis,mocktropica,monkey-wrench,monster-carnival,poptropicon,survival,timmy-failure,virus-hunter --targetMonitor G32QC --requireAudio --requireInteractionEvidence --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --interactionWaitMs=3500 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000`.
+- Strong matrix result: 9/9 passed, `audioActive: 9`, `interactionsPassed: 9`, `interactionEvidencePassed: 9`, `withMissingLogRequests: 0`, and all runtime/interaction window left coordinates stayed on the G32QC side display (`-1873`). Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781560971677.json`.
+- Full AS3 G32QC interaction/audio regression passed: `npm run qa:as3-interaction-smoke -- --targetMonitor G32QC --requireAudio --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --interactionWaitMs=3000 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000 --skipOcr`.
+- Full regression result: 12/12 passed, `audioActive: 12`, `audioInactive: 0`, `interactionsPassed: 12`, `withMissingLogRequests: 0`, `failedKeys: []`, and all runtime/interaction window left coordinates stayed on G32QC (`-1873`). Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781561599890.json`.
+- Validation passed: `node --check tools/qa-as3-islands-smoke.js`, `python -m py_compile tools/qa-helper.py`, `node --check tools/lib/qa.js`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), and `git diff --check` with only the existing CRLF warning for `tools/qa-as3-islands-smoke.js`.
+
+## TODO AS3 Multi-Step Post-Message Probe
+
+- Continue searching for repeatable semantic strong evidence for `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mystery-of-the-map`; multi-step post-message clicks improved observability but did not yet produce a strong Mystery signal.
+- Next escalation path should be AS3 runtime instrumentation or scene-specific state probing before considering any real-cursor/manual input.

@@ -543,6 +543,48 @@ function stageRelativeToWindow(capture, stageRect, relativePoint) {
   };
 }
 
+function parseInteractionSteps(value) {
+  if (value === undefined || value === null || value === false || value === "") {
+    return null;
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  try {
+    const parsed = JSON.parse(String(value));
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function normalizedInteractionSteps(target, args) {
+  const rawSteps = parseInteractionSteps(args.interactionSteps || args.clickSteps || target.steps);
+  const sourceSteps = rawSteps && rawSteps.length > 0
+    ? rawSteps
+    : [target];
+  return sourceSteps.map((step, index) => {
+    const source = step && typeof step === "object" ? step : {};
+    const isKey = Boolean(source.key || source.type === "key");
+    return {
+      type: isKey ? "key" : "click",
+      label: String(source.label || (isKey ? "key" : "click")),
+      x: Number(source.x ?? target.x),
+      y: Number(source.y ?? target.y),
+      holdMs: Number(source.holdMs ?? target.holdMs ?? 0),
+      moveIntervalMs: Number(source.moveIntervalMs ?? target.moveIntervalMs ?? 0),
+      key: source.key ? String(source.key) : (isKey ? String(target.key || "") : null),
+      keyHoldMs: Number(source.keyHoldMs ?? source.holdMs ?? target.keyHoldMs ?? 0),
+      keyRepeatIntervalMs: Number(source.keyRepeatIntervalMs ?? target.keyRepeatIntervalMs ?? 0),
+      keyTarget: source.keyTarget ? String(source.keyTarget) : target.keyTarget || null,
+      keyChildClassContains: source.keyChildClassContains
+        ? String(source.keyChildClassContains)
+        : target.keyChildClassContains || null,
+      waitMs: Number(source.waitMs ?? (index === sourceSteps.length - 1 ? 0 : 250))
+    };
+  });
+}
+
 function interactionTargetFor(entry, args) {
   const configured = AS3_INTERACTION_TARGETS[entry.canonicalKey] || {};
   const cliHasPoint = args.interactionX !== undefined ||
@@ -558,7 +600,7 @@ function interactionTargetFor(entry, args) {
         ...DEFAULT_INTERACTION_TARGET,
         ...configured
       };
-  return {
+  const result = {
     ...target,
     x: Number(args.interactionX || args.clickX || target.x),
     y: Number(args.interactionY || args.clickY || target.y),
@@ -594,6 +636,8 @@ function interactionTargetFor(entry, args) {
       ? Number(args.minInteractionChangedPixelRatio)
       : target.minChangedPixelRatio ?? null
   };
+  result.steps = normalizedInteractionSteps(result, args);
+  return result;
 }
 
 function matchesExpectedOcr(text, pattern) {
@@ -607,6 +651,88 @@ function matchesExpectedOcr(text, pattern) {
   }
 }
 
+function interactionStepArtifactPath(runDir, safeStem, index, total, defaultPath) {
+  if (total <= 1) {
+    return defaultPath;
+  }
+  const suffix = String(index + 1).padStart(2, "0");
+  return path.join(runDir, `${safeStem}-interaction-step-${suffix}.json`);
+}
+
+function runInteractionStep({ runDir, safeStem, runtime, runtimeWindow, capture, stageRect, step, index, total, defaultClickPath }) {
+  const outputPath = interactionStepArtifactPath(runDir, safeStem, index, total, defaultClickPath);
+  const isKey = step.type === "key";
+  const clickPoint = isKey
+    ? null
+    : stageRelativeToWindow(capture, stageRect, {
+        x: step.x,
+        y: step.y
+      });
+  const commandArgs = isKey
+    ? [
+        "key-window",
+        "--handle",
+        String(runtimeWindow.match.handle),
+        "--process-names",
+        runtime.processNames.join(","),
+        "--title-contains",
+        "poptropica",
+        "--key",
+        String(step.key),
+        "--output",
+        outputPath
+      ]
+    : [
+        "click-window",
+        "--handle",
+        String(runtimeWindow.match.handle),
+        "--process-names",
+        runtime.processNames.join(","),
+        "--title-contains",
+        "poptropica",
+        "--x",
+        String(clickPoint.x),
+        "--y",
+        String(clickPoint.y),
+        "--output",
+        outputPath
+      ];
+
+  if (isKey) {
+    if (Number(step.keyHoldMs || 0) > 0) {
+      commandArgs.push("--hold-ms", String(Math.round(Number(step.keyHoldMs))));
+    }
+    if (Number(step.keyRepeatIntervalMs || 0) > 0) {
+      commandArgs.push("--repeat-interval-ms", String(Math.round(Number(step.keyRepeatIntervalMs))));
+    }
+    if (String(step.keyTarget || "").toLowerCase() === "largest-child") {
+      commandArgs.push("--largest-child");
+    }
+    if (step.keyChildClassContains) {
+      commandArgs.push("--child-class-contains", String(step.keyChildClassContains));
+    }
+  } else {
+    if (Number(step.holdMs || 0) > 0) {
+      commandArgs.push("--hold-ms", String(Math.round(Number(step.holdMs))));
+    }
+    if (Number(step.moveIntervalMs || 0) > 0) {
+      commandArgs.push("--move-interval-ms", String(Math.round(Number(step.moveIntervalMs))));
+    }
+  }
+  if (runtime.pid) {
+    commandArgs.push("--pid", String(runtime.pid));
+  }
+
+  return {
+    step,
+    clickPoint,
+    artifactPath: outputPath,
+    result: runPythonQa(commandArgs, {
+      timeoutMs: 20000 + Math.max(Number(step.holdMs || 0), Number(step.keyHoldMs || 0))
+    })
+  };
+}
+
 async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capture, stage, initialScreenshotPath, target, args, qaErrors }) {
   const stageRect = stage?.stageRect;
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
@@ -618,12 +744,19 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
   const ocrPath = path.join(runDir, `${safeStem}-interaction-ocr.json`);
   const diffPath = path.join(runDir, `${safeStem}-interaction-diff.json`);
   const logPath = path.join(runDir, `${safeStem}-interaction-server.log`);
+  const steps = Array.isArray(target.steps) && target.steps.length > 0
+    ? target.steps
+    : normalizedInteractionSteps(target, args);
+  const actions = [];
+  let click = null;
+  let clickPoint = null;
 
   if (!runtimeWindow?.match?.handle || !capture || !stageRect) {
     return {
       ok: false,
       skipped: false,
       target,
+      actions,
       reason: "stage_or_window_missing",
       logPath,
       artifacts: {
@@ -639,70 +772,28 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     };
   }
 
-  const clickPoint = target.key
-    ? null
-    : stageRelativeToWindow(capture, stageRect, {
-        x: target.x,
-        y: target.y
-      });
-
   try {
-    const clickArgs = target.key
-      ? [
-          "key-window",
-          "--handle",
-          String(runtimeWindow.match.handle),
-          "--process-names",
-          runtime.processNames.join(","),
-          "--title-contains",
-          "poptropica",
-          "--key",
-          String(target.key),
-          "--output",
-          clickPath
-        ]
-      : [
-          "click-window",
-          "--handle",
-          String(runtimeWindow.match.handle),
-          "--process-names",
-          runtime.processNames.join(","),
-          "--title-contains",
-          "poptropica",
-          "--x",
-          String(clickPoint.x),
-          "--y",
-          String(clickPoint.y),
-          "--output",
-          clickPath
-        ];
-    if (target.key) {
-      if (Number(target.keyHoldMs || 0) > 0) {
-        clickArgs.push("--hold-ms", String(Math.round(Number(target.keyHoldMs))));
-      }
-      if (Number(target.keyRepeatIntervalMs || 0) > 0) {
-        clickArgs.push("--repeat-interval-ms", String(Math.round(Number(target.keyRepeatIntervalMs))));
-      }
-      if (String(target.keyTarget || "").toLowerCase() === "largest-child") {
-        clickArgs.push("--largest-child");
-      }
-      if (target.keyChildClassContains) {
-        clickArgs.push("--child-class-contains", String(target.keyChildClassContains));
-      }
-    } else {
-      if (Number(target.holdMs || 0) > 0) {
-        clickArgs.push("--hold-ms", String(Math.round(Number(target.holdMs))));
-      }
-      if (Number(target.moveIntervalMs || 0) > 0) {
-        clickArgs.push("--move-interval-ms", String(Math.round(Number(target.moveIntervalMs))));
+    for (let index = 0; index < steps.length; index += 1) {
+      const action = runInteractionStep({
+        runDir,
+        safeStem,
+        runtime,
+        runtimeWindow,
+        capture,
+        stageRect,
+        step: steps[index],
+        index,
+        total: steps.length,
+        defaultClickPath: clickPath
+      });
+      actions.push(action);
+      if (Number(steps[index].waitMs || 0) > 0) {
+        await sleep(Math.max(0, Number(steps[index].waitMs)));
       }
     }
-    if (runtime.pid) {
-      clickArgs.push("--pid", String(runtime.pid));
-    }
-    const click = runPythonQa(clickArgs, {
-      timeoutMs: 20000
-    });
+    const lastAction = actions[actions.length - 1] || null;
+    click = lastAction?.result || null;
+    clickPoint = lastAction?.clickPoint || null;
 
     const waitMs = Math.max(0, Number(args.interactionWaitMs || 2200));
     if (waitMs > 0) {
@@ -812,6 +903,12 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       target,
       clickPoint,
       click,
+      actions: actions.map((action) => ({
+        step: action.step,
+        clickPoint: action.clickPoint,
+        artifactPath: action.artifactPath,
+        result: action.result
+      })),
       runtimeWindow: postWindow,
       capture: postCapture,
       stage: postStage,
@@ -845,6 +942,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         stagePath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
         diffPath: visualDiff ? diffPath : null,
+        actionPaths: actions.map((action) => action.artifactPath),
         logPath
       }
     };
@@ -856,6 +954,13 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       skipped: false,
       target,
       clickPoint,
+      click,
+      actions: actions.map((action) => ({
+        step: action.step,
+        clickPoint: action.clickPoint,
+        artifactPath: action.artifactPath,
+        result: action.result
+      })),
       reason: "interaction_click_or_recapture_failed",
       error: String(error.message || error),
       logSummary: summarizeLogSegment(segment),
@@ -867,6 +972,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         stagePath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
         diffPath: null,
+        actionPaths: actions.map((action) => action.artifactPath),
         logPath
       }
     };
