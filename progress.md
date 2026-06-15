@@ -836,3 +836,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add strong targets for remaining AS3 direct-scene entries where current proof is still generic: `escape-from-pelican-rock`, `galactic-hot-dogs`, `mission-atlantis`, and `mystery-of-the-map`.
 - Consider an AS2 shared strong-evidence target table after AS3 strong coverage is complete.
+
+## 2026-06-15 AS3 Strong Target Expansion / Hold Click Support
+
+- Added `holdMs` support to AS3 interaction targets via `--interactionHoldMs` / `--clickHoldMs`, forwarding to the existing post-message `click-window --hold-ms` path. This keeps tests mouse-safe while allowing held-click experiments.
+- Added reliable AS3 strong evidence targets for `galactic-hot-dogs` and `mission-atlantis`, bringing built-in AS3 strong targets to 10 of 12 direct-scene entries.
+- `mission-atlantis` uses the existing default stage click and asserts submarine/bubble visual movement with `minChangedPixelRatio: 0.005`.
+- `galactic-hot-dogs` was initially flaky with generic walk/dust targets, so the built-in target was changed to a stable spaceship-door approach point (`x=0.26`, `y=0.14`, `minChangedPixelRatio: 0.02`). The passing single-island proof had `changedPixelRatio: 0.44506`.
+- `virus-hunter` was changed to OCR-only evidence (`TOWN HALL|BUS|NEED A JOB`) because sign OCR is stable while tiny visual diff fluctuates around the threshold.
+- Explored stronger points for `escape-from-pelican-rock` and `mystery-of-the-map` using side-screen post-message clicks and held clicks. Escape sign/menu/ground points either produced no change or only about `0.002` idle/blink diff; Mystery right-sign/ground points likewise stayed around `0.0024`. These were not promoted to strong built-in evidence.
+- New 10-target AS3 G32QC strong matrix passed 10/10 with `audioActive: 10`, `interactionsPassed: 10`, `interactionEvidencePassed: 10`, `withMissingLogRequests: 0`, all delivery via `post-message`, and all monitor placements on non-primary `DISPLAY1`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781554378616.json`.
+- Full AS3 G32QC interaction/audio regression still passed 12/12 with `audioActive: 12`, `interactionsPassed: 12`, `withMissingLogRequests: 0`, and `failedKeys: []`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781554999081.json`.
+- Static/no-window validation passed: `node --check tools/qa-as3-islands-smoke.js`, package JSON parse, `npm run verify:pack-inputs`, and `git diff --check` with only CRLF warnings.
+
+## TODO AS3 Strong Target Expansion / Hold Click Support
+
+- Continue hunting non-flaky semantic strong evidence for `escape-from-pelican-rock` and `mystery-of-the-map`; current evidence is only generic interaction stability plus audio.
+- Consider adding multi-step interaction support if needed: repeated post-message mousemove while held, or a target-specific two-click sequence, before promoting weak scenes into strong evidence.

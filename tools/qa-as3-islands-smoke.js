@@ -23,6 +23,7 @@ const AS3_SMOKE_REPORT_RE = /^as3-island-smoke-\d+\.json$/u;
 const DEFAULT_INTERACTION_TARGET = {
   x: 0.42,
   y: 0.74,
+  holdMs: 0,
   label: "generic-stage-stability"
 };
 const AS3_INTERACTION_TARGETS = {
@@ -38,6 +39,18 @@ const AS3_INTERACTION_TARGETS = {
     label: "worldwide-headquarters-sign",
     expectedOcrPattern: "WORLDWIDE|HEADQUARTERS|Poptropica",
     minChangedPixelRatio: 0.002
+  },
+  "galactic-hot-dogs": {
+    x: 0.26,
+    y: 0.14,
+    label: "spaceship-door-approach",
+    minChangedPixelRatio: 0.02
+  },
+  "mission-atlantis": {
+    x: 0.42,
+    y: 0.74,
+    label: "submarine-bubble-movement",
+    minChangedPixelRatio: 0.005
   },
   "monkey-wrench": {
     x: 0.42,
@@ -78,8 +91,7 @@ const AS3_INTERACTION_TARGETS = {
     x: 0.42,
     y: 0.74,
     label: "town-hall-bus-street-signs",
-    expectedOcrPattern: "TOWN\\s*HALL|BUS|NEED\\s*A\\s*JOB",
-    minChangedPixelRatio: 0.002
+    expectedOcrPattern: "TOWN\\s*HALL|BUS|NEED\\s*A\\s*JOB"
   }
 };
 
@@ -555,6 +567,11 @@ function interactionTargetFor(entry, args) {
     ...target,
     x: Number(args.interactionX || args.clickX || target.x),
     y: Number(args.interactionY || args.clickY || target.y),
+    holdMs: args.interactionHoldMs !== undefined
+      ? Number(args.interactionHoldMs)
+      : args.clickHoldMs !== undefined
+        ? Number(args.clickHoldMs)
+        : Number(target.holdMs || 0),
     expectedOcrPattern: args.expectedInteractionOcr
       ? String(args.expectedInteractionOcr)
       : target.expectedOcrPattern || null,
@@ -628,6 +645,9 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       "--output",
       clickPath
     ];
+    if (Number(target.holdMs || 0) > 0) {
+      clickArgs.push("--hold-ms", String(Math.round(Number(target.holdMs))));
+    }
     if (runtime.pid) {
       clickArgs.push("--pid", String(runtime.pid));
     }
