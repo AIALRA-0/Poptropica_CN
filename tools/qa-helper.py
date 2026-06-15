@@ -937,7 +937,18 @@ def command_click_window(args):
         time.sleep(0.03)
         win32gui.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, lparam)
         if hold_ms > 0:
-            time.sleep(hold_ms / 1000.0)
+            move_interval_ms = max(0, int(getattr(args, "move_interval_ms", 0) or 0))
+            if move_interval_ms > 0:
+                deadline = time.monotonic() + (hold_ms / 1000.0)
+                interval_sec = max(0.01, move_interval_ms / 1000.0)
+                while True:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        break
+                    win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, win32con.MK_LBUTTON, lparam)
+                    time.sleep(min(interval_sec, remaining))
+            else:
+                time.sleep(hold_ms / 1000.0)
         else:
             time.sleep(0.08)
         win32gui.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, lparam)
@@ -961,6 +972,7 @@ def command_click_window(args):
             "relativeX": int(args.x),
             "relativeY": int(args.y),
             "holdMs": hold_ms,
+            "moveIntervalMs": max(0, int(getattr(args, "move_interval_ms", 0) or 0)),
         },
     }
     write_json_if_needed(payload, args.output)
@@ -1172,6 +1184,7 @@ def main():
     click_parser.add_argument("--title-contains", default="")
     click_parser.add_argument("--pid", type=int)
     click_parser.add_argument("--hold-ms", type=int, default=0)
+    click_parser.add_argument("--move-interval-ms", type=int, default=0)
     click_parser.add_argument("--target-monitor")
     click_parser.add_argument("--window-width", type=int)
     click_parser.add_argument("--window-height", type=int)

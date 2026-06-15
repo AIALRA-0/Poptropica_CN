@@ -853,3 +853,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue hunting non-flaky semantic strong evidence for `escape-from-pelican-rock` and `mystery-of-the-map`; current evidence is only generic interaction stability plus audio.
 - Consider adding multi-step interaction support if needed: repeated post-message mousemove while held, or a target-specific two-click sequence, before promoting weak scenes into strong evidence.
+
+## 2026-06-15 AS3 Post-Message Hold Refinement / Flake Cleanup
+
+- Refined the low-interference post-message click helper: `tools/qa-helper.py click-window` now supports `--move-interval-ms`, sending repeated `WM_MOUSEMOVE` with `MK_LBUTTON` while held. This stays off the system cursor and is exposed in AS3 smoke as `--interactionMoveIntervalMs` / `--clickMoveIntervalMs`.
+- Re-tested `mystery-of-the-map` with held right-ground input plus repeated mousemove (`as3-interaction-smoke-1781556002010.json`), right-exit area (`1781556110227`), and top-left HUD (`1781556311884`). All stayed in the weak `0.000-0.00265` diff range or OCR-only `MENU`, so none were promoted to strong evidence.
+- Re-tested `escape-from-pelican-rock` right stairs/path with held repeated mousemove (`as3-interaction-smoke-1781556188179.json`); it still only produced about `0.002091` diff, so it also remains generic interaction stability only.
+- Found that `galactic-hot-dogs` spaceship-door evidence was flaky in the 10-target matrix: report `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781556435389.json` failed only `galactic-hot-dogs` with `changedPixelRatio: 0.001069` when the avatar started near the ship door. Removed the built-in GHD strong target rather than keeping a false/flaky gate.
+- Stable AS3 strong matrix now covers 9 direct-scene entries and passed 9/9 on G32QC with `audioActive: 9`, `interactionsPassed: 9`, `interactionEvidencePassed: 9`, `withMissingLogRequests: 0`, all delivery via `post-message`, and all monitor placements on non-primary `DISPLAY1`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781557125086.json`.
+- Full AS3 G32QC interaction/audio regression passed 12/12 after the helper changes and GHD demotion with `audioActive: 12`, `interactionsPassed: 12`, `withMissingLogRequests: 0`, and `failedKeys: []`. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781557688689.json`.
+- Validation passed: `python -m py_compile tools/qa-helper.py`, `node --check tools/qa-as3-islands-smoke.js`, `npm run verify:pack-inputs`, and `git diff --check` with only CRLF warnings.
+
+## TODO AS3 Post-Message Hold Refinement / Flake Cleanup
+
+- Continue looking for non-flaky semantic strong evidence for `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mystery-of-the-map`; all three still pass ordinary G32QC interaction/audio, but not stable strong evidence.
+- If post-message mouse input remains too weak for these scenes, add a target-specific multi-step interaction runner or investigate AS3-level automation hooks before using real cursor input.

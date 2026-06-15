@@ -24,6 +24,7 @@ const DEFAULT_INTERACTION_TARGET = {
   x: 0.42,
   y: 0.74,
   holdMs: 0,
+  moveIntervalMs: 0,
   label: "generic-stage-stability"
 };
 const AS3_INTERACTION_TARGETS = {
@@ -39,12 +40,6 @@ const AS3_INTERACTION_TARGETS = {
     label: "worldwide-headquarters-sign",
     expectedOcrPattern: "WORLDWIDE|HEADQUARTERS|Poptropica",
     minChangedPixelRatio: 0.002
-  },
-  "galactic-hot-dogs": {
-    x: 0.26,
-    y: 0.14,
-    label: "spaceship-door-approach",
-    minChangedPixelRatio: 0.02
   },
   "mission-atlantis": {
     x: 0.42,
@@ -572,6 +567,11 @@ function interactionTargetFor(entry, args) {
       : args.clickHoldMs !== undefined
         ? Number(args.clickHoldMs)
         : Number(target.holdMs || 0),
+    moveIntervalMs: args.interactionMoveIntervalMs !== undefined
+      ? Number(args.interactionMoveIntervalMs)
+      : args.clickMoveIntervalMs !== undefined
+        ? Number(args.clickMoveIntervalMs)
+        : Number(target.moveIntervalMs || 0),
     expectedOcrPattern: args.expectedInteractionOcr
       ? String(args.expectedInteractionOcr)
       : target.expectedOcrPattern || null,
@@ -647,6 +647,9 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     ];
     if (Number(target.holdMs || 0) > 0) {
       clickArgs.push("--hold-ms", String(Math.round(Number(target.holdMs))));
+    }
+    if (Number(target.moveIntervalMs || 0) > 0) {
+      clickArgs.push("--move-interval-ms", String(Math.round(Number(target.moveIntervalMs))));
     }
     if (runtime.pid) {
       clickArgs.push("--pid", String(runtime.pid));
