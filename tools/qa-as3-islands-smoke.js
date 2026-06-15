@@ -40,11 +40,15 @@ function applyVisibleQaDefaults(args) {
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }
+  if (flagEnabled(args.interaction) && !flagEnabled(args.allowMouseClicks) && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
+    process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
+  }
   if (flagEnabled(args.noForegroundCapture)) {
     process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
   }
   return {
     targetMonitor: targetMonitor || null,
+    postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
     noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
     missingRequestsFail: shouldFailOnMissingRequests(args)
   };
@@ -454,6 +458,183 @@ function rejectMismatchedCapture(capture, runtime, qaErrors) {
   return null;
 }
 
+function captureClickOffset(capture) {
+  const mode = String(capture?.captureMode || "").toLowerCase();
+  const className = String(capture?.window?.className || "").toLowerCase();
+  if (mode === "client" && className.includes("mozillawindowclass")) {
+    return { x: 0, y: 110 };
+  }
+  return { x: 0, y: 0 };
+}
+
+function stageRelativeToWindow(capture, stageRect, relativePoint) {
+  const offset = captureClickOffset(capture);
+  return {
+    x: Math.round(offset.x + stageRect.left + (stageRect.width * relativePoint.x)),
+    y: Math.round(offset.y + stageRect.top + (stageRect.height * relativePoint.y))
+  };
+}
+
+async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
+  const stageRect = stage?.stageRect;
+  const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
+  const clickPath = path.join(runDir, `${safeStem}-interaction-click.json`);
+  const windowPath = path.join(runDir, `${safeStem}-interaction-window.json`);
+  const screenshotPath = path.join(runDir, `${safeStem}-interaction.png`);
+  const captureMetadataPath = path.join(runDir, `${safeStem}-interaction-capture.json`);
+  const stagePath = path.join(runDir, `${safeStem}-interaction-stage.json`);
+  const ocrPath = path.join(runDir, `${safeStem}-interaction-ocr.json`);
+  const logPath = path.join(runDir, `${safeStem}-interaction-server.log`);
+
+  if (!runtimeWindow?.match?.handle || !capture || !stageRect) {
+    return {
+      ok: false,
+      skipped: false,
+      reason: "stage_or_window_missing",
+      logPath,
+      artifacts: {
+        clickPath,
+        windowPath,
+        screenshotPath,
+        captureMetadataPath,
+        stagePath,
+        ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
+      }
+    };
+  }
+
+  const clickPoint = stageRelativeToWindow(capture, stageRect, {
+    x: Number(args.interactionX || args.clickX || 0.42),
+    y: Number(args.interactionY || args.clickY || 0.74)
+  });
+
+  try {
+    const clickArgs = [
+      "click-window",
+      "--handle",
+      String(runtimeWindow.match.handle),
+      "--process-names",
+      runtime.processNames.join(","),
+      "--title-contains",
+      "poptropica",
+      "--x",
+      String(clickPoint.x),
+      "--y",
+      String(clickPoint.y),
+      "--output",
+      clickPath
+    ];
+    if (runtime.pid) {
+      clickArgs.push("--pid", String(runtime.pid));
+    }
+    const click = runPythonQa(clickArgs, {
+      timeoutMs: 20000
+    });
+
+    const waitMs = Math.max(0, Number(args.interactionWaitMs || 2200));
+    if (waitMs > 0) {
+      await sleep(waitMs);
+    }
+
+    const postWindow = runPythonQa(buildWaitArgs({
+      runtime,
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+      outputPath: windowPath
+    }), {
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+    });
+
+    let postCapture = runPythonQa(buildCaptureArgs({
+      handle: postWindow.match.handle,
+      runtime,
+      screenshotPath,
+      captureMetadataPath
+    }), {
+      timeoutMs: 40000
+    });
+    postCapture = rejectMismatchedCapture(postCapture, runtime, qaErrors);
+
+    let postStage = null;
+    let postOcr = null;
+    if (postCapture && fs.existsSync(screenshotPath)) {
+      postStage = runPythonQa([
+        "analyze-stage",
+        "--input",
+        screenshotPath,
+        "--output",
+        stagePath
+      ], {
+        timeoutMs: 30000
+      });
+      if (!flagEnabled(args.skipOcr)) {
+        postOcr = runPythonQa([
+          "ocr-image",
+          "--input",
+          screenshotPath,
+          "--output",
+          ocrPath
+        ], {
+          timeoutMs: 120000
+        });
+      }
+    }
+
+    const segment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
+    fs.writeFileSync(logPath, segment, "utf8");
+    const logSummary = summarizeLogSegment(segment);
+    const stageStable = Boolean(postStage?.stageRect);
+    return {
+      ok: stageStable,
+      skipped: false,
+      clickPoint,
+      click,
+      runtimeWindow: postWindow,
+      capture: postCapture,
+      stage: postStage,
+      ocr: postOcr
+        ? {
+            skipped: Boolean(postOcr.skipped),
+            containsChinese: Boolean(postOcr.containsChinese),
+            text: String(postOcr.text || "").slice(0, 500),
+            lineCount: postOcr.lineCount || 0
+          }
+        : null,
+      logSummary,
+      stageStable,
+      reason: stageStable ? null : "post_click_stage_missing",
+      artifacts: {
+        clickPath,
+        windowPath,
+        screenshotPath,
+        captureMetadataPath,
+        stagePath,
+        ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
+        logPath
+      }
+    };
+  } catch (error) {
+    const segment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
+    fs.writeFileSync(logPath, segment, "utf8");
+    return {
+      ok: false,
+      skipped: false,
+      clickPoint,
+      reason: "interaction_click_or_recapture_failed",
+      error: String(error.message || error),
+      logSummary: summarizeLogSegment(segment),
+      artifacts: {
+        clickPath,
+        windowPath,
+        screenshotPath,
+        captureMetadataPath,
+        stagePath,
+        ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
+        logPath
+      }
+    };
+  }
+}
+
 async function smokeIsland({ config, qaDir, runDir, entry, index, total, args }) {
   const overrideSuffix = args.overrideScene ? `-${safeFileSegment(entry.roomParam || entry.as3TargetScene || "override")}` : "";
   const safeStem = `${String(index + 1).padStart(2, "0")}-${entry.canonicalKey}${overrideSuffix}`;
@@ -626,6 +807,19 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
     }
   }
 
+  const interaction = flagEnabled(args.interaction) && !flagEnabled(args.skipInteraction)
+    ? await clickInteraction({
+        runDir: islandDir,
+        safeStem,
+        runtime,
+        runtimeWindow,
+        capture,
+        stage,
+        args,
+        qaErrors
+      })
+    : { ok: true, skipped: true };
+
   const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
   fs.writeFileSync(logSegmentPath, logSegment, "utf8");
   const logSummary = summarizeLogSegment(logSegment);
@@ -659,6 +853,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");
+  }
+  if (!interaction.skipped && !interaction.ok) {
+    failedChecks.push("interaction_click_failed");
   }
   for (const qaError of qaErrors) {
     failedChecks.push(`qa_${qaError.step.replace(/[^a-z0-9]+/giu, "_")}_failed`);
@@ -709,6 +906,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       sessionCount: audio?.sessionCount ?? null,
       attempt: audio?.attempt ?? null
     },
+    interaction,
     logSummary,
     qaErrors,
     failedChecks
@@ -725,6 +923,7 @@ function buildSummary(startedAt, reports) {
     failed: reports.filter((report) => !report.ok).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
     audioInactive: reports.filter((report) => report.audio && !report.audio.skipped && !report.audio.active).length,
+    interactionsPassed: reports.filter((report) => report.interaction && !report.interaction.skipped && report.interaction.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };
@@ -911,9 +1110,12 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   args.visibleQaDefaults = applyVisibleQaDefaults(args);
   const config = loadConfig();
-  const qaDir = ensureQaDir("as3", "islands-smoke");
+  const aggregateMode = flagEnabled(args.aggregateLatest) || flagEnabled(args.aggregate);
+  const interactionMode = flagEnabled(args.interaction) && !flagEnabled(args.skipInteraction);
+  const qaSubdir = aggregateMode ? "islands-smoke" : interactionMode ? "interaction-smoke" : "islands-smoke";
+  const qaDir = ensureQaDir("as3", qaSubdir);
   const startedAt = new Date().toISOString();
-  if (flagEnabled(args.aggregateLatest) || flagEnabled(args.aggregate)) {
+  if (aggregateMode) {
     const report = writeAggregateSmokeReport({ config, args, qaDir, startedAt });
     printJson(report);
     if (!report.ok) {
@@ -922,10 +1124,11 @@ async function main() {
     return;
   }
   const runToken = String(Date.now());
-  const reportPath = path.join(qaDir, `as3-island-smoke-${runToken}.json`);
-  const latestPath = path.join(qaDir, "as3-island-smoke-latest.json");
-  const runDir = ensureQaDir("as3", "islands-smoke", `run-${runToken}`);
-  const lockPath = path.join(qaDir, AS3_SMOKE_LOCK_NAME);
+  const reportPrefix = interactionMode ? "as3-interaction-smoke" : "as3-island-smoke";
+  const reportPath = path.join(qaDir, `${reportPrefix}-${runToken}.json`);
+  const latestPath = path.join(qaDir, `${reportPrefix}-latest.json`);
+  const runDir = ensureQaDir("as3", qaSubdir, `run-${runToken}`);
+  const lockPath = path.join(qaDir, interactionMode ? ".qa-as3-interaction-smoke.lock" : AS3_SMOKE_LOCK_NAME);
   let releaseSmokeLock = null;
 
   try {

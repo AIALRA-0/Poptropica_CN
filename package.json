@@ -43,7 +43,8 @@
     "qa:as2-islands-smoke": "node tools/qa-as2-islands-smoke.js",
     "qa:as2-interaction-smoke": "node tools/qa-as2-interaction-smoke.js",
     "qa:as3-launch-smoke": "node tools/qa-as3-launch-smoke.js",
-    "qa:as3-islands-smoke": "node tools/qa-as3-islands-smoke.js"
+    "qa:as3-islands-smoke": "node tools/qa-as3-islands-smoke.js",
+    "qa:as3-interaction-smoke": "node tools/qa-as3-islands-smoke.js --interaction"
   },
   "dependencies": {
     "@electron/remote": "2.0.8",
