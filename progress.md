@@ -662,3 +662,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Run a small AS3 audio batch across scenes with known music/ambient requests before spending more time searching externally for AS3 sound assets.
 - Continue AS2-specific sound validation separately; AS2 still needs provenance-backed mappings and interaction-triggered sound checks.
+
+## 2026-06-15 G32QC AS2 Post-Message Interaction Probe
+
+- Ran AS2 Super Power validation on G32QC with one candidate and post-message clicks: `npm run qa:validate-as2 -- --maxCandidates=1 --targetMonitor G32QC --skipAudio --noSaveCompatibility --afterLaunchWaitMs=9000 --windowTimeoutMs=45000`.
+- Result passed with `flashpointnavigator-as2`: game window found, no shell popup, no Flashpoint library fallback, stage coverage `0.96129`, Chinese static sign proof found, dialogue click proof found, maps click proof passed, and `failedChecks: []`. Report: `runtime-data/qa/super-power/flashpointnavigator-as2-report-1781534524065.json`.
+- Placement metadata confirmed the AS2 runtime and capture targeted `DISPLAY1`/`G32QC`. The dialogue click metadata recorded `delivery: "post-message"`, so the click path did not move the system cursor.
+- Audio was intentionally skipped in this probe; AS2 audio still needs separate focused validation.
+
+## TODO G32QC AS2 Post-Message Interaction Probe
+
+- Run AS2 Super Power again with audio enabled on G32QC to see whether the current AS2 bridge produces loopback audio during interaction.
+- Extend AS2 visible/post-message probes beyond Super Power after confirming scene-specific launch points and low-interference click reliability.
