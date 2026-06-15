@@ -1003,6 +1003,48 @@ def command_ocr_image(args):
     to_json(payload)
 
 
+def command_compare_images(args):
+    before_path = Path(args.before)
+    after_path = Path(args.after)
+    with Image.open(before_path) as before_image:
+        before = np.asarray(before_image.convert("RGB"), dtype=np.int16)
+    with Image.open(after_path) as after_image:
+        after = np.asarray(after_image.convert("RGB"), dtype=np.int16)
+
+    height = min(before.shape[0], after.shape[0])
+    width = min(before.shape[1], after.shape[1])
+    if height <= 0 or width <= 0:
+        raise RuntimeError("Images have no comparable area.")
+
+    before_crop = before[:height, :width]
+    after_crop = after[:height, :width]
+    diff = np.abs(after_crop - before_crop)
+    max_channel_diff = np.max(diff, axis=2)
+    threshold = max(0, int(args.threshold))
+    changed = max_channel_diff > threshold
+    changed_pixel_ratio = float(np.count_nonzero(changed)) / float(width * height)
+    mean_abs_diff = float(np.mean(diff))
+    max_abs_diff = int(np.max(diff))
+
+    payload = {
+        "ok": True,
+        "generatedAt": now_iso(),
+        "before": str(before_path),
+        "after": str(after_path),
+        "threshold": threshold,
+        "comparedSize": {
+            "width": int(width),
+            "height": int(height),
+        },
+        "sameSize": bool(before.shape[0] == after.shape[0] and before.shape[1] == after.shape[1]),
+        "changedPixelRatio": round(changed_pixel_ratio, 6),
+        "meanAbsDiff": round(mean_abs_diff, 6),
+        "maxAbsDiff": max_abs_diff,
+    }
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+
+
 def command_audio_check(args):
     from pycaw.pycaw import AudioUtilities
 
@@ -1141,6 +1183,13 @@ def main():
     ocr_parser.add_argument("--input", required=True)
     ocr_parser.add_argument("--output")
     ocr_parser.set_defaults(func=command_ocr_image)
+
+    compare_parser = subparsers.add_parser("compare-images")
+    compare_parser.add_argument("--before", required=True)
+    compare_parser.add_argument("--after", required=True)
+    compare_parser.add_argument("--threshold", type=int, default=20)
+    compare_parser.add_argument("--output")
+    compare_parser.set_defaults(func=command_compare_images)
 
     audio_parser = subparsers.add_parser("audio-check")
     audio_parser.add_argument("--process-names", default="")

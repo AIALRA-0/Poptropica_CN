@@ -20,6 +20,34 @@ const {
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const AS3_SMOKE_LOCK_NAME = ".qa-as3-islands-smoke.lock";
 const AS3_SMOKE_REPORT_RE = /^as3-island-smoke-\d+\.json$/u;
+const DEFAULT_INTERACTION_TARGET = {
+  x: 0.42,
+  y: 0.74,
+  label: "generic-stage-stability"
+};
+const AS3_INTERACTION_TARGETS = {
+  "monkey-wrench": {
+    x: 0.42,
+    y: 0.74,
+    label: "walk-tutorial-overlay",
+    expectedOcrPattern: "CLICK\\s+AND\\s+HOLD|TO\\s+WALK",
+    minChangedPixelRatio: 0.05
+  },
+  "timmy-failure": {
+    x: 0.42,
+    y: 0.74,
+    label: "front-yard-dialogue",
+    expectedOcrPattern: "I\\s+DON'?T\\s+HAVE\\s+TIME|GARBAGE\\s+STINK|GOOD\\s+LUCK",
+    minChangedPixelRatio: 0.01
+  },
+  "survival": {
+    x: 0.42,
+    y: 0.74,
+    label: "crash-landing-intro-popup",
+    expectedOcrPattern: "SURVIVAL|CRASH\\s+LANDING|START",
+    minChangedPixelRatio: 0.005
+  }
+};
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
@@ -59,6 +87,10 @@ function splitCsv(value) {
     .split(",")
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
 function parseNumberOverrideMap(value) {
@@ -250,16 +282,25 @@ function readLogSegment(filePath, startOffset) {
   }
 }
 
+function isMissingRequestLine(line) {
+  const text = String(line || "");
+  if (/flashpoint-gmp-dummy\.xml/iu.test(text)) {
+    return false;
+  }
+  if (/\bStatus\s*=\s*404\b/iu.test(text)) {
+    return true;
+  }
+  if (/\b(?:ENOENT|not found|missing)\b/iu.test(text)) {
+    return !/\bStatus\s*=\s*200\b/iu.test(text);
+  }
+  return false;
+}
+
 function summarizeLogSegment(segment) {
   const lines = String(segment || "")
     .split(/\r?\n/gu)
     .filter(Boolean);
-  const missing = lines.filter((line) => {
-    if (!/\b(?:404|missing|not found|ENOENT)\b/iu.test(line)) {
-      return false;
-    }
-    return !/flashpoint-gmp-dummy\.xml/iu.test(line);
-  });
+  const missing = lines.filter(isMissingRequestLine);
   const sounds = lines.filter((line) => /(?:sounds\.xml|\.mp3|\.wav|\.flv|\/sound|\/sounds)\b/iu.test(line));
   const scenes = lines.filter((line) => /(?:SceneLoaded|loadScene|overrideScene|\/game\/data\/scenes\/|\/game\/assets\/scenes\/)/iu.test(line));
   const sceneLoaded = lines.filter((line) => /(?:SceneLoaded|event=Loaded|\bLoaded\b.*\/game\/data\/scenes\/)/iu.test(line));
@@ -475,7 +516,46 @@ function stageRelativeToWindow(capture, stageRect, relativePoint) {
   };
 }
 
-async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
+function interactionTargetFor(entry, args) {
+  const configured = AS3_INTERACTION_TARGETS[entry.canonicalKey] || {};
+  const cliHasPoint = args.interactionX !== undefined ||
+    args.interactionY !== undefined ||
+    args.clickX !== undefined ||
+    args.clickY !== undefined;
+  const target = cliHasPoint
+    ? {
+        ...DEFAULT_INTERACTION_TARGET,
+        label: "cli-override"
+      }
+    : {
+        ...DEFAULT_INTERACTION_TARGET,
+        ...configured
+      };
+  return {
+    ...target,
+    x: Number(args.interactionX || args.clickX || target.x),
+    y: Number(args.interactionY || args.clickY || target.y),
+    expectedOcrPattern: args.expectedInteractionOcr
+      ? String(args.expectedInteractionOcr)
+      : target.expectedOcrPattern || null,
+    minChangedPixelRatio: args.minInteractionChangedPixelRatio !== undefined
+      ? Number(args.minInteractionChangedPixelRatio)
+      : target.minChangedPixelRatio ?? null
+  };
+}
+
+function matchesExpectedOcr(text, pattern) {
+  if (!pattern) {
+    return null;
+  }
+  try {
+    return new RegExp(pattern, "iu").test(String(text || ""));
+  } catch (_error) {
+    return new RegExp(escapeRegExp(pattern), "iu").test(String(text || ""));
+  }
+}
+
+async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capture, stage, initialScreenshotPath, target, args, qaErrors }) {
   const stageRect = stage?.stageRect;
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
   const clickPath = path.join(runDir, `${safeStem}-interaction-click.json`);
@@ -484,12 +564,14 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
   const captureMetadataPath = path.join(runDir, `${safeStem}-interaction-capture.json`);
   const stagePath = path.join(runDir, `${safeStem}-interaction-stage.json`);
   const ocrPath = path.join(runDir, `${safeStem}-interaction-ocr.json`);
+  const diffPath = path.join(runDir, `${safeStem}-interaction-diff.json`);
   const logPath = path.join(runDir, `${safeStem}-interaction-server.log`);
 
   if (!runtimeWindow?.match?.handle || !capture || !stageRect) {
     return {
       ok: false,
       skipped: false,
+      target,
       reason: "stage_or_window_missing",
       logPath,
       artifacts: {
@@ -498,14 +580,16 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         screenshotPath,
         captureMetadataPath,
         stagePath,
-        ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
+        ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
+        diffPath,
+        logPath
       }
     };
   }
 
   const clickPoint = stageRelativeToWindow(capture, stageRect, {
-    x: Number(args.interactionX || args.clickX || 0.42),
-    y: Number(args.interactionY || args.clickY || 0.74)
+    x: target.x,
+    y: target.y
   });
 
   try {
@@ -556,6 +640,8 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
 
     let postStage = null;
     let postOcr = null;
+    let visualDiff = null;
+    let visualDiffError = null;
     if (postCapture && fs.existsSync(screenshotPath)) {
       postStage = runPythonQa([
         "analyze-stage",
@@ -577,15 +663,64 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
           timeoutMs: 120000
         });
       }
+      if (initialScreenshotPath && fs.existsSync(initialScreenshotPath)) {
+        try {
+          visualDiff = runPythonQa([
+            "compare-images",
+            "--before",
+            initialScreenshotPath,
+            "--after",
+            screenshotPath,
+            "--threshold",
+            String(args.interactionDiffThreshold || 20),
+            "--output",
+            diffPath
+          ], {
+            timeoutMs: 30000
+          });
+        } catch (error) {
+          visualDiffError = String(error.message || error);
+        }
+      }
     }
 
     const segment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
     fs.writeFileSync(logPath, segment, "utf8");
     const logSummary = summarizeLogSegment(segment);
     const stageStable = Boolean(postStage?.stageRect);
+    const ocrText = String(postOcr?.text || "");
+    const ocrMatched = matchesExpectedOcr(ocrText, target.expectedOcrPattern);
+    const minChangedPixelRatio = Number(target.minChangedPixelRatio || 0);
+    const changedPixelRatio = Number(visualDiff?.changedPixelRatio || 0);
+    const visualChangeMatched = minChangedPixelRatio > 0
+      ? changedPixelRatio >= minChangedPixelRatio
+      : null;
+    const evidenceChecks = [
+      target.expectedOcrPattern
+        ? {
+            name: "expected_ocr",
+            ok: Boolean(ocrMatched),
+            pattern: target.expectedOcrPattern,
+            observedText: ocrText.slice(0, 500)
+          }
+        : null,
+      minChangedPixelRatio > 0
+        ? {
+            name: "min_changed_pixel_ratio",
+            ok: Boolean(visualChangeMatched),
+            expectedAtLeast: minChangedPixelRatio,
+            observed: changedPixelRatio
+          }
+        : null
+    ].filter(Boolean);
+    const evidenceOk = evidenceChecks.length > 0
+      ? evidenceChecks.every((check) => check.ok)
+      : !flagEnabled(args.requireInteractionEvidence);
+    const requiredEvidenceOk = !flagEnabled(args.requireInteractionEvidence) || evidenceOk;
     return {
-      ok: stageStable,
+      ok: stageStable && requiredEvidenceOk,
       skipped: false,
+      target,
       clickPoint,
       click,
       runtimeWindow: postWindow,
@@ -600,8 +735,19 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
           }
         : null,
       logSummary,
+      visualDiff,
+      visualDiffError,
+      evidence: {
+        required: flagEnabled(args.requireInteractionEvidence),
+        ok: evidenceOk,
+        checks: evidenceChecks
+      },
       stageStable,
-      reason: stageStable ? null : "post_click_stage_missing",
+      reason: stageStable
+        ? requiredEvidenceOk
+          ? null
+          : "interaction_evidence_missing"
+        : "post_click_stage_missing",
       artifacts: {
         clickPath,
         windowPath,
@@ -609,6 +755,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         captureMetadataPath,
         stagePath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
+        diffPath: visualDiff ? diffPath : null,
         logPath
       }
     };
@@ -618,6 +765,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     return {
       ok: false,
       skipped: false,
+      target,
       clickPoint,
       reason: "interaction_click_or_recapture_failed",
       error: String(error.message || error),
@@ -629,6 +777,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         captureMetadataPath,
         stagePath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
+        diffPath: null,
         logPath
       }
     };
@@ -815,6 +964,8 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
         runtimeWindow,
         capture,
         stage,
+        initialScreenshotPath: screenshotPath,
+        target: interactionTargetFor(entry, args),
         args,
         qaErrors
       })
@@ -924,6 +1075,7 @@ function buildSummary(startedAt, reports) {
     audioActive: reports.filter((report) => report.audio?.active).length,
     audioInactive: reports.filter((report) => report.audio && !report.audio.skipped && !report.audio.active).length,
     interactionsPassed: reports.filter((report) => report.interaction && !report.interaction.skipped && report.interaction.ok).length,
+    interactionEvidencePassed: reports.filter((report) => report.interaction?.evidence?.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };

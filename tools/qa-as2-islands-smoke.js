@@ -97,16 +97,25 @@ function readLogSegment(filePath, startOffset) {
   }
 }
 
+function isMissingRequestLine(line) {
+  const text = String(line || "");
+  if (/flashpoint-gmp-dummy\.xml/iu.test(text)) {
+    return false;
+  }
+  if (/\bStatus\s*=\s*404\b/iu.test(text)) {
+    return true;
+  }
+  if (/\b(?:ENOENT|not found|missing)\b/iu.test(text)) {
+    return !/\bStatus\s*=\s*200\b/iu.test(text);
+  }
+  return false;
+}
+
 function summarizeLogSegment(segment) {
   const lines = String(segment || "")
     .split(/\r?\n/gu)
     .filter(Boolean);
-  const missing = lines.filter((line) => {
-    if (!/\b(?:404|missing|not found|ENOENT)\b/iu.test(line)) {
-      return false;
-    }
-    return !/flashpoint-gmp-dummy\.xml/iu.test(line);
-  });
+  const missing = lines.filter(isMissingRequestLine);
   const sounds = lines.filter((line) => /(?:sceneAudioOverrides|sounds\.xml|\.mp3|\.wav|\.flv|\/sound|\/sounds)\b/iu.test(line));
   const sceneSwfs = lines.filter((line) => /\/scenes\/island[^?\s]+\/scene[^?\s]*\.swf/iu.test(line));
   const sceneAssets = lines.filter((line) => /(?:\/scenes\/island|\/gameplay|base\.php|startup_path=gameplay)/iu.test(line));
