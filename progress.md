@@ -701,3 +701,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue asset recovery for `content/www.poptropica.com/scenes/islandTime/vendorCart.swf` from a source-backed archive if one can be found. Do not substitute a random third-party SWF.
 - Add an AS2 targeted audio/interactions matrix beyond Super Power now that all 34 AS2 starting scenes can be entered reliably on G32QC.
+
+## 2026-06-15 Time Tangled VendorCart Recovery
+
+- Recovered the remaining AS2 `content/www.poptropica.com/scenes/islandTime/vendorCart.swf` from an Internet Archive capture of the original Poptropica URL at timestamp `20201224233332`.
+- Verified the raw archive payload before adding it to the pack: HTTP `Content-Type: application/x-shockwave-flash`, `Content-Length: 34925`, SWF signature `CWS`, CDX SHA-1 base32 digest `AW3REIGQLELR4WPEVGBTWGC5FVLCMJOC`, payload SHA-1 `05B71220D059171E59E4A9833B185D2D562625C2`, and SHA-256 `F2B042D836F84DB0F7E90C13F6A8A6AC2851F2F195C8A66AEFC91526CE435483`.
+- Updated `packs/zh-CN/as2/provenance/as2-vendor-cart-sources.json`; the AS2 vendor-cart provenance now has 5 recovered entries and `unresolved: []`.
+- Rebuilt the AS2 runtime zip. AS2 runtime replacement count is now 48/48.
+- Validation passed: JSON parse of the provenance file, `npm run verify:pack-inputs` with AS2 48/48 and AS3 47/47, and `npm run qa:as2-launch-smoke` with 34/34 entries passed. Latest AS2 launch report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781538823506.json`.
+- Targeted G32QC visible regression passed: `npm run qa:as2-islands-smoke -- --islands=time-tangled --targetMonitor G32QC --skipAudio --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --allowNoSceneProgress`. Result: 1/1 passed, `withMissingLogRequests: 0`, `islandTime/vendorCart.swf` served with status 200 from zipfs, and both window/capture devices were non-primary `DISPLAY1`. Report: `runtime-data/qa/as2/islands-smoke/as2-island-smoke-1781538837437.json`; screenshot: `runtime-data/qa/as2/islands-smoke/run-1781538837437/01-time-tangled.png`.
+
+## TODO Time Tangled VendorCart Recovery
+
+- Run the full 34-island AS2 G32QC visual matrix again when a long visible QA window is acceptable; targeted Time Tangled validation proves the recovered asset path, while the previous full matrix already proved all 34 start scenes.
+- Build the next AS2 interaction/audio matrix across several islands now that the full AS2 main-street asset gap is closed.

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-15T15:31:37Z",
-  "sourceArchive": "AS3.zip",
-  "reason": "Several AS2 main-street scenes request vendorCart.swf from the same content path, but AS2.zip did not contain these files. AS3.zip contained matching same-path SWF assets for four of those AS2 scene folders.",
+  "generatedAt": "2026-06-15T15:51:48Z",
+  "sourceArchive": "AS3.zip; Internet Archive",
+  "reason": "Several AS2 main-street scenes request vendorCart.swf from the same content path, but AS2.zip did not contain these files. AS3.zip contained matching same-path SWF assets for four AS2 scene folders; the remaining Time Tangled asset was recovered from an Internet Archive capture of the original Poptropica URL.",
   "entries": [
     {
       "canonicalKey": "astro-knights",
@@ -34,13 +34,20 @@
       "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandTrade/vendorCart.swf",
       "bytes": 42735,
       "sha256": "0EA5E850A08C50D74D5726346E924C1B8016E7D8DC685A63CCA688F772EA0871"
-    }
-  ],
-  "unresolved": [
+    },
     {
       "canonicalKey": "time-tangled",
       "assetPath": "content/www.poptropica.com/scenes/islandTime/vendorCart.swf",
-      "reason": "No same-path source was found in AS2.zip or AS3.zip during this pass. The AS2 scene still loads and passes visual smoke; the request remains tracked for future asset recovery."
+      "sourceArchive": "Internet Archive",
+      "sourceTimestamp": "20201224233332",
+      "sourceUrl": "https://www.poptropica.com/scenes/islandTime/vendorCart.swf",
+      "archiveRawUrl": "https://web.archive.org/web/20201224233332id_/https://www.poptropica.com/scenes/islandTime/vendorCart.swf",
+      "cdxDigestSha1Base32": "AW3REIGQLELR4WPEVGBTWGC5FVLCMJOC",
+      "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandTime/vendorCart.swf",
+      "bytes": 34925,
+      "sha1": "05B71220D059171E59E4A9833B185D2D562625C2",
+      "sha256": "F2B042D836F84DB0F7E90C13F6A8A6AC2851F2F195C8A66AEFC91526CE435483"
     }
-  ]
+  ],
+  "unresolved": []
 }
