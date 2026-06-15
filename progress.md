@@ -715,3 +715,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Run the full 34-island AS2 G32QC visual matrix again when a long visible QA window is acceptable; targeted Time Tangled validation proves the recovered asset path, while the previous full matrix already proved all 34 start scenes.
 - Build the next AS2 interaction/audio matrix across several islands now that the full AS2 main-street asset gap is closed.
+
+## 2026-06-15 AS2/AS3 Missing-Request Gate Tightening
+
+- Tightened `tools/qa-as2-islands-smoke.js` and `tools/qa-as3-islands-smoke.js` so visible smoke treats any server-log 404/missing/not-found request as a failed check by default (`missing_requests_seen`). Use `--allowMissingRequests` only for an intentional triage run; the existing `--failOnMissingRequests` flag remains accepted but is no longer needed for normal strict QA.
+- Reports now include `visibleQaDefaults.missingRequestsFail`, making it clear whether a run used the strict missing-resource policy.
+- Validation passed: `node --check tools/qa-as2-islands-smoke.js`, `node --check tools/qa-as3-islands-smoke.js`, `npm run verify:pack-inputs` with AS2 48/48 and AS3 47/47, `npm run qa:as2-launch-smoke` with 34/34, and sequential `npm run qa:as3-launch-smoke` with 12/12 direct-scene entries and 129/129 XML resources. Latest reports: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781539083246.json` and `runtime-data/qa/as3/launch-smoke/as3-launch-smoke-1781539105526.json`.
+- G32QC AS3 visible sample passed under the new strict policy: `npm run qa:as3-islands-smoke -- --islands=arabian-nights --targetMonitor G32QC --skipAudio --settleMs=9000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=800`. Result: 1/1 passed, `withMissingLogRequests: 0`, `missingRequestsFail: true`, and window/capture devices `DISPLAY1`. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781539116269.json`.
+- Full AS2 G32QC visible matrix passed under the new strict policy: `npm run qa:as2-islands-smoke -- --targetMonitor G32QC --skipAudio --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --allowNoSceneProgress`. Result: 34/34 passed, `withMissingLogRequests: 0`, `failedKeys: []`, all window/capture placement on non-primary `DISPLAY1`, and `missingRequestsFail: true` across the reports. Report: `runtime-data/qa/as2/islands-smoke/as2-island-smoke-1781539179918.json`.
+- Visual spot checks from the strict AS2 full run were opened for Astro Knights and Zomberry; both showed real in-game scenes with stable top UI and no room-unavailable fallback.
+
+## TODO AS2/AS3 Missing-Request Gate Tightening
+
+- Run a full strict AS3 G32QC visible matrix when the side-monitor window can be occupied for another long run; the latest strict AS3 smoke covered Arabian Nights, while earlier full AS3 aggregate already covered 12/12 with no missing requests before this stricter default.
+- Continue with the AS2 multi-island interaction/audio matrix beyond Super Power, using post-message clicks first to avoid moving the system cursor.

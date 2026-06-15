@@ -25,6 +25,16 @@ function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
 }
 
+function shouldFailOnMissingRequests(args) {
+  if (flagEnabled(args.allowMissingRequests)) {
+    return false;
+  }
+  if (args.failOnMissingRequests !== undefined) {
+    return flagEnabled(args.failOnMissingRequests);
+  }
+  return true;
+}
+
 function applyVisibleQaDefaults(args) {
   const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
   if (targetMonitor) {
@@ -35,7 +45,8 @@ function applyVisibleQaDefaults(args) {
   }
   return {
     targetMonitor: targetMonitor || null,
-    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND)
+    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
+    missingRequestsFail: shouldFailOnMissingRequests(args)
   };
 }
 
@@ -642,6 +653,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (isLikelyLoadingScreen(ocr, logSummary)) {
     failedChecks.push("loading_screen_stuck");
+  }
+  if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
+    failedChecks.push("missing_requests_seen");
   }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");

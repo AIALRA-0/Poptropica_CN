@@ -22,6 +22,16 @@ function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
 }
 
+function shouldFailOnMissingRequests(args) {
+  if (flagEnabled(args.allowMissingRequests)) {
+    return false;
+  }
+  if (args.failOnMissingRequests !== undefined) {
+    return flagEnabled(args.failOnMissingRequests);
+  }
+  return true;
+}
+
 function splitCsv(value) {
   return String(value || "")
     .split(",")
@@ -43,7 +53,8 @@ function applyVisibleQaDefaults(args) {
   return {
     targetMonitor: targetMonitor || null,
     postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
-    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND)
+    noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
+    missingRequestsFail: shouldFailOnMissingRequests(args)
   };
 }
 
@@ -472,7 +483,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (isLikelyLoadingScreen(ocr, logSummary)) {
     failedChecks.push("loading_screen_stuck");
   }
-  if (flagEnabled(args.failOnMissingRequests) && Number(logSummary.missingCount || 0) > 0) {
+  if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
     failedChecks.push("missing_requests_seen");
   }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
