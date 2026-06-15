@@ -651,3 +651,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Re-enable audio on a small AS3 foreground visual batch to separate real audio playback issues from startup/placement issues. The server logs already show AS3 sound requests for scenes such as Arabian Nights and Virus Hunter.
 - Move to AS2 G32QC validation next, starting with post-message clicks to avoid cursor movement; only use `--allowMouseClicks` for targeted checks if Flash ignores message clicks.
+
+## 2026-06-15 G32QC AS3 Audio Probe
+
+- Re-ran `arabian-nights` on G32QC with foreground capture and audio enabled: `npm run qa:as3-islands-smoke -- --islands=arabian-nights --targetMonitor G32QC --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000`.
+- Result passed 1/1 with `audioActive: 1`, loopback `rms: 0.030227`, `peak: 0.136797`, one browser audio session, and 0 failed checks. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781534310571.json`.
+- Server log for that run included 10 sound requests and 4 scene media requests, including `game/sound/effects/ls_sand_01.mp3` and `game/sound/music/arab1_main_theme.mp3`. This proves at least this AS3 path can produce real local audio output; remaining sound work should distinguish AS2 gaps from AS3 scene-by-scene coverage.
+
+## TODO G32QC AS3 Audio Probe
+
+- Run a small AS3 audio batch across scenes with known music/ambient requests before spending more time searching externally for AS3 sound assets.
+- Continue AS2-specific sound validation separately; AS2 still needs provenance-backed mappings and interaction-triggered sound checks.
