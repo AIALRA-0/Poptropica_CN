@@ -629,3 +629,13 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Expand AS3 visible smoke in small batches on G32QC with `--skipAudio` until placement and scene stability are boring, then re-enable audio where scene startup is expected to produce sound.
 - Start AS2 G32QC validation with post-message clicks first. If Flash ignores those messages, use `--allowMouseClicks` only after confirming placement metadata keeps the target window on `DISPLAY1`.
+
+## 2026-06-15 G32QC AS3 Visible Smoke Batch 1
+
+- Expanded Navigator-backed AS3 visible smoke on G32QC with `npm run qa:as3-islands-smoke -- --islands=escape-from-pelican-rock,galactic-hot-dogs,mission-atlantis --targetMonitor G32QC --skipAudio --noForegroundCapture --settleMs=10000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1500`.
+- The batch passed 3/3 with `failedChecks: []` for `escape-from-pelican-rock`, `galactic-hot-dogs`, and `mission-atlantis`. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781533111591.json`.
+- Placement metadata stayed stable across all three runs: target `G32QC`, monitor `DISPLAY1`, window rect `left=-1873, top=316, right=-687, bottom=1076`, capture box `left=-1867, top=426, right=-693, bottom=1046`.
+
+## TODO G32QC AS3 Visible Smoke Batch 1
+
+- Continue AS3 G32QC visible batches for the remaining direct-scene islands: `mocktropica`, `monkey-wrench`, `monster-carnival`, `mystery-of-the-map`, `poptropicon`, `survival`, `timmy-failure`, and `virus-hunter`.
