@@ -3,7 +3,7 @@ const path = require("node:path");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { acquireQaLock, ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
+const { acquireQaLock, buildAs2SceneEvidence, ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
@@ -531,6 +531,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
   fs.writeFileSync(logPath, logSegment, "utf8");
   const logSummary = summarizeLogSegment(logSegment);
+  const sceneEvidence = buildAs2SceneEvidence(entry, logSegment, args);
   const failedChecks = [];
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
@@ -546,6 +547,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
     failedChecks.push("missing_requests_seen");
+  }
+  if (flagEnabled(args.requireSceneEvidence) && !sceneEvidence.ok) {
+    failedChecks.push("scene_evidence_missing");
   }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");
@@ -604,6 +608,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       sessionCount: audio?.sessionCount ?? null
     },
     map,
+    sceneEvidence,
     logSummary,
     qaErrors,
     failedChecks
@@ -620,6 +625,7 @@ function buildSummary(startedAt, reports) {
     failed: reports.filter((report) => !report.ok).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
     mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok).length,
+    sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };

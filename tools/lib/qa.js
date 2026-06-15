@@ -36,6 +36,110 @@ function isMissingRequestLine(line) {
   return false;
 }
 
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
+function lineHasQueryValue(line, name, expectedValue) {
+  const encoded = encodeURIComponent(String(expectedValue || ""));
+  const alternatives = [String(expectedValue || ""), encoded]
+    .filter(Boolean)
+    .map(escapeRegExp);
+  if (!alternatives.length) {
+    return false;
+  }
+  const pattern = new RegExp(`(?:[?&]|\\b)${escapeRegExp(name)}=(?:${alternatives.join("|")})(?:[&#\\s]|$)`, "iu");
+  return pattern.test(String(line || ""));
+}
+
+function splitCamelSceneName(value) {
+  return String(value || "")
+    .replace(/([a-z0-9])([A-Z])/gu, "$1 $2")
+    .replace(/[_-]+/gu, " ")
+    .trim();
+}
+
+function normalizeLogPath(line) {
+  return String(line || "").replace(/\\/gu, "/");
+}
+
+function buildAs2SceneEvidence(entry, segment, args = {}) {
+  const lines = String(segment || "")
+    .split(/\r?\n/gu)
+    .filter(Boolean);
+  const normalizedLines = lines.map((line) => ({
+    raw: line,
+    normalized: normalizeLogPath(line)
+  }));
+  const sceneFolder = String(entry.sceneFolder || entry.islandParam || "").trim();
+  const roomParam = String(entry.roomParam || "").trim();
+  const islandParam = String(entry.islandParam || sceneFolder || "").trim();
+  const sceneSwfPath = sceneFolder && roomParam
+    ? `/scenes/island${sceneFolder}/scene${roomParam}.swf`
+    : null;
+  const sceneNameCandidates = [...new Set([
+    roomParam,
+    splitCamelSceneName(roomParam)
+  ].filter(Boolean))];
+
+  const baseRequestLines = normalizedLines
+    .filter((line) => /base\.php/iu.test(line.normalized) &&
+      (!roomParam || lineHasQueryValue(line.normalized, "room", roomParam)) &&
+      (!islandParam || lineHasQueryValue(line.normalized, "island", islandParam)))
+    .map((line) => line.raw);
+  const sceneSwfLines = sceneSwfPath
+    ? normalizedLines
+        .filter((line) => line.normalized.toLowerCase().includes(sceneSwfPath.toLowerCase()))
+        .map((line) => line.raw)
+    : [];
+  const sceneTrackLines = normalizedLines
+    .filter((line) => /brain\/track\.php/iu.test(line.normalized) &&
+      lineHasQueryValue(line.normalized, "event", "Loaded") &&
+      sceneNameCandidates.some((candidate) => lineHasQueryValue(line.normalized, "scene", candidate)))
+    .map((line) => line.raw);
+  const checks = [
+    {
+      name: "target_base_php_request",
+      ok: baseRequestLines.length > 0,
+      expected: {
+        room: roomParam || null,
+        island: islandParam || null
+      },
+      count: baseRequestLines.length,
+      samples: baseRequestLines.slice(0, 6)
+    },
+    {
+      name: "target_scene_swf_request",
+      ok: sceneSwfLines.length > 0,
+      expectedPath: sceneSwfPath,
+      count: sceneSwfLines.length,
+      samples: sceneSwfLines.slice(0, 6)
+    },
+    {
+      name: "target_scene_loaded_track",
+      ok: sceneTrackLines.length > 0,
+      informational: true,
+      expected: {
+        sceneCandidates: sceneNameCandidates
+      },
+      count: sceneTrackLines.length,
+      samples: sceneTrackLines.slice(0, 6)
+    }
+  ];
+  const requiredChecks = checks.filter((check) => !check.informational);
+  return {
+    required: flagEnabled(args.requireSceneEvidence),
+    ok: requiredChecks.length > 0 && requiredChecks.every((check) => check.ok),
+    target: {
+      sceneFolder: sceneFolder || null,
+      roomParam: roomParam || null,
+      islandParam: islandParam || null,
+      sceneSwfPath
+    },
+    checks
+  };
+}
+
 function withDefaultWindowQaArgs(args) {
   const normalized = [...args];
   const command = normalized[0];
@@ -237,6 +341,7 @@ function writeQaReport(name, payload) {
 
 module.exports = {
   acquireQaLock,
+  buildAs2SceneEvidence,
   ensureQaDir,
   isMissingRequestLine,
   runPythonQa,
