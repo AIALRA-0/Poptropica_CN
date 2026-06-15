@@ -686,3 +686,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Save the current passing AS2 compatibility state in the project status store, either by rerunning without `--noSaveCompatibility` or by promoting the verified report carefully.
 - Build an AS2 island visual/post-message matrix analogous to the AS3 direct-scene smoke, starting with a small set of representative AS2 launchable entries.
+
+## 2026-06-15 G32QC AS2 Full Island Visual Matrix / VendorCart Recovery
+
+- Added `tools/qa-as2-islands-smoke.js` plus npm script `qa:as2-islands-smoke`. The tool mounts AS2 through the local Flashpoint proxy, launches each AS2 catalog island with Flashpoint Navigator, forces the visible window onto target monitor `G32QC`, captures/stages/OCRs screenshots, records per-island server logs, and avoids mouse clicks or cursor movement.
+- Found that many AS2 launch overrides used marketing/canonical island names as `islandParam` while the AS2 `base.php` loader resolves scenes from `scenes/island<islandParam>/scene<room>.swf`. This caused many visible launches to enter the fallback "room unavailable" path even though proxy-only scene smoke passed.
+- Corrected the affected AS2 `islandParam` values to match their scene folders, refreshed `catalog/launch-manifest.json`, and revalidated `npm run qa:as2-launch-smoke` with 34/34 passed. Latest report: `runtime-data/qa/as2/launch-smoke/as2-launch-smoke-1781537571118.json`.
+- Full AS2 G32QC visible smoke after the override fix and vendorCart recovery passed 34/34 with 0 failed islands, all window/capture placement on non-primary `DISPLAY1`/`G32QC`, no "room unavailable" OCR hits, and no cursor-moving input. Report: `runtime-data/qa/as2/islands-smoke/as2-island-smoke-1781537625676.json`.
+- Recovered four missing AS2 `vendorCart.swf` requests by copying same-path SWF assets from local `AS3.zip` into the AS2 pack for Astro Knights, Cryptids, Steamworks, and Skullduggery. Added source/hash tracking in `packs/zh-CN/as2/provenance/as2-vendor-cart-sources.json` and rebuilt the AS2 runtime zip; AS2 replacement count is now 47/47.
+- The only remaining missing request in the full AS2 visible matrix is `http://www.poptropica.com/scenes/islandTime/vendorCart.swf` for Time Tangled. No same-path source was found in local `AS2.zip` or `AS3.zip`; the Time Tangled scene still renders and passes visual smoke, with screenshot `runtime-data/qa/as2/islands-smoke/run-1781537625676/28-time-tangled.png`.
+- Regression validation passed in this chunk: `node --check tools/qa-as2-islands-smoke.js`, JSON parse of `packs/zh-CN/as2/provenance/as2-vendor-cart-sources.json`, `npm run verify:pack-inputs`, `npm run qa:as2-launch-smoke`, `npm run qa:as3-launch-smoke`, `npm run qa:as2-sound-bridge`, `npm run qa:monitors`, and full `npm run qa:as2-islands-smoke -- --targetMonitor G32QC --skipAudio --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --allowNoSceneProgress`.
+
+## TODO G32QC AS2 Full Island Visual Matrix / VendorCart Recovery
+
+- Continue asset recovery for `content/www.poptropica.com/scenes/islandTime/vendorCart.swf` from a source-backed archive if one can be found. Do not substitute a random third-party SWF.
+- Add an AS2 targeted audio/interactions matrix beyond Super Power now that all 34 AS2 starting scenes can be entered reliably on G32QC.

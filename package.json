@@ -40,6 +40,7 @@
     "qa:validate-as2": "node tools/qa-validate-runtime.js --source as2",
     "qa:as2-sound-bridge": "node tools/qa-as2-sound-bridge.js",
     "qa:as2-launch-smoke": "node tools/qa-as2-launch-smoke.js",
+    "qa:as2-islands-smoke": "node tools/qa-as2-islands-smoke.js",
     "qa:as3-launch-smoke": "node tools/qa-as3-launch-smoke.js",
     "qa:as3-islands-smoke": "node tools/qa-as3-islands-smoke.js"
   },

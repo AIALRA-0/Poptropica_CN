@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T13:18:50.649Z",
+  "generatedAt": "2026-06-15T15:09:32.491Z",
   "sources": {
     "as2Configured": true,
     "as3Configured": true
@@ -45,7 +45,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "SharkTooth",
+      "islandParam": "Shark",
       "roomParam": "Mainstreet",
       "startupPath": "gameplay",
       "sceneFolder": "Shark",
@@ -67,7 +67,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=Mainstreet&island=SharkTooth&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=Mainstreet&island=Shark&startup_path=gameplay"
     },
     {
       "canonicalKey": "time-tangled",
@@ -279,7 +279,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "AstroKnights",
+      "islandParam": "Astro",
       "roomParam": "AstroMain",
       "startupPath": "gameplay",
       "sceneFolder": "Astro",
@@ -323,14 +323,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=AstroMain&island=AstroKnights&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=AstroMain&island=Astro&startup_path=gameplay"
     },
     {
       "canonicalKey": "counterfeit",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Counterfeit",
+      "islandParam": "Counter",
       "roomParam": "CounterMain",
       "startupPath": "gameplay",
       "sceneFolder": "Counter",
@@ -360,14 +360,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=CounterMain&island=Counterfeit&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=CounterMain&island=Counter&startup_path=gameplay"
     },
     {
       "canonicalKey": "reality-tv",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "RealityTV",
+      "islandParam": "Reality",
       "roomParam": "RealityMain",
       "startupPath": "gameplay",
       "sceneFolder": "Reality",
@@ -396,14 +396,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=RealityMain&island=RealityTV&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=RealityMain&island=Reality&startup_path=gameplay"
     },
     {
       "canonicalKey": "mythology",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Mythology",
+      "islandParam": "Myth",
       "roomParam": "MythMain",
       "startupPath": "gameplay",
       "sceneFolder": "Myth",
@@ -439,14 +439,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=MythMain&island=Mythology&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=MythMain&island=Myth&startup_path=gameplay"
     },
     {
       "canonicalKey": "skullduggery",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Skullduggery",
+      "islandParam": "Trade",
       "roomParam": "TradeMain",
       "startupPath": "gameplay",
       "sceneFolder": "Trade",
@@ -473,14 +473,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=TradeMain&island=Skullduggery&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=TradeMain&island=Trade&startup_path=gameplay"
     },
     {
       "canonicalKey": "steamworks",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Steamworks",
+      "islandParam": "Steam",
       "roomParam": "SteamMain",
       "startupPath": "gameplay",
       "sceneFolder": "Steam",
@@ -511,14 +511,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=SteamMain&island=Steamworks&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=SteamMain&island=Steam&startup_path=gameplay"
     },
     {
       "canonicalKey": "great-pumpkin",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "GreatPumpkin",
+      "islandParam": "Peanuts",
       "roomParam": "PeanutsMain",
       "startupPath": "gameplay",
       "sceneFolder": "Peanuts",
@@ -538,14 +538,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=PeanutsMain&island=GreatPumpkin&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=PeanutsMain&island=Peanuts&startup_path=gameplay"
     },
     {
       "canonicalKey": "cryptids",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Cryptids",
+      "islandParam": "Cryptid",
       "roomParam": "CryptidMain",
       "startupPath": "gameplay",
       "sceneFolder": "Cryptid",
@@ -592,14 +592,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=CryptidMain&island=Cryptids&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=CryptidMain&island=Cryptid&startup_path=gameplay"
     },
     {
       "canonicalKey": "wild-west",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "WildWest",
+      "islandParam": "West",
       "roomParam": "WestMain",
       "startupPath": "gameplay",
       "sceneFolder": "West",
@@ -624,14 +624,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=WestMain&island=WildWest&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=WestMain&island=West&startup_path=gameplay"
     },
     {
       "canonicalKey": "wimpy-wonderland",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "WimpyWonderland",
+      "islandParam": "Wimpy",
       "roomParam": "WimpyMain",
       "startupPath": "gameplay",
       "sceneFolder": "Wimpy",
@@ -665,14 +665,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=WimpyMain&island=WimpyWonderland&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=WimpyMain&island=Wimpy&startup_path=gameplay"
     },
     {
       "canonicalKey": "red-dragon",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "RedDragon",
+      "islandParam": "Japan",
       "roomParam": "JapanMain",
       "startupPath": "gameplay",
       "sceneFolder": "Japan",
@@ -707,14 +707,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=JapanMain&island=RedDragon&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=JapanMain&island=Japan&startup_path=gameplay"
     },
     {
       "canonicalKey": "shrink-ray",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "ShrinkRay",
+      "islandParam": "Shrink",
       "roomParam": "ShrinkMain",
       "startupPath": "gameplay",
       "sceneFolder": "Shrink",
@@ -740,14 +740,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=ShrinkMain&island=ShrinkRay&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=ShrinkMain&island=Shrink&startup_path=gameplay"
     },
     {
       "canonicalKey": "mystery-train",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "MysteryTrain",
+      "islandParam": "Train",
       "roomParam": "TrainMain",
       "startupPath": "gameplay",
       "sceneFolder": "Train",
@@ -784,7 +784,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=TrainMain&island=MysteryTrain&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=TrainMain&island=Train&startup_path=gameplay"
     },
     {
       "canonicalKey": "game-show",
@@ -834,7 +834,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "GhostStory",
+      "islandParam": "Ghost",
       "roomParam": "GhostMain",
       "startupPath": "gameplay",
       "sceneFolder": "Ghost",
@@ -869,14 +869,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=GhostMain&island=GhostStory&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=GhostMain&island=Ghost&startup_path=gameplay"
     },
     {
       "canonicalKey": "sos",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "SOS",
+      "islandParam": "Shipwreck",
       "roomParam": "ShipwreckMain",
       "startupPath": "gameplay",
       "sceneFolder": "Shipwreck",
@@ -913,7 +913,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=ShipwreckMain&island=SOS&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=ShipwreckMain&island=Shipwreck&startup_path=gameplay"
     },
     {
       "canonicalKey": "vampires-curse",
@@ -952,7 +952,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "TwistedThicket",
+      "islandParam": "Woodland",
       "roomParam": "WoodlandMain",
       "startupPath": "gameplay",
       "sceneFolder": "Woodland",
@@ -982,14 +982,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=WoodlandMain&island=TwistedThicket&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=WoodlandMain&island=Woodland&startup_path=gameplay"
     },
     {
       "canonicalKey": "poptropolis-games",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Poptropolis",
+      "islandParam": "Tribal",
       "roomParam": "TribalMain",
       "startupPath": "gameplay",
       "sceneFolder": "Tribal",
@@ -1011,7 +1011,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=TribalMain&island=Poptropolis&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=TribalMain&island=Tribal&startup_path=gameplay"
     },
     {
       "canonicalKey": "charlie-and-the-chocolate-factory",
@@ -1054,7 +1054,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "WimpyBoardwalk",
+      "islandParam": "Boardwalk",
       "roomParam": "BoardwalkMain",
       "startupPath": "gameplay",
       "sceneFolder": "Boardwalk",
@@ -1072,14 +1072,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=BoardwalkMain&island=WimpyBoardwalk&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=BoardwalkMain&island=Boardwalk&startup_path=gameplay"
     },
     {
       "canonicalKey": "lunar-colony",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "LunarColony",
+      "islandParam": "Moon",
       "roomParam": "MoonMain",
       "startupPath": "gameplay",
       "sceneFolder": "Moon",
@@ -1112,14 +1112,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=MoonMain&island=LunarColony&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=MoonMain&island=Moon&startup_path=gameplay"
     },
     {
       "canonicalKey": "super-villain",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "SuperVillain",
+      "islandParam": "Villain",
       "roomParam": "VillainMain",
       "startupPath": "gameplay",
       "sceneFolder": "Villain",
@@ -1157,14 +1157,14 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=VillainMain&island=SuperVillain&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=VillainMain&island=Villain&startup_path=gameplay"
     },
     {
       "canonicalKey": "zomberry",
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "Zomberry",
+      "islandParam": "Zombie",
       "roomParam": "ZombieMain",
       "startupPath": "gameplay",
       "sceneFolder": "Zombie",
@@ -1197,7 +1197,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=ZombieMain&island=Zomberry&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=ZombieMain&island=Zombie&startup_path=gameplay"
     },
     {
       "canonicalKey": "night-watch",
@@ -1244,7 +1244,7 @@
       "sourceGroup": "as2",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "BackLot",
+      "islandParam": "Backlot",
       "roomParam": "BacklotMain",
       "startupPath": "gameplay",
       "sceneFolder": "Backlot",
@@ -1276,7 +1276,7 @@
       ],
       "fallbackMode": "base-php",
       "launchMode": "as2-scene",
-      "launchUrl": "http://www.poptropica.com/base.php?room=BacklotMain&island=BackLot&startup_path=gameplay"
+      "launchUrl": "http://www.poptropica.com/base.php?room=BacklotMain&island=Backlot&startup_path=gameplay"
     },
     {
       "canonicalKey": "virus-hunter",

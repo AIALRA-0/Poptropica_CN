@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-06-15T15:31:37Z",
+  "sourceArchive": "AS3.zip",
+  "reason": "Several AS2 main-street scenes request vendorCart.swf from the same content path, but AS2.zip did not contain these files. AS3.zip contained matching same-path SWF assets for four of those AS2 scene folders.",
+  "entries": [
+    {
+      "canonicalKey": "astro-knights",
+      "assetPath": "content/www.poptropica.com/scenes/islandAstro/vendorCart.swf",
+      "sourceArchive": "AS3.zip",
+      "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandAstro/vendorCart.swf",
+      "bytes": 38866,
+      "sha256": "D50D0DB31FD4FBB5B66C9272671D5A19413D5A66AFD04AEA97BC8B7616BE9E53"
+    },
+    {
+      "canonicalKey": "cryptids",
+      "assetPath": "content/www.poptropica.com/scenes/islandCryptid/vendorCart.swf",
+      "sourceArchive": "AS3.zip",
+      "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandCryptid/vendorCart.swf",
+      "bytes": 69300,
+      "sha256": "D0CDB10581D59FDA9937BCCF92BCF9CAEE5DCA9E452622D299052BC5291CBEFD"
+    },
+    {
+      "canonicalKey": "steamworks",
+      "assetPath": "content/www.poptropica.com/scenes/islandSteam/vendorCart.swf",
+      "sourceArchive": "AS3.zip",
+      "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandSteam/vendorCart.swf",
+      "bytes": 18370,
+      "sha256": "494E532F87E3518CFCC952B2B6F3D6E69C8D89072EEAFEA6DA8F9B675B159486"
+    },
+    {
+      "canonicalKey": "skullduggery",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrade/vendorCart.swf",
+      "sourceArchive": "AS3.zip",
+      "targetPath": "packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandTrade/vendorCart.swf",
+      "bytes": 42735,
+      "sha256": "0EA5E850A08C50D74D5726346E924C1B8016E7D8DC685A63CCA688F772EA0871"
+    }
+  ],
+  "unresolved": [
+    {
+      "canonicalKey": "time-tangled",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/vendorCart.swf",
+      "reason": "No same-path source was found in AS2.zip or AS3.zip during this pass. The AS2 scene still loads and passes visual smoke; the request remains tracked for future asset recovery."
+    }
+  ]
+}
