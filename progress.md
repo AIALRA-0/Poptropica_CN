@@ -729,3 +729,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Run a full strict AS3 G32QC visible matrix when the side-monitor window can be occupied for another long run; the latest strict AS3 smoke covered Arabian Nights, while earlier full AS3 aggregate already covered 12/12 with no missing requests before this stricter default.
 - Continue with the AS2 multi-island interaction/audio matrix beyond Super Power, using post-message clicks first to avoid moving the system cursor.
+
+## 2026-06-15 Strict AS3 Full G32QC Visual Matrix
+
+- Ran the full AS3 direct-scene visual matrix under the new strict missing-request policy on G32QC: `npm run qa:as3-islands-smoke -- --targetMonitor G32QC --skipAudio --settleMs=10000 --windowTimeoutMs=45000 --betweenMs=1000 --allowNoSceneProgress`.
+- Result passed 12/12 with `withMissingLogRequests: 0`, `failedKeys: []`, `missingRequestsFail: true`, and all window/capture devices on non-primary `DISPLAY1`/G32QC. Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781540047897.json`.
+- Covered direct-scene entries: `arabian-nights`, `escape-from-pelican-rock`, `galactic-hot-dogs`, `mission-atlantis`, `mocktropica`, `monkey-wrench`, `monster-carnival`, `mystery-of-the-map`, `poptropicon`, `survival`, `timmy-failure`, and `virus-hunter`.
+- Visual spot checks were opened for Arabian Nights, PoptropiCon, and Virus Hunter from `runtime-data/qa/as3/islands-smoke/run-1781540047897/`; all showed real in-game scenes with stable UI/menu placement and no loading/fallback screen.
+- Pre-run monitor audit confirmed `G32QC` still resolves to non-primary `DISPLAY1`; the primary monitor remains `DISPLAY2`. The run used foreground capture on the side monitor only and no mouse-click path.
+
+## TODO Strict AS3 Full G32QC Visual Matrix
+
+- Add a small AS3 audio batch across multiple direct-scene islands with known sound requests, building on the earlier Arabian Nights audio proof.
+- Start the AS2 multi-island post-message interaction/audio matrix now that AS2/AS3 strict visual coverage has no missing resource requests.
