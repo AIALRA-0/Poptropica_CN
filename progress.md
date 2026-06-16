@@ -1145,3 +1145,21 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue resolving `reality-tv-wild-safari` only through legitimate playable scene resources. Do not fabricate a launchable island from map metadata.
 - Work down `runtime-data/qa/translation-coverage-audit.json` `unchangedTranslatable` rows: translate real visible UI/dialog/quiz text, and only add guard/whitelist rules for proven runtime placeholders, formulas, codes, proper names, or intentionally untranslated strings.
+
+## 2026-06-16 Translation Quality Queue Reduction / Pack Recovery
+
+- Continued with background CLI-only QA; no CUA, no mouse input, and no visible game window was opened for this chunk.
+- Reduced translation quality noise by expanding guarded runtime contexts in `tools/lib/translation-guards.js`, including scene/event/link metadata, Lands layout blobs, sound asset references, look tags, photo params, formulas/codes, color/hex fields, alphabet ranges, and placeholder-like runtime tokens.
+- Added exact generic-key seed support in `tools/lib/db.js` and `tools/seed-known-translations.js`, then seeded high-confidence visible UI/game text such as `BEGIN`, `Continue`, `HELP`, `save`, `LAUNCH`, `PLAYER`, Game Show answer labels, purchase prompts, and several short visible command/status strings.
+- Translation audit improved from 1,328 unchanged translatable rows to 133 unchanged translatable rows while keeping 100% translatable coverage: 76,123 total rows, 60,849 protected rows, 15,274 translatable rows, 15,274 translated rows, 0 missing, 0 empty, 0 `[object Object]`, and 98.25% CJK-bearing translatable rows. `qualityReviewRequired` remains true because the 133 unchanged rows still need asset-aware review.
+- The remaining unchanged queue is mostly fragmented SWF text, proper names, island names, code-like labels, or ambiguous all-caps fragments such as `THE`/`PAPER`. These should not be broadly translated without asset context because the same fragments can be layout pieces or split text.
+- Attempted a full `npm run patch:pack`; AS2 completed but the AS3 FFDec phase timed out after 30 minutes. Recovered by killing only the stale build/FFDec processes, restoring incomplete pack outputs from HEAD, rebuilding AS2/AS3 runtime zips, and rerunning pack-input/sound audits.
+- Fixed `tools/repair-as3-internal-ids.js` so AS3 internal-ID repair no longer restores original `sounds.xml` asset tags over repaired sound references. The repaired runtime now changes only three Lands runtime-tag files and keeps `npm run audit:sound-refs:runtime` at `missing: 0`.
+- Important packaging note: the new translation seeds are reproducible through the seed script and present in the local text-index state, but the full patched SWF/runtime pack embedding still needs a safer AS3 batch strategy because the full `patch:pack` run timed out and was recovered.
+- Validation passed for this chunk: `node --check` on the changed scripts, `npm run audit:translation-coverage`, `npm run verify:pack-inputs`, AS2/AS3 runtime zip rebuilds, `node tools\repair-as3-internal-ids.js`, `npm run audit:sound-refs:runtime`, and `npm run qa:goal-evidence`.
+
+## TODO Translation Quality Queue Reduction / Pack Recovery
+
+- Build a safer incremental AS3 pack-apply path so newly seeded translations can be embedded into SWFs without risking another all-or-nothing FFDec timeout.
+- Continue the remaining 133 unchanged translation rows with per-asset context; avoid broad generic translations for split fragments like `THE` or `PAPER`.
+- Keep `reality-tv-wild-safari` / AS3 `reality2` as the all-island completion blocker until legitimate playable scene resources are found.

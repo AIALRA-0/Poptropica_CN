@@ -135,6 +135,9 @@ function shouldRestoreLookTags(relativePath) {
 }
 
 function shouldRestoreSceneRuntimeTags(relativePath) {
+  if (/\/sounds\.xml$/iu.test(relativePath)) {
+    return false;
+  }
   return /\/game\/data\/scenes\//iu.test(relativePath);
 }
 

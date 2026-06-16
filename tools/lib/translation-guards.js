@@ -12,8 +12,15 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "@_encoding",
   "@_ease",
   "@_event",
+  "@_ai",
+  "@_alt",
+  "@_campaign_type",
+  "@_color",
   "@_gender",
   "@_graphic",
+  "@_href",
+  "@_rel",
+  "@_lang",
   "@_link",
   "@_linkEntityId",
   "@_modifier",
@@ -81,6 +88,7 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "overshirt",
   "pack",
   "pageFolder",
+  "param",
   "pants",
   "path",
   "platform",
@@ -89,6 +97,7 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "sceneId",
   "sceneLink",
   "sceneType",
+  "scenetype",
   "shirt",
   "skin",
   "skinColor",
@@ -108,6 +117,26 @@ const PROTECTED_LITERAL_VALUES = new Set([
   "--- RECORDSEPARATOR ---",
   "DISABLED",
   "Flash",
+  "A-Z",
+  "AA",
+  "Ben 10",
+  "GSM",
+  "H2O",
+  "HBr",
+  "II",
+  "III",
+  "IV",
+  "IX",
+  "Na",
+  "NaCl",
+  "NaOH",
+  "Poptropica",
+  "POPTROPICA",
+  "V",
+  "VI",
+  "VII",
+  "VIII",
+  "X",
   "addClue",
   "default",
   "desktop",
@@ -191,6 +220,45 @@ function looksLikeRuntimeToken(value) {
   if (/^game\.scenes\.[A-Za-z0-9_.]+$/u.test(text)) {
     return true;
   }
+  if (/^text\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^[a-z][A-Za-z0-9]*$/u.test(text) && /[A-Z]/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z]\s*-\s*[A-Z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+>$/u.test(text)) {
+    return true;
+  }
+  if (/^<br\s*\/?>$/iu.test(text)) {
+    return true;
+  }
+  if (/^<font\b[^>]*>[0-9+]+<\/font>$/iu.test(text)) {
+    return true;
+  }
+  if (/^lorem ipsum\b/iu.test(text)) {
+    return true;
+  }
+  if (/^0x[0-9a-f]*$/iu.test(text) || /^[0-9a-f]{6}$/iu.test(text)) {
+    return true;
+  }
+  if (/^-?\d+(?:\.\d+)?\s*°[FC](?:,\s*-?\d+(?:\.\d+)?\s*°[FC])?$/u.test(text)) {
+    return true;
+  }
+  if (/^x\s*\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9 ]{5,}$/u.test(text)) {
+    return true;
+  }
+  if (/^(?:[A-Z]\s+){5,}[A-Z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9+/]{24,}={0,2}$/u.test(text)) {
+    return true;
+  }
   return looksLikeProtectedIdentifier(text);
 }
 
@@ -200,7 +268,7 @@ function isProtectedContext(row) {
     return true;
   }
   const key = String(row?.context_key || row?.contextKey || "");
-  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|layers\/layer\/\[\d+\]\/condition|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
+  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound\/\[\d+\]\/asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
 }
 
 function isProtectedTranslationRow(row) {
