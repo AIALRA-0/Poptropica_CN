@@ -117,6 +117,7 @@ function applyVisibleQaDefaults(args) {
   }
   return {
     targetMonitor: targetMonitor || null,
+    windowGeometry: resolveWindowGeometry(args),
     postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
     noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
     missingRequestsFail: shouldFailOnMissingRequests(args)
@@ -556,8 +557,33 @@ function isSafeModePrompt(runtimeWindow, ocr) {
   return /safe mode/iu.test(`${title}\n${text}`);
 }
 
-function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true }) {
-  const args = [
+function resolveWindowGeometry(args = {}) {
+  const sizeMatch = String(args.windowSize || args["window-size"] || "").match(/^(\d+)x(\d+)$/iu);
+  const width = Number(args.windowWidth || args["window-width"] || (sizeMatch ? sizeMatch[1] : 0));
+  const height = Number(args.windowHeight || args["window-height"] || (sizeMatch ? sizeMatch[2] : 0));
+  return {
+    width: Number.isFinite(width) && width > 0 ? Math.round(width) : null,
+    height: Number.isFinite(height) && height > 0 ? Math.round(height) : null,
+    maximize: flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize)
+  };
+}
+
+function appendWindowGeometryArgs(commandArgs, args = {}) {
+  const geometry = resolveWindowGeometry(args);
+  if (geometry.width) {
+    commandArgs.push("--window-width", String(geometry.width));
+  }
+  if (geometry.height) {
+    commandArgs.push("--window-height", String(geometry.height));
+  }
+  if (geometry.maximize) {
+    commandArgs.push("--maximize");
+  }
+  return commandArgs;
+}
+
+function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true, args = {} }) {
+  const waitArgs = [
     "wait-window",
     "--process-names",
     runtime.processNames.join(","),
@@ -571,13 +597,13 @@ function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true }) {
     outputPath
   ];
   if (includePid && runtime.pid) {
-    args.push("--pid", String(runtime.pid));
+    waitArgs.push("--pid", String(runtime.pid));
   }
-  return args;
+  return appendWindowGeometryArgs(waitArgs, args);
 }
 
-function buildCaptureArgs({ handle, runtime, screenshotPath, captureMetadataPath, includePid = true }) {
-  const args = [
+function buildCaptureArgs({ handle, runtime, screenshotPath, captureMetadataPath, includePid = true, args = {} }) {
+  const captureArgs = [
     "capture-window",
     "--handle",
     String(handle),
@@ -592,9 +618,9 @@ function buildCaptureArgs({ handle, runtime, screenshotPath, captureMetadataPath
     "--client-only"
   ];
   if (includePid && runtime.pid) {
-    args.push("--pid", String(runtime.pid));
+    captureArgs.push("--pid", String(runtime.pid));
   }
-  return args;
+  return appendWindowGeometryArgs(captureArgs, args);
 }
 
 function formatQaError(step, error) {
@@ -775,7 +801,7 @@ function interactionStepArtifactPath(runDir, safeStem, index, total, defaultPath
   return path.join(runDir, `${safeStem}-interaction-step-${suffix}.json`);
 }
 
-function runInteractionStep({ runDir, safeStem, runtime, runtimeWindow, capture, stageRect, step, index, total, defaultClickPath }) {
+function runInteractionStep({ runDir, safeStem, runtime, runtimeWindow, capture, stageRect, step, index, total, defaultClickPath, args }) {
   const outputPath = interactionStepArtifactPath(runDir, safeStem, index, total, defaultClickPath);
   const isKey = step.type === "key";
   const clickPoint = isKey
@@ -838,6 +864,7 @@ function runInteractionStep({ runDir, safeStem, runtime, runtimeWindow, capture,
   if (runtime.pid) {
     commandArgs.push("--pid", String(runtime.pid));
   }
+  appendWindowGeometryArgs(commandArgs, args);
 
   return {
     step,
@@ -900,7 +927,8 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         step: steps[index],
         index,
         total: steps.length,
-        defaultClickPath: clickPath
+        defaultClickPath: clickPath,
+        args
       });
       actions.push(action);
       if (Number(steps[index].waitMs || 0) > 0) {
@@ -919,7 +947,8 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     const postWindow = runPythonQa(buildWaitArgs({
       runtime,
       timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-      outputPath: windowPath
+      outputPath: windowPath,
+      args
     }), {
       timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
     });
@@ -928,7 +957,8 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       handle: postWindow.match.handle,
       runtime,
       screenshotPath,
-      captureMetadataPath
+      captureMetadataPath,
+      args
     }), {
       timeoutMs: 40000
     });
@@ -1129,7 +1159,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   let ocr = { skipped: flagEnabled(args.skipOcr), text: "", containsChinese: false, lineCount: 0 };
   let audio = { skipped: flagEnabled(args.skipAudio), audioLikelyActive: false };
   try {
-    runtimeWindow = runPythonQa(buildWaitArgs({ runtime, timeoutMs: windowTimeoutMs, outputPath: windowPath }), {
+    runtimeWindow = runPythonQa(buildWaitArgs({ runtime, timeoutMs: windowTimeoutMs, outputPath: windowPath, args }), {
       timeoutMs: windowTimeoutMs + 5000
     });
   } catch (error) {
@@ -1143,7 +1173,8 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
         handle: runtimeWindow.match.handle,
         runtime,
         screenshotPath,
-        captureMetadataPath
+        captureMetadataPath,
+        args
       }), {
         timeoutMs: 40000
       });
@@ -1154,7 +1185,8 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
         recoveredWindow = runPythonQa(buildWaitArgs({
           runtime,
           timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-          outputPath: recaptureWindowPath
+          outputPath: recaptureWindowPath,
+          args
         }), {
           timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
         });
@@ -1164,7 +1196,8 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
             runtime,
             timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
             outputPath: recaptureAnyPidWindowPath,
-            includePid: false
+            includePid: false,
+            args
           }), {
             timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
           });
@@ -1181,7 +1214,8 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
             runtime,
             screenshotPath,
             captureMetadataPath,
-            includePid: samePid
+            includePid: samePid,
+            args
           }), {
             timeoutMs: 40000
           });

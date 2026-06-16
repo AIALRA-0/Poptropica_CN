@@ -2,13 +2,15 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
+const zlib = require("node:zlib");
 const { XMLParser, XMLBuilder } = require("fast-xml-parser");
 const paths = require("./paths");
 const { ensureDirSync, fileExists, hashFile, listFilesRecursive, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
 const { containsCjk, normalizeTranslatedText } = require("./text-utils");
 const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
 
-const RUNTIME_FIX_VERSION = 20;
+const RUNTIME_FIX_VERSION = 22;
+const AS3_STAGE_BACKGROUND_RGB = Buffer.from([0x13, 0x9f, 0xfd]);
 // Startup/login SWFs are excluded from the default runtime override set.
 // They still rely on embedded legacy fonts, and forcing Chinese into those
 // text fields can blank the buttons or destabilize the first menu. We keep
@@ -819,8 +821,122 @@ function patchRuntimeRenderMode(workingDir) {
     }
   }
 
+  const shellSwfPath = path.join(workingDir, AS3_SHELL_PATH.replace(/\//gu, path.sep));
+  if (fileExists(shellSwfPath)) {
+    const shellPatch = patchSwfBackgroundColor(fs.readFileSync(shellSwfPath), AS3_STAGE_BACKGROUND_RGB);
+    if (shellPatch.ok && shellPatch.changed) {
+      fs.writeFileSync(shellSwfPath, shellPatch.buffer);
+      patchedFiles.push(AS3_SHELL_PATH);
+    }
+  }
+
   return {
     patchedFiles
+  };
+}
+
+function readSwfRectByteLength(body) {
+  if (!body || body.length === 0) {
+    return null;
+  }
+  const nbits = body[0] >> 3;
+  return Math.ceil((5 + nbits * 4) / 8);
+}
+
+function decodeSwfBody(buffer) {
+  if (!Buffer.isBuffer(buffer) || buffer.length < 8) {
+    return { ok: false, error: "SWF is shorter than the 8-byte header." };
+  }
+  const signature = buffer.subarray(0, 3).toString("ascii");
+  if (signature === "FWS") {
+    return { ok: true, signature, body: buffer.subarray(8) };
+  }
+  if (signature === "CWS") {
+    try {
+      return { ok: true, signature, body: zlib.inflateSync(buffer.subarray(8)) };
+    } catch (error) {
+      return { ok: false, error: error.message || "Unable to inflate compressed SWF body." };
+    }
+  }
+  return { ok: false, error: `Unsupported SWF signature: ${signature}` };
+}
+
+function encodeSwfBody(originalBuffer, signature, body) {
+  const header = Buffer.from(originalBuffer.subarray(0, 8));
+  header.writeUInt32LE(body.length + 8, 4);
+  if (signature === "FWS") {
+    return Buffer.concat([header, body]);
+  }
+  return Buffer.concat([header, zlib.deflateSync(body)]);
+}
+
+function patchSwfBackgroundColor(buffer, rgb) {
+  const decoded = decodeSwfBody(buffer);
+  if (!decoded.ok) {
+    return decoded;
+  }
+  const rectByteLength = readSwfRectByteLength(decoded.body);
+  if (!rectByteLength) {
+    return { ok: false, error: "Unable to read SWF frame rectangle." };
+  }
+  const frameHeaderLength = rectByteLength + 4;
+  if (decoded.body.length < frameHeaderLength) {
+    return { ok: false, error: "SWF body is shorter than the frame header." };
+  }
+
+  let offset = frameHeaderLength;
+  while (offset + 2 <= decoded.body.length) {
+    const tagHeader = decoded.body.readUInt16LE(offset);
+    const tagCode = tagHeader >> 6;
+    let tagLength = tagHeader & 0x3f;
+    let tagHeaderLength = 2;
+    if (tagLength === 0x3f) {
+      if (offset + 6 > decoded.body.length) {
+        return { ok: false, error: "SWF long tag header is truncated." };
+      }
+      tagLength = decoded.body.readInt32LE(offset + 2);
+      tagHeaderLength = 6;
+    }
+    const payloadOffset = offset + tagHeaderLength;
+    const nextOffset = payloadOffset + tagLength;
+    if (tagLength < 0 || nextOffset > decoded.body.length) {
+      return { ok: false, error: "SWF tag payload is truncated." };
+    }
+
+    if (tagCode === 9) {
+      if (tagLength < 3) {
+        return { ok: false, error: "SetBackgroundColor tag is shorter than RGB payload." };
+      }
+      if (decoded.body.subarray(payloadOffset, payloadOffset + 3).equals(rgb)) {
+        return { ok: true, changed: false, buffer };
+      }
+      const patchedBody = Buffer.from(decoded.body);
+      rgb.copy(patchedBody, payloadOffset, 0, 3);
+      return {
+        ok: true,
+        changed: true,
+        buffer: encodeSwfBody(buffer, decoded.signature, patchedBody)
+      };
+    }
+
+    if (tagCode === 0) {
+      break;
+    }
+    offset = nextOffset;
+  }
+
+  const backgroundTagHeader = Buffer.alloc(2);
+  backgroundTagHeader.writeUInt16LE((9 << 6) | 3, 0);
+  const patchedBody = Buffer.concat([
+    decoded.body.subarray(0, frameHeaderLength),
+    backgroundTagHeader,
+    rgb,
+    decoded.body.subarray(frameHeaderLength)
+  ]);
+  return {
+    ok: true,
+    changed: true,
+    buffer: encodeSwfBody(buffer, decoded.signature, patchedBody)
   };
 }
 
@@ -842,7 +958,7 @@ function applyAs3BasePageLayoutPatch(content) {
             }
             body { position: relative; }
             embed {
-                background-color: #0099ff;
+                background-color: #139ffd;
                 outline-width: 0;
                 position: absolute;
                 left: 0;
@@ -851,10 +967,12 @@ function applyAs3BasePageLayoutPatch(content) {
                 height: 100vh;
             }
         </style>`);
-  return patchedStyle.replace(
-    /width="<\?php echo \$width; \?>" height="<\?php echo \$height; \?>"/u,
-    `width="100%" height="100%"`
-  );
+  return patchedStyle
+    .replace(/<embed\s+src=/iu, `<embed bgcolor="139ffd" src=`)
+    .replace(
+      /width="<\?php echo \$width; \?>" height="<\?php echo \$height; \?>"/u,
+      `width="100%" height="100%"`
+    );
 }
 
 function runFfdecCommand(ffdecCli, args) {

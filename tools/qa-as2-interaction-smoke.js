@@ -58,6 +58,7 @@ function applyVisibleQaDefaults(args) {
   }
   return {
     targetMonitor: targetMonitor || null,
+    windowGeometry: resolveWindowGeometry(args),
     postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
     noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
     missingRequestsFail: shouldFailOnMissingRequests(args)
@@ -175,7 +176,32 @@ async function requestLaunchHealth(url, args) {
   return lastResult;
 }
 
-function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true }) {
+function resolveWindowGeometry(args = {}) {
+  const sizeMatch = String(args.windowSize || args["window-size"] || "").match(/^(\d+)x(\d+)$/iu);
+  const width = Number(args.windowWidth || args["window-width"] || (sizeMatch ? sizeMatch[1] : 0));
+  const height = Number(args.windowHeight || args["window-height"] || (sizeMatch ? sizeMatch[2] : 0));
+  return {
+    width: Number.isFinite(width) && width > 0 ? Math.round(width) : null,
+    height: Number.isFinite(height) && height > 0 ? Math.round(height) : null,
+    maximize: flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize)
+  };
+}
+
+function appendWindowGeometryArgs(commandArgs, args = {}) {
+  const geometry = resolveWindowGeometry(args);
+  if (geometry.width) {
+    commandArgs.push("--window-width", String(geometry.width));
+  }
+  if (geometry.height) {
+    commandArgs.push("--window-height", String(geometry.height));
+  }
+  if (geometry.maximize) {
+    commandArgs.push("--maximize");
+  }
+  return commandArgs;
+}
+
+function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true, args = {} }) {
   const waitArgs = [
     "wait-window",
     "--process-names",
@@ -192,10 +218,10 @@ function buildWaitArgs({ runtime, timeoutMs, outputPath, includePid = true }) {
   if (includePid && runtime.pid) {
     waitArgs.push("--pid", String(runtime.pid));
   }
-  return waitArgs;
+  return appendWindowGeometryArgs(waitArgs, args);
 }
 
-function buildCaptureArgs({ handle, runtime, screenshotPath, metadataPath, includePid = true }) {
+function buildCaptureArgs({ handle, runtime, screenshotPath, metadataPath, includePid = true, args = {} }) {
   const captureArgs = [
     "capture-window",
     "--handle",
@@ -213,7 +239,7 @@ function buildCaptureArgs({ handle, runtime, screenshotPath, metadataPath, inclu
   if (includePid && runtime.pid) {
     captureArgs.push("--pid", String(runtime.pid));
   }
-  return captureArgs;
+  return appendWindowGeometryArgs(captureArgs, args);
 }
 
 function formatQaError(step, error) {
@@ -298,7 +324,8 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
       handle: runtimeWindow.match.handle,
       runtime,
       screenshotPath,
-      metadataPath
+      metadataPath,
+      args
     }), {
       timeoutMs: 40000
     });
@@ -397,6 +424,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
     if (runtime.pid) {
       clickArgs.push("--pid", String(runtime.pid));
     }
+    appendWindowGeometryArgs(clickArgs, args);
     runPythonQa(clickArgs, {
       timeoutMs: 20000
     });
@@ -407,7 +435,8 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
     const postWindow = runPythonQa(buildWaitArgs({
       runtime,
       timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-      outputPath: postWindowPath
+      outputPath: postWindowPath,
+      args
     }), {
       timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
     });
@@ -488,7 +517,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
 
   let runtimeWindow = null;
   try {
-    runtimeWindow = runPythonQa(buildWaitArgs({ runtime, timeoutMs: windowTimeoutMs, outputPath: windowPath }), {
+    runtimeWindow = runPythonQa(buildWaitArgs({ runtime, timeoutMs: windowTimeoutMs, outputPath: windowPath, args }), {
       timeoutMs: windowTimeoutMs + 5000
     });
   } catch (error) {
