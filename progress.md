@@ -1017,3 +1017,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - The real NPAPI/OS maximize path is still intentionally treated as unsafe for AS3 direct SWF; use `--trueMaximize` only for diagnostics. The end-user launch path should prefer bounded/safe sizing unless a deeper Navigator/plugin-host fix is found.
 - Continue translating the QA safe-maximize behavior into any user-facing launcher path that exposes a maximize/fullscreen control, so manual play uses the stable bounded size instead of the bad full work-area threshold.
+
+## 2026-06-16 Manual Launch Safe Sizing
+
+- Extended `tools/launch.js` so command-line manual launches accept `--windowSize=WxH`, `--window-width`, `--window-height`, and `--maximize`. For AS3, `--maximize` now maps to the same safe `2300x1320` bounded G32QC size used by QA; `--trueMaximize` / `--unsafeMaximize` deliberately request the risky full-work-area path for diagnostics.
+- `tools/launch.js --island` now prefers the existing `catalog/launch-manifest.json` and only regenerates it when missing, so normal manual launches no longer dirty the repository by changing only `generatedAt`.
+- Verified the actual user-facing CLI path on G32QC: `node tools/launch.js --island monkey-wrench --targetMonitor G32QC --maximize` produced `windowGeometry.mode: "as3-safe-maximize"`, launched at `left:-2430 top:36 width:2300 height:1320`, and loaded `game.scenes.ftue.beach.Beach`.
+- No-foreground capture of that manual launch passed stage and visual checks: image `2288x1180`, stage `2288x1141`, `stageCoverageRatio: 0.966949`, visual guard `ok: true` with right edge `whitePct: 0.0` and bottom edge `whitePct: 0.066178`. Artifacts: `runtime-data/qa/manual-as3-safe-launch2-plan.json`, `runtime-data/qa/manual-as3-safe-launch2.png`, `runtime-data/qa/manual-as3-safe-launch2-stage.json`, `runtime-data/qa/manual-as3-safe-launch2-visual-guard.json`.
+- Validation passed: `node --check tools/launch.js`, `node --check tools/qa-as3-islands-smoke.js`, `node --check tools/qa-as2-interaction-smoke.js`, `node --check tools/lib/pack.js`, `node --check tools/lib/launch-manifest.js`, `python -m py_compile tools/qa-helper.py`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), and `npm run audit:sound-refs:runtime` (`missing: 0`).
+
+## TODO Manual Launch Safe Sizing
+
+- Wire the same safe AS3 sizing affordance into any Electron/launcher UI controls that expose maximize/fullscreen, not only the command-line launch path.
+- Add a short operator-facing launch note once the local browser/deployment path is finalized: AS3 full-work-area maximize remains unsafe, while bounded safe maximize is the supported path.

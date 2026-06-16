@@ -3,11 +3,25 @@ const path = require("node:path");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const { buildInventory } = require("./lib/inventory");
-const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { generateLaunchManifest, loadLaunchManifest } = require("./lib/launch-manifest");
 const { ensureFlashpointServices, ensureManagedWorkspace, getPoptropicaRecords, mountSourceZip, proxyRequest, spawnManagedRuntime } = require("./lib/flashpoint-runtime");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
 const paths = require("./lib/paths");
+
+const AS3_SAFE_MAXIMIZE_WIDTH = 2300;
+const AS3_SAFE_MAXIMIZE_HEIGHT = 1320;
+const WORK_AREA_SENTINEL_SIZE = 99999;
+
+function flagEnabled(value) {
+  if (value === true) {
+    return true;
+  }
+  if (value === false || value === undefined || value === null) {
+    return false;
+  }
+  return /^(1|true|yes|on)$/iu.test(String(value).trim());
+}
 
 function applyTargetMonitorEnv(args) {
   const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
@@ -17,13 +31,62 @@ function applyTargetMonitorEnv(args) {
   return targetMonitor || null;
 }
 
-async function launchRuntimeFromCli(sourceGroup) {
+function applyWindowGeometryEnv(args, sourceGroup) {
+  const normalized = String(sourceGroup || "").toLowerCase();
+  const sizeMatch = String(args.windowSize || args["window-size"] || "").match(/^(\d+)x(\d+)$/iu);
+  const requestedWidth = Number(args.windowWidth || args["window-width"] || (sizeMatch ? sizeMatch[1] : 0));
+  const requestedHeight = Number(args.windowHeight || args["window-height"] || (sizeMatch ? sizeMatch[2] : 0));
+  const hasExplicitSize = Number.isFinite(requestedWidth) && requestedWidth > 0 && Number.isFinite(requestedHeight) && requestedHeight > 0;
+  const maximize = flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize);
+  const unsafeMaximize = flagEnabled(args.trueMaximize || args["true-maximize"] || args.unsafeMaximize || args["unsafe-maximize"]);
+
+  if (hasExplicitSize) {
+    const width = Math.round(requestedWidth);
+    const height = Math.round(requestedHeight);
+    process.env.POPTROPICA_WINDOW_WIDTH = String(width);
+    process.env.POPTROPICA_WINDOW_HEIGHT = String(height);
+    return {
+      mode: "explicit",
+      width,
+      height
+    };
+  }
+
+  if (!maximize) {
+    return null;
+  }
+
+  if (normalized === "as3" && !unsafeMaximize) {
+    const safeWidth = Number(args.safeMaximizeWidth || args["safe-maximize-width"] || AS3_SAFE_MAXIMIZE_WIDTH);
+    const safeHeight = Number(args.safeMaximizeHeight || args["safe-maximize-height"] || AS3_SAFE_MAXIMIZE_HEIGHT);
+    const width = Number.isFinite(safeWidth) && safeWidth > 0 ? Math.round(safeWidth) : AS3_SAFE_MAXIMIZE_WIDTH;
+    const height = Number.isFinite(safeHeight) && safeHeight > 0 ? Math.round(safeHeight) : AS3_SAFE_MAXIMIZE_HEIGHT;
+    process.env.POPTROPICA_WINDOW_WIDTH = String(width);
+    process.env.POPTROPICA_WINDOW_HEIGHT = String(height);
+    return {
+      mode: "as3-safe-maximize",
+      width,
+      height
+    };
+  }
+
+  process.env.POPTROPICA_WINDOW_WIDTH = String(WORK_AREA_SENTINEL_SIZE);
+  process.env.POPTROPICA_WINDOW_HEIGHT = String(WORK_AREA_SENTINEL_SIZE);
+  return {
+    mode: normalized === "as3" ? "as3-unsafe-workarea" : "workarea",
+    width: null,
+    height: null
+  };
+}
+
+async function launchRuntimeFromCli(sourceGroup, args = {}) {
   const normalized = String(sourceGroup || "").toLowerCase();
   if (!["as2", "as3"].includes(normalized)) {
     throw new Error(`Unsupported runtime source: ${sourceGroup}`);
   }
 
   const config = loadConfig();
+  const windowGeometry = applyWindowGeometryEnv(args, normalized);
   ensureManagedWorkspace(config);
   const records = getPoptropicaRecords(config);
   const record = records[normalized];
@@ -48,6 +111,7 @@ async function launchRuntimeFromCli(sourceGroup) {
     runtimeTitle: normalized === "as2" ? "AS2 经典旧版" : "AS3 旧版世界",
     launchUrl: record.launchCommand,
     targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
+    windowGeometry,
     mounted: {
       targetZipPath: mounted.targetZipPath,
       mountFileName: mounted.mountFileName
@@ -67,7 +131,7 @@ async function launchRuntimeFromCli(sourceGroup) {
   printJson(plan);
 }
 
-async function launchIslandFromCli(islandId) {
+async function launchIslandFromCli(islandId, args = {}) {
   const config = loadConfig();
   const inventory = buildInventory(config);
   const island = inventory.islands.find((entry) => entry.id === islandId);
@@ -78,12 +142,13 @@ async function launchIslandFromCli(islandId) {
     throw new Error(`Island ${islandId} is not part of flash_v1 direct launch.`);
   }
 
-  const launchManifest = generateLaunchManifest(config);
+  const launchManifest = loadLaunchManifest() || generateLaunchManifest(config);
   const launchEntry = launchManifest.entries.find((entry) => entry.canonicalKey === islandId);
   if (!launchEntry?.launchable) {
     throw new Error(`No stable launch scene was resolved for ${islandId}.`);
   }
 
+  const windowGeometry = applyWindowGeometryEnv(args, island.preferredSource);
   ensureManagedWorkspace(config);
   const services = await ensureFlashpointServices(config);
   if (!services.healthy.proxy || !services.healthy.zip || !services.healthy.php) {
@@ -103,6 +168,7 @@ async function launchIslandFromCli(islandId) {
     islandId,
     source: island.preferredSource,
     targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
+    windowGeometry,
     launchEntry,
     ...(flashStateReset ? { flashStateReset } : {}),
     mounted: {
@@ -153,11 +219,11 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   applyTargetMonitorEnv(args);
   if (args.runtime) {
-    await launchRuntimeFromCli(String(args.runtime));
+    await launchRuntimeFromCli(String(args.runtime), args);
     return;
   }
   if (args.island) {
-    await launchIslandFromCli(String(args.island));
+    await launchIslandFromCli(String(args.island), args);
     return;
   }
   launchElectron(process.argv.slice(2));
