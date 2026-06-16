@@ -1045,3 +1045,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keep avoiding CUA/main-display testing; if another visual proof is needed, prefer G32QC-targeted helper captures and use foreground only when no-foreground capture is occluded.
 - Add a small launcher-side smoke when a non-interfering harness is available, so `flash:launch-runtime` itself is exercised without opening the Electron UI on the user's active desktop.
+
+## 2026-06-16 Local Browser Web Launcher
+
+- Added `tools/web-launcher.js`, a localhost-only web control surface for ordinary browsers. It serves `http://127.0.0.1:22800/`, exposes `/api/state`, `/api/prepare`, `/api/launch-runtime`, and `/api/launch-island`, and keeps Flash playback in Flashpoint Navigator because modern regular browsers no longer run NPAPI Flash directly.
+- The web launcher reuses the existing inventory, launch manifest, Flashpoint runtime, and shared runtime window geometry helpers. Launch requests default to `targetMonitor: "G32QC"` and `--maximize`; AS3 therefore resolves to the existing safe `2300x1320` bounded size.
+- Added `npm run web:launcher` and `npm run qa:web-launcher`. The QA script starts a temporary localhost server, validates the page and state API, verifies AS3 runtime dry-run arguments, verifies `monkey-wrench` explicit-size island dry-run arguments, checks invalid runtime errors, and uses headless Chrome to render the page, filter for `Monkey`, screenshot the UI, and assert no console errors.
+- Documented the local browser entry in `README.md`, including the Flash boundary: the local browser page is the control console; actual game playback is still delegated to Flashpoint Navigator.
+- QA passed: `npm run qa:web-launcher` reported `flashIslandCount: 47`, `launchableCount: 46`, AS3 dry-run `windowGeometry.mode: "as3-safe-maximize"`, browser-render `visibleRows: 47`, filtered `visibleRows: 1`, and `consoleErrors: []`. Screenshot: `runtime-data/qa/web-launcher-page.png`.
+- Real localhost API launch proof passed on G32QC: POST `/api/launch-island` for `monkey-wrench` launched pid `16020`, target `G32QC`, AS3 safe `2300x1320`, and `game.scenes.ftue.beach.Beach`. Window capture was on non-primary `G32QC A` at `left:-2430 top:36 width:2300 height:1320`; stage `2288x1141`, `stageCoverageRatio: 0.966949`, right white edge `0.0%`, bottom white edge `0.066178%`, visual guard `ok: true`. Screenshot: `runtime-data/qa/web-launcher-real-foreground.png`.
+- Final validation passed: `node --check tools/web-launcher.js`, `node --check tools/qa-web-launcher.js`, `node --check tools/launch.js`, package JSON parse, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and `git diff --check` with only expected CRLF warnings.
+
+## TODO Local Browser Web Launcher
+
+- Add an optional no-spawn deployment mode later if this is moved from localhost to a remote server; remote deployment should not attempt to spawn a local Flashpoint Navigator process on the server host.
+- Add a launcher-side Electron IPC smoke when it can be exercised without opening UI on the user's active desktop; the new web launcher covers the localhost browser path but not Electron IPC directly.

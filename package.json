@@ -15,6 +15,7 @@
   "license": "MIT",
   "scripts": {
     "launch": "node tools/launch.js --foreground",
+    "web:launcher": "node tools/web-launcher.js",
     "smoke": "node tools/launch.js --smoke",
     "bootstrap:flashpoint": "node tools/bootstrap-flashpoint.js",
     "discover:launch-scenes": "node tools/discover-launch-scenes.js",
@@ -33,6 +34,7 @@
     "verify:pack-inputs": "node tools/verify-pack-runtime-inputs.js",
     "as3:full-localize": "node tools/as3-full-localize.js",
     "qa:window-audit": "node tools/window-audit.js",
+    "qa:web-launcher": "node tools/qa-web-launcher.js",
     "qa:monitors": "python tools/qa-helper.py list-monitors --target-monitor G32QC",
     "qa:capture": "node tools/qa-capture.js",
     "qa:ocr": "node tools/qa-ocr.js",
