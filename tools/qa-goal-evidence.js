@@ -1,4 +1,5 @@
 const path = require("node:path");
+const fs = require("node:fs");
 const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
@@ -97,6 +98,53 @@ function coverageForAggregate(report, expectedCount, extraChecks = {}) {
   };
 }
 
+function findLatestAs2AllIslandVisualReport(expectedCount) {
+  const dir = path.join(paths.projectRoot, "runtime-data/qa/as2/interaction-smoke");
+  let entries = [];
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && /^as2-interaction-smoke-\d+\.json$/u.test(entry.name))
+      .map((entry) => {
+        const reportPath = path.join(dir, entry.name);
+        const stat = fs.statSync(reportPath);
+        return { name: entry.name, path: reportPath, mtimeMs: stat.mtimeMs };
+      })
+      .sort((a, b) => b.mtimeMs - a.mtimeMs);
+  } catch (_error) {
+    return { ok: false, path: null, reason: "as2 visual report directory not readable" };
+  }
+
+  for (const entry of entries) {
+    const report = readJson(entry.path, null);
+    const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
+    const ok = report?.ok === true &&
+      Number(report?.total || 0) === expectedCount &&
+      Number(report?.passed || 0) === expectedCount &&
+      Number(report?.failed || 0) === 0 &&
+      Number(report?.visualGuardPassed || 0) === expectedCount &&
+      Number(report?.mapClicksPassed || 0) === expectedCount &&
+      Number(report?.sceneEvidencePassed || 0) === expectedCount &&
+      Number(report?.withMissingLogRequests || 0) === 0 &&
+      failedKeys.length === 0;
+    if (ok) {
+      return {
+        ok: true,
+        path: entry.path,
+        generatedAt: report.generatedAt || null,
+        total: report.total,
+        passed: report.passed,
+        visualGuardPassed: report.visualGuardPassed,
+        mapClicksPassed: report.mapClicksPassed,
+        sceneEvidencePassed: report.sceneEvidencePassed,
+        withMissingLogRequests: report.withMissingLogRequests,
+        representativeDefault: report.representativeDefault === true
+      };
+    }
+  }
+
+  return { ok: false, path: null, reason: "no all-island AS2 visual/map/scene report found" };
+}
+
 function as3SceneSignalsOk(report, expectedCount) {
   const reports = Array.isArray(report?.reports) ? report.reports : [];
   return reports.length === expectedCount && reports.every((islandReport) =>
@@ -188,7 +236,8 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
   const as3InteractionVisualOk = as3Interaction?.ok === true &&
     Number(as3Interaction.visualGuardPassed || 0) === Number(as3Interaction.total || 0) &&
     Number(as3Interaction.total || 0) > 0;
-  const as2VisualAllIslandOk = Number(reports.as2Aggregate.data?.visualGuardPassed || 0) === as2Launchable.length;
+  const as2AllIslandVisual = findLatestAs2AllIslandVisualReport(as2Launchable.length);
+  const as2VisualAllIslandOk = as2AllIslandVisual.ok === true;
 
   const scripts = packageJson.scripts || {};
   const requirements = [
@@ -265,7 +314,9 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
       title: "UI 位置正确、窗口可调大小且对话/UI 稳定",
       ...reportStatus(
         as3InteractionVisualOk && as2VisualAllIslandOk ? "proved" : "partial",
-        "Representative resize/visual-guard evidence exists, but all-island AS2 visual guard is not aggregated yet.",
+        as3InteractionVisualOk && as2VisualAllIslandOk
+          ? "AS2 all-island resize/visual guard and representative AS3 interaction visual guard are green."
+          : "Resize/visual-guard evidence is still incomplete across AS2 and AS3.",
         {
           as3InteractionLatest: {
             total: as3Interaction?.total,
@@ -273,10 +324,14 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
             visualGuardPassed: as3Interaction?.visualGuardPassed,
             sceneEvidencePassed: as3Interaction?.sceneEvidencePassed
           },
-          as2AggregateVisualGuardPassed: reports.as2Aggregate.data?.visualGuardPassed || 0,
+          as2AllIslandVisual,
+          as2LatestVisualGuardPassed: reports.as2Aggregate.data?.visualGuardPassed || 0,
           as2Launchable: as2Launchable.length
         },
-        as2VisualAllIslandOk ? [] : ["Add/refresh AS2 visual-guard aggregate for all islands or define a representative resize gate explicitly."]
+        [
+          ...(as2VisualAllIslandOk ? [] : ["Add/refresh AS2 visual-guard coverage for all launchable AS2 islands."]),
+          ...(as3InteractionVisualOk ? [] : ["Refresh AS3 interaction visual-guard evidence."])
+        ]
       )
     },
     {

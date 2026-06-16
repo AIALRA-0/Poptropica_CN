@@ -147,7 +147,12 @@ function main() {
     flashpointLoad(params.island, params.room, params.startup_path);
 }
 
-function computeScaledViewport(baseWidth, baseHeight, gameState) {
+function resolveGameplayViewportCrop(island, scene, gameState) {
+    return null;
+}
+
+function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
+    const crop = viewportCrop || { x: 0, y: 0, width: baseWidth, height: baseHeight };
     let displayWidth = baseWidth;
     let displayHeight = baseHeight;
     let viewportWidth = baseWidth;
@@ -155,20 +160,24 @@ function computeScaledViewport(baseWidth, baseHeight, gameState) {
     let offsetLeft = 0;
     let offsetTop = 0;
     let viewportScale = 1;
+    let cropLeft = 0;
+    let cropTop = 0;
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight));
+        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
-        viewportWidth = baseWidth;
-        viewportHeight = baseHeight;
+        viewportWidth = crop.width;
+        viewportHeight = crop.height;
         offsetLeft = Math.round((window.innerWidth - viewportWidth * viewportScale) / 2);
         offsetTop = Math.round((window.innerHeight - viewportHeight * viewportScale) / 2);
+        cropLeft = crop.x;
+        cropTop = crop.y;
         useViewportCrop = true;
     }
 
-    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, viewportScale, useViewportCrop };
+    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, viewportScale, cropLeft, cropTop, useViewportCrop };
 }
 
 function applyGameViewport(viewport, gameState) {
@@ -185,8 +194,8 @@ function applyGameViewport(viewport, gameState) {
         gameViewport.style.top = "0px";
         gameViewport.style.transformOrigin = "top left";
         gameViewport.style.transform = `translate(${ viewport.offsetLeft }px, ${ viewport.offsetTop }px) scale(${ viewport.viewportScale })`;
-        game.style.left = "0px";
-        game.style.top = "0px";
+        game.style.left = `-${ viewport.cropLeft }px`;
+        game.style.top = `-${ viewport.cropTop }px`;
     } else {
         gameViewport.style.width = `${ viewport.displayWidth }px`;
         gameViewport.style.height = `${ viewport.displayHeight }px`;
@@ -206,9 +215,18 @@ function applyCurrentViewport() {
     const viewport = computeScaledViewport(
         game.__zhViewportState.baseWidth,
         game.__zhViewportState.baseHeight,
-        game.__zhViewportState.gameState
+        game.__zhViewportState.gameState,
+        game.__zhViewportState.viewportCrop
     );
     applyGameViewport(viewport, game.__zhViewportState.gameState);
+}
+
+function scheduleViewportRefreshes() {
+    [ 50, 150, 350, 800, 1500, 3000, 6000, 9000, 12000, 16000, 22000, 30000, 45000 ].forEach(function(delayMs) {
+        setTimeout(applyCurrentViewport, delayMs);
+    });
+    if(!scheduleViewportRefreshes.intervalId)
+        scheduleViewportRefreshes.intervalId = setInterval(applyCurrentViewport, 5000);
 }
 
 function sanitizeAudioKeyPart(value) {
@@ -369,9 +387,11 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         flashVars.set("charLazyLoad", "1");
     }
 
-    const viewport = computeScaledViewport(width, height, gameState);
-    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState };
+    const viewportCrop = resolveGameplayViewportCrop(island, scene, gameState);
+    const viewport = computeScaledViewport(width, height, gameState, viewportCrop);
+    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState, viewportCrop };
     applyGameViewport(viewport, gameState);
+    scheduleViewportRefreshes();
     game.setAttribute("flashvars", flashVars);
     updateSceneAudio(island, scene, gameState);
 

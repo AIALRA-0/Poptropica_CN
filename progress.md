@@ -1112,4 +1112,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO Goal Evidence Audit
 
 - Resolve or legitimately source the missing `reality-tv-wild-safari` / AS3 `reality2` playable scene resources before the all-islands requirement can be marked complete.
-- Add durable all-island translation coverage and AS2 visual-guard/resize evidence artifacts so the `translation_pack_inputs` and `ui_layout_and_resize` requirements can move from partial to proved.
+- Add durable all-island translation coverage so the `translation_pack_inputs` requirement can move from partial to proved. AS2 visual-guard/resize evidence is addressed in the later scheduled resize refresh section.
+
+## 2026-06-16 AS2 Scheduled Resize Refresh / Full Visual Guard
+
+- Investigated all-island AS2 1450x900 G32QC visual guard failures without CUA or mouse input. Initial full run `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781588476198.json` passed 33/34 but left `24-carrot` at the default `1174x586` stage with white right/bottom margins. A temporary 24 Carrot crop was tested and rejected after a later full run showed the same missed-resize signature on other islands.
+- Replaced the narrow crop experiment with a general AS2 base-page viewport refresh strategy. `base.php` now reapplies the computed viewport after load at delayed checkpoints up to 45 seconds and every 5 seconds afterwards, so late G32QC window moves or missed resize events are corrected without foreground activation.
+- Updated the AS2 runtime generation template in `tools/lib/pack.js`, bumped `RUNTIME_FIX_VERSION` to 24, rebuilt `runtime-data/patched-zips/as2-runtime.zip`, and verified the runtime replacement count remains 48.
+- Targeted regression passed for the previously failing resize/loading cases: `red-dragon,time-tangled` passed 2/2 at 1450x900 with `settleMs=13000`, `mapClicksPassed: 2`, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, and no missing requests. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781593474574.json`.
+- Full AS2 1450x900 G32QC visual/map/scene regression passed: 34/34 launchable AS2 islands, `mapClicksPassed: 34`, `sceneEvidencePassed: 34`, `visualGuardPassed: 34`, `withMissingLogRequests: 0`. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781593602765.json`.
+- Updated `tools/qa-goal-evidence.js` to scan historical all-island AS2 visual reports instead of depending on `as2-interaction-smoke-latest.json`, because the latest aggregate intentionally prioritizes audio/map/scene and reports `visualGuardPassed: 0`.
+- Refreshed aggregate evidence: `npm run qa:as2-interaction-aggregate` produced 34/34 AS2 audio/map/scene evidence with `audioActive: 34`; `npm run qa:as3-islands-aggregate` produced 12/12 AS3 audio evidence with `audioActive: 12`; `npm run verify:pack-inputs` passed for AS2 48/48 and AS3 47/47; `npm run audit:sound-refs:runtime` reported `missing: 0`.
+- Goal evidence audit now marks `ui_layout_and_resize` as proved using AS2 all-island visual evidence plus AS3 representative interaction visual evidence. Current `npm run qa:goal-evidence` result remains `goalComplete: false`, with 5 proved, 2 partial, 2 incomplete. Remaining non-git gaps are the unresolved `reality-tv-wild-safari` / AS3 `reality2` entry and broader all-translation visual/text coverage.
+
+## TODO AS2 Scheduled Resize Refresh / Full Visual Guard
+
+- Keep `reality-tv-wild-safari` / AS3 `reality2` as the next all-island completion blocker; do not mark the global goal complete until its playable scene resources are found or a legitimate fallback is documented.
+- Add durable translation coverage beyond pack-input consistency so `translation_pack_inputs` can move from partial to proved.
