@@ -933,3 +933,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add per-island AS2 map/HUD click targets before expanding `--requireMapRequest` beyond Super Power; the current generic map hotspot is known to be insufficient for Astro Knights, Time Tangled, and Zomberry.
 - Consider moving AS3 exact scene evidence into the shared QA library too, now that AS2 and AS3 both have similar report concepts.
+
+## 2026-06-16 AS2 Universal Direct Map Entry
+
+- Root-caused the AS2 map-click gap: the earlier green `地图` direct map button was only created through the Super Power frameless-nav layout path. Other AS2 islands had the original top HUD but no stable shared `map.swf` entrypoint at the old QA hotspot.
+- Refactored the AS2 gameplay patch template in `tools/lib/pack.js`: `zhEnsureDirectMapButton()` now creates the direct map button independently of Super Power nav relayout, while `layoutFramelessGameplayNav()` remains Super-only. This keeps other islands' top HUD positions intact and adds a stable map button below the HUD.
+- Rebuilt `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay.swf` and `runtime-data/patched-zips/as2-runtime.zip`. Runtime rebuild verified `replacementCount: 48` with SWF runtime overrides enabled.
+- Tightened `tools/qa-as2-interaction-smoke.js` summary semantics so `mapClicksPassed` only counts clicks that actually produced a fresh `popups/map.swf`/`travelmap.swf` request, avoiding the previous stage-stability false positive when `--requireMapRequest` was omitted.
+- Targeted G32QC regression for the three previously failing islands passed with the old default map hotspot: `astro-knights`, `time-tangled`, and `zomberry` all produced `popups/map.swf`, exact AS2 scene evidence, no missing requests, and G32QC window left coordinate `-1873`. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781568760169.json`.
+- Four-island AS2 map regression also passed for `astro-knights`, `super-power`, `time-tangled`, and `zomberry`: 4/4 passed, `mapClicksPassed: 4`, `sceneEvidencePassed: 4`, `withMissingLogRequests: 0`. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781568882837.json`.
+- Full AS2 map/scene-evidence regression passed on G32QC: 34/34 passed, `mapClicksPassed: 34`, `sceneEvidencePassed: 34`, `withMissingLogRequests: 0`, `failedKeys: []`. Runtime and post-map window positions all stayed on the negative-coordinate G32QC display. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781569043531.json`.
+- Validation passed: `node --check tools/lib/pack.js`, `node --check tools/qa-as2-interaction-smoke.js`, `node --check tools/qa-as2-islands-smoke.js`, `node --check tools/lib/qa.js`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), and `git diff --check` with only expected CRLF warnings.
+
+## TODO AS2 Universal Direct Map Entry
+
+- Continue the broader goal with sound recovery next: AS2 full map/scene access is now strong, but many islands still lack proven audio assets or audio playback evidence.
+- Add a later resize-focused AS2/AS3 visual pass to stress the new direct map button and existing translated dialogue/UI across multiple Navigator window sizes.

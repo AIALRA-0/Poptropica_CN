@@ -624,7 +624,7 @@ function buildSummary(startedAt, reports) {
     passed: reports.filter((report) => report.ok).length,
     failed: reports.filter((report) => !report.ok).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
-    mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok).length,
+    mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)

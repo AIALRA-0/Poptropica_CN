@@ -2341,7 +2341,102 @@ function showSay(target, sayText, id)
   nextContent = replaceRequiredSnippet(
     nextContent,
     "function turnOffWardrobe()\n{",
-    `function layoutFramelessGameplayNav(forceLayout)
+    `function zhEnsureDirectMapButton()
+{
+   if(_root == undefined)
+   {
+      return undefined;
+   }
+   var zhMapButton = _root.__zhDirectMapButton;
+   var zhMapTextFormat;
+   if(zhMapButton == undefined)
+   {
+      zhMapButton = _root.createEmptyMovieClip("__zhDirectMapButton",1040000);
+   }
+   zhMapButton.swapDepths(1040000);
+   zhMapButton.clear();
+   zhMapButton._x = 438;
+   zhMapButton._y = 95;
+   zhMapButton._visible = true;
+   zhMapButton.enabled = true;
+   zhMapButton.useHandCursor = true;
+   zhMapButton.beginFill(5212463,92);
+   zhMapButton.lineStyle(2,13361319,100);
+   zhMapButton.moveTo(0,0);
+   zhMapButton.lineTo(76,0);
+   zhMapButton.lineTo(76,34);
+   zhMapButton.lineTo(0,34);
+   zhMapButton.lineTo(0,0);
+   zhMapButton.endFill();
+   if(zhMapButton.label == undefined)
+   {
+      zhMapButton.createTextField("label",1,0,5,76,24);
+   }
+   zhMapTextFormat = new TextFormat();
+   zhMapTextFormat.font = "_sans";
+   zhMapTextFormat.size = 18;
+   zhMapTextFormat.bold = true;
+   zhMapTextFormat.color = 16777215;
+   zhMapTextFormat.align = "center";
+   zhMapButton.label.embedFonts = false;
+   zhMapButton.label.selectable = false;
+   zhMapButton.label.setNewTextFormat(zhMapTextFormat);
+   zhMapButton.label.text = "地图";
+   zhMapButton.label.setTextFormat(zhMapTextFormat);
+   if(zhMapButton.hit == undefined)
+   {
+      zhMapButton.createEmptyMovieClip("hit",3);
+   }
+   zhMapButton.hit.clear();
+   zhMapButton.hit.beginFill(0,1);
+   zhMapButton.hit.moveTo(0,0);
+   zhMapButton.hit.lineTo(76,0);
+   zhMapButton.hit.lineTo(76,34);
+   zhMapButton.hit.lineTo(0,34);
+   zhMapButton.hit.lineTo(0,0);
+   zhMapButton.hit.endFill();
+   zhMapButton.hit._alpha = 0;
+   zhMapButton.hit.useHandCursor = true;
+   var zhOpenMap = function()
+   {
+      _root.__zhMapSuppressBgUntil = getTimer() + 1200;
+      _root.__zhDirectMapButton._visible = false;
+      if(_root.popup != undefined)
+      {
+         _root.popup("map.swf",true);
+      }
+      else
+      {
+         popup("map.swf",true);
+      }
+      if(_root.trackEvent != undefined)
+      {
+         _root.trackEvent("MapClicked");
+      }
+   };
+   _root.__zhDirectOpenMap = zhOpenMap;
+   _root.__zhMapButtonBounds = {left:zhMapButton._x - 25,top:zhMapButton._y - 30,right:zhMapButton._x + 105,bottom:zhMapButton._y + 70};
+   if(Mouse != undefined && _root.__zhMapMouseListener == undefined)
+   {
+      _root.__zhMapMouseListener = new Object();
+      _root.__zhMapMouseListener.onMouseDown = function()
+      {
+         var zhMapBounds = _root.__zhMapButtonBounds;
+         if(zhMapBounds != undefined && _root._xmouse >= zhMapBounds.left && _root._xmouse <= zhMapBounds.right && _root._ymouse >= zhMapBounds.top && _root._ymouse <= zhMapBounds.bottom)
+         {
+            if(_root.__zhDirectOpenMap != undefined)
+            {
+               _root.__zhDirectOpenMap();
+            }
+         }
+      };
+      Mouse.addListener(_root.__zhMapMouseListener);
+   }
+   zhMapButton.onPress = zhMapButton.onRelease = zhOpenMap;
+   zhMapButton.hit.onPress = zhMapButton.hit.onRelease = zhOpenMap;
+   zhMapButton.label.onPress = zhMapButton.label.onRelease = zhOpenMap;
+}
+function layoutFramelessGameplayNav(forceLayout)
 {
    var _loc2_;
    var _loc3_;
@@ -2555,97 +2650,7 @@ function showSay(target, sayText, id)
       }
       _loc7_ = _loc7_ + 1;
    }
-   if(_root != undefined)
-   {
-      var zhMapButton = _root.__zhDirectMapButton;
-      var zhMapTextFormat;
-      if(zhMapButton == undefined)
-      {
-         zhMapButton = _root.createEmptyMovieClip("__zhDirectMapButton",1040000);
-      }
-      zhMapButton.swapDepths(1040000);
-      zhMapButton.clear();
-      zhMapButton._x = 438;
-      zhMapButton._y = 95;
-      zhMapButton._visible = true;
-      zhMapButton.enabled = true;
-      zhMapButton.useHandCursor = true;
-      zhMapButton.beginFill(5212463,92);
-      zhMapButton.lineStyle(2,13361319,100);
-      zhMapButton.moveTo(0,0);
-      zhMapButton.lineTo(76,0);
-      zhMapButton.lineTo(76,34);
-      zhMapButton.lineTo(0,34);
-      zhMapButton.lineTo(0,0);
-      zhMapButton.endFill();
-      if(zhMapButton.label == undefined)
-      {
-         zhMapButton.createTextField("label",1,0,5,76,24);
-      }
-      zhMapTextFormat = new TextFormat();
-      zhMapTextFormat.font = "_sans";
-      zhMapTextFormat.size = 18;
-      zhMapTextFormat.bold = true;
-      zhMapTextFormat.color = 16777215;
-      zhMapTextFormat.align = "center";
-      zhMapButton.label.embedFonts = false;
-      zhMapButton.label.selectable = false;
-      zhMapButton.label.setNewTextFormat(zhMapTextFormat);
-      zhMapButton.label.text = "地图";
-      zhMapButton.label.setTextFormat(zhMapTextFormat);
-      if(zhMapButton.hit == undefined)
-      {
-         zhMapButton.createEmptyMovieClip("hit",3);
-      }
-      zhMapButton.hit.clear();
-      zhMapButton.hit.beginFill(0,1);
-      zhMapButton.hit.moveTo(0,0);
-      zhMapButton.hit.lineTo(76,0);
-      zhMapButton.hit.lineTo(76,34);
-      zhMapButton.hit.lineTo(0,34);
-      zhMapButton.hit.lineTo(0,0);
-      zhMapButton.hit.endFill();
-      zhMapButton.hit._alpha = 0;
-      zhMapButton.hit.useHandCursor = true;
-      var zhOpenMap = function()
-      {
-         _root.__zhMapSuppressBgUntil = getTimer() + 1200;
-         _root.__zhDirectMapButton._visible = false;
-         if(_root.popup != undefined)
-         {
-            _root.popup("map.swf",true);
-         }
-         else
-         {
-            popup("map.swf",true);
-         }
-         if(_root.trackEvent != undefined)
-         {
-            _root.trackEvent("MapClicked");
-         }
-      };
-      _root.__zhDirectOpenMap = zhOpenMap;
-      _root.__zhMapButtonBounds = {left:zhMapButton._x - 25,top:zhMapButton._y - 30,right:zhMapButton._x + 105,bottom:zhMapButton._y + 70};
-      if(Mouse != undefined && _root.__zhMapMouseListener == undefined)
-      {
-         _root.__zhMapMouseListener = new Object();
-         _root.__zhMapMouseListener.onMouseDown = function()
-         {
-            var zhMapBounds = _root.__zhMapButtonBounds;
-            if(zhMapBounds != undefined && _root._xmouse >= zhMapBounds.left && _root._xmouse <= zhMapBounds.right && _root._ymouse >= zhMapBounds.top && _root._ymouse <= zhMapBounds.bottom)
-            {
-               if(_root.__zhDirectOpenMap != undefined)
-               {
-                  _root.__zhDirectOpenMap();
-               }
-            }
-         };
-         Mouse.addListener(_root.__zhMapMouseListener);
-      }
-      zhMapButton.onPress = zhMapButton.onRelease = zhOpenMap;
-      zhMapButton.hit.onPress = zhMapButton.hit.onRelease = zhOpenMap;
-      zhMapButton.label.onPress = zhMapButton.label.onRelease = zhOpenMap;
-   }
+   zhEnsureDirectMapButton();
 }
 function turnOffWardrobe()
 {`,
@@ -2656,6 +2661,10 @@ function turnOffWardrobe()
     nextContent,
     "navBar.swapDepths(navDepth);",
 `navBar.swapDepths(navDepth);
+if(_root != undefined && zhEnsureDirectMapButton != undefined)
+{
+   zhEnsureDirectMapButton();
+}
 if(_root != undefined && _root.island == "Super")
 {
    layoutFramelessGameplayNav(true);
@@ -2692,6 +2701,10 @@ function applyAs2GameplayFrame5NavPatch(content) {
     `   if(globalScene)
    {
       navBar.btnSave._visible = false;
+   }
+   if(_root != undefined && zhEnsureDirectMapButton != undefined)
+   {
+      zhEnsureDirectMapButton();
    }
    if(_root != undefined && _root.island == "Super" && layoutFramelessGameplayNav != undefined)
    {
