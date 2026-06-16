@@ -23,6 +23,7 @@
     "audit:audio-assets": "node tools/audit-audio-assets.js",
     "audit:as2-sound-calls": "node tools/audit-as2-sound-calls.js",
     "audit:sound-refs": "node tools/audit-sound-references.js",
+    "audit:sound-refs:runtime": "node tools/audit-sound-references.js --archive=runtime --output=runtime-data/qa/sound-reference-audit-runtime.json",
     "extract:text": "node tools/extract-text.js",
     "generate:as3-logos": "node tools/generate-as3-logo-overrides.js",
     "translate:pack": "node tools/translate-pack.js",

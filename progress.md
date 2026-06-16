@@ -949,3 +949,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue the broader goal with sound recovery next: AS2 full map/scene access is now strong, but many islands still lack proven audio assets or audio playback evidence.
 - Add a later resize-focused AS2/AS3 visual pass to stress the new direct map button and existing translated dialogue/UI across multiple Navigator window sizes.
+
+## 2026-06-16 Current Runtime Audio Evidence Sweep
+
+- Re-ran local audio audits against the current worktree. `npm run audit:audio-assets` still reflects the source archives: AS2 has 9 local audio/video files and no `sounds.xml`; AS3 has 1987 audio files and 417 `sounds.xml` files.
+- Re-ran the AS2 sound bridge QA. It passed with `expectedSoundCount: 17`, `overrideSoundCount: 17`, `expectedPathCount: 4`, `expectedProvenanceSourceCount: 18`, and no failed checks. Report: `runtime-data/qa/as2-sound-bridge-latest.json`.
+- Confirmed the distinction between source and runtime AS3 sound-reference audits: the default source-archive audit still reports original AS3 archive gaps, but the actual patched runtime audit is clean.
+- Added npm script `audit:sound-refs:runtime`, which runs `tools/audit-sound-references.js --archive=runtime --output=runtime-data/qa/sound-reference-audit-runtime.json`.
+- Current AS3 runtime sound-reference audit passed: 417 `sounds.xml`, `totalReferences: 12318`, `resolved: 12282`, `ignored: 36`, `fixableAddExtension: 0`, `fixableDedupeExtension: 0`, `crossFolderMatches: 0`, `missing: 0`. Report: `runtime-data/qa/sound-reference-audit-runtime.json`.
+- Full AS2 G32QC audio/map/scene-evidence regression passed with current runtime: `npm run qa:as2-interaction-smoke -- --all --targetMonitor G32QC --requireAudio --requireSceneEvidence --requireMapRequest --settleMs=9000 --windowTimeoutMs=45000 --betweenMs=800 --mapWaitMs=1800 --audioDurationSec=2.5 --skipOcr`. Result: 34/34 passed, `audioActive: 34`, `mapClicksPassed: 34`, `sceneEvidencePassed: 34`, `withMissingLogRequests: 0`, `failedKeys: []`, all runtime/post-map windows on G32QC. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781570578071.json`.
+- Full AS3 G32QC audio/scene-evidence interaction regression passed with current runtime: `npm run qa:as3-interaction-smoke -- --targetMonitor G32QC --requireAudio --requireSceneEvidence --settleMs=12000 --windowTimeoutMs=45000 --allowNoSceneProgress --betweenMs=1000 --interactionWaitMs=3000 --audioDurationSec=3 --audioAttempts=2 --audioRetryDelayMs=2000 --skipOcr`. Result: 12/12 passed, `audioActive: 12`, `audioInactive: 0`, `interactionsPassed: 12`, `sceneEvidencePassed: 12`, `withMissingLogRequests: 0`, `failedKeys: []`, all runtime/post-interaction windows on G32QC. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781571749186.json`.
+- Validation passed: `node --check tools/audit-sound-references.js`, `node -e "JSON.parse(...package.json...)"`, `npm run audit:sound-refs:runtime`, and `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47).
+
+## TODO Current Runtime Audio Evidence Sweep
+
+- The runnable AS2/AS3 audio path is now green in QA, but AS2 still relies on the repository's embedded/fallback sound bridge for many old islands because the original AS2 source archive does not contain island-specific music for most AS2 islands. Continue searching only legitimate/original-source audio before replacing fallback sounds.
+- Add a resize-focused G32QC regression pass next, covering AS2 direct map button placement, AS3 HUD/menu placement, and translated dialogue balloons at multiple Navigator window sizes.
