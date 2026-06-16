@@ -4,7 +4,7 @@ const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const { buildCatalogIndex } = require("./lib/catalog");
 const { fileExists, readJson, writeJson } = require("./lib/fs-utils");
-const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { generateLaunchManifest, resolveLaunchArchivePath } = require("./lib/launch-manifest");
 const { detectSteamPoptropica } = require("./lib/steam-detect");
 const paths = require("./lib/paths");
 
@@ -138,7 +138,7 @@ function candidateSummary(candidates, config, steamDetection) {
   });
 }
 
-function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overrides, steamDetection }) {
+function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overrides, steamDetection, sourceProbe }) {
   return (manifest.entries || [])
     .filter((entry) => !entry.launchable)
     .map((entry) => {
@@ -152,6 +152,7 @@ function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overr
         sourceGroup: entry.sourceGroup,
         notes: entry.notes || [],
         override,
+        classEvidence: entry.classEvidence || null,
         candidates: candidateSummary(candidates, config, steamDetection),
         archive: {
           ok: archive.ok,
@@ -170,11 +171,22 @@ function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overr
         diagnostics.as2LegacyEvidence = findAs2LegacyEvidence(archives.as2?.entries || [], entry.canonicalKey);
       }
       diagnostics.steamEvidence = steamDetection;
-      diagnostics.conclusion = diagnostics.as3SceneEvidence &&
+      if (entry.canonicalKey === "reality-tv-wild-safari" && sourceProbe) {
+        diagnostics.externalSourceProbe = {
+          ok: sourceProbe.ok,
+          generatedAt: sourceProbe.generatedAt || null,
+          policy: sourceProbe.policy || null,
+          summary: sourceProbe.summary || null,
+          identifiers: sourceProbe.identifiers || null
+        };
+      }
+      diagnostics.conclusion = diagnostics.classEvidence?.targetClassPresent === false
+        ? "Playable scene resources are present in the mounted AS3 runtime zip, but the current AS3 Shell does not contain the target reality2 scene class."
+        : diagnostics.as3SceneEvidence &&
         diagnostics.as3SceneEvidence.dataRoomEntryCount === 0 &&
         diagnostics.as3SceneEvidence.assetRoomEntryCount === 0
-        ? "Missing playable AS3 scene data/assets for the configured override; map metadata and AS2 legacy bundles are insufficient."
-        : "Unresolved launch scene requires further source inspection.";
+          ? "Missing playable AS3 scene data/assets for the configured override; map metadata and AS2 legacy bundles are insufficient."
+          : "Unresolved launch scene requires further source inspection.";
       return diagnostics;
     });
 }
@@ -185,21 +197,27 @@ function main() {
   const manifest = generateLaunchManifest(config, { write: false });
   const catalog = buildCatalogIndex();
   const overrides = readJson(paths.launchOverridesPath, { as2: {}, as3: {} });
+  const archivePaths = {
+    as2: resolveLaunchArchivePath("as2", config),
+    as3: resolveLaunchArchivePath("as3", config)
+  };
   const archives = {
-    as2: listArchiveEntries(config.sources.as2Gamezip, config.tools.tarBin),
-    as3: listArchiveEntries(config.sources.as3Gamezip, config.tools.tarBin)
+    as2: listArchiveEntries(archivePaths.as2.archivePath, config.tools.tarBin),
+    as3: listArchiveEntries(archivePaths.as3.archivePath, config.tools.tarBin)
   };
   const steamDetection = detectSteamPoptropica({
     configuredSteamRoot: config.sources.steamRoot,
     maxScanEntries: args["max-scan-entries"] || args.maxScanEntries
   });
+  const sourceProbe = readJson(path.join(paths.qaDir, "reality2-source-probe-latest.json"), null);
   const unresolved = buildUnresolvedDiagnostics({
     manifest,
     config,
     archives,
     catalog,
     overrides,
-    steamDetection
+    steamDetection,
+    sourceProbe
   });
   const report = {
     ok: true,
@@ -222,11 +240,24 @@ function main() {
       summary: steamDetection.summary,
       suggestions: steamDetection.suggestions
     },
+    externalSourceProbes: {
+      reality2: sourceProbe
+        ? {
+            ok: sourceProbe.ok,
+            generatedAt: sourceProbe.generatedAt || null,
+            summary: sourceProbe.summary || null,
+            policy: sourceProbe.policy || null
+          }
+        : null
+    },
     archives: Object.fromEntries(SOURCE_GROUPS.map((sourceGroup) => [
       sourceGroup,
       {
         ok: archives[sourceGroup].ok,
         path: archives[sourceGroup].archivePath || null,
+        sourceZip: archivePaths[sourceGroup].sourceZip || null,
+        runtimeZip: archivePaths[sourceGroup].runtimeZip || null,
+        usesRuntimeZip: archivePaths[sourceGroup].usesRuntimeZip,
         entryCount: archives[sourceGroup].entryCount || 0,
         error: archives[sourceGroup].error || null
       }

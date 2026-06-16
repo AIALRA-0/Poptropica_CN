@@ -1212,3 +1212,21 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - If a real Poptropica Steam/AIR install appears later, run `npm run qa:steam-detect`, then `npm run import:steam -- --auto` only if exactly one candidate is detected, otherwise use `npm run import:steam -- --steam-root <path>`.
 - Keep `reality-tv-wild-safari` incomplete until a legitimate source provides playable `reality2` scene data/assets; do not fabricate launchability from map metadata.
+
+## 2026-06-16 Reality2 Archive Import / Shell Class Blocker
+
+- Continued primarily with background CLI. The only visible runtime validation was a single targeted AS3 smoke for `reality-tv-wild-safari`; it was placed on the G32QC side monitor, used `POPTROPICA_QA_NO_FOREGROUND=1`, and did not use CUA or mouse control.
+- Added `tools/qa-reality2-source-probe.js` and `npm run qa:reality2-source-probe`. The probe checks current official URLs and Internet Archive CDX metadata without bulk-downloading assets.
+- The source probe found current `www.poptropica.com` `reality2/mainStreet` URLs return HTML fallback, but Internet Archive CDX has 74 relevant captures: 72 `game/data|assets/scenes/reality2/...` scene resources plus `Safari_Extended.mp3` and `Train_Finale.mp3`.
+- The archived `mainStreet/scene.xml` declares 10 required entry resources (`dialog.xml`, `doors.xml`, `npcs.xml`, `sounds.xml`, `hits.xml`, `custom.xml`, and 4 SWF layers), and CDX covers all 10.
+- Added `tools/import-reality2-archive.js` and `npm run import:reality2-archive`. It downloads only the audited captures from raw Wayback replay URLs, validates XML/SWF/MP3 signatures, updates the ignored local `runtime-data/patched-zips/as3-runtime.zip`, and writes `runtime-data/qa/reality2-import-latest.json`.
+- Imported 74 archived resources into the local AS3 runtime zip: 72 scene resources and 2 music files, `5,800,139` bytes total. `npm run audit:sound-refs:runtime` is back to `missing: 0` with 423 `sounds.xml` files scanned.
+- Updated `tools/lib/launch-manifest.js` so manifest discovery uses the same patched runtime zip that actual launches mount, and added AS3 Shell package/class evidence. Existing AS3 islands stay launchable when their `game.scenes.<sceneFolder>` package is present.
+- Targeted Wild Safari smoke still failed before scene XML was requested. Server log shows `crash-record.php` after Shell startup, no missing requests, no `reality2/mainStreet` scene media, and the screenshot is the blue/black Shell initialization area. The AS3 Shell decompresses to 10,977,497 searchable bytes and contains `game.scenes.ghd`, `game.scenes.timmy`, `game.scenes.prison`, etc., but not `reality2` or `game.scenes.reality2`.
+- Latest `npm run qa:launch-gaps` therefore remains 46/47 launchable with one unresolved island, but the cause has changed: `reality-tv-wild-safari` now has `dataRoomEntryCount: 7`, `assetRoomEntryCount: 4`, and imported reality2 resources; the remaining blocker is `AS3 Shell does not contain target scene class game.scenes.reality2.mainStreet.MainStreet`.
+- Refreshed `npm run qa:as3-islands-aggregate` after the failed targeted smoke so the AS3 latest aggregate again proves the 12 currently launchable AS3 islands. Latest `npm run qa:goal-evidence` remains `goalComplete: false`.
+
+## TODO Reality2 Archive Import / Shell Class Blocker
+
+- Continue searching for a legitimate AS3 Shell/code bundle that contains `game.scenes.reality2`, or a safe way to add/alias the missing scene classes. The scene assets and audio are now present; the blocker is executable AS3 class code.
+- Do not mark Wild Safari playable just because the runtime zip now contains resources. The targeted smoke proves the current Shell cannot instantiate the reality2 scene.

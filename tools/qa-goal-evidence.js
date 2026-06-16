@@ -283,10 +283,12 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
                 ok: reports.launchGaps.data.ok,
                 summary: reports.launchGaps.data.summary,
                 steamDetection: reports.launchGaps.data.steamDetection || null,
+                externalSourceProbes: reports.launchGaps.data.externalSourceProbes || null,
                 unresolved: (reports.launchGaps.data.unresolved || []).map((item) => ({
                   canonicalKey: item.canonicalKey,
                   sourceGroup: item.sourceGroup,
                   candidates: item.candidates,
+                  classEvidence: item.classEvidence || null,
                   as3SceneEvidence: item.as3SceneEvidence
                     ? {
                         expectedSceneFolder: item.as3SceneEvidence.expectedSceneFolder,
@@ -299,6 +301,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
                     : null,
                   as2LegacyEvidence: item.as2LegacyEvidence || null,
                   steamEvidenceSummary: item.steamEvidence?.summary || null,
+                  externalSourceProbe: item.externalSourceProbe || null,
                   conclusion: item.conclusion
                 }))
               }
