@@ -1087,3 +1087,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keep this IPC smoke as the cheap launcher regression gate before any future `launcher/main.js` changes.
 - A full visible Electron UI click-through remains optional and should only be run on G32QC when needed, because the new background IPC smoke covers the launch handler contract without interrupting the main display.
+
+## 2026-06-16 AS2 Interaction Evidence Aggregate
+
+- Added `--aggregateLatest=1` / `--aggregate=1` support to `tools/qa-as2-interaction-smoke.js`. The mode reads historical AS2 interaction smoke reports, selects the best passing report per launchable AS2 island, writes a full aggregate JSON artifact, and updates `as2-interaction-smoke-latest.json` without starting Flashpoint services, opening Navigator, using CUA, or moving the mouse.
+- Added `npm run qa:as2-interaction-aggregate`, which runs the aggregate with `--aggregatePreferAudio=1 --aggregatePreferMap=1 --aggregatePreferSceneEvidence=1`, so the latest AS2 evidence favors reports with active audio, successful map click/request proof, and scene-entry evidence.
+- The aggregate mode keeps terminal output concise while preserving the full per-island report on disk. This prevents small resize runs from replacing the top-level "latest" evidence with only a 2- or 4-island subset.
+- QA passed: `npm run qa:as2-interaction-aggregate` produced `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-aggregate-1781587775129.json` and updated `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-latest.json`; result was 34/34 AS2 launchable islands passing, `audioActive: 34`, `mapClicksPassed: 34`, `sceneEvidencePassed: 34`, `withMissingLogRequests: 0`, `missingKeys: []`, from 145 candidate island reports.
+- Regression passed: `npm run qa:launcher-ipc`, `npm run qa:web-launcher`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and syntax checks for `tools/qa-as2-interaction-smoke.js`, `tools/qa-launcher-ipc.js`, and `tools/web-launcher.js`.
+
+## TODO AS2 Interaction Evidence Aggregate
+
+- Add a separate AS2 visual-guard aggregate or evidence rollup for the resize-specific subset, instead of mixing visual guard preference with the all-island audio/map/scene aggregate. Current all-island aggregate intentionally prioritizes audio/map/scene evidence, so `visualGuardPassed` is 0 in that artifact even though separate resize visual runs passed for representative AS2 islands.
+- Build a top-level goal evidence audit that reads AS2 aggregate, AS3 aggregate/interactions, web launcher, launcher IPC, sound audit, and launch manifest unresolved entries in one place.

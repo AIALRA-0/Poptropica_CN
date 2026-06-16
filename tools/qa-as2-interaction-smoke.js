@@ -17,6 +17,7 @@ const {
 } = require("./lib/flashpoint-runtime");
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
+const AS2_INTERACTION_REPORT_RE = /^as2-interaction-smoke-\d+\.json$/u;
 const DEFAULT_REPRESENTATIVE_KEYS = [
   "super-power",
   "time-tangled",
@@ -84,6 +85,14 @@ function getFileSize(filePath) {
     return fs.statSync(filePath).size;
   } catch (_error) {
     return 0;
+  }
+}
+
+function readJsonIfExists(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (_error) {
+    return null;
   }
 }
 
@@ -730,12 +739,221 @@ function writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir, repo
   return summary;
 }
 
+function reportSortTime(reportPath, topLevelReport, islandReport) {
+  const candidates = [
+    islandReport?.generatedAt,
+    topLevelReport?.generatedAt
+  ];
+  for (const candidate of candidates) {
+    const time = Date.parse(candidate || "");
+    if (Number.isFinite(time)) {
+      return time;
+    }
+  }
+  try {
+    return fs.statSync(reportPath).mtimeMs;
+  } catch (_error) {
+    return 0;
+  }
+}
+
+function isAggregateCandidateReport(topLevelReport) {
+  return topLevelReport &&
+    !topLevelReport.blocked &&
+    !topLevelReport.fatal &&
+    Array.isArray(topLevelReport.reports);
+}
+
+function isPassingIslandReport(report) {
+  return Boolean(report?.canonicalKey) &&
+    report.ok === true &&
+    Array.isArray(report.failedChecks) &&
+    report.failedChecks.length === 0;
+}
+
+function hasMapEvidence(report) {
+  return Boolean(report?.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen);
+}
+
+function hasSceneEvidence(report) {
+  return Boolean(report?.sceneEvidence?.ok);
+}
+
+function hasVisualGuardEvidence(report) {
+  return Boolean(report?.initial?.visualGuard?.ok && (report.map?.skipped || report.map?.visualGuard?.ok));
+}
+
+function collectAggregateCandidates(qaDir) {
+  const candidates = [];
+  for (const fileName of fs.readdirSync(qaDir)) {
+    if (!AS2_INTERACTION_REPORT_RE.test(fileName)) {
+      continue;
+    }
+    const reportPath = path.join(qaDir, fileName);
+    const topLevelReport = readJsonIfExists(reportPath);
+    if (!isAggregateCandidateReport(topLevelReport)) {
+      continue;
+    }
+    for (const islandReport of topLevelReport.reports) {
+      if (!isPassingIslandReport(islandReport)) {
+        continue;
+      }
+      candidates.push({
+        key: islandReport.canonicalKey,
+        report: {
+          ...islandReport,
+          aggregateSource: {
+            reportPath,
+            reportFileName: fileName,
+            reportGeneratedAt: topLevelReport.generatedAt || null
+          }
+        },
+        sortTime: reportSortTime(reportPath, topLevelReport, islandReport)
+      });
+    }
+  }
+  return candidates;
+}
+
+function preferCandidate(candidate, existing, args) {
+  const checks = [
+    {
+      enabled: flagEnabled(args.aggregatePreferAudio),
+      get: (item) => Boolean(item.report.audio?.active)
+    },
+    {
+      enabled: flagEnabled(args.aggregatePreferMap),
+      get: (item) => hasMapEvidence(item.report)
+    },
+    {
+      enabled: flagEnabled(args.aggregatePreferSceneEvidence),
+      get: (item) => hasSceneEvidence(item.report)
+    },
+    {
+      enabled: flagEnabled(args.aggregatePreferVisualGuard),
+      get: (item) => hasVisualGuardEvidence(item.report)
+    }
+  ];
+  for (const check of checks) {
+    if (!check.enabled) {
+      continue;
+    }
+    const candidateHasEvidence = check.get(candidate);
+    const existingHasEvidence = check.get(existing);
+    if (candidateHasEvidence !== existingHasEvidence) {
+      return candidateHasEvidence;
+    }
+  }
+  return candidate.sortTime > existing.sortTime;
+}
+
+function chooseAggregateReports({ expectedKeys, candidates, args }) {
+  const byKey = new Map();
+  for (const candidate of candidates) {
+    if (!expectedKeys.has(candidate.key)) {
+      continue;
+    }
+    const existing = byKey.get(candidate.key);
+    if (!existing || preferCandidate(candidate, existing, args)) {
+      byKey.set(candidate.key, candidate);
+    }
+  }
+  return [...expectedKeys].map((key) => byKey.get(key)).filter(Boolean);
+}
+
+function writeAggregateSmokeReport({ config, args, qaDir, startedAt }) {
+  const manifest = generateLaunchManifest(config, { write: false });
+  const expectedEntries = manifest.entries
+    .filter((entry) => entry.sourceGroup === "as2" && entry.launchable)
+    .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));
+  const expectedKeys = new Set(expectedEntries.map((entry) => entry.canonicalKey));
+  const candidates = collectAggregateCandidates(qaDir);
+  const chosen = chooseAggregateReports({
+    expectedKeys,
+    candidates,
+    args
+  });
+  const reports = chosen.map((candidate) => candidate.report);
+  const presentKeys = new Set(reports.map((report) => report.canonicalKey));
+  const missingKeys = [...expectedKeys].filter((key) => !presentKeys.has(key));
+  const summary = buildSummary(startedAt, reports);
+  const runToken = String(Date.now());
+  const reportPath = path.join(qaDir, `as2-interaction-smoke-aggregate-${runToken}.json`);
+  const latestPath = path.join(qaDir, "as2-interaction-smoke-latest.json");
+  const report = {
+    ...summary,
+    ok: summary.ok && missingKeys.length === 0,
+    aggregate: true,
+    aggregateMode: "latest-passing-per-island",
+    aggregatePreferAudio: flagEnabled(args.aggregatePreferAudio),
+    aggregatePreferMap: flagEnabled(args.aggregatePreferMap),
+    aggregatePreferSceneEvidence: flagEnabled(args.aggregatePreferSceneEvidence),
+    aggregatePreferVisualGuard: flagEnabled(args.aggregatePreferVisualGuard),
+    expectedTotal: expectedEntries.length,
+    expectedKeys: [...expectedKeys],
+    missingKeys,
+    candidateCount: candidates.length,
+    artifactDir: qaDir,
+    reports
+  };
+  if (missingKeys.length > 0) {
+    report.failedChecks = ["aggregate_missing_expected_islands"];
+  }
+  writeJson(reportPath, report);
+  if (!flagEnabled(args.noUpdateLatest)) {
+    writeJson(latestPath, report);
+  }
+  return {
+    ...report,
+    reportPath,
+    latestPath,
+    latestUpdated: !flagEnabled(args.noUpdateLatest)
+  };
+}
+
+function formatAggregateStdout(report) {
+  return {
+    ok: report.ok,
+    generatedAt: report.generatedAt,
+    total: report.total,
+    passed: report.passed,
+    failed: report.failed,
+    audioActive: report.audioActive,
+    mapClicksPassed: report.mapClicksPassed,
+    sceneEvidencePassed: report.sceneEvidencePassed,
+    visualGuardPassed: report.visualGuardPassed,
+    withMissingLogRequests: report.withMissingLogRequests,
+    failedKeys: report.failedKeys,
+    aggregate: report.aggregate,
+    aggregateMode: report.aggregateMode,
+    aggregatePreferAudio: report.aggregatePreferAudio,
+    aggregatePreferMap: report.aggregatePreferMap,
+    aggregatePreferSceneEvidence: report.aggregatePreferSceneEvidence,
+    aggregatePreferVisualGuard: report.aggregatePreferVisualGuard,
+    expectedTotal: report.expectedTotal,
+    missingKeys: report.missingKeys,
+    candidateCount: report.candidateCount,
+    reportPath: report.reportPath,
+    latestPath: report.latestPath,
+    latestUpdated: report.latestUpdated
+  };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   args.visibleQaDefaults = applyVisibleQaDefaults(args);
   const config = loadConfig();
   const qaDir = ensureQaDir("as2", "interaction-smoke");
   const startedAt = new Date().toISOString();
+  const aggregateMode = flagEnabled(args.aggregateLatest) || flagEnabled(args.aggregate);
+  if (aggregateMode) {
+    const report = writeAggregateSmokeReport({ config, args, qaDir, startedAt });
+    printJson(formatAggregateStdout(report));
+    if (!report.ok) {
+      process.exitCode = 1;
+    }
+    return;
+  }
   const runToken = String(Date.now());
   const runDir = ensureQaDir("as2", "interaction-smoke", `run-${runToken}`);
   const reportPath = path.join(qaDir, `as2-interaction-smoke-${runToken}.json`);
