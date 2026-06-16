@@ -1180,3 +1180,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keep `reality2` unresolved unless a legitimate playable AS3 scene source is found; current external checks confirm identifiers, not usable assets.
 - Do not rerun full `npm run patch:pack` casually: the previous full AS3 FFDec pass timed out after 30 minutes. Build a safe all-or-incremental AS3 pack-apply strategy before trying to embed the newest SWF text seeds into runtime packs.
+
+## 2026-06-16 Launch Gap Audit / Reality2 False-Positive Guard
+
+- Continued with background-only commands; no CUA, no mouse input, no visible browser/game/Navigator window, and no main-display interaction.
+- Added `tools/qa-launch-manifest-gaps.js` and `npm run qa:launch-gaps`. The audit regenerates the launch manifest, inspects configured AS2/AS3 zip entries with `tar -tf`, checks unresolved entries against catalog source candidates, and writes `runtime-data/qa/launch-manifest-gaps-latest.json`.
+- Wired the launch-gap artifact into `tools/qa-goal-evidence.js` so `all_islands_manifest_and_entry` now includes exact unresolved diagnostics instead of only a short note.
+- Latest launch-gap audit confirms `reality-tv-wild-safari` has an AS3 candidate and a Steam/AIR candidate, but current config has no `steamRoot`. The configured AS3 override expects `reality2/mainStreet`, yet `AS3.zip` has `0` `game/data/scenes/reality2/mainStreet` entries and `0` `game/assets/scenes/reality2/mainStreet` entries.
+- The audit also records the two `game/data/scenes/map/map/islands/reality2/...` metadata files and the 21 AS2 `scenes/islandReality/scene*.swf` legacy bundles, explicitly marking those AS2 files as original Reality TV Island resources, not Reality TV: Wild Safari playable scenes.
+- Validation passed: `node --check tools\qa-launch-manifest-gaps.js`, `node --check tools\qa-goal-evidence.js`, package JSON parse, `npm run qa:launch-gaps`, `npm run verify:pack-inputs`, `npm run audit:translation-coverage`, and `npm run qa:goal-evidence`.
+- Current goal evidence before commit/push remains `goalComplete: false`; non-git blockers are still `all_islands_manifest_and_entry` and `scene_entry_stability`, both caused by the missing playable `reality2` scene resources.
+
+## TODO Launch Gap Audit / Reality2 False-Positive Guard
+
+- If a legitimate Steam install or archive becomes available, configure it with `node tools\import-steam.js --steam-root <path>` and rerun `npm run qa:launch-gaps` before attempting any import.
+- Keep rejecting map-only `reality2` metadata and AS2 `islandReality` bundles as sufficient evidence for Wild Safari playability.

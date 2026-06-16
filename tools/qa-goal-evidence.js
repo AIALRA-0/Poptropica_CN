@@ -278,6 +278,29 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
             sceneEvidencePassed: reports.as3Aggregate.data?.sceneEvidencePassed,
             withMissingLogRequests: reports.as3Aggregate.data?.withMissingLogRequests
           },
+          launchGapAudit: reports.launchGaps.data
+            ? {
+                ok: reports.launchGaps.data.ok,
+                summary: reports.launchGaps.data.summary,
+                unresolved: (reports.launchGaps.data.unresolved || []).map((item) => ({
+                  canonicalKey: item.canonicalKey,
+                  sourceGroup: item.sourceGroup,
+                  candidates: item.candidates,
+                  as3SceneEvidence: item.as3SceneEvidence
+                    ? {
+                        expectedSceneFolder: item.as3SceneEvidence.expectedSceneFolder,
+                        expectedRoom: item.as3SceneEvidence.expectedRoom,
+                        dataSceneEntryCount: item.as3SceneEvidence.dataSceneEntryCount,
+                        dataRoomEntryCount: item.as3SceneEvidence.dataRoomEntryCount,
+                        assetRoomEntryCount: item.as3SceneEvidence.assetRoomEntryCount,
+                        mapMetadataEntryCount: item.as3SceneEvidence.mapMetadataEntryCount
+                      }
+                    : null,
+                  as2LegacyEvidence: item.as2LegacyEvidence || null,
+                  conclusion: item.conclusion
+                }))
+              }
+            : null,
           unresolved: unresolved.map((entry) => ({
             canonicalKey: entry.canonicalKey,
             sourceGroup: entry.sourceGroup,
@@ -460,6 +483,7 @@ function main() {
     as3Interaction: readReport("runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-latest.json"),
     webLauncher: readReport("runtime-data/qa/web-launcher-smoke.json"),
     launcherIpc: readReport("runtime-data/qa/launcher-ipc-smoke.json"),
+    launchGaps: readReport("runtime-data/qa/launch-manifest-gaps-latest.json"),
     soundRefs: readReport("runtime-data/qa/sound-reference-audit-runtime.json"),
     packInputs: readReport("runtime-data/qa/pack-inputs-latest.json"),
     translationCoverage: readReport("runtime-data/qa/translation-coverage-audit.json")
