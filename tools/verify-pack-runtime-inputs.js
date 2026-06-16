@@ -1,7 +1,7 @@
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
-const { readJson } = require("./lib/fs-utils");
+const { readJson, writeJson } = require("./lib/fs-utils");
 const paths = require("./lib/paths");
 const { collectRuntimeReplacementsForSourceGroup } = require("./lib/pack");
 
@@ -74,6 +74,8 @@ function main() {
     generatedAt: new Date().toISOString(),
     reports
   };
+  const outputPath = args.output || args.report || path.join(paths.qaDir, "pack-inputs-latest.json");
+  writeJson(outputPath, summary);
   printJson(summary);
   if (!summary.ok) {
     process.exitCode = 1;

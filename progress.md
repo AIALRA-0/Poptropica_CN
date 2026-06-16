@@ -1100,3 +1100,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add a separate AS2 visual-guard aggregate or evidence rollup for the resize-specific subset, instead of mixing visual guard preference with the all-island audio/map/scene aggregate. Current all-island aggregate intentionally prioritizes audio/map/scene evidence, so `visualGuardPassed` is 0 in that artifact even though separate resize visual runs passed for representative AS2 islands.
 - Build a top-level goal evidence audit that reads AS2 aggregate, AS3 aggregate/interactions, web launcher, launcher IPC, sound audit, and launch manifest unresolved entries in one place.
+
+## 2026-06-16 Goal Evidence Audit
+
+- Added `tools/qa-goal-evidence.js` and `npm run qa:goal-evidence`. The audit is read-only with respect to Flashpoint/Navigator: it reads current artifacts, regenerates an in-memory launch manifest, checks git/runtime process hygiene, writes `runtime-data/qa/goal-evidence-latest.json`, and does not start game windows, use CUA, or move the mouse. `--strict=1` can turn incomplete goal evidence into a nonzero exit later.
+- Added `npm run qa:as3-islands-aggregate` and changed AS3 aggregate stdout to a concise summary. The refreshed AS3 aggregate now updates `as3-island-smoke-latest.json` with 12/12 launchable AS3 direct-scene islands passing, `audioActive: 12`, `withMissingLogRequests: 0`, and per-island log summaries containing `SceneLoaded` or scene media evidence.
+- Updated `tools/verify-pack-runtime-inputs.js` so `npm run verify:pack-inputs` also writes `runtime-data/qa/pack-inputs-latest.json`; the goal audit now has a durable AS2/AS3 pack-input artifact instead of relying on terminal history.
+- Goal evidence audit result: `goalComplete: false`, 9 requirements checked, 4 proved, 3 partial, 2 incomplete. Proved items: local/no-spawn browser launcher, runtime audio evidence, no leftover runtime/22800 process hygiene for the audit run, and launcher IPC/safe sizing. Partial items: translation pack inputs, UI/resize evidence, and git sync while local edits are pending. Incomplete items: all-island completion and scene-entry stability because the launch manifest still has one unresolved island, `reality-tv-wild-safari`.
+- Regression passed: `npm run qa:as2-interaction-aggregate`, `npm run qa:as3-islands-aggregate`, `npm run qa:launcher-ipc`, `npm run qa:web-launcher`, `npm run verify:pack-inputs`, `npm run audit:sound-refs:runtime`, `npm run qa:goal-evidence`, and syntax checks for `tools/qa-goal-evidence.js`, `tools/qa-as3-islands-smoke.js`, `tools/verify-pack-runtime-inputs.js`, `tools/qa-as2-interaction-smoke.js`, and `package.json`.
+
+## TODO Goal Evidence Audit
+
+- Resolve or legitimately source the missing `reality-tv-wild-safari` / AS3 `reality2` playable scene resources before the all-islands requirement can be marked complete.
+- Add durable all-island translation coverage and AS2 visual-guard/resize evidence artifacts so the `translation_pack_inputs` and `ui_layout_and_resize` requirements can move from partial to proved.

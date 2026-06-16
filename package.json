@@ -35,6 +35,7 @@
     "verify:pack-inputs": "node tools/verify-pack-runtime-inputs.js",
     "as3:full-localize": "node tools/as3-full-localize.js",
     "qa:window-audit": "node tools/window-audit.js",
+    "qa:goal-evidence": "node tools/qa-goal-evidence.js",
     "qa:web-launcher": "node tools/qa-web-launcher.js",
     "qa:launcher-ipc": "node tools/qa-launcher-ipc.js",
     "qa:monitors": "python tools/qa-helper.py list-monitors --target-monitor G32QC",
@@ -50,6 +51,7 @@
     "qa:as2-interaction-aggregate": "node tools/qa-as2-interaction-smoke.js --aggregateLatest=1 --aggregatePreferAudio=1 --aggregatePreferMap=1 --aggregatePreferSceneEvidence=1",
     "qa:as3-launch-smoke": "node tools/qa-as3-launch-smoke.js",
     "qa:as3-islands-smoke": "node tools/qa-as3-islands-smoke.js",
+    "qa:as3-islands-aggregate": "node tools/qa-as3-islands-smoke.js --aggregateLatest=1 --aggregatePreferAudio=1",
     "qa:as3-interaction-smoke": "node tools/qa-as3-islands-smoke.js --interaction"
   },
   "dependencies": {

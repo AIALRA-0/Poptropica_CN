@@ -1670,6 +1670,33 @@ function writeAggregateSmokeReport({ config, args, qaDir, startedAt }) {
   };
 }
 
+function formatAggregateStdout(report) {
+  return {
+    ok: report.ok,
+    generatedAt: report.generatedAt,
+    total: report.total,
+    passed: report.passed,
+    failed: report.failed,
+    audioActive: report.audioActive,
+    audioInactive: report.audioInactive,
+    interactionsPassed: report.interactionsPassed,
+    interactionEvidencePassed: report.interactionEvidencePassed,
+    sceneEvidencePassed: report.sceneEvidencePassed,
+    visualGuardPassed: report.visualGuardPassed,
+    withMissingLogRequests: report.withMissingLogRequests,
+    failedKeys: report.failedKeys,
+    aggregate: report.aggregate,
+    aggregateMode: report.aggregateMode,
+    aggregatePreferAudio: report.aggregatePreferAudio,
+    expectedTotal: report.expectedTotal,
+    missingKeys: report.missingKeys,
+    candidateCount: report.candidateCount,
+    reportPath: report.reportPath,
+    latestPath: report.latestPath,
+    latestUpdated: report.latestUpdated
+  };
+}
+
 function formatFatalError(error) {
   return {
     message: String(error?.message || error),
@@ -1709,7 +1736,7 @@ async function main() {
   const startedAt = new Date().toISOString();
   if (aggregateMode) {
     const report = writeAggregateSmokeReport({ config, args, qaDir, startedAt });
-    printJson(report);
+    printJson(formatAggregateStdout(report));
     if (!report.ok) {
       process.exitCode = 1;
     }
