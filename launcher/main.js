@@ -17,9 +17,14 @@ const {
 } = require("../tools/lib/flashpoint-runtime");
 const { loadLaunchManifest } = require("../tools/lib/launch-manifest");
 const { loadIslandVerification, loadPlayerCompatibility, loadWindowAudit } = require("../tools/lib/status-store");
+const {
+  resolveLauncherRuntimeWindowGeometry,
+  withWindowGeometryEnv
+} = require("../tools/lib/runtime-window-geometry");
 
 let mainWindow = null;
 let activeRuntime = null;
+const DEFAULT_RUNTIME_TARGET_MONITOR = "G32QC";
 const electronProfileRoot = path.join(
   paths.runtimeDataDir,
   process.env.POPTROPICA_UI_TEST
@@ -57,6 +62,15 @@ function emitStatus(stage, message, extra = {}) {
     at: new Date().toISOString(),
     ...extra
   });
+}
+
+function ensureRuntimeTargetMonitorEnv() {
+  const current = String(process.env.POPTROPICA_QA_MONITOR || "").trim();
+  if (current) {
+    return current;
+  }
+  process.env.POPTROPICA_QA_MONITOR = DEFAULT_RUNTIME_TARGET_MONITOR;
+  return DEFAULT_RUNTIME_TARGET_MONITOR;
 }
 
 for (const profileDir of [
@@ -181,6 +195,8 @@ async function buildRuntimePlan(sourceGroup) {
     };
   }
 
+  const targetMonitor = ensureRuntimeTargetMonitorEnv();
+  const windowGeometry = resolveLauncherRuntimeWindowGeometry(normalized);
   ensureManagedWorkspace(config);
   const services = await ensureFlashpointServices(config);
   const mounted = await mountSourceZip(config, normalized);
@@ -199,6 +215,8 @@ async function buildRuntimePlan(sourceGroup) {
     source: normalized,
     runtimeTitle: normalized === "as2" ? "AS2 经典旧版" : "AS3 旧版世界",
     launchUrl: record.launchCommand,
+    targetMonitor,
+    windowGeometry,
     workspace: {
       workspaceDir: paths.managedWorkspaceDir,
       managedDbPath: paths.managedDbPath
@@ -317,7 +335,9 @@ async function launchRuntimeWindow(sourceGroup) {
     return plan;
   }
 
-  const runtime = spawnManagedRuntime(loadConfig(), plan.source, plan.launchUrl, { detach: false });
+  const runtime = withWindowGeometryEnv(plan.windowGeometry, () =>
+    spawnManagedRuntime(loadConfig(), plan.source, plan.launchUrl, { detach: false })
+  );
   activeRuntime = runtime.child;
   activeRuntime.once("exit", () => {
     activeRuntime = null;

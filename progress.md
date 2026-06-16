@@ -1030,3 +1030,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Wire the same safe AS3 sizing affordance into any Electron/launcher UI controls that expose maximize/fullscreen, not only the command-line launch path.
 - Add a short operator-facing launch note once the local browser/deployment path is finalized: AS3 full-work-area maximize remains unsafe, while bounded safe maximize is the supported path.
+
+## 2026-06-16 Launcher UI Safe Sizing
+
+- Added shared runtime window geometry logic in `tools/lib/runtime-window-geometry.js`. CLI launch and Electron launcher runtime launches now resolve AS3 safe maximize, explicit sizes, inherited sizes, and the AS2/full-work-area path through the same helper instead of duplicating constants.
+- Updated `launcher/main.js` so `buildRuntimePlan("as3")` defaults runtime windows to `targetMonitor: "G32QC"` and `windowGeometry: { mode: "as3-safe-maximize", width: 2300, height: 1320 }` unless the caller already provided `POPTROPICA_WINDOW_WIDTH/HEIGHT`. `launchRuntimeWindow()` applies those env vars only around `spawnManagedRuntime()` and restores the previous env afterwards.
+- Kept CLI behavior compatible: `tools/launch.js` now uses the shared helper, but no window-size/maximize flags means it leaves any inherited environment untouched. `--maximize` on AS3 still maps to safe `2300x1320`; AS2 maximize remains the full work-area sentinel path.
+- Verified the shared helper with direct assertions for AS3 safe maximize, AS2 work-area maximize, explicit `1450x900`, inherited launcher sizing, and env restoration.
+- Re-verified actual manual AS3 launch on G32QC after the refactor: `node tools/launch.js --island monkey-wrench --targetMonitor G32QC --maximize` produced `windowGeometry.mode: "as3-safe-maximize"`, launched pid `49072` at `left:-2430 top:36 width:2300 height:1320`, and loaded `game.scenes.ftue.beach.Beach`.
+- Clean foreground capture on the side monitor passed after the no-foreground screenshot was found occluded by the side-screen app window: screenshot `runtime-data/qa/manual-shared-window-foreground.png`, capture `2288x1180`, stage `2288x1141`, `stageCoverageRatio: 0.966949`, right white edge `0.0%`, bottom white edge `0.066178%`, visual guard `ok: true`. The foreground capture did not use mouse input.
+- Validation passed: `node --check tools/lib/runtime-window-geometry.js`, `node --check tools/launch.js`, `node --check launcher/main.js`, helper assertion script, `python -m py_compile tools/qa-helper.py`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and `git diff --check` with only expected CRLF warnings.
+
+## TODO Launcher UI Safe Sizing
+
+- Keep avoiding CUA/main-display testing; if another visual proof is needed, prefer G32QC-targeted helper captures and use foreground only when no-foreground capture is occluded.
+- Add a small launcher-side smoke when a non-interfering harness is available, so `flash:launch-runtime` itself is exercised without opening the Electron UI on the user's active desktop.
