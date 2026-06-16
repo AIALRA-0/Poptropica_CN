@@ -1163,3 +1163,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Build a safer incremental AS3 pack-apply path so newly seeded translations can be embedded into SWFs without risking another all-or-nothing FFDec timeout.
 - Continue the remaining 133 unchanged translation rows with per-asset context; avoid broad generic translations for split fragments like `THE` or `PAPER`.
 - Keep `reality-tv-wild-safari` / AS3 `reality2` as the all-island completion blocker until legitimate playable scene resources are found.
+
+## 2026-06-16 Translation Quality Queue Closure / Reality2 Identifier Recheck
+
+- Continued with background CLI and web search only; no CUA, no mouse input, no visible Flash/Navigator/game window, and no main-display interaction.
+- Added source-text-only exact seeding in `tools/lib/db.js` and `tools/seed-known-translations.js`. This avoids polluting shared generic keys such as `THE` / `the` / `The` while still letting asset-derived strings with the exact same source text get deterministic exact translations.
+- Seeded high-confidence remaining visible text and island labels, including `THE` -> `这份`, `PAPER` -> `报纸`, `BUG` -> `虫子`, `end` -> `结束`, `GG.` -> `打得好.`, `HAZARD` -> `危险`, `Poptropolis` -> `Poptropolis 运动会`, `Poptropolis (AS2)` -> `Poptropolis 运动会 (AS2)`, and `PoptropiCon` -> `PoptropiCon 漫展`.
+- Expanded guarded non-translatable cases in `tools/lib/translation-guards.js` for ciphers, passwords, robot/user names, alphabet runs, coordinates, roman numerals, Wayback metadata, positional fields, and known SWF split-text fragments where a broad translation would be less reliable than preserving the asset token.
+- `node tools\seed-known-translations.js` now reports `insertedCount: 87`, `exactSeededCount: 1901`, and `sourceExactSeededCount: 68`.
+- `npm run audit:translation-coverage` now reports `qualityReviewRequired: false`, `unchangedTranslatableRows: 0`, `missingTranslatableRows: 0`, `emptyTranslationRows: 0`, `invalidObjectRows: 0`, `translatableCoveragePct: 100`, and `cjkTranslatablePct: 99.115278`.
+- Rechecked `reality-tv-wild-safari` externally. Public metadata still only confirms identifiers (`reality_safari` / `reality2`), and the teleporter config still treats `reality2` as a main-street/common-room AS3 island entry; no importable playable scene archive or local `game/data/scenes/reality2` / `game/assets/scenes/reality2` source was found in this pass.
+- Validation passed: syntax checks for changed scripts, `node tools\seed-known-translations.js`, `npm run audit:translation-coverage`, `npm run verify:pack-inputs`, `npm run audit:sound-refs:runtime`, `git diff --check`, and `npm run qa:goal-evidence`.
+- Current goal evidence before commit/push: `goalComplete: false`; `translation_pack_inputs` is now proved, while `all_islands_manifest_and_entry` and `scene_entry_stability` remain incomplete because `reality-tv-wild-safari` is still unresolved. `github_sync` is partial until this chunk is committed and pushed.
+
+## TODO Translation Quality Queue Closure / Reality2 Identifier Recheck
+
+- Keep `reality2` unresolved unless a legitimate playable AS3 scene source is found; current external checks confirm identifiers, not usable assets.
+- Do not rerun full `npm run patch:pack` casually: the previous full AS3 FFDec pass timed out after 30 minutes. Build a safe all-or-incremental AS3 pack-apply strategy before trying to embed the newest SWF text seeds into runtime packs.

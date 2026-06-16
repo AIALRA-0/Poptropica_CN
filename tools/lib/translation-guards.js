@@ -117,37 +117,87 @@ const PROTECTED_LITERAL_VALUES = new Set([
   "--- RECORDSEPARATOR ---",
   "DISABLED",
   "Flash",
+  "'S",
+  "'T",
+  "`l",
+  "AAAAA",
+  "AAAAAsadfasdfsdf",
+  "AS",
+  "AX",
   "A-Z",
   "AA",
   "Ben 10",
+  "Cutestbear",
+  "D!",
+  "DJ",
+  "ER",
+  "ERS",
   "GSM",
   "H2O",
   "HBr",
+  "H8R-bot",
   "II",
   "III",
   "IV",
   "IX",
+  "K?",
+  "KI",
+  "KLLKOEPA",
+  "LE",
+  "LOTMKXVXOTZ",
   "Na",
   "NaCl",
   "NaOH",
+  "NE",
+  "NES",
+  "NG",
+  "NUM",
+  "OF",
+  "OO",
   "Poptropica",
   "POPTROPICA",
+  "RA",
+  "RR",
+  "T P",
+  "T SEE",
+  "TIMESTAMPS",
+  "TYR-1",
+  "Timestamps for the elements of this page",
+  "USED PAI",
   "V",
   "VI",
   "VII",
   "VIII",
+  "WBC",
+  "WE",
+  "Wayback Machine",
   "X",
+  "XI",
+  "XII",
+  "YX DRO BYYP",
+  "ZENAYPEKJ",
+  "_template",
   "addClue",
+  "adrkv jgepko qwihy zjskbqjf ojqj osndl mfoaj aegh anhxry",
+  "asdfa dgaw aeer adaf<br/><br/><br/>hajnja ioweutvm skaoh",
+  "avarus animus nullo",
   "default",
   "desktop",
   "down",
+  "ddd",
+  "ejlkfmk wkfjbvc kwls<br/><br/><br/>tutous flmns",
   "false",
+  "fuzzybunny",
   "left",
+  "l.",
   "mobile",
   "npc",
   "platform",
   "player",
+  "qmodphz fltg kwls<br/><br/><br/>rwqnn fdgfzdgb",
   "right",
+  "satiatur lucro",
+  "text",
   "thought",
   "true",
   "up",
@@ -223,10 +273,29 @@ function looksLikeRuntimeToken(value) {
   if (/^text\d+$/iu.test(text)) {
     return true;
   }
+  if (/^_[A-Za-z0-9_.-]+$/u.test(text)) {
+    return true;
+  }
   if (/^[a-z][A-Za-z0-9]*$/u.test(text) && /[A-Z]/u.test(text)) {
     return true;
   }
   if (/^[A-Z]\s*-\s*[A-Z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[`'][A-Za-z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z][!?]$/u.test(text)) {
+    return true;
+  }
+  if (/^(?:\d+\s*&nbsp;\s*)+\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^X-?\d+\s+Y-?\d+$/iu.test(text)) {
+    return true;
+  }
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if (text.length >= 5 && alphabet.includes(text.replace(/\s+/gu, "").toUpperCase())) {
     return true;
   }
   if (/^[A-Za-z0-9_.-]+>$/u.test(text)) {
@@ -250,7 +319,7 @@ function looksLikeRuntimeToken(value) {
   if (/^x\s*\d+$/iu.test(text)) {
     return true;
   }
-  if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9 ]{5,}$/u.test(text)) {
+  if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9 -]{3,}$/u.test(text)) {
     return true;
   }
   if (/^(?:[A-Z]\s+){5,}[A-Z]$/u.test(text)) {
@@ -268,7 +337,7 @@ function isProtectedContext(row) {
     return true;
   }
   const key = String(row?.context_key || row?.contextKey || "");
-  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound\/\[\d+\]\/asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
+  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound\/\[\d+\]\/asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|npcs\/npc\/\[\d+\]\/position\/#text|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
 }
 
 function isProtectedTranslationRow(row) {

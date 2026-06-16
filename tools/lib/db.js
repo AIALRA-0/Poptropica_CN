@@ -147,6 +147,12 @@ function openIndexDb() {
       WHERE generic_key = ?
       ORDER BY string_key
     `),
+    getStringsBySourceText: db.prepare(`
+      SELECT string_key, generic_key, source_text
+      FROM strings
+      WHERE source_text = ?
+      ORDER BY string_key
+    `),
     markStringTranslated: db.prepare("UPDATE strings SET state = 'translated', updated_at = ? WHERE string_key = ?"),
     markStringsSkipped: db.prepare("UPDATE strings SET state = 'skipped', updated_at = ? WHERE generic_key = ?"),
     stats: {
@@ -370,6 +376,24 @@ function openIndexDb() {
     upsertExactTranslationsForGeneric: (row) => {
       const now = new Date().toISOString();
       const strings = statements.getStringsByGenericKey.all(row.genericKey);
+      for (const stringRow of strings) {
+        statements.insertExactTranslation.run(
+          stringRow.string_key,
+          stringRow.generic_key,
+          stringRow.source_text,
+          row.translatedText,
+          row.provider,
+          row.model,
+          row.styleVersion,
+          now
+        );
+        statements.markStringTranslated.run(now, stringRow.string_key);
+      }
+      return strings.length;
+    },
+    upsertExactTranslationsForSource: (row) => {
+      const now = new Date().toISOString();
+      const strings = statements.getStringsBySourceText.all(row.sourceText);
       for (const stringRow of strings) {
         statements.insertExactTranslation.run(
           stringRow.string_key,

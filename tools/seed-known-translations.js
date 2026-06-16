@@ -348,6 +348,90 @@ const SEEDED_TRANSLATIONS = [
     sourceText: "SHOW",
     translatedText: "节目",
     forceExact: true
+  },
+  {
+    sourceText: "THE",
+    translatedText: "这份",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "PAPER",
+    translatedText: "报纸",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "the",
+    translatedText: "这",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "The",
+    translatedText: "这",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "That",
+    translatedText: "那",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "not",
+    translatedText: "不",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "how",
+    translatedText: "如何",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "BUG",
+    translatedText: "虫子",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "end",
+    translatedText: "结束",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "GG.",
+    translatedText: "打得好。",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "HAZARD",
+    translatedText: "危险",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "Poptropolis",
+    translatedText: "Poptropolis 运动会",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "Poptropolis (AS2)",
+    translatedText: "Poptropolis 运动会 (AS2)",
+    forceExactSource: true,
+    exactOnly: true
+  },
+  {
+    sourceText: "PoptropiCon",
+    translatedText: "PoptropiCon 漫展",
+    forceExactSource: true,
+    exactOnly: true
   }
 ];
 
@@ -356,19 +440,31 @@ function main() {
   const provider = getProviderConfig();
   let insertedCount = 0;
   let exactSeededCount = 0;
+  let sourceExactSeededCount = 0;
 
   for (const row of SEEDED_TRANSLATIONS) {
     const sourceText = normalizeSourceText(row.sourceText);
     const translatedText = normalizeTranslatedText(row.translatedText, sourceText);
     const genericKey = buildGenericKey(sourceText);
-    db.upsertTranslation({
-      genericKey,
-      sourceText,
-      translatedText,
-      provider: "seeded-ui",
-      model: provider.model,
-      styleVersion: STYLE_VERSION
-    });
+    if (!row.exactOnly) {
+      db.upsertTranslation({
+        genericKey,
+        sourceText,
+        translatedText,
+        provider: "seeded-ui",
+        model: provider.model,
+        styleVersion: STYLE_VERSION
+      });
+    }
+    if (row.forceExactSource) {
+      sourceExactSeededCount += db.upsertExactTranslationsForSource({
+        sourceText,
+        translatedText,
+        provider: "seeded-ui",
+        model: provider.model,
+        styleVersion: STYLE_VERSION
+      });
+    }
     if (row.forceExact) {
       exactSeededCount += db.upsertExactTranslationsForGeneric({
         genericKey,
@@ -386,6 +482,7 @@ function main() {
     ok: true,
     insertedCount,
     exactSeededCount,
+    sourceExactSeededCount,
     provider: "seeded-ui",
     styleVersion: STYLE_VERSION
   });
