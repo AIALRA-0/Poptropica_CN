@@ -112,6 +112,9 @@ function applyVisibleQaDefaults(args) {
   if (flagEnabled(args.interaction) && !flagEnabled(args.allowMouseClicks) && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
     process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
   }
+  if (!flagEnabled(args.allowForegroundCapture) && !process.env.POPTROPICA_QA_NO_FOREGROUND) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
   if (flagEnabled(args.noForegroundCapture)) {
     process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
   }
@@ -633,6 +636,37 @@ function formatQaError(step, error) {
   };
 }
 
+function runVisualGuard({ screenshotPath, outputPath, args, qaErrors, step }) {
+  if (!screenshotPath || !fs.existsSync(screenshotPath) || flagEnabled(args.skipVisualGuard)) {
+    return flagEnabled(args.skipVisualGuard) ? { skipped: true } : null;
+  }
+  const guardArgs = [
+    "analyze-visual-guard",
+    "--input",
+    screenshotPath,
+    "--output",
+    outputPath,
+    "--edge-ratio",
+    String(args.visualGuardEdgeRatio || args["visual-guard-edge-ratio"] || 0.18),
+    "--white-threshold",
+    String(args.visualGuardWhiteThreshold || args["visual-guard-white-threshold"] || 245),
+    "--max-white-edge-pct",
+    String(args.visualGuardMaxWhiteEdgePct || args["visual-guard-max-white-edge-pct"] || 60)
+  ];
+  const targetColor = String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim();
+  if (targetColor) {
+    guardArgs.push("--target-color", targetColor);
+  }
+  try {
+    return runPythonQa(guardArgs, {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${step || "visual"}-visual-guard`, error));
+    return null;
+  }
+}
+
 function captureWindowMatchesRuntime(capture, runtime) {
   const expectedPid = Number(runtime?.pid || 0);
   if (!expectedPid) {
@@ -884,6 +918,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
   const screenshotPath = path.join(runDir, `${safeStem}-interaction.png`);
   const captureMetadataPath = path.join(runDir, `${safeStem}-interaction-capture.json`);
   const stagePath = path.join(runDir, `${safeStem}-interaction-stage.json`);
+  const visualGuardPath = path.join(runDir, `${safeStem}-interaction-visual-guard.json`);
   const ocrPath = path.join(runDir, `${safeStem}-interaction-ocr.json`);
   const diffPath = path.join(runDir, `${safeStem}-interaction-diff.json`);
   const logPath = path.join(runDir, `${safeStem}-interaction-server.log`);
@@ -965,6 +1000,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     postCapture = rejectMismatchedCapture(postCapture, runtime, qaErrors);
 
     let postStage = null;
+    let postVisualGuard = null;
     let postOcr = null;
     let visualDiff = null;
     let visualDiffError = null;
@@ -977,6 +1013,13 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         stagePath
       ], {
         timeoutMs: 30000
+      });
+      postVisualGuard = runVisualGuard({
+        screenshotPath,
+        outputPath: visualGuardPath,
+        args,
+        qaErrors,
+        step: "interaction"
       });
       if (!flagEnabled(args.skipOcr)) {
         postOcr = runPythonQa([
@@ -1058,6 +1101,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       runtimeWindow: postWindow,
       capture: postCapture,
       stage: postStage,
+      visualGuard: postVisualGuard,
       ocr: postOcr
         ? {
             skipped: Boolean(postOcr.skipped),
@@ -1086,6 +1130,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         screenshotPath,
         captureMetadataPath,
         stagePath,
+        visualGuardPath: flagEnabled(args.skipVisualGuard) ? null : visualGuardPath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
         diffPath: visualDiff ? diffPath : null,
         actionPaths: actions.map((action) => action.artifactPath),
@@ -1116,6 +1161,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         screenshotPath,
         captureMetadataPath,
         stagePath,
+        visualGuardPath: flagEnabled(args.skipVisualGuard) ? null : visualGuardPath,
         ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
         diffPath: null,
         actionPaths: actions.map((action) => action.artifactPath),
@@ -1135,6 +1181,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   const recaptureWindowPath = path.join(islandDir, `${safeStem}-recapture-window.json`);
   const recaptureAnyPidWindowPath = path.join(islandDir, `${safeStem}-recapture-window-anypid.json`);
   const stagePath = path.join(islandDir, `${safeStem}-stage.json`);
+  const visualGuardPath = path.join(islandDir, `${safeStem}-visual-guard.json`);
   const ocrPath = path.join(islandDir, `${safeStem}-ocr.json`);
   const audioPath = path.join(islandDir, `${safeStem}-audio.json`);
   const logSegmentPath = path.join(islandDir, `${safeStem}-server.log`);
@@ -1156,6 +1203,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   let runtimeWindow = null;
   let capture = null;
   let stage = null;
+  let visualGuard = null;
   let ocr = { skipped: flagEnabled(args.skipOcr), text: "", containsChinese: false, lineCount: 0 };
   let audio = { skipped: flagEnabled(args.skipAudio), audioLikelyActive: false };
   try {
@@ -1244,6 +1292,13 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
     } catch (error) {
       qaErrors.push(formatQaError("analyze-stage", error));
     }
+    visualGuard = runVisualGuard({
+      screenshotPath,
+      outputPath: visualGuardPath,
+      args,
+      qaErrors,
+      step: "initial"
+    });
     if (!flagEnabled(args.skipOcr)) {
       try {
         ocr = runPythonQa([
@@ -1339,6 +1394,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   if (!stage?.stageRect || Number(stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
   }
+  if (flagEnabled(args.requireVisualGuard) && !visualGuard?.ok) {
+    failedChecks.push("initial_visual_guard_failed");
+  }
   if (isLaunchHealthOk(launchHealth) && !flagEnabled(args.allowNoSceneProgress) && !hasSceneProgressSignal(logSummary)) {
     failedChecks.push("scene_progress_missing");
   }
@@ -1356,6 +1414,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (!interaction.skipped && !interaction.ok) {
     failedChecks.push("interaction_click_failed");
+  }
+  if (!interaction.skipped && flagEnabled(args.requireVisualGuard) && !interaction.visualGuard?.ok) {
+    failedChecks.push("interaction_visual_guard_failed");
   }
   for (const qaError of qaErrors) {
     failedChecks.push(`qa_${qaError.step.replace(/[^a-z0-9]+/giu, "_")}_failed`);
@@ -1385,6 +1446,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       recaptureWindowPath,
       recaptureAnyPidWindowPath,
       stagePath,
+      visualGuardPath: flagEnabled(args.skipVisualGuard) ? null : visualGuardPath,
       ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
       logSegmentPath
@@ -1392,6 +1454,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
     runtimeWindow,
     capture,
     stage,
+    visualGuard,
     ocr: {
       skipped: Boolean(ocr?.skipped),
       containsChinese: Boolean(ocr?.containsChinese),
@@ -1431,6 +1494,10 @@ function buildSummary(startedAt, reports) {
       report.interaction.evidence.checks.length > 0
     ).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
+    visualGuardPassed: reports.filter((report) =>
+      report.visualGuard?.ok &&
+      (report.interaction?.skipped || report.interaction?.visualGuard?.ok)
+    ).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };

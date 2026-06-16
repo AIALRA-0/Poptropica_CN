@@ -982,3 +982,22 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Expand resize stress beyond representative AS2/AS3 entries once the next full pass starts: include translated dialogue balloon screenshots at multiple sizes and at least one maximized-window G32QC run.
 - Keep direct-SWF and base.php entry paths both covered when future AS3 layout changes are made; AS3 QA direct-scene smoke uses `game/Shell.swf?overrideScene=...`, while deployment-oriented launch paths still go through `base.php`.
+
+## 2026-06-16 Visual Guard / No-Foreground Resize Pass
+
+- Added `tools/qa-helper.py analyze-visual-guard`. It checks right, bottom, and bottom-right screenshot edge regions for excessive white pixels and can also report a target-color percentage, giving AS2/AS3 resize QA a direct detector for white margins and unpainted plugin areas.
+- Wired visual guard artifacts into `tools/qa-as2-interaction-smoke.js` and `tools/qa-as3-islands-smoke.js`: initial and post-interaction captures now emit `*-visual-guard.json`, summaries include `visualGuardPassed`, and `--requireVisualGuard` fails the smoke run when edge checks fail.
+- Changed AS2/AS3 visible QA defaults to use `POPTROPICA_QA_NO_FOREGROUND=1` unless `--allowForegroundCapture` is explicitly passed, matching the G32QC-side-monitor/no-mouse-interference workflow.
+- Strengthened `capture-window --no-foreground` and target-monitor placement in `tools/qa-helper.py`: the helper now raises windows without activation, avoids restoring maximized windows during capture, sends message-level activate/resize/focus pulses to the Navigator window and child windows, and redraws them without calling `SetForegroundWindow`. This fixed fresh AS3 1450x900 captures where Flash stayed at the default plugin size until foreground activation.
+- Adjusted the shared AS2 map hotspot default to stage-relative `0.635,0.27`, matching the direct map button position in large and maximized G32QC windows.
+- AS3 1450x900 G32QC visual guard regression passed with no foreground capture: `arabian-nights` and `monkey-wrench` passed 2/2 with exact scene evidence, interactions, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781581607755.json`.
+- AS3 960x640 G32QC visual guard regression passed for `arabian-nights` and `monkey-wrench`: 2/2 passed, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781582085384.json`.
+- AS2 1450x900 G32QC visual/map regression passed for `astro-knights` and `super-power`: 2/2 passed, `mapClicksPassed: 2`, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781581907758.json`.
+- AS2 maximized G32QC visual/map regression passed for `astro-knights` and `super-power`: 2/2 passed, `mapClicksPassed: 2`, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781581987816.json`.
+- AS3 maximized G32QC remains a real unresolved issue. Report `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781581748793.json` shows large right/bottom white areas after maximize (`visualGuardPassed: 0`), and `arabian-nights` also missed exact scene evidence in that maximized run. A temporary HTML wrapper approach was tested and reverted because it kept scene loading but pinned AS3 content to the default small plugin area.
+- Validation passed: `node --check tools/qa-as2-interaction-smoke.js`, `node --check tools/qa-as3-islands-smoke.js`, `node --check tools/lib/pack.js`, `node --check tools/lib/launch-manifest.js`, `python -m py_compile tools/qa-helper.py`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and `git diff --check` with only expected CRLF warnings.
+
+## TODO Visual Guard / No-Foreground Resize Pass
+
+- Continue AS3 maximized-window investigation. The bounded-window path is now stable at 960x640 and 1450x900 without foreground activation, but maximized Navigator still leaves the Flash content at a smaller internal area with white unused space.
+- Add visual guard coverage to broader AS2/AS3 matrices once runtime time allows, especially translated dialogue/popup states at multiple window sizes.

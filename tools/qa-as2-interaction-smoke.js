@@ -53,6 +53,9 @@ function applyVisibleQaDefaults(args) {
   if (!flagEnabled(args.allowMouseClicks) && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
     process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
   }
+  if (!flagEnabled(args.allowForegroundCapture) && !process.env.POPTROPICA_QA_NO_FOREGROUND) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
   if (flagEnabled(args.noForegroundCapture)) {
     process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
   }
@@ -252,6 +255,37 @@ function formatQaError(step, error) {
   };
 }
 
+function runVisualGuard({ screenshotPath, outputPath, args, qaErrors, step }) {
+  if (!screenshotPath || !fs.existsSync(screenshotPath) || flagEnabled(args.skipVisualGuard)) {
+    return flagEnabled(args.skipVisualGuard) ? { skipped: true } : null;
+  }
+  const guardArgs = [
+    "analyze-visual-guard",
+    "--input",
+    screenshotPath,
+    "--output",
+    outputPath,
+    "--edge-ratio",
+    String(args.visualGuardEdgeRatio || args["visual-guard-edge-ratio"] || 0.18),
+    "--white-threshold",
+    String(args.visualGuardWhiteThreshold || args["visual-guard-white-threshold"] || 245),
+    "--max-white-edge-pct",
+    String(args.visualGuardMaxWhiteEdgePct || args["visual-guard-max-white-edge-pct"] || 60)
+  ];
+  const targetColor = String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim();
+  if (targetColor) {
+    guardArgs.push("--target-color", targetColor);
+  }
+  try {
+    return runPythonQa(guardArgs, {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${step || "visual"}-visual-guard`, error));
+    return null;
+  }
+}
+
 function captureWindowMatchesRuntime(capture, runtime) {
   const expectedPid = Number(runtime?.pid || 0);
   if (!expectedPid) {
@@ -315,9 +349,11 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
   const screenshotPath = path.join(runDir, `${stem}${safeSuffix}.png`);
   const metadataPath = path.join(runDir, `${stem}${safeSuffix}-capture.json`);
   const stagePath = path.join(runDir, `${stem}${safeSuffix}-stage.json`);
+  const visualGuardPath = path.join(runDir, `${stem}${safeSuffix}-visual-guard.json`);
   const ocrPath = path.join(runDir, `${stem}${safeSuffix}-ocr.json`);
   let capture = null;
   let stage = null;
+  let visualGuard = null;
   let ocr = null;
   try {
     capture = runPythonQa(buildCaptureArgs({
@@ -356,6 +392,13 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     } catch (error) {
       qaErrors.push(formatQaError(`${suffix || "initial"}-analyze-stage`, error));
     }
+    visualGuard = runVisualGuard({
+      screenshotPath,
+      outputPath: visualGuardPath,
+      args,
+      qaErrors,
+      step: suffix || "initial"
+    });
     if (!flagEnabled(args.skipOcr)) {
       try {
         ocr = runPythonQa([
@@ -376,11 +419,13 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     runtimeWindow,
     capture,
     stage,
+    visualGuard,
     ocr,
     artifacts: {
       screenshotPath,
       metadataPath,
       stagePath,
+      visualGuardPath: flagEnabled(args.skipVisualGuard) ? null : visualGuardPath,
       ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
     }
   };
@@ -402,8 +447,8 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
     };
   }
   const point = stageRelativeToWindow(capture, stageRect, {
-    x: Number(args.mapX || 0.67),
-    y: Number(args.mapY || 0.225)
+    x: Number(args.mapX || 0.635),
+    y: Number(args.mapY || 0.27)
   });
   try {
     const clickArgs = [
@@ -465,6 +510,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
       runtimeWindow: postWindow,
       capture: postCapture.capture,
       stage: postCapture.stage,
+      visualGuard: postCapture.visualGuard,
       ocr: postCapture.ocr,
       artifacts: postCapture.artifacts,
       logSummary,
@@ -574,6 +620,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!initial.stage?.stageRect || Number(initial.stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
   }
+  if (flagEnabled(args.requireVisualGuard) && !initial.visualGuard?.ok) {
+    failedChecks.push("initial_visual_guard_failed");
+  }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
     failedChecks.push("missing_requests_seen");
   }
@@ -588,6 +637,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
   if (!map.skipped && flagEnabled(args.requireMapRequest) && !map.mapRequestSeen) {
     failedChecks.push("map_request_not_seen");
+  }
+  if (!map.skipped && flagEnabled(args.requireVisualGuard) && !map.visualGuard?.ok) {
+    failedChecks.push("map_visual_guard_failed");
   }
   for (const qaError of qaErrors) {
     failedChecks.push(`qa_${qaError.step.replace(/[^a-z0-9]+/giu, "_")}_failed`);
@@ -614,6 +666,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       windowPath,
       initialScreenshotPath: initial.artifacts.screenshotPath || null,
       initialStagePath: initial.artifacts.stagePath || null,
+      initialVisualGuardPath: initial.artifacts.visualGuardPath || null,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
       logSegmentPath: logPath
     },
@@ -621,6 +674,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     initial: {
       capture: initial.capture,
       stage: initial.stage,
+      visualGuard: initial.visualGuard,
       ocr: initial.ocr
         ? {
             skipped: Boolean(initial.ocr.skipped),
@@ -655,6 +709,10 @@ function buildSummary(startedAt, reports) {
     audioActive: reports.filter((report) => report.audio?.active).length,
     mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
+    visualGuardPassed: reports.filter((report) =>
+      report.initial?.visualGuard?.ok &&
+      (report.map?.skipped || report.map?.visualGuard?.ok)
+    ).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };

@@ -303,9 +303,11 @@ def position_window_on_target_monitor(hwnd, target, width=None, height=None, max
     flags = win32con.SWP_NOACTIVATE | win32con.SWP_NOZORDER
     win32gui.SetWindowPos(hwnd, 0, target_left, target_top, target_width, target_height, flags)
     time.sleep(0.2)
+    raise_window_no_activate(hwnd)
     if maximize:
         win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
         time.sleep(0.25)
+        raise_window_no_activate(hwnd)
 
     return {
         "requested": resolved["requested"],
@@ -515,7 +517,15 @@ def child_window_rows(hwnd):
 
 
 def bring_to_front(hwnd):
-    win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+    if win32gui.IsIconic(hwnd):
+        win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+    else:
+        try:
+            maximized = bool(win32gui.IsZoomed(hwnd))
+        except Exception:
+            maximized = False
+        if not maximized:
+            win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
     try:
         win32gui.BringWindowToTop(hwnd)
     except Exception:
@@ -530,6 +540,103 @@ def bring_to_front(hwnd):
     except Exception:
         pass
     time.sleep(0.4)
+
+
+def raise_window_no_activate(hwnd):
+    if win32gui.IsIconic(hwnd):
+        win32gui.ShowWindow(hwnd, win32con.SW_SHOWNOACTIVATE)
+    flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_NOACTIVATE
+    try:
+        win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, flags)
+        win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0, flags)
+    except Exception:
+        pass
+    try:
+        if not win32gui.IsZoomed(hwnd):
+            left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+            width = max(1, int(right - left))
+            height = max(1, int(bottom - top))
+            resize_flags = win32con.SWP_NOACTIVATE | win32con.SWP_NOZORDER
+            win32gui.SetWindowPos(hwnd, 0, int(left), int(top), width + 1, height, resize_flags)
+            time.sleep(0.08)
+            win32gui.SetWindowPos(hwnd, 0, int(left), int(top), width, height, resize_flags)
+    except Exception:
+        pass
+    try:
+        client = win32gui.GetClientRect(hwnd)
+        client_width = max(1, int(client[2] - client[0]))
+        client_height = max(1, int(client[3] - client[1]))
+        size_param = (client_height << 16) | (client_width & 0xFFFF)
+        targets = [hwnd]
+
+        def collect_child(child_hwnd, _extra):
+            targets.append(child_hwnd)
+            return True
+
+        try:
+            win32gui.EnumChildWindows(hwnd, collect_child, None)
+        except Exception:
+            pass
+        for target_hwnd in targets:
+            try:
+                win32gui.PostMessage(target_hwnd, win32con.WM_NCACTIVATE, 1, 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_ACTIVATE, getattr(win32con, "WA_ACTIVE", 1), 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_SETFOCUS, 0, 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_SIZE, win32con.SIZE_RESTORED, size_param)
+            except Exception:
+                pass
+    except Exception:
+        pass
+    try:
+        redraw_flags = (
+            getattr(win32con, "RDW_INVALIDATE", 0x0001)
+            | getattr(win32con, "RDW_ALLCHILDREN", 0x0080)
+            | getattr(win32con, "RDW_UPDATENOW", 0x0100)
+            | getattr(win32con, "RDW_FRAME", 0x0400)
+        )
+        win32gui.RedrawWindow(hwnd, None, None, redraw_flags)
+        try:
+            win32gui.EnumChildWindows(
+                hwnd,
+                lambda child_hwnd, _extra: (
+                    win32gui.RedrawWindow(child_hwnd, None, None, redraw_flags),
+                    True
+                )[1],
+                None
+            )
+        except Exception:
+            pass
+    except Exception:
+        pass
+    for _attempt in range(2):
+        time.sleep(0.18)
+        try:
+            client = win32gui.GetClientRect(hwnd)
+            client_width = max(1, int(client[2] - client[0]))
+            client_height = max(1, int(client[3] - client[1]))
+            size_param = (client_height << 16) | (client_width & 0xFFFF)
+            targets = [hwnd]
+
+            def collect_child_for_pulse(child_hwnd, _extra):
+                targets.append(child_hwnd)
+                return True
+
+            try:
+                win32gui.EnumChildWindows(hwnd, collect_child_for_pulse, None)
+            except Exception:
+                pass
+            for target_hwnd in targets:
+                try:
+                    win32gui.PostMessage(target_hwnd, win32con.WM_NCACTIVATE, 1, 0)
+                    win32gui.PostMessage(target_hwnd, win32con.WM_ACTIVATE, getattr(win32con, "WA_ACTIVE", 1), 0)
+                    win32gui.PostMessage(target_hwnd, win32con.WM_SETFOCUS, 0, 0)
+                    win32gui.PostMessage(target_hwnd, win32con.WM_SIZE, win32con.SIZE_RESTORED, size_param)
+                    win32gui.RedrawWindow(target_hwnd, None, None, redraw_flags)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+    time.sleep(0.25)
 
 
 def get_capture_bbox(hwnd, client_only):
@@ -677,6 +784,8 @@ def command_capture_window(args):
             pass
     if not getattr(args, "no_foreground", False):
         bring_to_front(hwnd)
+    else:
+        raise_window_no_activate(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
@@ -864,6 +973,84 @@ def command_analyze_stage(args):
     to_json(payload)
     if not stage_rect:
         sys.exit(2)
+
+
+def _parse_hex_color(value):
+    text = str(value or "").strip().lstrip("#")
+    if not text:
+        return None
+    if len(text) == 3:
+        text = "".join(ch * 2 for ch in text)
+    if not re.fullmatch(r"[0-9a-fA-F]{6}", text):
+        raise ValueError(f"Invalid hex color: {value!r}")
+    return np.array([int(text[index:index + 2], 16) for index in range(0, 6, 2)], dtype=np.int16)
+
+
+def _region_payload(rgb, box, args, target_color):
+    left, top, right, bottom = box
+    region = rgb[top:bottom, left:right, :]
+    total = int(max(1, region.shape[0] * region.shape[1]))
+    white_threshold = int(args.white_threshold)
+    white_mask = np.all(region >= white_threshold, axis=2)
+    payload = {
+        "box": {
+            "left": int(left),
+            "top": int(top),
+            "right": int(right),
+            "bottom": int(bottom),
+            "width": int(max(0, right - left)),
+            "height": int(max(0, bottom - top)),
+        },
+        "whitePct": round(float(white_mask.mean() * 100.0), 6),
+    }
+    if target_color is not None:
+        tolerance = int(args.target_tolerance)
+        diff = np.abs(region.astype(np.int16) - target_color)
+        target_mask = np.max(diff, axis=2) <= tolerance
+        payload["targetColorPct"] = round(float(target_mask.mean() * 100.0), 6)
+    return payload
+
+
+def command_analyze_visual_guard(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    rgb = np.array(image)
+    edge_ratio = max(0.02, min(0.5, float(args.edge_ratio)))
+    edge_width = max(1, int(round(width * edge_ratio)))
+    edge_height = max(1, int(round(height * edge_ratio)))
+    target_color = _parse_hex_color(args.target_color)
+    regions = {
+        "rightMargin": _region_payload(rgb, (width - edge_width, 0, width, height), args, target_color),
+        "bottomMargin": _region_payload(rgb, (0, height - edge_height, width, height), args, target_color),
+        "bottomRightCorner": _region_payload(rgb, (width - edge_width, height - edge_height, width, height), args, target_color),
+    }
+    max_white_edge_pct = float(args.max_white_edge_pct)
+    checks = [
+        {
+            "name": f"{name}_white_pct",
+            "ok": float(region["whitePct"]) <= max_white_edge_pct,
+            "observedPct": region["whitePct"],
+            "maxPct": max_white_edge_pct,
+        }
+        for name, region in regions.items()
+    ]
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": width,
+            "height": height,
+        },
+        "edgeRatio": edge_ratio,
+        "whiteThreshold": int(args.white_threshold),
+        "targetColor": str(args.target_color or "").strip() or None,
+        "targetTolerance": int(args.target_tolerance),
+        "regions": regions,
+        "checks": checks,
+    }
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
 
 
 def command_crop_image(args):
@@ -1326,6 +1513,16 @@ def main():
     analyze_parser.add_argument("--tolerance", type=int, default=18)
     analyze_parser.add_argument("--output")
     analyze_parser.set_defaults(func=command_analyze_stage)
+
+    visual_guard_parser = subparsers.add_parser("analyze-visual-guard")
+    visual_guard_parser.add_argument("--input", required=True)
+    visual_guard_parser.add_argument("--output")
+    visual_guard_parser.add_argument("--edge-ratio", type=float, default=0.18)
+    visual_guard_parser.add_argument("--white-threshold", type=int, default=245)
+    visual_guard_parser.add_argument("--max-white-edge-pct", type=float, default=60.0)
+    visual_guard_parser.add_argument("--target-color", default="")
+    visual_guard_parser.add_argument("--target-tolerance", type=int, default=2)
+    visual_guard_parser.set_defaults(func=command_analyze_visual_guard)
 
     crop_parser = subparsers.add_parser("crop-image")
     crop_parser.add_argument("--input", required=True)
