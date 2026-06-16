@@ -1073,3 +1073,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO Web Launcher No-Spawn Deployment Mode
 
 - The remaining launcher-specific gap is Electron IPC smoke without opening the UI on the user's active desktop. The web launcher is now deployment-safe, but Electron `flash:launch-runtime` itself still only has indirect coverage through shared helpers and manual/window-launch tests.
+
+## 2026-06-16 Launcher IPC Background Smoke
+
+- Added `tools/qa-launcher-ipc.js`, a no-window IPC harness that mocks Electron and the Flashpoint runtime, captures the real `launcher/main.js` `ipcMain.handle(...)` registrations, and invokes the registered handlers directly in Node.
+- Added `npm run qa:launcher-ipc`. The smoke validates `flash:launch-runtime` without opening the Electron UI, without launching Flashpoint Navigator, and without using CUA or mouse input.
+- The new IPC smoke checks invalid runtime rejection, AS3 default safe maximize (`2300x1320`), AS2 default no-forced-size behavior, default target monitor `G32QC`, runtime active/busy launch blocking, inherited `POPTROPICA_WINDOW_WIDTH/HEIGHT` handling, and environment restoration after launch planning.
+- It also verifies the Electron UI still disables external direct island launching through `flash:launch-island`, matching the current design where users enter AS2/AS3 first and switch islands in-game.
+- QA passed: `npm run qa:launcher-ipc` registered 10 IPC handlers and produced `runtime-data/qa/launcher-ipc-smoke.json` with three mocked runtime spawn calls: AS3 safe maximize, AS2 default, and AS3 inherited `1450x900`.
+- Regression passed: `npm run qa:web-launcher`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and syntax checks for `tools/qa-launcher-ipc.js`, `launcher/main.js`, `tools/web-launcher.js`, and `tools/qa-web-launcher.js`.
+
+## TODO Launcher IPC Background Smoke
+
+- Keep this IPC smoke as the cheap launcher regression gate before any future `launcher/main.js` changes.
+- A full visible Electron UI click-through remains optional and should only be run on G32QC when needed, because the new background IPC smoke covers the launch handler contract without interrupting the main display.
