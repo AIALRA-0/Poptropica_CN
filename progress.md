@@ -1129,3 +1129,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Keep `reality-tv-wild-safari` / AS3 `reality2` as the next all-island completion blocker; do not mark the global goal complete until its playable scene resources are found or a legitimate fallback is documented.
 - Add durable translation coverage beyond pack-input consistency so `translation_pack_inputs` can move from partial to proved.
+
+## 2026-06-16 Reality2 Recheck / Translation Coverage Audit
+
+- Continued using background CLI QA only; no CUA, no mouse input, and no visible game launch was needed for this chunk.
+- Rechecked `reality-tv-wild-safari` / AS3 `reality2`. Public wiki metadata still lists the island files as `reality_safari` and `reality2`, but the local `AS3.zip` only contains map/page/member/medal metadata for `reality2`, not playable `game/data/scenes/reality2` or `game/assets/scenes/reality2` resources. Local searches under `E:\Poptropica`, `E:\Flashpoint`, and common Steam install paths did not find playable `reality2` or `reality_safari` scene assets. Direct official static URL probes returned the current HTML fallback rather than XML/SWF scene resources, so there is still no legitimate local source to import.
+- Added `tools/lib/translation-guards.js` and wired it into `tools/lib/pack.js` so future pack rebuilds skip runtime identifiers, scene links, class names, XML action attributes, character skin/part fields, map IDs, layout/template fields, and framework config metadata before applying structured XML/JSON/PHP/SWF replacements.
+- Added `tools/audit-translation-coverage.js` plus `npm run audit:translation-coverage`. The audit reads `runtime-data/text-index.sqlite`, separates protected runtime rows from translatable rows, writes `runtime-data/qa/translation-coverage-audit.json`, and reports coverage separately from unchanged-text quality review.
+- Updated `tools/qa-goal-evidence.js` so `translation_pack_inputs` requires both clean pack inputs and a clean translation audit. Coverage alone is not enough for a proved status if unchanged translatable rows remain.
+- Latest translation audit: 76,123 extracted rows, 54,291 protected runtime rows, 21,832 translatable rows, 21,832 translated rows, 0 missing, 0 empty, 0 `[object Object]`, 100% translatable coverage, and 1,328 unchanged translatable rows still requiring review. Samples now include real visible/quality items such as `Games`, `Continue`, Game Show trivia answers, `HELP`, `save`, `Purchase`, chemical/formula strings, and fragmented SWF text, rather than the earlier flood of script enum fields.
+- Validation passed: `node --check tools/lib/translation-guards.js`, `node --check tools/audit-translation-coverage.js`, `node --check tools/qa-goal-evidence.js`, `node --check tools/lib/pack.js`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), `npm run audit:translation-coverage`, and `npm run qa:goal-evidence`.
+- Current goal evidence before commit/push: `goalComplete: false`, 5 proved, 2 partial, 2 incomplete. Remaining non-git blockers are `reality-tv-wild-safari` / AS3 `reality2` playable resources and the 1,328-row unchanged-text translation quality queue.
+
+## TODO Reality2 Recheck / Translation Coverage Audit
+
+- Continue resolving `reality-tv-wild-safari` only through legitimate playable scene resources. Do not fabricate a launchable island from map metadata.
+- Work down `runtime-data/qa/translation-coverage-audit.json` `unchangedTranslatable` rows: translate real visible UI/dialog/quiz text, and only add guard/whitelist rules for proven runtime placeholders, formulas, codes, proper names, or intentionally untranslated strings.

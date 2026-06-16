@@ -24,6 +24,7 @@
     "inventory:sources": "node tools/inventory-sources.js",
     "audit:audio-assets": "node tools/audit-audio-assets.js",
     "audit:as2-sound-calls": "node tools/audit-as2-sound-calls.js",
+    "audit:translation-coverage": "node tools/audit-translation-coverage.js",
     "audit:sound-refs": "node tools/audit-sound-references.js",
     "audit:sound-refs:runtime": "node tools/audit-sound-references.js --archive=runtime --output=runtime-data/qa/sound-reference-audit-runtime.json",
     "extract:text": "node tools/extract-text.js",

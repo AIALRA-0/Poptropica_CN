@@ -222,6 +222,14 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
   const packOk = pack?.ok === true &&
     (pack.reports || []).some((report) => report.sourceGroup === "as2" && report.ok) &&
     (pack.reports || []).some((report) => report.sourceGroup === "as3" && report.ok);
+  const translationCoverage = reports.translationCoverage.data;
+  const translationCoverageOk = translationCoverage?.ok === true &&
+    Number(translationCoverage.summary?.missingTranslatableRows || 0) === 0 &&
+    Number(translationCoverage.summary?.emptyTranslationRows || 0) === 0 &&
+    Number(translationCoverage.summary?.invalidObjectRows || 0) === 0;
+  const translationQualityOk = translationCoverageOk &&
+    translationCoverage?.qualityReviewRequired !== true &&
+    Number(translationCoverage.summary?.unchangedTranslatableRows || 0) === 0;
 
   const sound = reports.soundRefs.data;
   const soundOk = sound?.ok === true &&
@@ -299,14 +307,28 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
       id: "translation_pack_inputs",
       title: "全量翻译和 pack 输入一致性",
       ...reportStatus(
-        packOk ? "partial" : "missing",
-        packOk
-          ? "Tracked runtime replacement inputs are consistent for AS2 and AS3; this is strong pack-integrity evidence but not a complete visual proof of every translated string."
-          : "No current pack-input verifier artifact proves AS2/AS3 replacement consistency.",
+        packOk && translationQualityOk ? "proved" : (packOk ? "partial" : "missing"),
+        packOk && translationQualityOk
+          ? "Pack inputs are consistent, every non-protected extracted text row has a usable translation, and no unchanged translatable rows remain."
+          : (packOk
+              ? "Pack inputs are consistent, but text translation coverage or unchanged-text quality review is incomplete."
+              : "No current pack-input verifier artifact proves AS2/AS3 replacement consistency."),
         {
-          packInputs: pack || null
+          packInputs: pack || null,
+          translationCoverage: translationCoverage
+            ? {
+                ok: translationCoverage.ok,
+                qualityReviewRequired: translationCoverage.qualityReviewRequired,
+                summary: translationCoverage.summary,
+                policy: translationCoverage.policy
+              }
+            : null
         },
-        packOk ? ["Need a broader text/visual translation coverage audit before marking all translations fully proved."] : ["Run npm run verify:pack-inputs."]
+        [
+          ...(packOk ? [] : ["Run npm run verify:pack-inputs."]),
+          ...(translationCoverageOk ? [] : ["Run npm run audit:translation-coverage and resolve any missing non-protected translations."]),
+          ...(translationQualityOk ? [] : ["Review unchangedTranslatableRows from runtime-data/qa/translation-coverage-audit.json; translate real visible English or protect/whitelist legitimate runtime/proper-name rows."])
+        ]
       )
     },
     {
@@ -439,7 +461,8 @@ function main() {
     webLauncher: readReport("runtime-data/qa/web-launcher-smoke.json"),
     launcherIpc: readReport("runtime-data/qa/launcher-ipc-smoke.json"),
     soundRefs: readReport("runtime-data/qa/sound-reference-audit-runtime.json"),
-    packInputs: readReport("runtime-data/qa/pack-inputs-latest.json")
+    packInputs: readReport("runtime-data/qa/pack-inputs-latest.json"),
+    translationCoverage: readReport("runtime-data/qa/translation-coverage-audit.json")
   };
   const git = gitEvidence();
   const runtimeProcesses = runtimeProcessEvidence();

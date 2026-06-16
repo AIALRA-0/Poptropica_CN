@@ -8,6 +8,7 @@ const paths = require("./paths");
 const { ensureDirSync, fileExists, hashFile, listFilesRecursive, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
 const { containsCjk, normalizeTranslatedText } = require("./text-utils");
 const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
+const { isProtectedTranslationRow } = require("./translation-guards");
 
 const RUNTIME_FIX_VERSION = 24;
 const AS3_STAGE_BACKGROUND_RGB = Buffer.from([0x13, 0x9f, 0xfd]);
@@ -618,10 +619,11 @@ function applyPhpTranslations(content, rows) {
 }
 
 function applyStructuredReplacements(content, assetType, assetPath, rows) {
+  const safeRows = rows.filter((row) => !isProtectedTranslationRow(row));
   if (assetType === "xml") {
-    const htmlRows = rows.filter((row) => typeof row.source_text === "string" && /<(?:font|p|br)\b/iu.test(row.source_text));
-    const attrRows = rows.filter((row) => safeParseContext(row).kind === "xml-attr");
-    const textRows = rows.filter((row) => !htmlRows.includes(row) && safeParseContext(row).kind === "xml-text");
+    const htmlRows = safeRows.filter((row) => typeof row.source_text === "string" && /<(?:font|p|br)\b/iu.test(row.source_text));
+    const attrRows = safeRows.filter((row) => safeParseContext(row).kind === "xml-attr");
+    const textRows = safeRows.filter((row) => !htmlRows.includes(row) && safeParseContext(row).kind === "xml-text");
 
     let nextContent = content;
     if (textRows.length > 0) {
@@ -637,12 +639,12 @@ function applyStructuredReplacements(content, assetType, assetPath, rows) {
     return nextContent;
   }
   if (assetType === "json") {
-    return applyJsonTranslations(content, rows);
+    return applyJsonTranslations(content, safeRows);
   }
   if (assetType === "php") {
-    return applyPhpTranslations(content, rows);
+    return applyPhpTranslations(content, safeRows);
   }
-  return applyExactReplacements(content, rows);
+  return applyExactReplacements(content, safeRows);
 }
 
 function applyFlashSafeTypography(assetPath, content) {
@@ -1480,6 +1482,9 @@ function buildTranslatedSwfFiles({ assetRows, sourceTextRoot, translatedTextRoot
   const changedFiles = new Set();
 
   for (const row of assetRows) {
+    if (isProtectedTranslationRow(row)) {
+      continue;
+    }
     const context = JSON.parse(row.context_json || "{}");
     if (context.kind && context.kind !== "swf-text") {
       continue;
@@ -1570,6 +1575,9 @@ function buildTranslatedSwfScriptFiles({ assetRows, sourceScriptRoot, translated
   const changedFiles = new Set();
 
   for (const row of assetRows) {
+    if (isProtectedTranslationRow(row)) {
+      continue;
+    }
     const context = JSON.parse(row.context_json || "{}");
     if (context.kind !== "swf-script") {
       continue;
