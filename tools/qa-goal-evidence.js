@@ -282,6 +282,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
             ? {
                 ok: reports.launchGaps.data.ok,
                 summary: reports.launchGaps.data.summary,
+                steamDetection: reports.launchGaps.data.steamDetection || null,
                 unresolved: (reports.launchGaps.data.unresolved || []).map((item) => ({
                   canonicalKey: item.canonicalKey,
                   sourceGroup: item.sourceGroup,
@@ -297,6 +298,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
                       }
                     : null,
                   as2LegacyEvidence: item.as2LegacyEvidence || null,
+                  steamEvidenceSummary: item.steamEvidence?.summary || null,
                   conclusion: item.conclusion
                 }))
               }

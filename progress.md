@@ -1195,3 +1195,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - If a legitimate Steam install or archive becomes available, configure it with `node tools\import-steam.js --steam-root <path>` and rerun `npm run qa:launch-gaps` before attempting any import.
 - Keep rejecting map-only `reality2` metadata and AS2 `islandReality` bundles as sufficient evidence for Wild Safari playability.
+
+## 2026-06-16 Steam Source Detection / Reality2 Import Path
+
+- Continued with background-only CLI commands; no CUA, no mouse input, no visible browser/game/Navigator window, and no main-display interaction. The user specifically asked to avoid main display/CUA work and to use G32QC only if visual testing becomes unavoidable.
+- Added `tools/lib/steam-detect.js` to detect legitimate local Steam/Poptropica sources without launching Steam or the game. It reads configured roots, Windows Steam registry roots, common Steam library paths, `libraryfolders.vdf`, and `appmanifest_*.acf`, then scans only detected Poptropica install candidates for `reality-tv-wild-safari`, `reality2`, and `reality_safari` evidence.
+- Added `tools/qa-steam-detect.js` and `npm run qa:steam-detect`, writing `runtime-data/qa/steam-poptropica-detect-latest.json`.
+- Hardened `tools/import-steam.js`: no-argument runs now leave config unchanged, `--auto` writes `steamRoot` only when exactly one existing Poptropica install candidate is found, `--steam-root <path>` remains explicit, and `--clear` is now required to clear the root.
+- Wired Steam detection into `tools/qa-launch-manifest-gaps.js` and surfaced the detection summary through `tools/qa-goal-evidence.js`.
+- Latest `npm run qa:steam-detect` found two existing Steam-like library roots (`i:\steam` and `F:\SteamLibrary`), but both have 0 app manifests in their `steamapps` directories. It found 0 Poptropica app manifests, 0 Poptropica install candidates, 0 Reality/Wild Safari asset candidates, and 0 `reality2` token matches.
+- `npm run import:steam -- --auto` correctly left `runtime-data/user-config.json` unchanged with `steamRoot: null` because no existing Poptropica install candidate was found.
+- Latest `npm run qa:launch-gaps` still reports 47 manifest entries, 46 launchable, 1 unresolved (`reality-tv-wild-safari`), with `steamPoptropicaCandidateCount: 0` and `steamRealityAssetCandidateCount: 0`.
+- Latest `npm run qa:goal-evidence` remains `goalComplete: false`; `github_sync` is temporarily partial until this chunk is committed and pushed, while the non-git blockers remain `all_islands_manifest_and_entry` and `scene_entry_stability`.
+
+## TODO Steam Source Detection / Reality2 Import Path
+
+- If a real Poptropica Steam/AIR install appears later, run `npm run qa:steam-detect`, then `npm run import:steam -- --auto` only if exactly one candidate is detected, otherwise use `npm run import:steam -- --steam-root <path>`.
+- Keep `reality-tv-wild-safari` incomplete until a legitimate source provides playable `reality2` scene data/assets; do not fabricate launchability from map metadata.

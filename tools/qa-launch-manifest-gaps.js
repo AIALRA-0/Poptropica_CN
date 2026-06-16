@@ -1,4 +1,3 @@
-const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
@@ -6,14 +5,10 @@ const { loadConfig } = require("./lib/config");
 const { buildCatalogIndex } = require("./lib/catalog");
 const { fileExists, readJson, writeJson } = require("./lib/fs-utils");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { detectSteamPoptropica } = require("./lib/steam-detect");
 const paths = require("./lib/paths");
 
 const SOURCE_GROUPS = ["as2", "as3"];
-const STEAM_SCAN_PATTERNS = [
-  /reality[-_\s]?tv[-_\s]?wild[-_\s]?safari/iu,
-  /reality2/iu,
-  /reality_safari/iu
-];
 
 function normalizeArchiveEntry(value) {
   return String(value || "").replace(/\\/gu, "/");
@@ -113,55 +108,7 @@ function findAs2LegacyEvidence(entries, canonicalKey) {
   };
 }
 
-function scanSteamRoot(steamRoot) {
-  if (!steamRoot || !fileExists(steamRoot)) {
-    return {
-      configured: Boolean(steamRoot),
-      exists: false,
-      root: steamRoot || null,
-      matches: [],
-      error: steamRoot ? "configured Steam root does not exist" : "Steam root is not configured"
-    };
-  }
-
-  const matches = [];
-  const stack = [steamRoot];
-  let visited = 0;
-  while (stack.length > 0 && visited < 20000 && matches.length < 80) {
-    const current = stack.pop();
-    visited += 1;
-    let entries = [];
-    try {
-      entries = fs.readdirSync(current, { withFileTypes: true });
-    } catch (_error) {
-      continue;
-    }
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-      if (STEAM_SCAN_PATTERNS.some((pattern) => pattern.test(fullPath))) {
-        matches.push(fullPath);
-        if (matches.length >= 80) {
-          break;
-        }
-      }
-      if (entry.isDirectory() && !/node_modules|shadercache|appcache/iu.test(entry.name)) {
-        stack.push(fullPath);
-      }
-    }
-  }
-
-  return {
-    configured: true,
-    exists: true,
-    root: steamRoot,
-    visited,
-    truncated: stack.length > 0,
-    matches,
-    error: null
-  };
-}
-
-function candidateSummary(candidates, config, steamScan) {
+function candidateSummary(candidates, config, steamDetection) {
   return candidates.map((candidate) => {
     if (candidate.source === "steam") {
       return {
@@ -171,7 +118,10 @@ function candidateSummary(candidates, config, steamScan) {
         launchId: candidate.launchId,
         configured: Boolean(config.sources.steamRoot),
         rootExists: Boolean(config.sources.steamRoot && fileExists(config.sources.steamRoot)),
-        localMatchCount: steamScan.matches.length
+        detectedInstallCandidateCount: steamDetection.summary.existingCandidateInstallDirCount,
+        localMatchCount: steamDetection.summary.uniqueRealityTokenMatchCount,
+        realityAssetCandidateCount: steamDetection.summary.realityAssetCandidateCount,
+        poptropicaAppCount: steamDetection.summary.poptropicaAppCount
       };
     }
     return {
@@ -188,7 +138,7 @@ function candidateSummary(candidates, config, steamScan) {
   });
 }
 
-function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overrides, steamScan }) {
+function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overrides, steamDetection }) {
   return (manifest.entries || [])
     .filter((entry) => !entry.launchable)
     .map((entry) => {
@@ -202,7 +152,7 @@ function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overr
         sourceGroup: entry.sourceGroup,
         notes: entry.notes || [],
         override,
-        candidates: candidateSummary(candidates, config, steamScan),
+        candidates: candidateSummary(candidates, config, steamDetection),
         archive: {
           ok: archive.ok,
           path: archive.archivePath || null,
@@ -219,7 +169,7 @@ function buildUnresolvedDiagnostics({ manifest, config, archives, catalog, overr
       } else {
         diagnostics.as2LegacyEvidence = findAs2LegacyEvidence(archives.as2?.entries || [], entry.canonicalKey);
       }
-      diagnostics.steamEvidence = steamScan;
+      diagnostics.steamEvidence = steamDetection;
       diagnostics.conclusion = diagnostics.as3SceneEvidence &&
         diagnostics.as3SceneEvidence.dataRoomEntryCount === 0 &&
         diagnostics.as3SceneEvidence.assetRoomEntryCount === 0
@@ -239,14 +189,17 @@ function main() {
     as2: listArchiveEntries(config.sources.as2Gamezip, config.tools.tarBin),
     as3: listArchiveEntries(config.sources.as3Gamezip, config.tools.tarBin)
   };
-  const steamScan = scanSteamRoot(config.sources.steamRoot);
+  const steamDetection = detectSteamPoptropica({
+    configuredSteamRoot: config.sources.steamRoot,
+    maxScanEntries: args["max-scan-entries"] || args.maxScanEntries
+  });
   const unresolved = buildUnresolvedDiagnostics({
     manifest,
     config,
     archives,
     catalog,
     overrides,
-    steamScan
+    steamDetection
   });
   const report = {
     ok: true,
@@ -258,7 +211,16 @@ function main() {
       unresolvedCount: unresolved.length,
       unresolvedWithSteamCandidateCount: unresolved.filter((item) => item.candidates.some((candidate) => candidate.source === "steam")).length,
       steamRootConfigured: Boolean(config.sources.steamRoot),
-      steamRootExists: Boolean(config.sources.steamRoot && fileExists(config.sources.steamRoot))
+      steamRootExists: Boolean(config.sources.steamRoot && fileExists(config.sources.steamRoot)),
+      steamInstallRootCount: steamDetection.summary.existingSteamInstallRootCount,
+      steamLibraryRootCount: steamDetection.summary.existingLibraryRootCount,
+      steamPoptropicaCandidateCount: steamDetection.summary.existingCandidateInstallDirCount,
+      steamRealityAssetCandidateCount: steamDetection.summary.realityAssetCandidateCount
+    },
+    steamDetection: {
+      generatedAt: steamDetection.generatedAt,
+      summary: steamDetection.summary,
+      suggestions: steamDetection.suggestions
     },
     archives: Object.fromEntries(SOURCE_GROUPS.map((sourceGroup) => [
       sourceGroup,
