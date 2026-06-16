@@ -1001,3 +1001,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Continue AS3 maximized-window investigation. The bounded-window path is now stable at 960x640 and 1450x900 without foreground activation, but maximized Navigator still leaves the Flash content at a smaller internal area with white unused space.
 - Add visual guard coverage to broader AS2/AS3 matrices once runtime time allows, especially translated dialogue/popup states at multiple window sizes.
+
+## 2026-06-16 AS3 Safe Maximize Pass
+
+- Investigated the AS3 maximized white-margin failure on G32QC without CUA. Direct OS maximize and full work-area sizing (`2560x1392`) still make Flashpoint Navigator/NPAPI initialize the AS3 direct SWF at the default small stage, leaving large white right/bottom regions. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781582404318.json`.
+- Bounded AS3 direct-SWF sizing works well below that bad range: `1800x1100`, `2100x1250`, and `2300x1320` single-island probes could render full scenes, while `2450x1360` failed back to a `1174x571` stage. The practical safe upper bound on G32QC is therefore below full work-area/maximized size.
+- Added AS3 QA safe-maximize behavior in `tools/qa-as3-islands-smoke.js`: `--maximize` now uses a stable `2300x1320` G32QC-sized window by default instead of true OS maximize. `--trueMaximize` / `--unsafeMaximize` remain available to reproduce the raw maximized plugin bug.
+- Strengthened `tools/qa-helper.py` large-window placement with a two-step no-activate resize refresh. For windows at least `1600x900`, the helper briefly shrinks the side-monitor window and restores the requested size before capture, forcing Flash to recalculate the stage without foreground activation or mouse movement.
+- AS3 safe-maximize G32QC regression now passed for `arabian-nights` and `monkey-wrench`: 2/2 passed, windows at `left:-2430 top:36 width:2300 height:1320`, captured stages `2288x1141`, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781583660085.json`.
+- AS3 `1800x1100` two-island regression passed after the two-step refresh: 2/2 passed, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781583526202.json`.
+- AS2 maximized G32QC regression still passed after the helper change: `astro-knights` and `super-power` passed 2/2 with `mapClicksPassed: 2`, `sceneEvidencePassed: 2`, `visualGuardPassed: 2`, no missing requests. Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781583816902.json`.
+- Validation passed: `node --check tools/qa-as3-islands-smoke.js`, `node --check tools/qa-as2-interaction-smoke.js`, `node --check tools/lib/pack.js`, `node --check tools/lib/launch-manifest.js`, `python -m py_compile tools/qa-helper.py`, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), and `npm run audit:sound-refs:runtime` (`missing: 0`).
+
+## TODO AS3 Safe Maximize Pass
+
+- The real NPAPI/OS maximize path is still intentionally treated as unsafe for AS3 direct SWF; use `--trueMaximize` only for diagnostics. The end-user launch path should prefer bounded/safe sizing unless a deeper Navigator/plugin-host fix is found.
+- Continue translating the QA safe-maximize behavior into any user-facing launcher path that exposes a maximize/fullscreen control, so manual play uses the stable bounded size instead of the bad full work-area threshold.

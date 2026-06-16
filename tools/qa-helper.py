@@ -301,6 +301,13 @@ def position_window_on_target_monitor(hwnd, target, width=None, height=None, max
     target_left = int(work_area["left"]) + max(0, int((int(work_area["width"]) - target_width) / 2))
     target_top = int(work_area["top"]) + max(0, int((int(work_area["height"]) - target_height) / 2))
     flags = win32con.SWP_NOACTIVATE | win32con.SWP_NOZORDER
+    if not maximize and target_width >= 1600 and target_height >= 900:
+        refresh_width = max(100, target_width - min(220, max(40, int(target_width * 0.08))))
+        refresh_height = max(100, target_height - min(140, max(40, int(target_height * 0.08))))
+        refresh_left = int(work_area["left"]) + max(0, int((int(work_area["width"]) - refresh_width) / 2))
+        refresh_top = int(work_area["top"]) + max(0, int((int(work_area["height"]) - refresh_height) / 2))
+        win32gui.SetWindowPos(hwnd, 0, refresh_left, refresh_top, refresh_width, refresh_height, flags)
+        time.sleep(0.18)
     win32gui.SetWindowPos(hwnd, 0, target_left, target_top, target_width, target_height, flags)
     time.sleep(0.2)
     raise_window_no_activate(hwnd)

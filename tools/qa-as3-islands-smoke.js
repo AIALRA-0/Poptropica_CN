@@ -20,6 +20,8 @@ const {
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const AS3_SMOKE_LOCK_NAME = ".qa-as3-islands-smoke.lock";
 const AS3_SMOKE_REPORT_RE = /^as3-island-smoke-\d+\.json$/u;
+const AS3_SAFE_MAXIMIZE_WIDTH = 2300;
+const AS3_SAFE_MAXIMIZE_HEIGHT = 1320;
 const DEFAULT_INTERACTION_TARGET = {
   x: 0.42,
   y: 0.74,
@@ -564,10 +566,26 @@ function resolveWindowGeometry(args = {}) {
   const sizeMatch = String(args.windowSize || args["window-size"] || "").match(/^(\d+)x(\d+)$/iu);
   const width = Number(args.windowWidth || args["window-width"] || (sizeMatch ? sizeMatch[1] : 0));
   const height = Number(args.windowHeight || args["window-height"] || (sizeMatch ? sizeMatch[2] : 0));
+  const maximize = flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize);
+  const trueMaximize = flagEnabled(args.trueMaximize || args["true-maximize"] || args.unsafeMaximize || args["unsafe-maximize"]);
+  const hasExplicitSize = Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0;
+  if (maximize && !trueMaximize && !hasExplicitSize) {
+    const safeWidth = Number(args.safeMaximizeWidth || args["safe-maximize-width"] || AS3_SAFE_MAXIMIZE_WIDTH);
+    const safeHeight = Number(args.safeMaximizeHeight || args["safe-maximize-height"] || AS3_SAFE_MAXIMIZE_HEIGHT);
+    return {
+      width: Number.isFinite(safeWidth) && safeWidth > 0 ? Math.round(safeWidth) : AS3_SAFE_MAXIMIZE_WIDTH,
+      height: Number.isFinite(safeHeight) && safeHeight > 0 ? Math.round(safeHeight) : AS3_SAFE_MAXIMIZE_HEIGHT,
+      maximize: false,
+      safeMaximize: true,
+      requestedMaximize: true
+    };
+  }
   return {
     width: Number.isFinite(width) && width > 0 ? Math.round(width) : null,
     height: Number.isFinite(height) && height > 0 ? Math.round(height) : null,
-    maximize: flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize)
+    maximize,
+    safeMaximize: false,
+    requestedMaximize: maximize
   };
 }
 
