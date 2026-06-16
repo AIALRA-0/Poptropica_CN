@@ -1060,3 +1060,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Add an optional no-spawn deployment mode later if this is moved from localhost to a remote server; remote deployment should not attempt to spawn a local Flashpoint Navigator process on the server host.
 - Add a launcher-side Electron IPC smoke when it can be exercised without opening UI on the user's active desktop; the new web launcher covers the localhost browser path but not Electron IPC directly.
+
+## 2026-06-16 Web Launcher No-Spawn Deployment Mode
+
+- Added a deployment-safe no-spawn mode to `tools/web-launcher.js`. Starting the server with `--no-spawn` or `POPTROPICA_WEB_NO_SPAWN=1` changes the service to `launchMode: "plan-only"` and `spawnEnabled: false`.
+- Added `npm run web:launcher:no-spawn`. In this mode `/api/prepare`, `/api/launch-runtime`, and `/api/launch-island` return the same command/window/target-monitor plan without starting local Flashpoint services or Flashpoint Navigator on the server host. Default local mode remains unchanged.
+- The browser UI now displays the current launch mode (`local` or `plan-only`) and shows a deployment-preview notice when no-spawn mode is active. The no-spawn page keeps the island table and launch-plan actions visible, but makes clear that it returns plans only.
+- Extended `npm run qa:web-launcher` to cover both modes. It now validates default mode API/page/render checks, validates no-spawn state, no-spawn prepare with zero local steps, no-spawn runtime/island launch plans, and headless Chrome rendering of the no-spawn notice. Screenshots: `runtime-data/qa/web-launcher-page.png` and `runtime-data/qa/web-launcher-no-spawn-page.png`.
+- QA passed: `npm run qa:web-launcher` reported default `modeText: "local"` with hidden notice, no-spawn `modeText: "plan-only"` with visible notice, no-spawn `preparePlannedOnly: true`, and no console errors in both browser renders.
+- Final validation passed: `node --check tools/web-launcher.js`, `node --check tools/qa-web-launcher.js`, package JSON parse, `npm run verify:pack-inputs` (AS2 48/48, AS3 47/47), `npm run audit:sound-refs:runtime` (`missing: 0`), and `git diff --check` with only expected CRLF warnings.
+
+## TODO Web Launcher No-Spawn Deployment Mode
+
+- The remaining launcher-specific gap is Electron IPC smoke without opening the UI on the user's active desktop. The web launcher is now deployment-safe, but Electron `flash:launch-runtime` itself still only has indirect coverage through shared helpers and manual/window-launch tests.

@@ -16,6 +16,7 @@
   "scripts": {
     "launch": "node tools/launch.js --foreground",
     "web:launcher": "node tools/web-launcher.js",
+    "web:launcher:no-spawn": "node tools/web-launcher.js --no-spawn",
     "smoke": "node tools/launch.js --smoke",
     "bootstrap:flashpoint": "node tools/bootstrap-flashpoint.js",
     "discover:launch-scenes": "node tools/discover-launch-scenes.js",

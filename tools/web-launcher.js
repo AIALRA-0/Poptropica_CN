@@ -25,6 +25,15 @@ function flagEnabled(value, fallback = false) {
   return /^(1|true|yes|on)$/iu.test(String(value).trim());
 }
 
+function resolveServerOptions(options = {}) {
+  const noSpawn = flagEnabled(options.noSpawn ?? process.env.POPTROPICA_WEB_NO_SPAWN);
+  return {
+    noSpawn,
+    launchMode: noSpawn ? "plan-only" : "local",
+    spawnEnabled: !noSpawn
+  };
+}
+
 function splitPathname(requestUrl) {
   return new URL(requestUrl, "http://127.0.0.1").pathname;
 }
@@ -60,7 +69,8 @@ function getLaunchManifest(config) {
   return loadLaunchManifest() || generateLaunchManifest(config);
 }
 
-function getState() {
+function getState(serverOptions = {}) {
+  const resolvedOptions = resolveServerOptions(serverOptions);
   const config = loadConfig();
   const launchManifest = getLaunchManifest(config);
   const inventory = buildInventory(config);
@@ -71,7 +81,9 @@ function getState() {
     app: {
       name: "POPTROPICA_FLASH Web Launcher",
       hostOnly: true,
-      defaultTargetMonitor: DEFAULT_TARGET_MONITOR
+      defaultTargetMonitor: DEFAULT_TARGET_MONITOR,
+      launchMode: resolvedOptions.launchMode,
+      spawnEnabled: resolvedOptions.spawnEnabled
     },
     configuredSources: describeConfiguredSources(config),
     preferences: config.preferences,
@@ -222,22 +234,41 @@ function findLaunchEntry(islandId) {
   return manifest.entries.find((entry) => entry.canonicalKey === islandId) || null;
 }
 
-function runLaunch(launchPlan, dryRun) {
-  if (dryRun) {
+function runLaunch(launchPlan, dryRun, serverOptions = {}) {
+  const resolvedOptions = resolveServerOptions(serverOptions);
+  if (dryRun || resolvedOptions.noSpawn) {
     return {
       ok: true,
-      dryRun: true,
+      dryRun: Boolean(dryRun),
+      plannedOnly: Boolean(resolvedOptions.noSpawn && !dryRun),
+      spawnEnabled: resolvedOptions.spawnEnabled,
+      launchMode: resolvedOptions.launchMode,
       command: process.execPath,
       script: path.join(paths.toolsRoot, "launch.js"),
       args: launchPlan.args,
       targetMonitor: launchPlan.targetMonitor,
-      windowGeometry: launchPlan.windowGeometry
+      windowGeometry: launchPlan.windowGeometry,
+      note: resolvedOptions.noSpawn
+        ? "No-spawn mode is active; this API returned the launch plan without starting a local Flashpoint Navigator process."
+        : "Dry-run request; this API returned the launch plan without starting a local Flashpoint Navigator process."
     };
   }
   return runNodeJson("launch.js", launchPlan.args, 90000).output;
 }
 
-async function handlePrepare() {
+async function handlePrepare(serverOptions = {}) {
+  const resolvedOptions = resolveServerOptions(serverOptions);
+  if (resolvedOptions.noSpawn) {
+    return {
+      ok: true,
+      plannedOnly: true,
+      spawnEnabled: false,
+      launchMode: resolvedOptions.launchMode,
+      steps: [],
+      note: "No-spawn mode is active; prepare did not start local Flashpoint services.",
+      state: getState(resolvedOptions)
+    };
+  }
   const steps = [];
   for (const [label, scriptName, timeoutMs] of [
     ["bootstrap", "bootstrap-flashpoint.js", 180000],
@@ -253,11 +284,11 @@ async function handlePrepare() {
   return {
     ok: true,
     steps,
-    state: getState()
+    state: getState(resolvedOptions)
   };
 }
 
-async function handleLaunchRuntime(body) {
+async function handleLaunchRuntime(body, serverOptions = {}) {
   const sourceGroup = String(body.sourceGroup || body.source || "").trim().toLowerCase();
   if (!["as2", "as3"].includes(sourceGroup)) {
     return {
@@ -276,11 +307,11 @@ async function handleLaunchRuntime(body) {
   });
   return {
     statusCode: 200,
-    payload: runLaunch(launchPlan, flagEnabled(body.dryRun))
+    payload: runLaunch(launchPlan, flagEnabled(body.dryRun), serverOptions)
   };
 }
 
-async function handleLaunchIsland(body) {
+async function handleLaunchIsland(body, serverOptions = {}) {
   const islandId = String(body.islandId || body.island || "").trim();
   if (!islandId) {
     return {
@@ -310,13 +341,16 @@ async function handleLaunchIsland(body) {
   return {
     statusCode: 200,
     payload: {
-      ...runLaunch(launchPlan, flagEnabled(body.dryRun)),
+      ...runLaunch(launchPlan, flagEnabled(body.dryRun), serverOptions),
       launchEntry
     }
   };
 }
 
-function renderPage() {
+function renderPage(serverOptions = {}) {
+  const resolvedOptions = resolveServerOptions(serverOptions);
+  const launchMode = resolvedOptions.launchMode;
+  const spawnEnabled = resolvedOptions.spawnEnabled ? "true" : "false";
   return `<!doctype html>
 <html lang="zh-CN">
   <head>
@@ -402,6 +436,13 @@ function renderPage() {
       }
       .stat strong { display: block; margin-top: 5px; font-size: 22px; }
       .status-line { display: flex; gap: 10px; align-items: center; min-width: 220px; }
+      .notice {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: #fff7e6;
+        border-radius: 6px;
+        color: #5d3b02;
+      }
       .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bad); display: inline-block; }
       .dot.ok { background: var(--ok); }
       .table-wrap { overflow: auto; max-height: calc(100vh - 390px); border: 1px solid var(--line); border-radius: 6px; }
@@ -457,7 +498,9 @@ function renderPage() {
           <span class="status-line"><span class="dot" id="zipDot"></span>ZIP</span>
           <span class="status-line"><span class="dot" id="phpDot"></span>PHP</span>
           <span class="status-line"><span class="dot ok"></span><span id="monitorLabel">G32QC</span></span>
+          <span class="status-line"><span class="dot ok"></span><span id="launchModeLabel">${launchMode}</span></span>
         </div>
+        <div class="notice" id="noSpawnNotice" hidden>部署预览模式已启用：启动按钮只返回命令计划，不会在服务器主机上启动 Flashpoint Navigator。</div>
       </section>
 
       <section class="panel">
@@ -499,6 +542,8 @@ function renderPage() {
     </div>
 
     <script>
+      const SERVER_LAUNCH_MODE = "${launchMode}";
+      const SERVER_SPAWN_ENABLED = ${spawnEnabled};
       const state = { payload: null, filter: "", source: "" };
       const $ = (id) => document.getElementById(id);
       function statusClass(value) {
@@ -536,6 +581,8 @@ function renderPage() {
         $("zipDot").classList.toggle("ok", Boolean(healthy.zip));
         $("phpDot").classList.toggle("ok", Boolean(healthy.php));
         $("monitorLabel").textContent = state.payload?.app?.defaultTargetMonitor || "G32QC";
+        $("launchModeLabel").textContent = state.payload?.app?.launchMode || SERVER_LAUNCH_MODE;
+        $("noSpawnNotice").hidden = Boolean(state.payload?.app?.spawnEnabled ?? SERVER_SPAWN_ENABLED);
       }
       function visibleIslands() {
         const text = state.filter.trim().toLowerCase();
@@ -604,7 +651,7 @@ function renderPage() {
 </html>`;
 }
 
-async function routeRequest(request, response) {
+async function routeRequest(request, response, serverOptions = {}) {
   try {
     if (request.method === "OPTIONS") {
       sendJson(response, 200, { ok: true });
@@ -612,7 +659,7 @@ async function routeRequest(request, response) {
     }
     const pathname = splitPathname(request.url);
     if (request.method === "GET" && pathname === "/") {
-      sendHtml(response, renderPage());
+      sendHtml(response, renderPage(serverOptions));
       return;
     }
     if (request.method === "GET" && pathname === "/favicon.ico") {
@@ -624,20 +671,20 @@ async function routeRequest(request, response) {
       return;
     }
     if (request.method === "GET" && pathname === "/api/state") {
-      sendJson(response, 200, getState());
+      sendJson(response, 200, getState(serverOptions));
       return;
     }
     if (request.method === "POST" && pathname === "/api/prepare") {
-      sendJson(response, 200, await handlePrepare());
+      sendJson(response, 200, await handlePrepare(serverOptions));
       return;
     }
     if (request.method === "POST" && pathname === "/api/launch-runtime") {
-      const result = await handleLaunchRuntime(await readRequestBody(request));
+      const result = await handleLaunchRuntime(await readRequestBody(request), serverOptions);
       sendJson(response, result.statusCode, result.payload);
       return;
     }
     if (request.method === "POST" && pathname === "/api/launch-island") {
-      const result = await handleLaunchIsland(await readRequestBody(request));
+      const result = await handleLaunchIsland(await readRequestBody(request), serverOptions);
       sendJson(response, result.statusCode, result.payload);
       return;
     }
@@ -663,8 +710,9 @@ function openDefaultBrowser(url) {
 function startWebLauncherServer(options = {}) {
   const host = String(options.host || DEFAULT_HOST);
   const port = Number(options.port ?? DEFAULT_PORT);
+  const serverOptions = resolveServerOptions(options);
   const server = http.createServer((request, response) => {
-    routeRequest(request, response);
+    routeRequest(request, response, serverOptions);
   });
   return new Promise((resolve, reject) => {
     server.once("error", reject);
@@ -676,7 +724,9 @@ function startWebLauncherServer(options = {}) {
         server,
         host,
         port: actualPort,
-        url: `http://${host}:${actualPort}/`
+        url: `http://${host}:${actualPort}/`,
+        launchMode: serverOptions.launchMode,
+        spawnEnabled: serverOptions.spawnEnabled
       });
     });
   });
@@ -686,14 +736,17 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const instance = await startWebLauncherServer({
     host: args.host || DEFAULT_HOST,
-    port: args.port !== undefined ? Number(args.port) : DEFAULT_PORT
+    port: args.port !== undefined ? Number(args.port) : DEFAULT_PORT,
+    noSpawn: flagEnabled(args.noSpawn || args["no-spawn"])
   });
   const payload = {
     ok: true,
     url: instance.url,
     host: instance.host,
     port: instance.port,
-    targetMonitor: DEFAULT_TARGET_MONITOR
+    targetMonitor: DEFAULT_TARGET_MONITOR,
+    launchMode: instance.launchMode,
+    spawnEnabled: instance.spawnEnabled
   };
   process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`);
   if (flagEnabled(args.open)) {

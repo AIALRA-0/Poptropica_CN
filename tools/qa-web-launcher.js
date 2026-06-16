@@ -56,7 +56,7 @@ function findBrowserExecutable() {
   return BROWSER_CANDIDATES.find((candidate) => fs.existsSync(candidate)) || null;
 }
 
-async function runBrowserRenderCheck(baseUrl) {
+async function runBrowserRenderCheck(baseUrl, options = {}) {
   let chromium = null;
   try {
     ({ chromium } = require("playwright"));
@@ -117,18 +117,24 @@ async function runBrowserRenderCheck(baseUrl) {
     const filteredState = JSON.parse(await page.evaluate(() => window.render_launcher_to_text()));
     await page.fill("#filterInput", "");
     const textState = JSON.parse(await page.evaluate(() => window.render_launcher_to_text()));
-    const screenshotPath = path.join(paths.qaDir, "web-launcher-page.png");
+    const screenshotPath = path.join(paths.qaDir, options.screenshotName || "web-launcher-page.png");
     await page.screenshot({
       path: screenshotPath,
       fullPage: true
     });
+    const modeText = await page.locator("#launchModeLabel").textContent();
+    const noticeVisible = await page.locator("#noSpawnNotice").isVisible();
     return {
       skipped: false,
-      ok: consoleErrors.length === 0,
+      ok: consoleErrors.length === 0 &&
+        (!options.expectedLaunchMode || modeText === options.expectedLaunchMode) &&
+        (options.expectNoSpawnNotice === undefined || noticeVisible === options.expectNoSpawnNotice),
       browser: executablePath,
       screenshotPath,
       textState,
       filteredState,
+      modeText,
+      noticeVisible,
       consoleErrors
     };
   } finally {
@@ -146,6 +152,67 @@ function closeServer(server) {
       resolve();
     });
   });
+}
+
+async function runNoSpawnChecks(report) {
+  const instance = await startWebLauncherServer({ port: 0, noSpawn: true });
+  try {
+    const state = await fetchJson(`${instance.url}api/state`);
+    assert(state.ok, "no-spawn state API failed");
+    assert(state.payload.app?.launchMode === "plan-only", "no-spawn state did not report plan-only mode");
+    assert(state.payload.app?.spawnEnabled === false, "no-spawn state did not disable spawn");
+
+    const prepare = await fetchJson(`${instance.url}api/prepare`, {
+      method: "POST",
+      body: "{}"
+    });
+    assert(prepare.ok, "no-spawn prepare failed");
+    assert(prepare.payload.plannedOnly === true, "no-spawn prepare did not return plannedOnly");
+    assert(prepare.payload.spawnEnabled === false, "no-spawn prepare did not disable spawn");
+    assert(Array.isArray(prepare.payload.steps) && prepare.payload.steps.length === 0, "no-spawn prepare should not run local scripts");
+
+    const runtimePlan = await fetchJson(`${instance.url}api/launch-runtime`, {
+      method: "POST",
+      body: JSON.stringify({ sourceGroup: "as3" })
+    });
+    assert(runtimePlan.ok, "no-spawn runtime plan failed");
+    assert(runtimePlan.payload.plannedOnly === true, "no-spawn runtime launch did not return plannedOnly");
+    assert(runtimePlan.payload.spawnEnabled === false, "no-spawn runtime launch did not disable spawn");
+    assert(hasArgPair(runtimePlan.payload.args, "--runtime", "as3"), "no-spawn runtime plan missing --runtime as3");
+    assert(!runtimePlan.payload.runtimePlan, "no-spawn runtime plan unexpectedly contains a spawned runtime plan");
+
+    const islandPlan = await fetchJson(`${instance.url}api/launch-island`, {
+      method: "POST",
+      body: JSON.stringify({ islandId: "monkey-wrench" })
+    });
+    assert(islandPlan.ok, "no-spawn island plan failed");
+    assert(islandPlan.payload.plannedOnly === true, "no-spawn island launch did not return plannedOnly");
+    assert(hasArgPair(islandPlan.payload.args, "--island", "monkey-wrench"), "no-spawn island plan missing --island monkey-wrench");
+    assert(islandPlan.payload.launchEntry?.canonicalKey === "monkey-wrench", "no-spawn island plan missing launch entry");
+
+    const browserRender = await runBrowserRenderCheck(instance.url, {
+      screenshotName: "web-launcher-no-spawn-page.png",
+      expectedLaunchMode: "plan-only",
+      expectNoSpawnNotice: true
+    });
+    if (browserRender.skipped) {
+      report.checks.push({ name: "no-spawn-browser-render", ok: true, skipped: true, reason: browserRender.reason });
+    } else {
+      assert(browserRender.ok, "no-spawn browser render did not expose plan-only notice or had console errors");
+      report.checks.push({ name: "no-spawn-browser-render", ok: true, ...browserRender });
+    }
+
+    report.checks.push({
+      name: "no-spawn-mode",
+      ok: true,
+      launchMode: state.payload.app.launchMode,
+      preparePlannedOnly: prepare.payload.plannedOnly,
+      runtimeArgs: runtimePlan.payload.args,
+      islandArgs: islandPlan.payload.args
+    });
+  } finally {
+    await closeServer(instance.server);
+  }
 }
 
 async function main() {
@@ -226,6 +293,8 @@ async function main() {
       assert(browserRender.ok, `browser render console errors: ${browserRender.consoleErrors.join("; ")}`);
       report.checks.push({ name: "browser-render", ok: true, ...browserRender });
     }
+
+    await runNoSpawnChecks(report);
 
     report.ok = true;
   } catch (error) {

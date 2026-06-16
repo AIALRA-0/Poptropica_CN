@@ -60,6 +60,14 @@ http://127.0.0.1:22800/
 
 控制台默认只监听 `127.0.0.1`，启动游戏窗口时默认使用副屏 `G32QC`。实际 Flash 播放仍由 Flashpoint Navigator 承担，因为现代普通浏览器不再直接运行 NPAPI Flash；这个本地 Web 入口为后续服务器化部署保留了清晰的 API/UI 边界。
 
+如果要做服务器或容器部署预演，使用 no-spawn 模式：
+
+```powershell
+npm run web:launcher:no-spawn
+```
+
+该模式下页面和 API 仍会返回岛屿状态与启动命令计划，但不会在服务器主机上启动 Flashpoint 服务或 Flashpoint Navigator。
+
 ## 可选本地音频覆盖
 
 旧 AS2 岛屿的当前来源包里很多没有可恢复的原始音频。项目支持把你本机自备、可合法使用的音频放到被 Git 忽略的目录里，由本地运行时自动挂载到页面：
