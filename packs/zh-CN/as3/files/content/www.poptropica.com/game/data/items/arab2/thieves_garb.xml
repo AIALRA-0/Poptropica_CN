@@ -1,0 +1,63 @@
+<item id="thieves_garb">
+	<type>island</type>
+	<subType>arab2</subType>
+	<textfields>
+		<text id="title">
+			<value>盗贼服</value>
+		</text>
+	</textfields>
+
+	<assets>
+		<asset id="cardBack">
+  			<assetPath>items/arab1/background.swf</assetPath>
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-79</saturation>
+     			<hue>8</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+	</assets>
+
+    <buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>穿上</label>
+    		<actions>
+	    		<action type="applyLook"/>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">player_disguised</param>
+		  				<param id="save">true</param>		  				
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>   
+	    		<action type="removeEvent">
+		  			<parameters>
+		  				<param id="event">player_disguised</param>
+					</parameters>
+				</action> 		
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+	</conditionals>
+
+	<looks>
+		<look>
+			<facial>an2_player</facial>
+			<overshirt>an2_player</overshirt>
+		</look>
+	</looks>
+</item>

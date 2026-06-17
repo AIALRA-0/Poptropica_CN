@@ -1,0 +1,44 @@
+<item id="3246">
+	<type>store</type>
+	<assets>
+		<asset id="cardBack"/>
+		<asset id="cardContent">
+			<assetPath>items/store/item3246.swf</assetPath>
+		</asset>
+	</assets>
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>装备</label>
+    		<actions>
+	    		<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+		<text id="storeSubTitle">
+			<value>传奇之剑</value>
+		</text>
+		<text id="storeTitle">
+			<value>闪电</value>
+		</text>
+		<text id="storeInstructions">
+			<value>感受力量</value>
+		</text>
+	</textfields>
+	<looks>
+		<look>
+			<item>pswish02</item>
+		</look>
+	</looks>
+	<conditionals>
+		<conditional type="hasLook"/>
+	</conditionals>
+</item>

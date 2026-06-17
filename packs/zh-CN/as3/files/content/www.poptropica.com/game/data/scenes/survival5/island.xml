@@ -1,0 +1,46 @@
+<island>
+	<name>生存岛</name>
+	<eventsClass>game.scenes.survival5.Survival5Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>survival5</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>tree_tipped</event>
+		<event>released_bear</event>
+		<event>released_beaver</event>
+		<event>attached_gear</event>
+		<event>attached_rope</event>
+		<event>hooked_crate</event>
+		<event>show_ending</event>
+		<event>joined_the_fight</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="rope">861</item>
+		<item id="gear">862</item>
+		<item id="fishing_pole">863</item>
+		<item id="whistle">864</item>
+		<item id="medal_survival5">1047</item>
+	</itemIdMap>
+	
+	<!-- TODO: Fix first scene -->
+	<firstScene>
+		<scene>game.scenes.survival5.chase.Chase</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/survival-ep5.html</playerMap>
+	<medallion>medal_survival5</medallion>
+</island>

@@ -1,0 +1,39 @@
+<item id="_credits_card">
+	<type>store</type>
+	<subType>general</subType>
+
+	<contentClass>
+		<className>game.ui.card.CreditsContentView</className>
+		<y>-140</y>
+		<x>-90</x>
+	</contentClass>
+
+	<textfields>
+		<text id="storeInstructions">
+			<value>去商店购买服装、能力&#10;和更多好东西！</value>
+			<y>95</y>
+		</text>
+	</textfields>
+
+	<buttons>
+		<btn>
+			<label>前往商店</label>
+			<actions>
+				<action type="loadScene">
+					<parameters>
+						<param id="scene">game.scenes.hub.store.Store</param>
+					</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+
+	<assets>
+		<asset id="cardBack">
+			<assetPath>items/ui/background_credits.swf</assetPath>
+		</asset>
+		<asset id="cardContent">
+			<assetPath>items/ui/credit_bag.swf</assetPath>
+		</asset>
+	</assets>
+</item>

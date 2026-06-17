@@ -1,0 +1,307 @@
+<language>
+	<island>
+		<apollo>
+			<text1>今天想听我唱点什么。</text1>
+			<text2>算了。</text2>
+			<text3>再见。</text3>
+			<text4>能教我一首用笛子吹的曲子吗。</text4>
+			<text5>抱歉，我帮不了你。</text5>
+			<text6>你得先证明自己是个合格的乐手。跟着我吹...</text6>
+			<text7>你还不够格。再试试。</text7>
+			<text8>你是个合格的乐手。听好记牢。对着刻耳柏洛斯吹这首曲子，它就会睡着。</text8>
+			<text9>我还没想好。回头再说。</text9>
+		</apollo>
+		
+		<cerberus>
+			<text1>我力气不够，但也许有人能行。</text1>
+			<text2>我得离那怪物近一点。</text2>
+			<text3>这种小石子，哪能跟赫拉克勒斯的肌肉比！</text3>
+			<text4>你先去吧，我在这儿等着。</text4>
+		</cerberus>
+		
+		<grove>
+			<text1>众神喜欢收到祭品。</text1>
+			<text2>能帮我清理这些涂鸦吗？我给你一枚德拉克马。</text2>
+			<text3>多谢帮忙！愿哈迪斯眷顾你。</text3>
+			<text4>太可怕了！我听说这涂鸦是宙斯亲自干的！</text4>
+			<text5>你必须有神谕在身，才能通过这里。</text5>
+			<text6>要安抚神明，必须在他们的祭坛上献上合适的祭品。</text6>
+		</grove>
+		
+		<hadesPit1>
+			<text1>没有门把手... ... 得从另一边开。</text1>
+			<text2>看起来没什么危险。</text2>
+		</hadesPit1>
+		
+		<hadesPit2>
+			<text1>我是卡戎，冥河的摆渡人。</text1>
+			<text2>我能过这条... ... 呃，河吗？</text2>
+			<text3>我可以载你渡河，但这段旅程很危险。</text3>
+			<text4>我准备好了，出发吧。</text4>
+			<text5>如你所愿... ...</text5>
+		</hadesPit2>
+		
+		<hadesThrone>
+			<text1>你一定是哈迪斯吧。</text1>
+			<text2>我知道你为什么来。我兄弟宙斯非常危险。</text2>
+			<text3>我不能离开冥界。但我会把王冠给你。</text3>
+			<text4>谢谢你，年轻的英雄。你恢复了力量的平衡。</text4>
+		</hadesThrone>
+		
+		<hercsHut>
+			<text1>签名照只要10德拉克马！</text1>
+			<text2>打扰一下。</text2>
+			<text3>要签名吗？</text3>
+			<text4>你姐姐雅典娜说你能帮我。</text4>
+			<text5>没问题。给你个优惠，签名只要九德拉克马。</text5>
+			<text6>我不要签名。我需要你帮忙。我是奉宙斯之命来的。</text6>
+			<text7>抱歉，孩子。光凭这个理由，我可不想离开这舒服地方。</text7>
+			<text8>求你了，帮帮我！</text8>
+			<text9>又是你？</text9>
+			<text10>你得帮我。你父亲想统治整个Poptropica.</text10>
+			<text11>挺诱人的。但我现在真不想走路。</text11>
+			<text12>如果我找到办法送我们过去，你愿意来吗？</text12>
+			<text13>行吧，随便。</text13>
+			<text14>不用你找。阿佛洛狄忒给了我一面镜子，我们可以传送过去。</text14>
+			<text15>嗯... ... 最近签名照卖得不好。那就去吧！</text15>
+			<text16>天哪！你听说了吗？宙斯超嫉妒他兄弟的。</text16>
+			<text17>哈哈！可能是因为波塞冬的胡子更帅吧！</text17>
+			<text18>石榴汁好喝到爆！</text18>
+			<text19>不用了。</text19>
+		</hercsHut>
+		
+		<hydra>
+			<text1>音乐对九头蛇没用！</text1>
+		</hydra>
+		
+		<labyrinth>
+			<text1>我曾被称为潘。</text1>
+			<text2>能帮我穿过迷宫吗？</text2>
+			<text3>记住：解读骨头的办法不止一种。</text3>
+		</labyrinth>
+		
+		<labyrinthRoom>
+			<text1>我是弥诺陶洛斯，这是我的迷宫。</text1>
+			<text2>呃... ... 能把你鼻子上的环给我吗？</text2>
+			<text3>我只帮助那些能走出我迷宫的人。</text3>
+			<text4>我闯过迷宫了！</text4>
+			<text5>真不敢相信你还活着。</text5>
+			<text6>那么... ... 现在能把环给我了吗？</text6>
+			<text7>它是你的了。</text7>
+			<text8>这个环是我要献给宙斯的神圣物品之一。</text8>
+			<text9>宙斯不可信。小心点。</text9>
+			<text10>凡人让我心烦。走开，不然我可能会吃了你。</text10>
+		</labyrinthRoom>
+		
+		<labyrinthSnake>
+			<text1>今晚有点雾蒙蒙的，是吧？</text1>
+			<text2>没错，海神尼普顿亲自用薄纱斗篷覆盖了海面。</text2>
+			<text3>奇怪，我以为只是水蒸气？</text3>
+			<text4>哈！你不知道的事还多着呢！</text4>
+			<text5>知道什么好诗吗？</text5>
+			<text6>月光苍白如骨，我独自伫立此处...</text6>
+		</labyrinthSnake>
+		
+		<mainStreet>
+			<text1>锁着呢，而且挂锁可真够结实的！</text1>
+			<text2>大门锁着！</text2>
+			<text3>愿众神保佑你，陌生人。</text3>
+			<text4>赫拉克勒斯今天在签售！</text4>
+			<text5>赫拉克勒斯是我的英雄！</text5>
+			<text6>你是我的英雄！</text6>
+			<text7>你见过这么帅气的山羊吗？</text7>
+			<text8>嘿，你不是那个打败宙斯的人吗？</text8>
+			<text9>乌云密布。宙斯肯定心情不好。</text9>
+			<text10>我们的英雄回来了！</text10>
+			<text11>你先请... ...</text11>
+			<text12>对你这种凡人来说也许锁着。但对强大的赫拉克勒斯来说不是！</text12>
+			<text13>看好了，学着点。</text13>
+			<text14>哇！从这里能看到奥林匹斯山！</text14>
+			<text15>我从这里看到了整场战斗。太棒了！</text15>
+		</mainStreet>
+		
+		<mountOlympus>
+			<text1>哎呀！那是我以为的东西吗！？</text1>
+			<text2>只是条烦人的蛇。我来处理。</text2>
+			<text3>美杜莎！？哦不，这下糟了。</text3>
+			<text4>别为我难过。我得到了我一直想要的... ... 奥林匹斯山上的一座雕像！</text4>
+			<text5>你惹错蛇了，伙计。</text5>
+			<text6>风袋大甩卖！只要一德拉克马！</text6>
+			<text7>谢谢。这是你的风袋！</text7>
+			<text8>马上给你装满！</text8>
+		</mountOlympus>
+		
+		<mountOlympus2>
+			<text1>那宙斯怎么办？</text1>
+			<text2>有我在，休想！</text2>
+			<text3>愚蠢的凡人！竟敢擅闯我的领地！？</text3>
+			<text4>现在你和那些背叛我的兄弟都将承受我的怒火！</text4>
+			<text5>干得好。你拯救了Poptropica！</text5>
+			<text6>他暂时只能满足于统治神话岛的天界了。</text6>
+			<text7>请收下这份谢礼，聊表心意。</text7>
+		</mountOlympus2>
+		
+		<mountOlympus3>
+			<text1>我认输！我认输！！！东西还你，我保证乖乖的。</text1>
+		</mountOlympus3>
+			
+		<olympusMuseum>
+			<text1><![CDATA[雅典娜<br/>宙斯的女儿像他的闪电一样敏锐，因此被誉为智慧女神。]]></text1>
+			<text2>她也是一位女战神。橄榄、蛇和蜘蛛对雅典娜来说都是神圣的。</text2>
+			<text3><![CDATA[赫菲斯托斯<br/>这位宙斯与赫拉的巧手儿子，要是愿意的话，完全可以主演自己的家装节目。]]></text3>
+			<text4>他是铁匠与其他工匠之神。他能打造出箭矢无法穿透的盔甲。</text4>
+			<text5><![CDATA[哈迪斯<br/>这位不苟言笑的神祇统治着冥界。他是宙斯与波塞冬的兄弟，石榴是他的圣果。]]></text5>
+			<text6><![CDATA[宙斯<br/>宙斯击败了他的兄弟波塞冬与哈迪斯，成为众神之王。别惹宙斯！]]></text6>
+			<text7><![CDATA[波塞冬<br/>宙斯的兄弟统治着海洋，从最小的浮游生物到最大的海怪。]]></text7>
+			<text8><![CDATA[阿波罗<br/>这位光芒四射的宙斯之子是太阳与音乐之神，堪称初代摇滚巨星。]]></text8>
+			<text9>他的追随者包括九位缪斯，这些次要女神会赐予祈求者创作灵感。</text9>
+			<text10><![CDATA[赫斯提亚<br/>宙斯的姐姐，是灶火与家庭的女神。]]></text10>
+			<text11>她小时候从不会因为房间乱而挨骂。油和水对她来说是神圣的。</text11>
+			<text12><![CDATA[得墨忒耳<br/>每次吃三明治时都要感谢得墨忒耳！这位谷物与丰收女神是宙斯的姐妹。]]></text12>
+			<text13><![CDATA[赫拉<br/>奥林匹斯的女王，妇女与儿童的守护者。孔雀对赫拉来说是神圣的。]]></text13>
+			<text14><![CDATA[狄俄尼索斯<br/>酒神，他常将凡人引入歧途。]]></text14>
+			<text15><![CDATA[赫尔墨斯<br/>这位宙斯之子是众神的信使，多亏了他父亲给的带翼帽和凉鞋。]]></text15>
+			<text16><![CDATA[阿佛洛狄忒<br/>这位爱与美的女神从海水的泡沫中诞生。]]></text16>
+			<text17>玫瑰对阿佛洛狄忒来说是神圣的——不过千万别把她比作玫瑰。</text17>
+			<text18>阿佛洛狄忒认为她比世上任何花朵都美。</text18>
+			<text19><![CDATA[阿尔忒弥斯<br/>阿波罗的孪生妹妹更像个自然系女孩。]]></text19>
+			<text20>她是狩猎女神，也是幼小动物的保护者。她总是带着弓箭。</text20>
+			<text21><![CDATA[阿瑞斯<br/>比综合格斗选手还强悍，这位宙斯之子是战争之神。]]></text21>
+			<text22>仅凭他的战吼就能让战场上的战士倒下。</text22>
+			<text23>来吧，兄弟们，我们必须打败泰坦！</text23>
+			<text24>啊啊啊啊啊啊啊啊啊啊啊！</text24>
+			<text25>我统治冥界！</text25>
+			<text26>我统治海洋！</text26>
+			<text27>我统治天界！众生皆须向我跪拜！</text27>
+			<text28>我绝不会向你跪拜，兄弟。</text28>
+			<text29>我也是。</text29>
+			<text30>也许不是现在... ... 但终有一天。</text30>
+		</olympusMuseum>
+		
+		<poseidonBeach>
+			<text1>嘿，哥们儿，今天浪不错啊。</text1>
+			<text2>你一定是救生员吧。</text2>
+			<text3>老兄，离那个水下洞穴远点！</text3>
+			<text4>水下洞穴？</text4>
+			<text5>那里住着个超可怕的怪物。</text5>
+			<text6>多谢提醒。</text6>
+			<text7>小事一桩。我叫特里同，我老爸是这儿的国王。</text7>
+			<text8>今天真是晒太阳的好天气！</text8>
+			<text9>哈哈！波塞冬才不会让这种事发生！</text9>
+			<text10>我听说宙斯也想统治海洋。</text10>
+			<text11>看来你也没那么聪明嘛。</text11>
+			<text12>哇，真让我刮目相看。这是给你的礼物... ...</text12>
+			<text13>这面镜子能带你前往主要神祇的领域。</text13>
+			<text14>我打赌雅典娜可没给你这么棒的东西！</text14>
+			<text15>你好。</text15>
+			<text16>你就是我那个聪明绝顶的姐姐雅典娜在帮助的凡人吗？</text16>
+			<text17>没错，就是我。</text17>
+			<text18>哼，我也可以帮助凡人。</text18>
+			<text19>我正需要帮助。</text19>
+			<text20>既然雅典娜觉得你聪明，通过这个考验，我就送你一件有用的礼物。</text20>
+		</poseidonBeach>
+		
+		<poseidonThrone>
+			<text1>你一定是波塞冬。</text1>
+			<text2>我知道你为什么来。我兄弟宙斯被权力冲昏了头脑。</text2>
+			<text3>我不能离开大海。但我会把我的三叉戟给你。</text3>
+			<text4>多亏了你，我们的世界又安全了。</text4>
+		</poseidonThrone>
+		
+		<poseidonWater>
+			<text1>我需要空气！！！</text1>
+			<text2>哇，谢谢！</text2>
+			<text3>我没力气打破这个屏障。</text3>
+			<text4>看来你需要帮忙... ... 或者说，需要一只脚。</text4>
+			<text5>没问题，孩子。我在这儿等你。</text5>
+		</poseidonWater>
+		
+		<sphinx>
+			<text1>我需要做什么？</text1>
+			<text2>想要我的花，你必须通过我的考验。</text2>
+			<text3>曾经湿润的现已干涸。</text3>
+			<text4>当水流再次涌动</text4>
+			<text5>我将赠你一朵红玫瑰。</text5>
+			<text6>你的命运在等待。</text6>
+		</sphinx>
+		
+		<treeBottom>
+			<text1>什么意思？</text1>
+			<text2>那我的永生呢？</text2>
+			<text3>把它们还回来！！！</text3>
+			<text4>上面写着：“集齐五件圣物者，将统治整个Poptropica！”</text4>
+			<text5>我该怎么办？</text5>
+			<text6>但他不肯帮忙！</text6>
+			<text7>眼见不一定为实。</text7>
+			<text8>情况不妙。</text8>
+			<text9>只有波塞冬和哈迪斯的力量才能阻止我父亲。</text9>
+			<text10>赫拉克勒斯能帮你拿到它们。</text10>
+			<text11>再问问他。你得抓紧！</text11>
+			<text12>我是雅典娜。小心我父亲，他不诚实。</text12>
+			<text13>你能帮我吗？</text13>
+			<text14>需要帮助时，请留意橄榄树。</text14>
+			<text15>谢谢。还有什么我该知道的吗？</text15>
+			<text16>我兄弟赫拉克勒斯或许能帮你，如果你能说服他。</text16>
+			<text17>我看到你集齐了那五件物品。</text17>
+			<text18>我了解到一些关于它们的事。它们很危险！</text18>
+			<text19>仔细看看那些线索...</text19>
+			<text20>现在别过桥。斯芬克斯心情糟透了！</text20>
+			<text21>谢谢！现在我能掌控整个Poptropica了！</text21>
+			<text22>愚蠢的凡人！我只是在利用你。</text22>
+			<text23>没门！午夜前整个Poptropica都将归我掌控！</text23>
+			<text24>我赌你不敢摘苹果！</text24>
+			<text25>哎呀，你不该摘那个苹果的！</text25>
+			<text26>你的任务完成了吗？</text26>
+			<text27>我加倍赌你不敢摘苹果！</text27>
+			<text28>我们只是雕像。你干嘛听我们的？</text28>
+			<text29>欢迎回来。</text29>
+		</treeBottom>
+		
+		<treeTop>
+			<text1>呃, 抱歉。你想要回去吗?</text1>
+			<text2>如果我拒绝呢?</text2>
+			<text3>好吧。我需要做什么?</text3>
+			<text4>哎呀。时间到了!</text4>
+			<text5>你能帮我拿到金苹果吗?</text5>
+			<text6>仙女们藏起了我所有的蜂蜜! 在时间耗尽前收集10罐, 我就帮你。</text6>
+			<text7>我想我该走了...</text7>
+			<text8>谢谢你的蜂蜜。用这条密道去拿苹果吧。</text8>
+			<text9>快去拿我的蜂蜜!</text9>
+			<text10>谁摘了不朽之果?</text10>
+			<text11>我会赐予你不朽。但首先, 你得完成一个任务。</text11>
+			<text12>那整个Poptropica都将承受我的怒火!</text12>
+		</treeTop>
+		
+		<shared>
+			<text1>找到这五件圣物，带回来给我。集齐之后，你就能获得永生。</text1>
+			<text2>来自斯芬克斯花园的一朵花。</text2>
+			<text3>米诺陶的金环。</text3>
+			<text4>九头蛇的一片鳞。</text4>
+			<text5>波塞冬王国的一颗巨珠。</text5>
+			<text6>冥界守护者刻耳柏洛斯的一根胡须。</text6>
+			<text7>这面镜子能带你去神域的一些地方，但前提是你已经去过一次。</text7>
+			<text8>需要帮助时，请留意橄榄树。</text8>
+			<text9>音乐能开启新的门扉。</text9>
+			<text10>音乐能安抚凶猛的野兽。</text10>
+			<text11>迷宫错综复杂。用这根魔法线团找到出路。</text11>
+			<text12>记住我叔叔们没学会的教训：两股力量联合，就能战胜一股力量。</text12>
+			<text13>这里没有一德拉克马能买的东西。</text13>
+			<text14>袋子里的风用完了。</text14>
+			<text15>哈迪斯说时机到了我自然知道该怎么做。</text15>
+			<text16>波塞冬说时机到了我自然知道该怎么做。</text16>
+			<text17>没必要在这里用这个。</text17>
+			<text18>在这里似乎没什么效果。</text18>
+			<text19>我真的不想去见阿佛洛狄忒。</text19>
+			<text20>嘿，我已经帮过你了。</text20>
+			<text21>我已经把巨石移开了。</text21>
+			<text22>孩子，我觉得你还没准备好面对宙斯。</text22>
+			<text23>门打不开。</text23>
+			<text24>你是谁？</text24>
+			<text25>你能阻止他吗？</text25>
+			<text26>谢谢！我该用它做什么？</text26>
+			<text27>时机到了你自然会知道。</text27>
+			<text28>看起来像个祭坛。</text28>
+			<text29>接下来去哪儿？</text29>
+		</shared>
+	</island>
+</language>

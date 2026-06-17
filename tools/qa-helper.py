@@ -796,7 +796,25 @@ def command_capture_window(args):
     row = resolve_window_row(hwnd, process_names, title_contains, pid)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
-    hwnd = int(row["handle"])
+    target_row = row
+    parent_hwnd = int(row["handle"])
+    child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
+    if getattr(args, "largest_child", False) or child_class_contains:
+        candidates = [
+            child for child in child_window_rows(parent_hwnd)
+            if int(child.get("rect", {}).get("width", 0) or 0) > 0
+            and int(child.get("rect", {}).get("height", 0) or 0) > 0
+            and bool(child.get("visible", False))
+        ]
+        if child_class_contains:
+            candidates = [
+                child for child in candidates
+                if child_class_contains in str(child.get("className") or "").lower()
+            ]
+        if candidates:
+            candidates.sort(key=lambda child: child["rect"]["width"] * child["rect"]["height"], reverse=True)
+            target_row = candidates[0]
+    hwnd = int(target_row["handle"])
     bbox = get_capture_bbox(hwnd, args.client_only)
     image = ImageGrab.grab(bbox=bbox, all_screens=True)
     output = Path(args.output)
@@ -807,6 +825,7 @@ def command_capture_window(args):
         "generatedAt": now_iso(),
         "savedTo": str(output),
         "window": row,
+        "targetWindow": target_row,
         "placement": placement,
         "captureMode": "client" if args.client_only else "window",
         "captureBox": {
@@ -999,6 +1018,8 @@ def _region_payload(rgb, box, args, target_color):
     total = int(max(1, region.shape[0] * region.shape[1]))
     white_threshold = int(args.white_threshold)
     white_mask = np.all(region >= white_threshold, axis=2)
+    dark_threshold = int(args.dark_threshold)
+    dark_mask = np.all(region <= dark_threshold, axis=2)
     payload = {
         "box": {
             "left": int(left),
@@ -1009,6 +1030,7 @@ def _region_payload(rgb, box, args, target_color):
             "height": int(max(0, bottom - top)),
         },
         "whitePct": round(float(white_mask.mean() * 100.0), 6),
+        "darkPct": round(float(dark_mask.mean() * 100.0), 6),
     }
     if target_color is not None:
         tolerance = int(args.target_tolerance)
@@ -1027,11 +1049,17 @@ def command_analyze_visual_guard(args):
     edge_height = max(1, int(round(height * edge_ratio)))
     target_color = _parse_hex_color(args.target_color)
     regions = {
+        "topMargin": _region_payload(rgb, (0, 0, width, edge_height), args, target_color),
+        "leftMargin": _region_payload(rgb, (0, 0, edge_width, height), args, target_color),
         "rightMargin": _region_payload(rgb, (width - edge_width, 0, width, height), args, target_color),
         "bottomMargin": _region_payload(rgb, (0, height - edge_height, width, height), args, target_color),
+        "topLeftCorner": _region_payload(rgb, (0, 0, edge_width, edge_height), args, target_color),
+        "topRightCorner": _region_payload(rgb, (width - edge_width, 0, width, edge_height), args, target_color),
+        "bottomLeftCorner": _region_payload(rgb, (0, height - edge_height, edge_width, height), args, target_color),
         "bottomRightCorner": _region_payload(rgb, (width - edge_width, height - edge_height, width, height), args, target_color),
     }
     max_white_edge_pct = float(args.max_white_edge_pct)
+    max_dark_edge_pct = float(args.max_dark_edge_pct)
     checks = [
         {
             "name": f"{name}_white_pct",
@@ -1041,6 +1069,26 @@ def command_analyze_visual_guard(args):
         }
         for name, region in regions.items()
     ]
+    checks.extend([
+        {
+            "name": f"{name}_dark_pct",
+            "ok": float(region["darkPct"]) <= max_dark_edge_pct,
+            "observedPct": region["darkPct"],
+            "maxPct": max_dark_edge_pct,
+        }
+        for name, region in regions.items()
+    ])
+    if target_color is not None:
+        max_target_edge_pct = float(args.max_target_edge_pct)
+        checks.extend([
+            {
+                "name": f"{name}_target_color_pct",
+                "ok": float(region.get("targetColorPct", 0.0)) <= max_target_edge_pct,
+                "observedPct": region.get("targetColorPct", 0.0),
+                "maxPct": max_target_edge_pct,
+            }
+            for name, region in regions.items()
+        ])
     payload = {
         "ok": all(check["ok"] for check in checks),
         "generatedAt": now_iso(),
@@ -1051,6 +1099,7 @@ def command_analyze_visual_guard(args):
         },
         "edgeRatio": edge_ratio,
         "whiteThreshold": int(args.white_threshold),
+        "darkThreshold": int(args.dark_threshold),
         "targetColor": str(args.target_color or "").strip() or None,
         "targetTolerance": int(args.target_tolerance),
         "regions": regions,
@@ -1120,6 +1169,8 @@ def command_click_window(args):
     process_names = parse_csv(getattr(args, "process_names", ""))
     title_contains = [fragment.strip().lower() for fragment in (getattr(args, "title_contains", "") or "").split(",") if fragment.strip()]
     pid = int(args.pid) if getattr(args, "pid", None) else None
+    requested_x = int(args.x)
+    requested_y = int(args.y)
     placement = None
     if getattr(args, "target_monitor", None):
         placement = position_window_on_target_monitor(
@@ -1135,12 +1186,30 @@ def command_click_window(args):
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     target_row = row
-    hwnd = int(row["handle"])
-    point = win32gui.ClientToScreen(hwnd, (int(args.x), int(args.y)))
+    parent_hwnd = int(row["handle"])
+    child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
+    if getattr(args, "largest_child", False) or child_class_contains:
+        candidates = [
+            child for child in child_window_rows(parent_hwnd)
+            if int(child.get("rect", {}).get("width", 0) or 0) > 0
+            and int(child.get("rect", {}).get("height", 0) or 0) > 0
+            and bool(child.get("visible", False))
+        ]
+        if child_class_contains:
+            candidates = [
+                child for child in candidates
+                if child_class_contains in str(child.get("className") or "").lower()
+            ]
+        if candidates:
+            candidates.sort(key=lambda child: child["rect"]["width"] * child["rect"]["height"], reverse=True)
+            target_row = candidates[0]
+    point = win32gui.ClientToScreen(parent_hwnd, (requested_x, requested_y))
+    hwnd = int(target_row["handle"])
+    target_client_point = win32gui.ScreenToClient(hwnd, point)
     hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
     delivery = "post-message" if getattr(args, "post_message", False) else "cursor"
     if getattr(args, "post_message", False):
-        lparam = (int(args.y) & 0xFFFF) << 16 | (int(args.x) & 0xFFFF)
+        lparam = (int(target_client_point[1]) & 0xFFFF) << 16 | (int(target_client_point[0]) & 0xFFFF)
         win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, 0, lparam)
         time.sleep(0.03)
         win32gui.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, lparam)
@@ -1178,8 +1247,10 @@ def command_click_window(args):
         "point": {
             "x": point[0],
             "y": point[1],
-            "relativeX": int(args.x),
-            "relativeY": int(args.y),
+            "relativeX": requested_x,
+            "relativeY": requested_y,
+            "targetRelativeX": int(target_client_point[0]),
+            "targetRelativeY": int(target_client_point[1]),
             "holdMs": hold_ms,
             "moveIntervalMs": max(0, int(getattr(args, "move_interval_ms", 0) or 0)),
         },
@@ -1346,11 +1417,34 @@ def command_ocr_image(args):
     raw_result, elapsed = OCR_ENGINE(args.input)
     if raw_result:
         for item in raw_result:
+            polygon = item[0] if len(item) > 0 else []
             text = item[1] if len(item) > 1 else ""
             score = item[2] if len(item) > 2 else None
+            points = [
+                {"x": float(point[0]), "y": float(point[1])}
+                for point in polygon
+                if isinstance(point, (list, tuple)) and len(point) >= 2
+            ]
+            if points:
+                xs = [point["x"] for point in points]
+                ys = [point["y"] for point in points]
+                box = {
+                    "left": round(min(xs), 3),
+                    "top": round(min(ys), 3),
+                    "right": round(max(xs), 3),
+                    "bottom": round(max(ys), 3),
+                    "width": round(max(xs) - min(xs), 3),
+                    "height": round(max(ys) - min(ys), 3),
+                    "centerX": round((min(xs) + max(xs)) / 2, 3),
+                    "centerY": round((min(ys) + max(ys)) / 2, 3),
+                }
+            else:
+                box = None
             lines.append({
                 "text": text,
                 "score": score,
+                "box": box,
+                "polygon": points,
             })
     joined = " ".join(line["text"] for line in lines if line["text"]).strip()
     if isinstance(elapsed, (list, tuple)):
@@ -1513,6 +1607,8 @@ def main():
     capture_parser.add_argument("--window-width", type=int)
     capture_parser.add_argument("--window-height", type=int)
     capture_parser.add_argument("--no-foreground", action="store_true")
+    capture_parser.add_argument("--largest-child", action="store_true")
+    capture_parser.add_argument("--child-class-contains", default="")
     capture_parser.set_defaults(func=command_capture_window)
 
     analyze_parser = subparsers.add_parser("analyze-stage")
@@ -1527,8 +1623,11 @@ def main():
     visual_guard_parser.add_argument("--edge-ratio", type=float, default=0.18)
     visual_guard_parser.add_argument("--white-threshold", type=int, default=245)
     visual_guard_parser.add_argument("--max-white-edge-pct", type=float, default=60.0)
+    visual_guard_parser.add_argument("--dark-threshold", type=int, default=16)
+    visual_guard_parser.add_argument("--max-dark-edge-pct", type=float, default=100.0)
     visual_guard_parser.add_argument("--target-color", default="")
     visual_guard_parser.add_argument("--target-tolerance", type=int, default=2)
+    visual_guard_parser.add_argument("--max-target-edge-pct", type=float, default=100.0)
     visual_guard_parser.set_defaults(func=command_analyze_visual_guard)
 
     crop_parser = subparsers.add_parser("crop-image")
@@ -1558,6 +1657,8 @@ def main():
     click_parser.add_argument("--window-height", type=int)
     click_parser.add_argument("--maximize", action="store_true")
     click_parser.add_argument("--post-message", action="store_true")
+    click_parser.add_argument("--largest-child", action="store_true")
+    click_parser.add_argument("--child-class-contains", default="")
     click_parser.set_defaults(func=command_click_window)
 
     key_parser = subparsers.add_parser("key-window")

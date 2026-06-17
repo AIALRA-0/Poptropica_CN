@@ -1,0 +1,54 @@
+<island>
+	<name>一千零一夜</name>
+	<eventsClass>game.scenes.arab2.Arab2Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>arab2</island>
+	
+	<permanentEvents>
+		<event>intro_complete</event>
+		<event>questAccepted</event>
+		<event>vizier_rescued</event>
+		<event>vizier_following</event>
+		<event>player_escaped_cells</event>
+		<event>talked_to_vizier</event>
+		<event>player_disguised</event>
+		<event>cell_guard_1_down</event>
+		<event>cell_guard_2_down</event>
+		<event>cell_jailer_down</event>
+		<event>player_escaped_wlamp</event>
+		<event>player_caught_wlamp</event>
+		<event>dropped_coins</event>
+		<event>store_room_burned</event>
+	</permanentEvents>
+	
+	<itemIdMap>
+		<item id="magic_sand">880</item>
+		<item id="formula">881</item>
+		<item id="viper_skin">882</item>
+		<item id="gunpowder">883</item>
+		<item id="quicksilver">884</item>
+		<item id="borax">885</item>
+		<item id="cell_key">886</item>
+		<item id="white_robe">887</item>
+		<item id="thieves_garb">888</item>
+		<item id="medal_arabian2">1050</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.arab2.entrance.Entrance</scene>
+		<x>975</x>
+		<y>530</y>
+		<direction>left</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/arabian-nights-ep2.html</playerMap>
+	<medallion>medal_arabian2</medallion>
+</island>

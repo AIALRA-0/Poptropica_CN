@@ -1,0 +1,61 @@
+<island>
+	<name>纳布提岛</name>
+	<eventsClass>game.scenes.trade.TradeEvents</eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>trade</island>
+	
+  	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>completedLift</event>
+		<event>catchParrot</event>
+		<event>gotParrot</event>
+		<event>gotPiece1</event>
+		<event>gotPiece2</event>
+		<event>gotPiece3</event>
+		<event>gotPiece4</event>
+		<event>gotPiece5</event>
+		<event>gotPieces</event>
+		<event>usedCoin</event>
+		<event>usedFeed</event>
+		<event>usedChicken</event>
+		<event>usedCandle</event>
+		<event>sawRaft</event>
+		<event>usedMirror</event>
+		<event>beatCrawfish</event>
+		<event>gotTreasure</event>
+	</permanentEvents>
+  	
+  	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medalSkullduggery">1013</item>
+		<item id="chicken">180</item>
+		<item id="feedbag">181</item>
+		<item id="doubloon">182</item>
+		<item id="mirror">183</item>
+		<item id="mallet">184</item>
+		<item id="cracker">185</item>
+		<item id="archipelagoMap">186</item>
+		<item id="treasureMap">187</item>
+		<item id="cannonStarterKit">188</item>
+		<item id="shovel">189</item>
+		<item id="candle">190</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+  		<!-- <scene>game.scenes.trade.mainStreet.MainStreet</scene> -->
+  		<scene>TradeMain</scene>
+		<x>1685</x>
+		<y>830</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

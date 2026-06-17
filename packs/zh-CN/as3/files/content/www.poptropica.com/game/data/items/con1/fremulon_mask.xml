@@ -1,0 +1,34 @@
+<item id="fremulon_mask">
+	<type>island</type>
+	<subType>con1</subType>
+	<buttons>
+  		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">give_fremulon_mask</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+ 		<text>
+      		<value>弗雷穆隆面具</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-73</saturation>
+     			<hue>170</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

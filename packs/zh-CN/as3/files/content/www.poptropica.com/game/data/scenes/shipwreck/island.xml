@@ -1,0 +1,64 @@
+<island>
+	<name>诡计海盗岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>shipwreck</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>freedStubbs</event>
+		<event>captEmergency</event>
+		<event>talkedToCaptain</event>
+		<event>doorsOpened</event>
+		<event>wonFreezer</event>
+		<event>talkedIshmael</event>
+		<event>stage1Complete</event>
+		<event>stage2Complete</event>
+		<event>stage3Complete</event>
+		<event>stage4Complete</event>
+		<event>stage5Complete</event>
+		<event>stage6Complete</event>
+		<event>stage7Complete</event>
+		<event>sawSurvivors</event>
+		<event>sawSink1</event>
+		<event>sawSink2</event>
+		<event>sawSink3</event>
+		<event>sawSink4</event>
+		<event>sawSink5</event>
+		<event>sawSink6</event>
+		<event>brokeIceBlock</event>
+		<event>hasExplodedPipe</event>
+		<event>rescuedStarbuck</event>
+		<event>brokeLeft</event>
+		<event>brokeRight</event>
+		<event>sawS6Intro</event>
+		<event>usedWrench</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="wrench">400</item>
+		<item id="song_gadget">401</item>
+		<item id="hazmat_suit">402</item>
+		<item id="medal_shipwreck">1024</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>ShipwreckMain</scene>
+		<x>5050</x>
+		<y>1700</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

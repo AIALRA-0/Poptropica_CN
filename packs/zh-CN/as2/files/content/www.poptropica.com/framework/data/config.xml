@@ -109,7 +109,7 @@
 		<island>
 			<name>Carrot</name>
 			<islandMain>CarrotMain</islandMain>
-			<clusterName>24胡萝卜岛</clusterName>
+			<clusterName>24 Carrot Island</clusterName>
 			<medallion>1004</medallion>
 			<init_coords>643,250</init_coords>
 			<mobile>true</mobile>
@@ -245,7 +245,7 @@
 		<island>
 			<name>Tribal</name>
 			<islandMain>TribalMain</islandMain>
-			<clusterName>Poptropica运动会</clusterName>
+			<clusterName>波普特罗波利斯运动会</clusterName>
 			<medallion>1027</medallion>
 			<init_coords>255,950</init_coords>
 			<mobile>false</mobile>

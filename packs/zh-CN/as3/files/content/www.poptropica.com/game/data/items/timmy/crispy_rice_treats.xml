@@ -1,0 +1,91 @@
+<item id="crispy_rice_treats">
+	<type>island</type>
+	<subType>timmy</subType>
+
+	<textfields>
+  		<text>
+    		<value>脆米点心</value>
+		</text>
+		<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="false"></conditional>
+			<value>按空格键投掷脆米点心！</value>
+			<width>190</width>
+  			<y>70</y>
+		</text>
+		<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="true"></conditional>
+			<value>按动作键投掷脆米点心！</value>
+			<width>190</width>
+  			<y>70</y>
+		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>-45</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+	
+	<!-- <buttons>
+		<btn>
+    		<label>USE</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">use_treats</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons> -->
+	
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+			<label>装备</label>
+    		<actions>
+	    		<action type="applyLook"/>
+	    		<action type="triggerEvent">
+	    			<parameters>
+		  				<param id="event">call_total</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+		<conditional type="checkIfMobile"/>
+	</conditionals>
+	
+	<looks>
+		<look>
+			<item>crispy_rice_treats</item>
+		</look>
+	</looks>
+
+
+<!--      <conditionals> -->
+<!--     	<conditional type="inScene"> -->
+<!--     		<parameters> -->
+<!-- 		  		<param id="validScenes">game.scenes.timmy.timmysHouse.TimmysHouse</param> -->
+<!-- 			</parameters> -->
+<!--     	</conditional> -->
+<!--     </conditionals>	 -->
+</item>

@@ -1,0 +1,124 @@
+<island>
+    <name>Mocktropica 岛</name>
+    <eventsClass>game.scenes.mocktropica.MocktropicaEvents</eventsClass>
+    <gameVersion>AS3</gameVersion>
+    <island>mocktropica</island>
+    
+  	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>spoke_with_focus_tester</event>
+		<event>spoke_with_safety_inspector</event>
+		<event>spoke_with_safety_inspector_chasm</event>
+		<event>spoke_with_sales_manager</event>
+		<event>spoke_with_cost_cutter</event>
+		<event>basement_open</event>
+		<event>used_dev_computer</event>
+		<event>used_des_computer</event>
+		<event>bought_ads</event>
+		<event>eliminated_servers</event>
+		<event>got_badges</event>
+		<event>critical_bug_occurred</event>
+		<event>inventory_fixed</event>
+		<event>two_deep_started</event>
+		<event>spoke_with_sleeper</event>
+		<event>rescued_designer</event>
+		<event>poem_burned</event>
+		<event>boy_left_main_street_chasm</event>
+		<event>boy_left_main_street_cheese</event>
+		<event>boy_left_cheese_exterior</event>
+		<event>narf_wall_complete</event>
+		<event>achievement_achiever</event>
+		<event>achievement_doork</event>
+		<event>achievement_cheese_ball</event>
+		<event>achievement_mic_squeak</event>
+		<event>achievement_scene_stealer</event>
+		<event>achievement_just_focus</event>
+		<event>achievement_curd_burglar</event>
+		<event>achievement_mancala_master</event>
+		<event>achievement_collector</event>
+		<event>achievement_classic</event>
+		<event>achievement_poptropica_master</event>
+		<event>achievement_ultimate_achiever</event>
+		<event>curd_landed</event>
+		<event>advertisement_boss_1</event>
+		<event>advertisement_boss_2</event>
+		<event>advertisement_boss_3</event>
+		<event>start_popup_burn</event>
+		<event>reached_summit</event>
+		<event>inventory_broken</event>
+		<event>new_ad_unit</event>
+		<event>is_happy</event>
+		<event>developer_returned</event>
+		<event>mainstreet_finished</event>
+		<event>mainstreet_rearranged</event>
+		<event>mountain_finished</event>
+<!-- 		<event>set_night</event> -->
+<!-- 		<event>set_rain</event> -->
+		<event>server_repaired</event>
+		<event>spoke_sales_manager_ad</event>
+		<event>writer_left_classroom</event>
+		<event>completed_popupad2</event>
+		<event>writer_asked_soda</event>
+		<event>gave_writer_soda</event>
+		<event>writer_asked_script</event>
+		<event>poem_given</event>
+		<event>boss_escaped</event>
+		<event>defeated_boss</event>
+		<event>boss_fight_start</event>
+		<event>spoke_with_mountain_climber</event>
+		<event>focus_pop_coins</event>
+		<event>payed_coin</event>
+		<event>focus_collectibles</event>
+		<event>safety_appears_roof</event>
+		<event>show_focus_coins</event>
+		<event>smashed_crate</event>
+		<event>crate_dazed</event>
+		<event>focus_has_crate</event>
+		<event>done_climbing</event>
+		<event>mancala_started</event>
+		<event>mancala_victory</event>
+		<event>chirp_chair_lift</event>
+		<event>started_bonus_quest</event>
+		<event>blocked_from_bonus</event>
+		<event>started_ea_demo</event>
+		<event>started_ea</event>
+		<event>blocked_from_ea</event>
+		<event>defeated_mfb</event>
+		<event>hertz_rejoined</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="axe">759</item>
+		<item id="bucket_bot_costume">760</item>
+		<item id="cake">761</item>
+		<item id="coins">762</item>
+		<item id="curds">763</item>
+		<item id="designer_id">764</item>
+		<item id="developer_id">765</item>
+		<item id="helmet">766</item>
+		<item id="pop">767</item>
+		<item id="script">768</item>
+		<item id="writer_id">769</item>
+		<item id="medal_mocktropica">1037</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.mocktropica.mainStreet.MainStreet</scene>
+		<x>3708</x>
+		<y>1740</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/mocktropica.html</playerMap>
+	<medallion>medal_mocktropica</medallion>
+</island>

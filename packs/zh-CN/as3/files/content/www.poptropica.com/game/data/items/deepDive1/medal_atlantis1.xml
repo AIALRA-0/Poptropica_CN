@@ -1,0 +1,63 @@
+<item id="medal_atlantis1"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+  	<type>island</type>
+  	<subType>deepDive1</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+  	<textfields>
+ 		<text>
+      		<value>岛屿奖章</value>
+    		</text>
+    		<text>
+      		<value>恭喜！&#10;你完成了&#10;亚特兰蒂斯任务第 1 集任务。</value>
+      		<size>18</size>
+      		<y>60</y>
+    		</text>
+  	</textfields>
+		
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>36</brightness>
+     			<contrast>-17</contrast>
+     			<saturation>9</saturation>
+     			<hue>12</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+  	
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    			<label>穿上</label>
+    			<actions>
+				<action type="tiggerEvent">
+		  			<parameters>
+		  				<param id="event">useMedal</param>
+					</parameters>
+				</action>
+				<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<conditionals>
+    		<conditional type="hasLook" />
+    </conditionals>
+	
+	<looks>
+	    <look>
+		 	<overshirt>medal_atlantis1</overshirt>
+	   	</look> 
+	</looks>  
+	
+   
+</item>

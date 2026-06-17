@@ -1,0 +1,68 @@
+<island>
+	<name>Poptropicon 漫展岛</name>
+	<eventsClass>game.scenes.con1.Con1Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>con1</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>bouncer_out</event>
+		<event>friend_quest_accepted</event>
+		<event>viking1_quest_accepted</event>
+		<event>viking2_quest_accepted</event>
+		<event>sfFan_quest_accepted</event>
+		<event>shFan_quest_accepted</event>
+		<event>spFan_quest_accepted</event>
+		<event>friend_quest_complete</event>
+		<event>viking1_quest_complete</event>
+		<event>viking2_quest_complete</event>
+		<event>sfFan_quest_complete</event>
+		<event>shFan_quest_complete</event>
+		<event>spFan_quest_complete</event>
+		<event>friend_passed</event>
+		<event>viking1_passed</event>
+		<event>viking2_passed</event>
+		<event>sfFan_passed</event>
+		<event>shFan_passed</event>
+		<event>spFan_passed</event>
+		<event>friend_goes_home</event>
+		<event>jerk_leaves_bathrooms</event>
+		<event>skip_intro</event>
+		<event>skip_preview</event>
+		<event>dressed_as_wizard</event>
+		<event>some_wizard_parts</event>
+	</permanentEvents>
+
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="backpack_straps">852</item>
+		<item id="bottles">853</item>
+		<item id="jetpack">854</item>
+		<item id="jetpack_instructions">855</item>
+		<item id="mjolnir">856</item>
+		<item id="pamphlet">857</item>
+		<item id="watch_parts">858</item>
+		<item id="power_gem">859</item>
+		<item id="fremulon_mask">860</item>
+		<item id="medal_con1">1046</item>
+	</itemIdMap>
+
+	<!-- TODO: Fix first scene -->
+	<firstScene>
+		<scene>game.scenes.con1.center.Center</scene>
+		<x>500</x>
+		<y>1790</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/poptropicon.html</playerMap>
+	<medallion>medal_con1</medallion>
+</island>

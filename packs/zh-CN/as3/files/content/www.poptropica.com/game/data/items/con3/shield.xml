@@ -1,0 +1,64 @@
+<item id="shield">
+	<type>island</type>
+	<subType>con3</subType>
+	<textfields>
+ 		<text>
+      		<value>现代盾牌</value>
+    	</text>
+    	<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="false"></conditional>
+			<value>按空格键准备防御！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+		<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="true"></conditional>
+			<value>按动作键准备防御！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+  	</textfields>
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>-27</brightness>
+     			<contrast>0</contrast>
+     			<saturation>0</saturation>
+     			<hue>137</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    
+  	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>装备</label>
+    		<actions>
+				<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<looks>
+		<look>
+			<item>poptropicon_worldguy</item>
+		</look>
+	</looks>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+		<conditional type="checkIfMobile"/>
+	</conditionals>
+</item>

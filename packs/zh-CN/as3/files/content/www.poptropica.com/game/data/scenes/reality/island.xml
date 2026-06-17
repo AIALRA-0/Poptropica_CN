@@ -1,0 +1,47 @@
+<island>
+	<name>真人秀岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>reality</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>wonIsland</event>
+		<event>usedStamp</event>
+		<event>tookPizza</event>
+		<event>tabloidDropped</event>
+		<event>startedSeason</event>
+		<event>sawAddress</event>
+		<event>orderedPizza</event>
+		<event>mailedApplication</event>
+		<event>lostIsland</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="tabloid">150</item>
+		<item id="stamp">151</item>
+		<item id="pen">152</item>
+		<item id="application">153</item>
+		<item id="medal_reality">1011</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>RealityMain</scene>
+		<x>3311</x>
+		<y>330</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

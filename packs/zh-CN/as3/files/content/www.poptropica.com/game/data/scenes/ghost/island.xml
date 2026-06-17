@@ -1,0 +1,98 @@
+<island>
+	<name>鬼故事岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>ghost</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>fionaSentYou</event>
+		<event>gotDevices</event>
+		<event>arrestedTentGuy</event>
+		<event>spokeToInkeeper</event>
+		<event>spokeToLodger</event>
+		<event>madeInnPreparations</event>
+		<event>caughtInnkeeper</event>
+		<event>talkedWarden</event>
+		<event>lockedInCell</event>
+		<event>escapeCellTunnel</event>
+		<event>gavePhoto</event>
+		<event>openedArchives</event>
+		<event>locatedSilasMoon</event>
+		<event>turnedOnMicroFilm</event>
+		<event>readMicrofilm</event>
+		<event>sawPrisoner</event>
+		<event>saidCheckLighthouse</event>
+		<event>talkedPrisoner</event>
+		<event>toldSilasMoon</event>
+		<event>bankClosed</event>
+		<event>spokenToTinFoil</event>
+		<event>spokenToEngraver</event>
+		<event>spokenToGraveLady</event>
+		<event>openedBankVault</event>
+		<event>turnedToNight</event>
+		<event>sawNewspaper</event>
+		<event>removedBird</event>
+		<event>sawCrone</event>
+		<event>cloakedFigurePhotographed</event>
+		<event>placedThermometer</event>
+		<event>chasingCloakedFigure</event>
+		<event>exitedCatacombs</event>
+		<event>trickGround</event>
+		<event>openedCatacombs</event>
+		<event>stairsBroke</event>
+		<event>removedCloth</event>
+		<event>prisonOpen</event>
+		<event>shipWreckOpen</event>
+		<event>playedViolin</event>
+		<event>foundExitB</event>
+		<event>foundExitA</event>
+		<event>editorEvidence</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="net">370</item>
+		<item id="detector">371</item>
+		<item id="scanner">372</item>
+		<item id="thermometer">373</item>
+		<item id="camera">374</item>
+		<item id="torch">375</item>
+		<item id="sardines">376</item>
+		<item id="pickaxe">377</item>
+		<item id="buns">378</item>
+		<item id="voilin_music">379</item>
+		<item id="mug_shot">380</item>
+		<item id="note">381</item>
+		<item id="binoculars">382</item>
+		<item id="files">383</item>
+		<item id="key">384</item>
+		<item id="salt">385</item>
+		<item id="money">386</item>
+		<item id="locket">387</item>
+		<item id="ring">388</item>
+		<item id="scrapbook">389</item>
+		<item id="pamphlet">390</item>
+		<item id="photo">391</item>
+		<item id="medal_ghost">1023</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>GhostMain</scene>
+		<x>1775</x>
+		<y>720</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

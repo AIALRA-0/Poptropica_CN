@@ -110,7 +110,7 @@ $flashVars;
         </style>
     </head>
     <body>
-        <embed src="
+        <embed bgcolor="139ffd" src="
 		<?php
 		if($pageState === STATE_SCENE) {echo 'framework.swf';}
 		elseif($pageState === STATE_AS3) {echo 'flashpoint/memStatus.swf';}

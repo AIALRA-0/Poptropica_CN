@@ -1,0 +1,11 @@
+<island>
+	<name>Mocktropica 岛</name>
+	<eventsClass>game.data.island._TemplateEvents</eventsClass>
+  <!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+  
+  </permanentEvents>
+  <!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	</itemIdMap>
+</island>

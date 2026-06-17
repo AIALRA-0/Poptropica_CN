@@ -1,0 +1,78 @@
+<island>
+	<name>僵莓岛</name>
+  	<eventsClass>game.scenes.zombie.ZombieEvents</eventsClass>
+  	<gameVersion>AS2</gameVersion>
+  	<island>zombie</island>
+  	
+  	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>givenQuest</event>
+		<event>sawFirstZombie</event>
+		<event>usedLightBulb</event>
+		<event>openedBunker</event>
+		<event>gotRomeroPass</event>
+		<event>gotJoeDietPlan</event>
+		<event>gotValleyRain</event>
+		<event>metGamer</event>
+		<event>chattedGamer</event>
+		<event>unblockedTrain</event>
+		<event>rodeTrain</event>
+		<event>spokeToSurvivalist</event>
+		<event>gotRomeroReceipt</event>
+		<event>gotDJReceipt</event>
+		<event>scaredTunnelHorde</event>
+		<event>savedDJ</event>
+		<event>usedBoltCutters</event>
+		<event>beatBunkerFPS</event>
+		<event>containerRetrieved</event>
+		<event>openedSubwayFinancial</event>
+		<event>openedSubwayWharf</event>
+		<event>blockedFromBonus</event>
+		<event>bonusStarted</event>
+		<event>bonusCompleted</event>
+		<event>stunnedSumo</event>
+		<event>unlockedBunker</event>
+		<event>usedBlaster</event>
+		<event>gotCoffee</event>
+		<event>solvedWhiteboard</event>
+		<event>usedKeycard</event>
+		<event>curedRomero</event>
+	</permanentEvents>
+  	
+  	<itemIdMap>
+		<item id="notebook">706</item>
+		<item id="pamphlet">707</item>
+	  	<item id="map">708</item>
+	  	<item id="flashlight">709</item>
+	  	<item id="keys">710</item>
+	  	<item id="subway_pass">711</item>
+	  	<item id="blaster">712</item>
+	  	<item id="bolt_cutters">713</item>
+	  	<item id="lightbulb">714</item>
+	  	<item id="camera">715</item>
+	  	<item id="keycard">716</item>
+	  	<item id="cellphone">717</item>
+	  	<item id="coffee">718</item>
+	  	<item id="blueberries">719</item>
+	  	<item id="gun">720</item>
+	  	<item id="antidote">721</item>
+	  	<item id="medal_zombie">1032</item>
+	</itemIdMap>
+  	
+  	<firstScene>
+  		<!-- This was for AS3. Going back to AS2 now. -->
+  		<!-- <scene>game.scenes.zombie.mainStreet.MainStreet</scene> -->
+  		<scene>ZombieMain</scene>
+		<x>2182</x>
+		<y>680</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

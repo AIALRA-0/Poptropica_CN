@@ -1,0 +1,66 @@
+<island>
+	<name>一千零一夜</name>
+	<eventsClass>game.scenes.arab3.Arab3Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>arab3</island>
+	
+	<permanentEvents>
+		<event>spot_the_difference_complete</event>
+		<event>learned_jinns_name</event>
+		<event>jinn_bound</event>
+		<event>thief_transformed</event>
+		<event>intro_complete</event>
+		<event>genie_in_desert</event>
+		<event>genie_in_desert_sky</event>
+		<event>genie_in_atrium</event>
+		<event>genie_in_bazaar</event>
+		<event>genie_in_palace</event>
+		<event>jailer_left</event>
+		<event>sky_chase_complete</event>
+		<event>sultan_made_wish</event>
+		<event>used_spyglass</event>
+		<event>camel_chase_started</event>	
+		<event>chest_opened</event>
+		<event>sultan_left</event>
+		<event>hidden_door_opened</event>
+	</permanentEvents>
+	
+	<itemIdMap>
+		<item id="bone_meal">921</item>
+		<item id="burlap_sack">922</item>
+		<item id="compass">923</item>
+		<item id="crystals">924</item>
+		<item id="divination_dust">925</item>
+		<item id="drawing">926</item>
+		<item id="geode">927</item>
+		<item id="golden_lamp">928</item>
+		<item id="instructions">929</item>
+		<item id="magic_book">930</item>
+		<item id="magic_carpet">931</item>
+		<item id="moon_dust">932</item>
+		<item id="moonstone">933</item>
+		<item id="roc_feather">934</item>
+		<item id="sesame_oil">935</item>
+		<item id="skeleton_key">936</item>
+		<item id="wishbone">937</item>
+		<item id="medal_arabian3">1054</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.arab3.treasureKeep.TreasureKeep</scene>
+		<x>975</x>
+		<y>530</y>
+		<direction>left</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/arabian-nights-ep3.html</playerMap>
+	<medallion>medal_arabian3</medallion>
+</island>

@@ -8,9 +8,10 @@ const paths = require("./paths");
 const { ensureDirSync, fileExists, hashFile, listFilesRecursive, readJson, removeDirContents, writeJson, writeText } = require("./fs-utils");
 const { containsCjk, normalizeTranslatedText } = require("./text-utils");
 const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
-const { isProtectedTranslationRow } = require("./translation-guards");
+const { isItemXmlVisibleText, isProtectedTranslationRow } = require("./translation-guards");
+const { AS3_DIRECT_WRAPPER_PATH, buildAs3DirectWrapperPhp } = require("./as3-direct-wrapper");
 
-const RUNTIME_FIX_VERSION = 24;
+const RUNTIME_FIX_VERSION = 26;
 const AS3_STAGE_BACKGROUND_RGB = Buffer.from([0x13, 0x9f, 0xfd]);
 // Startup/login SWFs are excluded from the default runtime override set.
 // They still rely on embedded legacy fonts, and forcing Chinese into those
@@ -56,8 +57,7 @@ const AS2_SUPER_POWER_SHARED_SWF_TEXT_SKIP_PATHS = new Set([
   AS2_SUPER_POWER_BALLOON_PATH
 ]);
 const SKIP_RUNTIME_FILE_PATTERNS = [
-  /content\/www\.poptropica\.com\/game\/data\/languages\/en\/islands\/start\/language\.xml$/iu,
-  /content\/www\.poptropica\.com\/game\/data\/languages\/en\/shared\/language\.xml$/iu
+  /content\/www\.poptropica\.com\/game\/data\/languages\/en\/islands\/start\/language\.xml$/iu
 ];
 
 const AS2_SHARED_INVENTORY_TEXT_REPLACEMENTS = [
@@ -349,11 +349,20 @@ function isSafeXmlRow(assetPath, row) {
   }
 
   if (context.kind === "xml-text") {
+    if (/\/game\/data\/items\/[^/]+\/[^/]+\.xml$/iu.test(assetPath)) {
+      return isItemXmlVisibleText({
+        ...row,
+        asset_path: assetPath
+      });
+    }
     if (/\/game\/data\/entity\/character\/partKeys\/[^/]+\.xml$/iu.test(assetPath)) {
       return false;
     }
     if (/\/framework\/data\/config\.xml$/iu.test(assetPath)) {
       return leaf === "clusterName";
+    }
+    if (/\/game\/data\/languages\//iu.test(assetPath)) {
+      return true;
     }
     if (UNSAFE_XML_LEAF_TAGS.has(leaf)) {
       return false;
@@ -830,6 +839,14 @@ function patchRuntimeRenderMode(workingDir) {
       fs.writeFileSync(shellSwfPath, shellPatch.buffer);
       patchedFiles.push(AS3_SHELL_PATH);
     }
+  }
+
+  const as3DirectWrapperPath = path.join(workingDir, AS3_DIRECT_WRAPPER_PATH.replace(/\//gu, path.sep));
+  const wrapperContent = buildAs3DirectWrapperPhp();
+  if (!fileExists(as3DirectWrapperPath) || fs.readFileSync(as3DirectWrapperPath, "utf8") !== wrapperContent) {
+    ensureDirSync(path.dirname(as3DirectWrapperPath));
+    writeText(as3DirectWrapperPath, wrapperContent);
+    patchedFiles.push(AS3_DIRECT_WRAPPER_PATH);
   }
 
   return {
@@ -2467,7 +2484,100 @@ function showSay(target, sayText, id)
   nextContent = replaceRequiredSnippet(
     nextContent,
     "function turnOffWardrobe()\n{",
-    `function zhEnsureDirectMapButton()
+    `function zhPopupStageWidth()
+{
+   var _loc1_ = 1010;
+   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)
+   {
+      _loc1_ = Math.max(_loc1_,Number(Stage.width));
+   }
+   return _loc1_;
+}
+function zhPopupStageHeight()
+{
+   var _loc1_ = 645;
+   if(Stage != undefined && Stage.height != undefined && Number(Stage.height) > 0)
+   {
+      _loc1_ = Math.max(_loc1_,Number(Stage.height));
+   }
+   return _loc1_;
+}
+function zhShowPopupBackdrop()
+{
+   var _loc1_ = zhPopupStageWidth();
+   var _loc2_ = zhPopupStageHeight();
+   var _loc3_;
+   if(_root == undefined)
+   {
+      return undefined;
+   }
+   _loc3_ = _root.__zhPopupBackdrop;
+   if(_loc3_ == undefined)
+   {
+      _loc3_ = _root.createEmptyMovieClip("__zhPopupBackdrop",popupBackDepth - 1);
+      _root.__zhPopupBackdrop = _loc3_;
+   }
+   _loc3_.swapDepths(popupBackDepth - 1);
+   _loc3_.clear();
+   _loc3_._x = 0;
+   _loc3_._y = 0;
+   _loc3_.beginFill(0,72);
+   _loc3_.moveTo(0,0);
+   _loc3_.lineTo(_loc1_,0);
+   _loc3_.lineTo(_loc1_,_loc2_);
+   _loc3_.lineTo(0,_loc2_);
+   _loc3_.lineTo(0,0);
+   _loc3_.endFill();
+   _loc3_._visible = true;
+}
+function zhHidePopupBackdrop()
+{
+   if(_root != undefined && _root.__zhPopupBackdrop != undefined)
+   {
+      _root.__zhPopupBackdrop._visible = false;
+   }
+}
+function zhOpenDirectMap()
+{
+   if(_root == undefined)
+   {
+      return undefined;
+   }
+   _root.__zhMapSuppressBgUntil = getTimer() + 1200;
+   if(_root.__zhDirectMapButton != undefined)
+   {
+      _root.__zhDirectMapButton._visible = false;
+   }
+   if(_root.popup != undefined)
+   {
+      _root.popup("map.swf",true);
+   }
+   else
+   {
+      popup("map.swf",true);
+   }
+   if(_root.trackEvent != undefined)
+   {
+      _root.trackEvent("MapClicked");
+   }
+}
+function zhReadAutoMapDelay()
+{
+   if(_root != undefined && _root.flashpoint_auto_open_map_after_ms != undefined)
+   {
+      return _root.flashpoint_auto_open_map_after_ms;
+   }
+   if(_level0 != undefined && _level0.flashpoint_auto_open_map_after_ms != undefined)
+   {
+      return _level0.flashpoint_auto_open_map_after_ms;
+   }
+   if(flashpoint_auto_open_map_after_ms != undefined)
+   {
+      return flashpoint_auto_open_map_after_ms;
+   }
+   return undefined;
+}
+function zhEnsureDirectMapButton()
 {
    if(_root == undefined)
    {
@@ -2481,67 +2591,21 @@ function showSay(target, sayText, id)
    }
    zhMapButton.swapDepths(1040000);
    zhMapButton.clear();
-   zhMapButton._x = 438;
-   zhMapButton._y = 95;
+   zhMapButton._x = 785;
+   zhMapButton._y = 70;
    zhMapButton._visible = true;
    zhMapButton.enabled = true;
    zhMapButton.useHandCursor = true;
-   zhMapButton.beginFill(5212463,92);
-   zhMapButton.lineStyle(2,13361319,100);
+   zhMapButton.beginFill(0,1);
    zhMapButton.moveTo(0,0);
-   zhMapButton.lineTo(76,0);
-   zhMapButton.lineTo(76,34);
-   zhMapButton.lineTo(0,34);
+   zhMapButton.lineTo(95,0);
+   zhMapButton.lineTo(95,90);
+   zhMapButton.lineTo(0,90);
    zhMapButton.lineTo(0,0);
    zhMapButton.endFill();
-   if(zhMapButton.label == undefined)
-   {
-      zhMapButton.createTextField("label",1,0,5,76,24);
-   }
-   zhMapTextFormat = new TextFormat();
-   zhMapTextFormat.font = "_sans";
-   zhMapTextFormat.size = 18;
-   zhMapTextFormat.bold = true;
-   zhMapTextFormat.color = 16777215;
-   zhMapTextFormat.align = "center";
-   zhMapButton.label.embedFonts = false;
-   zhMapButton.label.selectable = false;
-   zhMapButton.label.setNewTextFormat(zhMapTextFormat);
-   zhMapButton.label.text = "地图";
-   zhMapButton.label.setTextFormat(zhMapTextFormat);
-   if(zhMapButton.hit == undefined)
-   {
-      zhMapButton.createEmptyMovieClip("hit",3);
-   }
-   zhMapButton.hit.clear();
-   zhMapButton.hit.beginFill(0,1);
-   zhMapButton.hit.moveTo(0,0);
-   zhMapButton.hit.lineTo(76,0);
-   zhMapButton.hit.lineTo(76,34);
-   zhMapButton.hit.lineTo(0,34);
-   zhMapButton.hit.lineTo(0,0);
-   zhMapButton.hit.endFill();
-   zhMapButton.hit._alpha = 0;
-   zhMapButton.hit.useHandCursor = true;
-   var zhOpenMap = function()
-   {
-      _root.__zhMapSuppressBgUntil = getTimer() + 1200;
-      _root.__zhDirectMapButton._visible = false;
-      if(_root.popup != undefined)
-      {
-         _root.popup("map.swf",true);
-      }
-      else
-      {
-         popup("map.swf",true);
-      }
-      if(_root.trackEvent != undefined)
-      {
-         _root.trackEvent("MapClicked");
-      }
-   };
-   _root.__zhDirectOpenMap = zhOpenMap;
-   _root.__zhMapButtonBounds = {left:zhMapButton._x - 25,top:zhMapButton._y - 30,right:zhMapButton._x + 105,bottom:zhMapButton._y + 70};
+   zhMapButton._alpha = 1;
+   _root.__zhDirectOpenMap = zhOpenDirectMap;
+   _root.__zhMapButtonBounds = {left:zhMapButton._x,top:zhMapButton._y,right:zhMapButton._x + 95,bottom:zhMapButton._y + 90};
    if(Mouse != undefined && _root.__zhMapMouseListener == undefined)
    {
       _root.__zhMapMouseListener = new Object();
@@ -2558,9 +2622,60 @@ function showSay(target, sayText, id)
       };
       Mouse.addListener(_root.__zhMapMouseListener);
    }
-   zhMapButton.onPress = zhMapButton.onRelease = zhOpenMap;
-   zhMapButton.hit.onPress = zhMapButton.hit.onRelease = zhOpenMap;
-   zhMapButton.label.onPress = zhMapButton.label.onRelease = zhOpenMap;
+   zhMapButton.onPress = zhMapButton.onRelease = zhOpenDirectMap;
+}
+function zhScheduleAutoMap()
+{
+   var _loc1_;
+   if(_root == undefined || _root.__zhAutoMapScheduled == true)
+   {
+      return undefined;
+   }
+   _loc1_ = Number(zhReadAutoMapDelay());
+   if(isNaN(_loc1_) || _loc1_ < 0)
+   {
+      return undefined;
+   }
+   _root.__zhAutoMapScheduled = true;
+   setTimeout(zhOpenDirectMap,_loc1_);
+}
+function zhInstallExternalMapBridge()
+{
+   if(_root == undefined || _root.__zhExternalMapBridgeInstalled == true)
+   {
+      return undefined;
+   }
+   _root.__zhExternalMapBridgeInstalled = true;
+   _root.__zhExternalMapLastRequest = "";
+   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true && flash.external.ExternalInterface.addCallback != undefined)
+   {
+      try
+      {
+         flash.external.ExternalInterface.addCallback("flashpointOpenMap",_root,zhOpenDirectMap);
+      }
+      catch(zhBridgeCallbackError)
+      {
+      }
+   }
+   _root.__zhExternalMapBridgeTimer = setInterval(function()
+   {
+      var zhMapRequest = _root.__zhExternalMapRequest;
+      if((zhMapRequest == undefined || zhMapRequest == "0") && _level0 != undefined)
+      {
+         zhMapRequest = _level0.__zhExternalMapRequest;
+      }
+      zhMapRequest = zhMapRequest == undefined ? "" : String(zhMapRequest);
+      if(zhMapRequest.length > 0 && zhMapRequest != "0" && zhMapRequest != _root.__zhExternalMapLastRequest)
+      {
+         _root.__zhExternalMapLastRequest = zhMapRequest;
+         _root.__zhExternalMapRequest = "0";
+         if(_level0 != undefined)
+         {
+            _level0.__zhExternalMapRequest = "0";
+         }
+         zhOpenDirectMap();
+      }
+   },100);
 }
 function layoutFramelessGameplayNav(forceLayout)
 {
@@ -2791,6 +2906,14 @@ if(_root != undefined && zhEnsureDirectMapButton != undefined)
 {
    zhEnsureDirectMapButton();
 }
+if(_root != undefined && zhScheduleAutoMap != undefined)
+{
+   zhScheduleAutoMap();
+}
+if(_root != undefined && zhInstallExternalMapBridge != undefined)
+{
+   zhInstallExternalMapBridge();
+}
 if(_root != undefined && _root.island == "Super")
 {
    layoutFramelessGameplayNav(true);
@@ -2813,6 +2936,62 @@ if(_root != undefined && _root.island == "Super")
     "gameplay suppress saving text in frameless super"
   );
 
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `   popupClose._visible = false;
+   createEmptyMovieClip("popupClip",popupDepth);
+   popupClip.loadMovie("popups/inventory.swf");`,
+    `   popupClose._visible = false;
+   zhShowPopupBackdrop();
+   createEmptyMovieClip("popupClip",popupDepth);
+   popupClip.loadMovie("popups/inventory.swf");`,
+    "gameplay inventory popup backdrop"
+  );
+
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `   popupBack._visible = false;
+}
+function popup(popupName, showBack, btnCloseOnTop, hideBtnClose)`,
+    `   popupBack._visible = false;
+   zhHidePopupBackdrop();
+}
+function popup(popupName, showBack, btnCloseOnTop, hideBtnClose)`,
+    "gameplay inventory popup backdrop hide"
+  );
+
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `   if(hideBtnClose)
+   {
+      popupBack.btnClose._visible = false;
+      popupClose._visible = false;
+   }
+   createEmptyMovieClip("popupClip",popupDepth);
+   popupClip.loadMovie("popups/" + popupName);`,
+    `   if(hideBtnClose)
+   {
+      popupBack.btnClose._visible = false;
+      popupClose._visible = false;
+   }
+   zhShowPopupBackdrop();
+   createEmptyMovieClip("popupClip",popupDepth);
+   popupClip.loadMovie("popups/" + popupName);`,
+    "gameplay popup backdrop"
+  );
+
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `   popupBack._visible = false;
+   popupClose._visible = false;
+   _level0.ads_mc._ad1._visible = true;`,
+    `   popupBack._visible = false;
+   popupClose._visible = false;
+   zhHidePopupBackdrop();
+   _level0.ads_mc._ad1._visible = true;`,
+    "gameplay popup backdrop hide"
+  );
+
   return nextContent;
 }
 
@@ -2831,6 +3010,10 @@ function applyAs2GameplayFrame5NavPatch(content) {
    if(_root != undefined && zhEnsureDirectMapButton != undefined)
    {
       zhEnsureDirectMapButton();
+   }
+   if(_root != undefined && zhInstallExternalMapBridge != undefined)
+   {
+      zhInstallExternalMapBridge();
    }
    if(_root != undefined && _root.island == "Super" && layoutFramelessGameplayNav != undefined)
    {
@@ -3222,6 +3405,7 @@ function flashpoint_collect_audio_overrides() {
   nextContent = nextContent.replace(
     primaryEmbedPattern,
     `<div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="139ffd" hidden></div>
+        <div id="flashpointMapHotspot" hidden aria-hidden="true"></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>`
   );
   nextContent = nextContent.replace(
@@ -3240,6 +3424,18 @@ body, embed { background-color: #139ffd; }
     overflow: hidden;
 }
 
+#flashpointMapHotspot {
+    position: absolute;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0);
+    cursor: pointer;
+    touch-action: none;
+}
+
+#flashpointMapHotspot[hidden] {
+    display: none;
+}
+
 embed {
     outline-width: 0;
     position: absolute;
@@ -3252,12 +3448,14 @@ embed {
       lsKey = "lastScene";`,
     `const gameViewport = document.getElementById("gameViewport"),
       game = document.getElementById("game"),
+      flashpointMapHotspot = document.getElementById("flashpointMapHotspot"),
       sceneAudio = document.getElementById("flashpointSceneAudio"),
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
+      MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 44, width: 1010, height: 500 };`,
     "base page viewport host constants"
   );
@@ -3270,6 +3468,7 @@ function main() {
     flashpointLoad(params.island, params.room, params.startup_path);
 }`,
     `main();
+initMapHotspotBridge();
 window.addEventListener("resize", () => applyCurrentViewport());
 
 function main() {
@@ -3279,6 +3478,67 @@ function main() {
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
     return null;
+}
+
+function initMapHotspotBridge() {
+    if(!flashpointMapHotspot)
+        return;
+
+    const requestHandler = function(event) {
+        if(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        requestFlashMapOpen();
+    };
+    flashpointMapHotspot.addEventListener("mousedown", requestHandler, true);
+    flashpointMapHotspot.addEventListener("click", requestHandler, true);
+    flashpointMapHotspot.addEventListener("touchstart", requestHandler, { capture: true, passive: false });
+}
+
+function requestFlashMapOpen() {
+    if(!game || !flashpointMapHotspot)
+        return false;
+
+    const now = Date.now();
+    if(flashpointMapHotspot.__zhLastRequestAt && now - flashpointMapHotspot.__zhLastRequestAt < 450)
+        return true;
+    flashpointMapHotspot.__zhLastRequestAt = now;
+
+    try {
+        if(typeof game.flashpointOpenMap === "function") {
+            game.flashpointOpenMap();
+            return true;
+        }
+    } catch(err) { }
+
+    try {
+        if(typeof game.SetVariable === "function") {
+            const token = String(now);
+            game.SetVariable("__zhExternalMapRequest", token);
+            game.SetVariable("_root.__zhExternalMapRequest", token);
+            game.SetVariable("_level0.__zhExternalMapRequest", token);
+            return true;
+        }
+    } catch(err) { }
+    return false;
+}
+
+function applyMapHotspot(viewport, gameState) {
+    if(!flashpointMapHotspot)
+        return;
+
+    if(gameState !== "return_user_standard") {
+        flashpointMapHotspot.hidden = true;
+        return;
+    }
+
+    const scale = viewport.useViewportCrop ? viewport.viewportScale : 1;
+    flashpointMapHotspot.hidden = false;
+    flashpointMapHotspot.style.left = \`\${ viewport.offsetLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px\`;
+    flashpointMapHotspot.style.top = \`\${ viewport.offsetTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px\`;
+    flashpointMapHotspot.style.width = \`\${ MAP_HOTSPOT.width * scale }px\`;
+    flashpointMapHotspot.style.height = \`\${ MAP_HOTSPOT.height * scale }px\`;
 }
 
 function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
@@ -3295,13 +3555,13 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
+        viewportScale = Math.max(0.25, Math.max(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
         viewportWidth = crop.width;
         viewportHeight = crop.height;
-        offsetLeft = Math.round((window.innerWidth - viewportWidth * viewportScale) / 2);
-        offsetTop = Math.round((window.innerHeight - viewportHeight * viewportScale) / 2);
+        offsetLeft = Math.min(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
+        offsetTop = Math.min(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
@@ -3336,6 +3596,7 @@ function applyGameViewport(viewport, gameState) {
         game.style.left = "0px";
         game.style.top = "0px";
     }
+    applyMapHotspot(viewport, gameState);
 }
 
 function applyCurrentViewport() {
@@ -3457,6 +3718,21 @@ function updateSceneAudio(island, scene, gameState) {
 
 function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
     "base page audio override helpers"
+  );
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `    flashVars.set("startup_path", path);
+    flashVars.set("state", gameState);
+
+    if(getCharLazyLoadStatus()) {`,
+    `    flashVars.set("startup_path", path);
+    flashVars.set("state", gameState);
+    const inputParams = getInput();
+    if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
+        flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
+
+    if(getCharLazyLoadStatus()) {`,
+    "base page QA map flashvar passthrough"
   );
   nextContent = replaceRequiredSnippet(
     nextContent,
@@ -5676,6 +5952,8 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
 }
 
 module.exports = {
+  applyFlashSafeTypography,
+  applyStructuredReplacements,
   buildPackForSourceGroup,
   buildRuntimeZipForSourceGroup,
   collectRuntimeReplacementsForSourceGroup

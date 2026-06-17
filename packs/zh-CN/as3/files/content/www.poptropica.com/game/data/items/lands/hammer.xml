@@ -1,0 +1,35 @@
+<item id="hammer">
+	<type>island</type>
+	<subType>lands</subType>
+		
+	<textfields>
+  		<text id="title">
+    		<value>斯瓦迪尔法利</value>
+  		</text>
+		<text>
+    		<value>你感受到这股力量了吗？</value>
+   			<size>15</size>
+    		<y>120</y>
+  		</text>
+  	</textfields>
+  	
+  	<!--<buttons>
+  		<btn>
+  			<label>USE</label>
+  			<actions>
+  				<action type="triggerEvent">
+	  				<parameters>
+			  			<param id="event">use_full_pitcher</param>
+			  		</parameters>
+			  	</action>
+  			</actions>
+  		</btn>
+  	</buttons>-->
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundBlue.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>    
+</item>

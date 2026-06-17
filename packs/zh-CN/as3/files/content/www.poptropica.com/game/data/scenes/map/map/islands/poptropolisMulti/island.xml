@@ -1,0 +1,24 @@
+<island>
+	<name>Poptropolis 运动会岛</name>
+	<island>poptropolis</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/poptropolisMulti/</islandFolder>
+	<numEpisodes>2</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>as3/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>as2/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

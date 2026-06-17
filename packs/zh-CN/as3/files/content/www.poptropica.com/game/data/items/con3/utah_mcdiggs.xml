@@ -1,0 +1,33 @@
+<item id="utah_mcdiggs">
+	<type>island</type>
+	<subType>con3</subType>
+	<value>1,steal</value>
+	<textfields>
+ 		<text id="title">
+      		<value>犹他·麦迪格斯</value>
+      		<styleFamily>CCG</styleFamily>
+      		<styleId>title_long</styleId>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="power">
+      		<value>偷取宝石</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>40</y>
+    	</text>
+    	<text id="description">
+      		<value>从对手那里偷取一颗宝石。</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>100</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con3/background1.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con3/utah_mcdiggs.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

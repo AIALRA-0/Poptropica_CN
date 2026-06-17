@@ -1,0 +1,62 @@
+<item id="warriorMask">
+	<type>island</type>
+	<subType>time</subType>
+	<buttons>
+  		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="applyLook"/>
+				<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">warriorMaskOn</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+				<action type="triggerEvent">
+					<parameters>
+						<param id="event">warriorMaskOff</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+		<text id="title">
+    		<value>战士头饰</value>
+  		</text>
+    	<text id="islandgray">
+      		<value>这件头饰会让你看起来像阿兹特克战士。</value>
+      		<size>18</size>
+      		<y>89</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+    		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>-4</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-40</saturation>
+     			<hue>114</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    <looks>
+	    <look>
+		 	<facial>aztecmask</facial>
+	   	</look> 
+	</looks> 
+	
+	<conditionals>
+    	<conditional type="hasLook" />	<!-- if no lookId param is given uses first look by default -->
+    </conditionals>
+</item>

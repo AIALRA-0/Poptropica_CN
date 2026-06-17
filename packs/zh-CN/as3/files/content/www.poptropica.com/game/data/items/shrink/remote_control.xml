@@ -1,0 +1,30 @@
+<item id="remote_control">
+	<type>island</type>
+	<subType>shrink</subType>
+	<textfields>
+ 		<text>
+      		<value>遥控器</value>
+    	</text>
+    	<text>
+  			<value>轰轰！</value>
+      		<size>18</size>
+      		<y>110</y>
+      		<width>150</width>
+      		<textColor>0x49464E</textColor>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/ShrinkRayBackground.swf</assetPath>
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-65</saturation>
+     			<hue>170</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

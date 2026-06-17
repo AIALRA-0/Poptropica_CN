@@ -1,0 +1,47 @@
+<island>
+	<name>早期 Poptropica 岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>early</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>returnBucket</event>
+		<event>returnEgg</event>
+		<event>returnFlag</event>
+		<event>returnPig</event>
+		<event>FLKey1</event>
+		<event>FLKey2</event>
+		<event>FLKey3</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="bucket">1</item>
+		<item id="egg">2</item>
+		<item id="flag">3</item>
+		<item id="glowstick">4</item>
+		<item id="jetpack">5</item>
+		<item id="pig">6</item>
+		<item id="medal_early">1001</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>City2</scene>
+		<x>897</x>
+		<y>560</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

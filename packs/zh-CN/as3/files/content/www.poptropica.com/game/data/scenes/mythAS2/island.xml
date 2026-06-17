@@ -1,0 +1,75 @@
+<island>
+	<name>神话岛</name>
+	<eventsClass>game.scenes.backlot.MythEvents</eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>mythAS2</island>
+	
+	<permanentEvents>
+  		<event>saw_cerberus</event>
+  		<event>saw_poseidon_block</event>
+  		<event>poseidon_throne_open</event>
+  		<event>hades_throne_open</event>
+  		<event>athena_transform</event>
+  		<event>cleaned_graffiti_0</event>
+  		<event>cleaned_graffiti_1</event>
+  		<event>cleaned_graffiti_2</event>
+  		<event>aphrodite_test_passed</event>
+  		<event>simon_says_passed</event>
+  		<event>completed_bones</event>
+  		<event>completed_labyrinth</event>
+  		<event>poseidon_temple_open</event>
+  		<event>hades_temple_open</event>
+  		<event>zeus_gate_open</event>
+  		<event>sphinx_flooded</event>
+  		<event>sphinx_awake</event>
+  		<event>hercules_following</event>
+  		<event>hercules_lost</event>
+  		<event>honey_chase_passed</event>
+  		<event>honey_chase_failed</event>
+  		<event>honey_chase_started</event>
+  		<event>zeus_appears_tree</event>
+  		<event>zeus_appears_steal</event>
+  		<event>zeus_appears_throne</event>
+		<event>returned_items</event>
+  		<event>player_become_god</event>
+  		<event>quest_started</event>
+  		<event>hercules_underwater</event>
+  		<event>hercules_underground</event>
+  		<event>hercules_mainStreet</event>
+  	</permanentEvents>
+  	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	  	<item id="medalMythology">1012</item>
+	  	<item id="goldenApple">160</item>
+	  	<item id="zeusScroll">161</item>
+	  	<item id="sphinxFlower">162</item>
+	  	<item id="minotaurRing">163</item>
+	  	<item id="hydraScale">164</item>
+	  	<item id="giantPearl">165</item>
+	  	<item id="cerberusWhisker">166</item>
+	  	<item id="pipeTune">167</item>
+	  	<item id="starfish">168</item>
+	  	<item id="silverDrachma">169</item>
+	  	<item id="reedPipe">170</item>
+	  	<item id="pomegranates">171</item>
+	  	<item id="aphroditeMirror">172</item>
+	  	<item id="hadesCrown">173</item>
+	  	<item id="poseidonTrident">174</item>
+	  	<item id="bagOfWind">175</item>
+  	</itemIdMap>
+	
+  	<firstScene>
+  		<scene>MythMain</scene>
+		<x>1315</x>
+		<y>420</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

@@ -1,0 +1,16 @@
+<island>
+	<name>蒸汽工厂岛</name>
+	<island>steam</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/steam/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

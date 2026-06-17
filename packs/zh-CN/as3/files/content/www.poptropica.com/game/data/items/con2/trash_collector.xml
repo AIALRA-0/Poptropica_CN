@@ -1,0 +1,33 @@
+<item id="trash_collector">
+	<type>island</type>
+	<subType>con2</subType>
+	<value>1,both</value>
+	<textfields>
+ 		<text id="title">
+      		<value>垃圾收集者</value>
+      		<styleFamily>CCG</styleFamily>
+      		<styleId>title_long</styleId>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="power">
+      		<value>双重视野</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>40</y>
+    	</text>
+    	<text id="description">
+      		<value>在剩余的行动格上再打出一张牌。</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>100</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con2/background1.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/trash_collector.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

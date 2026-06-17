@@ -1,0 +1,22 @@
+<item id="nest">
+  	<type>island</type>
+  	<subType>survival1</subType>
+  	<textfields>
+ 		<text>
+      		<value>鸟巢</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-71</saturation>
+     			<hue>20</hue>
+    		</effect>
+    	</asset>
+   		<asset id="cardContent"/>
+    </assets>
+</item>

@@ -1,0 +1,16 @@
+<island>
+	<name>真人秀岛</name>
+	<island>reality</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/reality/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

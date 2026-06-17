@@ -1,0 +1,56 @@
+<island>
+	<name>时空缠结岛</name>
+	<eventsClass>game.scenes.time.TimeEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>time</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>enter_lab</event>
+		<event>victory</event>
+		<event>time_repaired</event>
+		<event>cave_open</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	  	<item id="printout">35</item>
+	  	<item id="timeDevice">33</item>
+	  	<item id="sunstone">25</item>
+	  	<item id="warriorMask">29</item>
+	  	<item id="ability_glider">34</item>
+	  	<item id="vikingSuit">36</item>
+	  	<item id="amulet">32</item>
+	  	<item id="goggles">30</item>
+	  	<item id="gunpowder">24</item>
+	  	<item id="phonograph">22</item>
+		<item id="declaration">31</item>
+	  	<item id="statuette">26</item>
+	  	<item id="goldenVase">23</item>
+	  	<item id="saltRocks">21</item>
+	  	<item id="silverMedal">28</item>
+	  	<item id="stoneBowl">27</item>
+	  	<item id="notebook">20</item>
+	  	<item id="medalTime">1003</item>
+	</itemIdMap>
+	
+	<firstScene>
+  		<scene>game.scenes.time.mainStreet.MainStreet</scene>
+		<x>972</x>
+		<y>1930</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+    <!-- Invalidating island for 1.10 -->
+    
+    <playerMap></playerMap>
+	<medallion>medalTime</medallion>
+</island>

@@ -1,0 +1,65 @@
+<island>
+	<name>扭曲林地岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>woodland</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>talkedToDeveloper</event>
+		<event>gotShard1</event>
+		<event>gotShard2</event>
+		<event>gotShard3</event>
+		<event>gotShard4</event>
+		<event>gotShard5</event>
+		<event>wonGoblins</event>
+		<event>wonBattle</event>
+		<event>chatQueen</event>
+		<event>enteredCavern</event>
+		<event>bonusChat</event>
+		<event>day2Complete</event>
+		<event>day2Start</event>
+		<event>dryadWebBroken</event>
+		<event>bogWebBroken</event>
+		<event>enteredBog</event>
+		<event>bogWall0</event>
+		<event>bogWall1</event>
+		<event>bogWall2</event>
+		<event>bogWall3</event>
+		<event>stoneMoved</event>
+		<event>encounteredDryads</event>
+		<event>openedSacredTree</event>
+		<event>completedCanopy</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="lesovyk_rune">430</item>
+		<item id="kobold_rune">431</item>
+		<item id="jotunn_rune">432</item>
+		<item id="nackrosor_rune">433</item>
+		<item id="dokkalfar_rune">434</item>
+		<item id="amulet">435</item>
+		<item id="shards">436</item>
+		<item id="medal_woodland">1026</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>WoodlandMain</scene>
+		<x>356</x>
+		<y>1020</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

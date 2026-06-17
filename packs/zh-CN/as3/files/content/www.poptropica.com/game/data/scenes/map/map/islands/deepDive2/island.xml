@@ -1,0 +1,16 @@
+<island>
+	<name>亚特兰蒂斯任务</name>
+	<island>deepDive2</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/deepDive2/</islandFolder>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+	
+</island>

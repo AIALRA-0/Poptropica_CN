@@ -1,0 +1,175 @@
+<island>
+	<name>病毒猎手岛</name>
+	<eventsClass>game.scenes.virusHunter.VirusHunterEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>virusHunter</island>
+	
+	<permanentEvents>
+		<event>started</event>
+	 	<event>saw_van_on_main</event>
+		<event>saw_van_on_right</event>
+		<event>used_resistance_band</event>
+		<event>talked_to_bert</event>
+		<event>van_left</event>
+		<event>got_shreds</event>
+		<event>assembled_shreds</event>
+		<event>delivering_falafel</event>
+		<event>took_joe_photo</event>
+		<event>completed_tutorial</event>
+		<event>entered_joe</event>
+		<event>searched_mail</event>
+		<event>heart_boss_defeated</event>
+		<event>attacked_by_white_blood_cells</event>
+		<event>arm_locked</event>
+		<event>arm_boss_started</event>
+		<event>arm_boss_defeated</event>
+		<event>clogged_hand_cut_1</event>
+		<event>clogged_hand_cut_2</event>
+		<event>clogged_hand_cut_3</event>
+		<event>clogged_hand_cut_4</event>
+		<event>started_bonus_quest</event>
+		<event>blocked_from_bonus</event>
+		<event>destroyed_calcification_1</event>
+		<event>destroyed_calcification_2</event>
+		<event>destroyed_calcification_3</event>
+		<event>destroyed_calcification_4</event>
+		<event>destroyed_calcification_5</event>
+		<event>destroyed_calcification_6</event>
+		<event>tooth_chipped_1</event>
+		<event>tooth_chipped_2</event>
+		<event>tooth_chipped_3</event>
+		<event>tooth_chipped_4</event>
+		<event>tooth_removed</event>
+		<event>splinter_removed</event>
+		<event>start_workout_popup</event>
+		<event>bus_cutscene_played</event>
+		<event>lung_boss_defeated</event>
+		<event>blockage_cleared_1</event>
+		<event>blockage_cleared_2</event>
+		<event>blockage_cleared_3</event>
+		<event>blockage_cleared_4</event>
+		<event>blockage_cleared_5</event>
+		<event>blockage_cleared_6</event>
+		<event>blockage_cleared_7</event>
+		<event>blockage_cleared_8</event>
+		<event>blockage_shot_1</event>
+		<event>blockage_shot_2</event>
+		<event>blockage_shot_3</event>
+		<event>blockage_shot_4</event>
+		<event>cramp_cured</event>
+		<event>drink_cutscene_played</event>
+		<event>splinter_cutscene_played</event>
+		<event>ulcer_cured</event>
+		<event>dog_treat_cleared_1</event>
+		<event>dog_treat_cleared_2</event>
+		<event>dog_treat_cleared_3</event>
+		<event>dog_treat_cleared_4</event>
+		<event>dog_treat_cleared_5</event>
+		<event>dog_treat_cleared_6</event>
+		<event>stomach_fat_cleared_1</event>
+		<event>stomach_fat_cleared_2</event>
+		<event>stomach_fat_cleared_3</event>
+		<event>stomach_fat_cleared_4</event>
+		<event>stomach_fat_cleared_5</event>
+		<event>stomach_fat_cleared_6</event>
+		<event>stomach_fat_cleared_7</event>
+		<event>stomach_fat_cleared_8</event>
+		<event>worm_cleared_1</event>
+		<event>worm_cleared_2</event>
+		<event>worm_cleared_3</event>
+		<event>worm_cleared_4</event>
+		<event>worm_cleared_5</event>
+		<event>worm_cleared_6</event>
+		<event>worm_cleared_7</event>
+		<event>worm_cleared_8</event>
+		<event>worm_cleared_9</event>
+		<event>worm_cleared_10</event>
+		<event>dog_cut_cured_1</event>
+		<event>dog_cut_cured_2</event>
+		<event>dog_cut_cured_3</event>
+		<event>dog_cut_cured_4</event>
+		<event>dog_cut_cured_5</event>
+		<event>entered_dog</event>
+		<event>exited_dog</event>
+		<event>lung_worms_defeated</event>
+		<event>worm_boss_defeated</event>
+		<event>got_goo</event>
+		<event>got_shock</event>
+		<event>got_scalpel</event>
+		<event>got_shield</event>
+		<event>got_antiGrav</event>
+		<event>used_badge</event>
+		<event>delivered_falafel</event>
+		<event>fixed_arrhythmia</event>
+		<event>passed_heart</event>
+		<event>hatch_open</event>
+		<event>hatch_close</event>
+		<event>fighting_infection</event>
+		<event>hand_hemorrhages_cured</event>
+		<event>calcification_removed</event>
+		<event>intestine_boss_defeated</event>
+		<event>retract_worms</event>
+		<event>worm_retracted_1</event>
+		<event>worm_retracted_2</event>
+		<event>worm_retracted_3</event>
+		<event>worm_retracted_4</event>
+		<event>worm_retracted_5</event>
+		<event>worm_retracted_6</event>
+		<event>worm_retracted_7</event>
+		<event>worm_retracted_8</event>
+		<event>worm_retracted_9</event>
+		<event>worm_retracted_10</event>
+		<event>talked_to_girl</event>
+		<event>brain_boss_defeated</event>
+		<event>clogged_forearm_cut_1</event>
+		<event>clogged_forearm_cut_2</event>
+		<event>clogged_forearm_cut_3</event>
+		<event>clogged_forearm_cut_4</event>
+		<event>clogged_forearm_cut_5</event>
+		<event>clogged_forearm_cut_6</event>
+		<event>clogged_forearm_cut_7</event>
+		<event>clogged_upper_arm_cut_0</event>
+		<event>clogged_upper_arm_cut_1</event>
+		<event>clogged_upper_arm_cut_2</event>
+		<event>clogged_upper_arm_cut_3</event>
+		<event>clogged_upper_arm_cut_4</event>
+		<event>clogged_upper_arm_cut_5</event>
+		<event>clogged_upper_arm_cut_6</event>
+		<event>talked_to_bert</event>
+		<event>van_left</event>
+		<event>lange_in_back_room</event>
+		<event>talked_to_lange_d2</event>
+	</permanentEvents>
+	
+ 	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="camera">750</item>
+		<item id="dossier">751</item>
+		<item id="falafel">752</item>
+		<item id="medalVirusHunter">1036</item>
+		<item id="pdcIdBadge">753</item>
+		<item id="petriDish">754</item>
+		<item id="photo">755</item>
+		<item id="resistanceBand">756</item>
+		<item id="shreddedDocuments">757</item>
+		<item id="flyingAce">758</item>
+	</itemIdMap>
+	
+	<firstScene>
+ 		<scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+		<x>1880</x>
+		<y>890</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+ 	</firstScene>
+ 
+ 	<playerMap>http://www.poptropica.com/player-maps/virus-hunter.html</playerMap>
+	<medallion>medalVirusHunter</medallion>
+</island>

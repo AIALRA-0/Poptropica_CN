@@ -1,0 +1,34 @@
+<item id="jetpack-instructions">
+	<type>island</type>
+	<subType>con1</subType>
+	<buttons>
+  		<btn>
+    		<label>查看</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.con1.shared.popups.Instructions</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+ 		<text>
+      		<value>喷气背包说明</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-73</saturation>
+     			<hue>170</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

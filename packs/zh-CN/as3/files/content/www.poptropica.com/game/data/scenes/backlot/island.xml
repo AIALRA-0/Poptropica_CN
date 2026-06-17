@@ -1,0 +1,83 @@
+<island>
+	<name>片场幕后岛</name>
+	<eventsClass>game.scenes.backlot.BacklotEvents</eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>backlot</island>
+	
+	<permanentEvents>
+		<event>started</event>
+		<event>paparazziLeft</event>
+		<event>talkToHarvey</event>
+		<event>chattedWilly</event>
+		<event>completeSoundstage1</event>
+		<event>completeSoundstage2</event>
+		<event>completeSoundstage4</event>
+		<event>playerOfferedPartSoundStage4</event>
+		<event>disruptedKirk</event>
+		<event>kirkReturnedStage1</event>
+		<event>carsonReturnedStage1</event>
+		<event>gaveKirkCoffee</event>
+		<event>kirkThrewCup</event>
+		<event>conradLeft</event>
+		<event>cameraChat</event>
+		<event>madeTrainProp</event>
+		<event>usedWhiteHat</event>
+		<event>usedBlackHat</event>
+		<event>enteredBacklot</event>
+		<event>usedHeadshot</event>
+		<event>didWesternFilm</event>
+		<event>openedBacklotGate</event>
+		<event>canUseCart</event>
+		<event>completedEditing</event>
+		<event>completedFoley</event>
+		<event>screenplayMissing</event>
+		<event>pagesBlewAway</event>
+		<event>gotPage1</event>
+		<event>gotPage2</event>
+		<event>gotPage3</event>
+		<event>gotPage4</event>
+		<event>day2Started</event>
+		<event>day2EscapedLot</event>
+		<event>day2Completed</event>
+		<event>sawMovie</event>
+		<event>sawSisters</event>
+		<event>blockedFromBonus</event>
+		<event>metSofia</event>
+		<event>gotFilm</event>
+		<event>sawSidewalk</event>
+		<event>orderedScriptPages</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medal_backlot">1034</item>
+		<item id="film">739</item>
+	  	<item id="camera">740</item>
+	  	<item id="coffeeCupLeft">741</item>
+	  	<item id="coffeeCupRight">742</item>
+	  	<item id="screenplayPages">743</item>
+	  	<item id="headShot">744</item>
+	  	<item id="whiteHat">745</item>
+	  	<item id="blackHat">746</item>
+	  	<item id="reels">747</item>
+	  	<item id="kirkCoffeeCup">748</item>
+	  	<item id="movieCamera">749</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+		<!-- <scene>game.scenes.backlot.mainStreet.MainStreet</scene> -->
+		<scene>BacklotMain</scene>
+		<x>3030</x>
+		<y>575</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

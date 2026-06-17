@@ -1,0 +1,28 @@
+<item id="map_o_sphere">
+  	<type>island</type>
+  	<subType>ghd</subType>
+  	
+  	<textfields>
+  		<text>
+    		<value>地图球</value>
+  		</text>
+  	</textfields>
+  	
+  	<contentClass>
+		<className>game.scenes.ghd.shared.MapOSphereCardView</className>
+	</contentClass>
+  	  	
+  	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/ghd/background.swf</assetPath>
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-70</saturation>
+     			<hue>150</hue>
+    		</effect>
+    	</asset>
+    </assets>
+</item>

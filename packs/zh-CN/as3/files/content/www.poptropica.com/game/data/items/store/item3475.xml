@@ -1,0 +1,58 @@
+<item id="3475">
+  	<type>store</type>
+  	<subType>general</subType>
+
+	<buttons>
+  	<btn>
+  			<index>0</index>
+			<conditional id="hasAbility" isTrue="false"/>
+    		<label>跟随</label>
+    		<actions>
+				<action type="activatePower" > <!-- change tracking call -->
+					<parameters>
+					  		<param id="trigger">true</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+  			<index>0</index>
+ 			<conditional id="hasAbility" isTrue="true"/>
+    		<label>关闭</label>
+    		<actions>
+				<action type="deactivatePower"/>
+			</actions>
+  		</btn>
+  	</buttons>
+
+	<textfields>
+		<text id="memberinstructions">
+		  <value>逃离鹈鹕岩</value>
+		  <y>-172</y>
+		</text>
+		<text id="membertitle">
+		  <value>宠物鸟跟随者</value>
+		  <y>-185</y>
+		</text>
+		<text id="memberinstructions">
+		  <value>______________________________</value>
+		  <y>-135</y>
+		</text>
+	</textfields>
+	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackground.swf</assetPath>
+    	</asset>
+		<asset id="cardContent" /> <!-- Will use content bin/assets/items/limited/item999.swf -->
+    </assets>
+
+  <conditionals>
+    	<conditional type="hasAbility" />
+    </conditionals>
+    
+	<specials>
+		<specialAbility>follower_prisonbreak_bird</specialAbility>
+    </specials>
+
+</item>

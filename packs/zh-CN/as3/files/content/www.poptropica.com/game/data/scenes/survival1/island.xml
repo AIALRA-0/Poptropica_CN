@@ -1,0 +1,69 @@
+<island>
+	<name>生存岛</name>
+	<eventsClass>game.scenes.survival1.Survival1Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>survival1</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>boulder_in_position</event>
+		<event>crash_landing</event>
+		<event>cave_open</event>
+		<event>beginning_landing</event>
+		<event>branch_broken</event>
+		<event>pulled_cord</event>
+		<event>pushed_stump</event>
+		<!-- <event>has_page_1</event>
+		<event>has_page_2</event>
+		<event>has_page_3</event>
+		<event>has_page_4</event>
+		<event>has_page_5</event> -->
+		<event>dropped_striker</event>
+		<event>retrieved_striker</event>
+		<event>wearing_mittens</event>
+		<!-- <event>found_handbook_binding</event> -->
+		<event>fire_completed</event>
+		<event>froze</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="axHandle">798</item>
+		<item id="dryKindling">799</item>
+		<item id="flint">800</item>
+	  	<item id="handbook">801</item>
+	  	<item id="logs">803</item>
+	  	<item id="mittens">804</item>
+	  	<item id="nest">805</item>
+	  	<item id="striker">806</item>
+	  	<item id="wetKindling">807</item>
+	  	<item id="handbookPages">809</item>
+	  	<item id="handbookPage1">802</item>
+	  	<item id="handbookPage2">808</item>
+	  	<item id="handbookPage3">810</item>
+	  	<item id="handbookPage4">811</item>
+	  	<item id="handbookPage5">812</item>
+	  	<item id="handbookPage6">813</item>
+		<item id="medal_survival1">1039</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.survival1.crashLanding.CrashLanding</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	<!-- Invalidating island for 1.10 -->
+	
+	<playerMap>http://www.poptropica.com/player-maps/survival.html</playerMap>
+	<medallion>medal_survival1</medallion>
+</island>

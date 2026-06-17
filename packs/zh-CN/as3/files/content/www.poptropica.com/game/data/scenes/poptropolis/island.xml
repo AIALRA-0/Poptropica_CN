@@ -1,0 +1,56 @@
+<island>
+	<name>Poptropolis 运动会岛</name>
+  	<eventsClass>game.scenes.poptropolis.PoptropolisEvents</eventsClass>
+  	<gameVersion>AS3</gameVersion>
+  	<island>poptropolis</island>
+  	
+  	<permanentEvents>
+		<event>started</event>
+	  	<event>selected_tribe</event>
+		<event>dug_in_promo</event>
+		<event>promo_dive_started</event>
+		<event>promo_dive_finished</event>
+		<event>poptropolis_started</event>
+		<event>talked_to_mc</event>
+		<event>started_games</event>
+		<event>bonus_started</event>
+		<event>blocked_from_bonus</event>
+		<event>bonus_completed</event>
+		<event>archery_completed</event>
+		<event>diving_completed</event>
+		<event>hurdles_completed</event>
+		<event>javelin_completed</event>
+		<event>long_jump_completed</event>
+		<event>pole_vault_completed</event>
+		<event>shotput_completed</event>
+		<event>triple_jump_completed</event>
+		<event>weight_lifting_completed</event>
+		<event>skiing_completed</event>
+		<event>volleyball_completed</event>
+		<event>wrestling_completed</event>
+  	</permanentEvents>
+  
+  	<itemIdMap>
+  		<item id="medal_poptropolis">1027</item>		<!-- Verify matching card number -->
+	  	<item id="ancient_warrior_outfit">441</item>	<!-- Verify matching card number -->
+	  	<item id="tribal_jersey">440</item>			<!-- Verify matching card number -->
+  	</itemIdMap>
+  
+  	<firstScene>
+  		<scene>game.scenes.poptropolis.mainStreet.MainStreet</scene>
+		<x>495</x>
+		<y>1350</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/poptropolis-games.html</playerMap>
+	<medallion>medal_poptropolis</medallion>
+</island>

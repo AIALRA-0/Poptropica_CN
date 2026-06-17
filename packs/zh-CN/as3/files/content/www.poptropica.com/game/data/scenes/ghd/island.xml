@@ -1,0 +1,66 @@
+<island>
+	<name>银河热狗岛</name>
+	<eventsClass>game.scenes.ghd.GalacticHotDogEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>ghd</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>saw_queen</event>
+		<event>ready_for_contest</event>
+		<event>cooked_dog</event>
+		<event>got_nuclear_pellet</event>
+		<event>give_fuel_cell</event>
+		<event>worm_hole_appeared</event>
+		<event>got_map_1</event>
+		<event>got_map_2</event>
+		<event>got_map_3</event>
+		<event>ask_fred</event>
+		<event>used_guano</event>
+		<event>engines_on</event>
+		<event>recovered_cosmoe</event>
+		<event>recovered_dagger</event>
+		<event>recovered_humphree</event>
+		<event>broke_nuke_cart</event>
+		<event>talked_to_arena_guards</event>
+		<event>found_planet_prehistoric</event>
+		<event>found_planet_mushroom</event>
+		<event>found_planet_barren</event>
+		<event>found_lost_triangle</event>
+		<event>found_transmission_cosmoe</event>
+		<event>found_transmission_dagger</event>
+		<event>found_transmission_humphree</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="egg">889</item>
+		<item id="fuel_cell">890</item>
+		<item id="fruit">891</item>
+		<item id="gelatin_salad">892</item>
+		<item id="giant_spatula">893</item>
+		<item id="guano">894</item>
+		<item id="map_o_sphere">895</item>
+		<item id="seed_pod">896</item>
+		<item id="medal_ghd">1051</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.ghd.spacePort.SpacePort</scene>
+		<x>4270</x>
+		<y>1390</y>
+		<direction>left</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/galactic-hot-dogs.html</playerMap>
+	<medallion>medal_ghd</medallion>
+</island>

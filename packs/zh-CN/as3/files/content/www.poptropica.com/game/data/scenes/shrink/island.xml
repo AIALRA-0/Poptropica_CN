@@ -1,0 +1,91 @@
+<island>
+	<name>缩小射线岛</name>
+	<eventsClass>game.scenes.shrink.ShrinkEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>shrink</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>captured_silva</event>
+		<event>entered_apartment</event>
+		<event>chased_cat</event>
+		<event>cat_in_bath</event>
+		<event>got_address</event>
+		<event>look_away_microscope</event>
+		<event>find_cj</event>
+		<event>shrunk</event>
+		<event>got_shrunken</event>
+		<event>fan_on</event>
+		<event>fan_down</event>
+		<event>tipped_trash</event>
+		<event>vent_on</event>
+		<event>bathroom_lights_off</event>
+		<event>bathroom_vents_off</event>
+		<event>cj_at_school</event>
+		<event>got_cjs_message_01</event>
+		<event>backed_up_thumb_drive</event>
+		<event>thumb_drive_in_toilet</event>
+		<event>flushed_thumb_drive</event>
+		<event>got_cjs_message_02</event>
+		<event>knocked_down_book</event>
+		<event>logged_on</event>
+		<event>diary_unlocked</event>
+		<event>diary_restored</event>
+		<event>placed_paper</event>
+		<event>paper_on_table</event>
+		<event>lemon_paper_light</event>
+		<event>dont_know_what_to_do_with_paper_yet</event>
+		<event>lamp_on</event>
+		<event>lamp_down</event>
+		<event>paper_message_visible</event>
+		<event>car_has_battery</event>
+		<event>remote_has_battery</event>
+		<event>in_car</event>
+		<event>tv_on</event>
+		<event>hot_on</event>
+		<event>cold_on</event>
+		<event>faucet_on</event>
+		<event>tipped_oil</event>
+		<event>rolled_pin</event>
+		<event>grape_dropped</event>
+		<event>has_grape</event>
+		<event>in_silvas_office</event>
+		<event>shrunk_silva</event>
+		<event>give_medallion</event>
+		<event>intro_played</event>
+		<event>won_car_game</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medal_shrink">1020</item>
+		<item id="battery">329</item>
+		<item id="blank_paper">323</item>
+	  	<item id="diary_key">326</item>
+	  	<item id="morse_code">320</item>
+	  	<!--<item id="pencil">327</item>-->
+	  	<item id="remote_control">325</item>
+	  	<item id="screw_driver">324</item>
+	  	<!--<item id="shoe_box">328</item>-->
+	  	<item id="thumb_drive">321</item>
+	  	<item id="torn_page">322</item>
+	</itemIdMap>
+	
+	<firstScene>
+  		<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+		<x>1810</x>
+		<y>530</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/shrink-ray.html</playerMap>
+	<medallion>medal_shrink</medallion>
+</island>

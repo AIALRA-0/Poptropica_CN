@@ -1,0 +1,63 @@
+<island>
+	<name>纳布提岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>nabooti</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>movedTortoise</event>
+		<event>dugStatue</event>
+		<event>blastedMineWall</event>
+		<event>finishedMine</event>
+		<event>wonMancala</event>
+		<event>passedNileRiddle</event>
+		<event>openedSphinx</event>
+		<event>calledVince</event>
+		<event>droppedRope</event>
+		<event>openedPyramidWall</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="africa_map">70</item>
+		<item id="red_jewel">71</item>
+		<!-- <item id="">72</item> --> <!-- Doesn't exist in the CMS -->
+		<item id="white_jewel">73</item>
+		<item id="green_jewel">74</item>
+		<item id="blue_jewel">75</item>
+		<!-- <item id="">76</item> --> <!-- Doesn't exist in the CMS -->
+		<item id="purple_jewel">77</item>
+		<item id="gold_nugget">78</item>
+		<item id="moon_stone">79</item>
+		<item id="shovel">78</item>
+		<item id="blue_lily">81</item>
+		<item id="ebony_elephant">82</item>
+		<item id="camera">83</item>
+		<item id="turban">84</item>
+		<item id="hat">85</item>
+		<item id="fruit">86</item>
+		<item id="fingo">87</item>
+		<item id="cellphone">88</item>
+		<item id="medal_nabooti">1007</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>NabootiMain</scene>
+		<x>3586</x>
+		<y>460</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

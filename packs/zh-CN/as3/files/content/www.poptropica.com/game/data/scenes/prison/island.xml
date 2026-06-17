@@ -1,0 +1,88 @@
+<island>
+	<name>逃离鹈鹕岩</name>
+	<eventsClass>game.scenes.prison.PrisonEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>prison</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>spoke_with_lady</event>
+		<event>spoke_with_skater</event>
+		<event>spoke_with_muscles</event>
+		<event>saw_bandit</event>
+		<event>captured_player</event>
+		<event>saw_discrepancy</event>
+		<event>player_escaped</event>
+		<event>saw_les_sal</event>
+		<event>shown_cell_intro</event>
+		<event>cell_grate_open</event>
+		<event>yard_intro_shown</event>
+		<event>florian_size</event>
+		<event>eggs_collected_1</event>
+		<event>eggs_collected_2</event>
+		<event>eggs_collected_3</event>
+		<event>need_eggs</event>
+		<event>take_away_paint</event>
+		<event>metal_day_1_complete</event>
+		<event>smuggled_drill_bit</event>
+		<event>borrowed_tool</event>
+		<event>shop_steam_redirected</event>
+		<event>mess_vent_open_1</event>
+		<event>mess_vent_open_2</event>
+		<event>mess_vent_open_3</event>
+		<event>mess_day_1_complete</event>
+		<event>spoon_distraction</event>
+		<event>smuggled_spoon</event>
+		<event>ruined_potatos</event>
+		<event>used_plaster</event>
+		<event>started_food_fight</event>
+		<event>ended_food_fight</event>
+		<event>drilled_plate</event>
+		<event>bandit_captured</event>
+		<event>escaped_big_tuna</event>
+		<event>tricked_guard_first</event>
+		<event>combined_drill_bit</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medal_prison">1057</item>
+		<item id="cup_of_plaster">961</item>
+		<item id="cup_of_water">962</item>
+		<item id="drill_bit">963</item>		
+		<item id="dummy_head">964</item>
+		<item id="eggs">965</item>
+		<item id="metal_cup">966</item>
+		<item id="mixer">967</item>
+		<item id="painting">968</item>	
+		<item id="painted_dummy_head">969</item>
+		<item id="painted_pasta">970</item>			
+		<item id="prison_files">971</item>
+		<item id="sharpened_spoon">972</item>
+		<item id="spoon">973</item>
+		<item id="cafe_spoon">974</item>
+		<item id="stick_of_gum">975</item>
+		<item id="sunflower">976</item>
+		<item id="sunflower_seeds">977</item>
+		<item id="uncooked_pasta">978</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.prison.mainStreet.MainStreet</scene>
+		<x>3700</x>
+		<y>1750</y>
+		<direction>left</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion>medal_prison</medallion>
+</island>

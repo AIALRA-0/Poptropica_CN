@@ -5,6 +5,7 @@ const paths = require("./paths");
 const { loadConfig } = require("./config");
 const { buildCatalogIndex } = require("./catalog");
 const { fileExists, readJson, writeJson } = require("./fs-utils");
+const { buildAs3DirectSceneUrl } = require("./as3-direct-wrapper");
 
 const AS2_ROOM_PRIORITY = [
   "City2",
@@ -199,7 +200,7 @@ function chooseRoom(rooms, priorities) {
 function buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath, as3TargetScene }) {
   if (sourceGroup === "as3") {
     return as3TargetScene
-      ? `http://www.poptropica.com/game/Shell.swf?island&overrideScene=${encodeURIComponent(as3TargetScene)}`
+      ? buildAs3DirectSceneUrl(as3TargetScene)
       : "http://www.poptropica.com/base.php?room=FlashpointStart";
   }
 
@@ -256,7 +257,7 @@ function buildEntry({ catalogEntry, sourceGroup, sceneFolder, roomParam, islandP
     startupPath: resolvedStartupPath,
     sceneFolder,
     discoveredRooms: discoveredRooms ? [...discoveredRooms].sort() : [],
-    fallbackMode: sourceGroup === "as3" ? "as3-direct-shell" : "base-php",
+    fallbackMode: sourceGroup === "as3" ? "as3-direct-wrapper" : "base-php",
     launchMode: sourceGroup === "as3" ? "as3-direct-scene" : "as2-scene",
     launchUrl: buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath: resolvedStartupPath, as3TargetScene }),
     ...(as3TargetScene ? { as3TargetScene } : {}),

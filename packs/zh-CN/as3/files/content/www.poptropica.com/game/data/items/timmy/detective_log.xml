@@ -1,0 +1,56 @@
+<item id="detective_log">
+	<type>island</type>
+	<subType>timmy</subType>
+
+	<textfields>
+  		<text>
+    		<value>蒂米的侦探日志</value>
+		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>-42</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+	
+	<!-- <buttons>
+    	<btn>
+    		<label>查看</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.timmy.shared.popups.DetectiveLogPopup</param>
+					</parameters>
+				</action>
+			</actions>	
+		</btn>
+	</buttons>	 -->
+	
+	<buttons>
+		<btn>
+    		<label>查看</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.timmy.shared.popups.DetectiveLogPopup</param>
+		  				<param id="totalPages">9</param>
+		  				<param id="pageEvent">got_detective_log_page_</param>
+		  				<param id="bookEvent">gotItem_detective_log</param>
+		  				<param id="screenAsset">detective_log.swf</param>
+		  				<param id="groupPrefix">scenes/timmy/shared/popups/</param>
+		  				<param id="flipPages">true</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+</item>

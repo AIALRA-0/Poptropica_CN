@@ -1,0 +1,99 @@
+<island>
+	<name>神秘生物岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>cryptid</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>metMews</event>
+		<event>usedMoney</event>
+		<event>usedDrink</event>
+		<event>usedRope</event>
+		<event>givenMission</event>
+		<event>startedMission</event>
+		<event>sawFilms</event>
+		<event>usedMatches</event>
+		<event>sawDevil</event>
+		<event>usedHook</event>
+		<event>litLantern</event>
+		<event>usedTooth</event>
+		<event>usedFur</event>
+		<event>seekingOutcrop</event>
+		<event>deliveredSeed</event>
+		<event>hasSeed</event>
+		<event>revealedChupacabra</event>
+		<event>haveLochPhoto2</event>
+		<event>haveLochPhoto3</event>
+		<event>usedPhoto1</event>
+		<event>usedPhoto2</event>
+		<event>usedPhoto3</event>
+		<event>usedShells</event>
+		<event>usedTrack</event>
+		<event>findBigfoot</event>
+		<event>sawCave</event>
+		<event>freedBigfoot</event>
+		<event>haveDart1</event>
+		<event>haveDart2</event>
+		<event>haveDart3</event>
+		<event>lostDartGame2</event>
+		<event>wonDartGame2</event>
+		<event>lostDartGame3</event>
+		<event>freedHangGlider</event>
+		<event>usedCamera</event>
+		<event>beatMonk</event>
+		<event>balloonLeft</event>
+		<event>pushedGlider</event>
+		<event>usedShears</event>
+		<event>hiredSherpa</event>
+		<event>didClimb</event>
+		<event>gotRowboat</event>
+		<event>openedDumpster</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="flyer">230</item>
+		<item id="five_bill">231</item>
+		<item id="sports_drink">232</item>
+		<item id="shears">233</item>
+		<item id="rope">234</item>
+		<item id="bolt_cutters">235</item>
+		<item id="door">236</item>
+		<item id="directions">237</item>
+		<item id="lantern">238</item>
+		<item id="matches">239</item>
+		<item id="hook">240</item>
+		<item id="shells">241</item>
+		<item id="camera">242</item>
+		<item id="photo">243</item>
+		<item id="darts">244</item>
+		<item id="whistle">245</item>
+		<item id="rowboat">246</item>
+		<item id="submarine">247</item>
+		<item id="fur">248</item>
+		<item id="tooth">249</item>
+		<item id="track">250</item>
+		<item id="kite">251</item>
+		<item id="medal_cryptid">1016</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>CryptidMain</scene>
+		<x>1620</x>
+		<y>300</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

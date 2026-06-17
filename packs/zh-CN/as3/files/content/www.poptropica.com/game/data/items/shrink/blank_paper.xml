@@ -1,0 +1,69 @@
+<item id="blank_paper">
+	<type>island</type>
+	<subType>shrink</subType>
+	<buttons>
+		<btn>
+			<conditional type="checkEvents" isTrue="false"/>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">blank_paper</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional type="checkEvents" isTrue="true"/>
+    		<label>查看</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.shrink.bedroomShrunk01.Popups.BlankPaperPopup</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+ 		<text>
+      		<value>一张纸</value>
+    	</text>
+    	
+    	<text>
+  			<value>这张纸闻起来有柠檬汁的味道。</value>
+      		<size>18</size>
+      		<y>90</y>
+      		<width>150</width>
+      		<textColor>0x49464E</textColor>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/ShrinkRayBackground.swf</assetPath>
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-73</saturation>
+     			<hue>170</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent">
+			<conditional type="checkEvents" isTrue="false"/>
+			<assetPath>items/shrink/blank_paper.swf</assetPath>
+		</asset>
+    	<asset id="cardContent">
+			<conditional type="checkEvents" isTrue="true"/>
+			<assetPath>items/shrink/paper_with_message.swf</assetPath>
+		</asset>
+    </assets>
+    <conditionals>
+    	<conditional type="checkEvents">
+    		<parameters>
+		  		<param id="event">cj_at_school</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+</item>

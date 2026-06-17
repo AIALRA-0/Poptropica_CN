@@ -1,0 +1,50 @@
+<item id="chemical_x_award"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>carnival</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>X 化学剂</value>
+  		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-57</saturation>
+     			<hue>73</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+
+	<buttons>
+		<btn>
+			<label>使用</label>
+			<actions>
+				<action type="applyLook">
+	  				<parameters>
+	  					<param id="perm">false</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	
+  	<looks>
+	    <look> <!-- Only list what you want to change -->
+			<skinColor>0x745300</skinColor>
+			<hairColor>0x72472b</hairColor>
+			<eyeState>open</eyeState> <!-- 1:squint, 2:casual, 3:open -->
+			<mouth>van</mouth> <!-- use frame label for numbers after 60 -->
+			<facial>mc_mmacchio</facial>
+			<pack>mc_mmacchio</pack>
+			<overshirt>mc_mmacchio</overshirt>
+		</look>
+	</looks> 
+</item>

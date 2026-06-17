@@ -28,7 +28,10 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "@_name",
   "@_npc",
   "@_nowrap",
+  "@_onclick",
+  "@_onfocus",
   "@_platform",
+  "@_playerLoc",
   "@_rootLandMap",
   "@_scene",
   "@_sides",
@@ -63,6 +66,7 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "event",
   "eventsClass",
   "eyeState",
+  "eyes",
   "facial",
   "folder",
   "fontfamily",
@@ -93,6 +97,7 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "path",
   "platform",
   "playerMap",
+  "queryString",
   "scene",
   "sceneId",
   "sceneLink",
@@ -109,6 +114,7 @@ const PROTECTED_CONTEXT_SUFFIXES = new Set([
   "top",
   "type",
   "url",
+  "variant",
   "videoId",
   "visible"
 ]);
@@ -202,7 +208,9 @@ const PROTECTED_LITERAL_VALUES = new Set([
   "true",
   "up",
   "utf-8",
-  "utf8"
+  "utf8",
+  "F.R.E.D.",
+  "S.O.S."
 ]);
 
 function parseContext(row) {
@@ -218,6 +226,10 @@ function parseContext(row) {
 
 function normalizedAssetPath(row) {
   return String(row?.asset_path || row?.assetPath || "").replace(/\\/gu, "/");
+}
+
+function isItemXmlAsset(row) {
+  return /\/game\/data\/items\/[^/]+\/[^/]+\.xml$/iu.test(normalizedAssetPath(row));
 }
 
 function contextSegments(row) {
@@ -247,6 +259,27 @@ function isFrameworkConfigRuntimeMetadata(row) {
     .test(String(row?.context_key || row?.contextKey || ""));
 }
 
+function isLanguageXmlText(row) {
+  if (!/\/game\/data\/languages\//iu.test(normalizedAssetPath(row))) {
+    return false;
+  }
+  const context = parseContext(row);
+  return context.kind === "xml-text";
+}
+
+function isItemXmlVisibleText(row) {
+  if (!isItemXmlAsset(row)) {
+    return false;
+  }
+  const context = parseContext(row);
+  if (context.kind !== "xml-text") {
+    return false;
+  }
+  const key = String(row?.context_key || row?.contextKey || "");
+  return /^item\/textfields\/text(?:\/\[\d+\])?\/value$/u.test(key) ||
+    /^item\/buttons\/btn(?:\/\[\d+\])?\/label$/u.test(key);
+}
+
 function looksLikeRuntimeToken(value) {
   const text = normalizeWhitespace(value);
   if (!text) {
@@ -258,6 +291,15 @@ function looksLikeRuntimeToken(value) {
   if (/^(?:game|scenes|assets|entity|framework|content)\b[./\\]/iu.test(text)) {
     return true;
   }
+  if (/^(?:pop|mailto):\/\//iu.test(text)) {
+    return true;
+  }
+  if (/^[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+$/u.test(text)) {
+    return true;
+  }
+  if (/^\?[A-Za-z0-9_.~=&%+-]+$/u.test(text)) {
+    return true;
+  }
   if (/^[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)+$/u.test(text)) {
     return true;
   }
@@ -267,7 +309,19 @@ function looksLikeRuntimeToken(value) {
   if (/^[A-Za-z0-9_.-]+\.(?:swf|xml|json|png|jpg|jpeg|gif|mp3|wav)$/iu.test(text)) {
     return true;
   }
+  if (/^[A-Za-z0-9_.-]+\.(?:mp3|wav)(?:\s*,\s*[A-Za-z0-9_.-]+\.(?:mp3|wav))+$/iu.test(text)) {
+    return true;
+  }
   if (/^game\.scenes\.[A-Za-z0-9_.]+$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_-]+\.text\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z]\.[A-Za-z](?:\.[A-Za-z])+\.?$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z]{2,}(?:\s*=\s*[-+]?\d+(?:\.\d+)?)$/u.test(text)) {
     return true;
   }
   if (/^text\d+$/iu.test(text)) {
@@ -328,6 +382,9 @@ function looksLikeRuntimeToken(value) {
   if (/^[A-Za-z0-9+/]{24,}={0,2}$/u.test(text)) {
     return true;
   }
+  if (/Wayback Machine|web\.archive\.org|Live Proxy|Save Page Now/iu.test(text)) {
+    return true;
+  }
   return looksLikeProtectedIdentifier(text);
 }
 
@@ -337,7 +394,7 @@ function isProtectedContext(row) {
     return true;
   }
   const key = String(row?.context_key || row?.contextKey || "");
-  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound\/\[\d+\]\/asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|npcs\/npc\/\[\d+\]\/position\/#text|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
+  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound(?:s)?\/(?:\[\d+\]\/)?asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|npcs\/npc\/\[\d+\]\/position\/#text|script|style|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
 }
 
 function isProtectedTranslationRow(row) {
@@ -346,6 +403,12 @@ function isProtectedTranslationRow(row) {
   }
   if (isFrameworkConfigRuntimeMetadata(row)) {
     return true;
+  }
+  if (isItemXmlAsset(row)) {
+    return !isItemXmlVisibleText(row);
+  }
+  if (isLanguageXmlText(row)) {
+    return looksLikeRuntimeToken(row.source_text || row.sourceText);
   }
   if (isProtectedContext(row)) {
     return true;
@@ -358,6 +421,7 @@ function isProtectedTranslationRow(row) {
 }
 
 module.exports = {
+  isItemXmlVisibleText,
   isProtectedTranslationRow,
   looksLikeRuntimeToken,
   normalizedAssetPath

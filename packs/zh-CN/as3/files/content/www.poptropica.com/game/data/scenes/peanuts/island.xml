@@ -1,0 +1,56 @@
+<island>
+	<name>提米·失败岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>peanuts</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>wonPartyGames</event>
+		<event>wonPartyGames1</event>
+		<event>wonPartyGames2</event>
+		<event>wonPartyGames3</event>
+		<event>wonPartyGames4</event>
+		<event>wonLeaves</event>
+		<event>usedPen</event>
+		<event>usedFootball</event>
+		<event>usedBlanket</event>
+		<event>usedBag</event>
+		<event>turnedNight</event>
+		<event>startedTricks</event>
+		<event>movedPumpkin</event>
+		<event>foundPumpkin</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="bag">220</item>
+		<item id="sucker">221</item>
+		<item id="invitation">222</item>
+		<item id="blanket">223</item>
+		<item id="football">224</item>
+		<item id="pen">225</item>
+		<item id="mask">226</item>
+		<item id="candy">227</item>
+		<item id="medal_peanuts">1015</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>PeanutsMain</scene>
+		<x>1136</x>
+		<y>100</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

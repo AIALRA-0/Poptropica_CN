@@ -1,5 +1,5 @@
 <Clues>
-	<Clue id="1" name="设备失窃" displayName="动态捕捉设备失窃" graphic="device">
+	<Clue id="1" name="DeviceStolen" displayName="动态捕捉设备失窃" graphic="device">
 		<Response npc="Tesla">
 			<SayText type="npc">What do I care of Edison&apos;s misfortune? I&apos;m working!*stomp* Don&apos;t bother me again.</SayText>
 
@@ -179,7 +179,7 @@
     
 
 	</Clue>
-	<Clue id="3" name="吐温" displayName="马克·吐温的秘密隔间" graphic="twain">
+	<Clue id="3" name="Twain" displayName="马克·吐温的秘密隔间" graphic="twain">
 		<Response npc="Twain">
 			<SayText type="char">What&apos;s this about you and a secret compartment here in this cabin?</SayText>
 			<SayText type="npc">That&apos;s nonsense!*tremble* Of course I don&apos;t have a secret compartment.</SayText>
@@ -457,7 +457,7 @@
     
 
 	</Clue>
-	<Clue id="6" name="点心" displayName="司炉工去吃点心了" graphic="snack">
+	<Clue id="6" name="Snack" displayName="司炉工去吃点心了" graphic="snack">
 		<Response npc="CoalMan">
 			<SayText type="npc">I just left for a snack. I didn&apos;t go near the luggage!*grief* You can ask the Porter.</SayText>
 
@@ -734,7 +734,7 @@
     
 
 	</Clue>
-	<Clue id="9" name="手提箱" displayName="打开的手提箱" graphic="briefcase">
+	<Clue id="9" name="Briefcase" displayName="打开的手提箱" graphic="briefcase">
 		<Response npc="Tesla">
 			<SayText type="npc">I don&apos;t know how it was opened.*grief* The key is still around my neck!</SayText>
 
@@ -823,7 +823,7 @@
     
 
 	</Clue>
-	<Clue id="10" name="魏斯" displayName="埃里克·魏斯的古怪行为" graphic="weisz">
+	<Clue id="10" name="Weisz" displayName="埃里克·魏斯的古怪行为" graphic="weisz">
 		<Response npc="Weisz">
 			<SayText type="npc">I don&apos;t know what you&apos;re talking about!</SayText>
 
@@ -1014,7 +1014,7 @@
     
 
 	</Clue>
-	<Clue id="12" name="特斯拉" displayName="尼古拉·特斯拉有所隐瞒" graphic="tesla">
+	<Clue id="12" name="Tesla" displayName="尼古拉·特斯拉有所隐瞒" graphic="tesla">
 		<Response npc="Tesla">
 			<SayText type="char">All right, Tesla, come clean. What were you hiding?</SayText>
 			<SayText type="npc">Let me out of here and I&apos;ll talk.[pick his lock]</SayText>
@@ -1096,7 +1096,7 @@
     
 
 	</Clue>
-	<Clue id="13" name="变压器" displayName="变压器" graphic="transformer">
+	<Clue id="13" name="Transformer" displayName="变压器" graphic="transformer">
 		<Response npc="Edison">
 			<SayText type="npc">Hmph. Inferior workmanship.</SayText>
 
@@ -1186,7 +1186,7 @@
     
 
 	</Clue>
-	<Clue id="14" name="剪影" displayName="最后一节车厢的神秘人" graphic="silhouette">
+	<Clue id="14" name="Silhouette" displayName="最后一节车厢的神秘人" graphic="silhouette">
 		<Response npc="Edison">
 			<SayText type="npc">It would take a genius to thwart the security and reach the last car. Are you a genius?</SayText>
 
@@ -1274,7 +1274,7 @@
     
 
 	</Clue>
-	<Clue id="15" name="行李箱" displayName="行李箱里的法国物品" graphic="trunk">
+	<Clue id="15" name="Trunk" displayName="行李箱里的法国物品" graphic="trunk">
 		<Response npc="Edison">
 			<SayText type="npc">All those French curios must point to Gustave Eiffel!</SayText>
 

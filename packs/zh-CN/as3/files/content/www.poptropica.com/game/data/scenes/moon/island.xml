@@ -1,0 +1,68 @@
+<island>
+	<name>月球殖民地岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>moon</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>alienBaseOpened</event>
+		<event>alienCodeDeciphered</event>
+		<event>bioDoorOpen</event>
+		<event>buzzerDeciphered</event>
+		<event>computerRebooted</event>
+		<event>day2started</event>
+		<event>gotGeiger</event>
+		<event>movedMeteor</event>
+		<event>obeliskActivated</event>
+		<event>obeliskEncountered</event>
+		<event>operatedRover</event>
+		<event>pluggedSprayer1</event>
+		<event>pluggedSprayer2</event>
+		<event>pluggedSprayer3</event>
+		<event>pluggedSprayer4</event>
+		<event>pluggedSprayer5</event>
+		<event>reachedMoon</event>
+		<event>rocketLaunched</event>
+		<event>rockLabOpen</event>
+		<event>roverCharged</event>
+		<event>salernoChased</event>
+		<event>salernoEscaped</event>
+		<event>salernoTeleported</event>
+		<event>spokeToSlayton</event>
+		<event>vehicleDoorOpen</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="ginger_ale">470</item>
+		<!-- <item id="">471</item> --> <!-- Doesn't exist in the CMS -->
+		<item id="notebook">472</item>
+		<item id="album">473</item>
+		<item id="manual">474</item>
+		<!-- <item id="">475</item> --> <!-- Doesn't exist in the CMS -->
+		<item id="locator_device">476</item>
+		<item id="keycard">477</item>
+		<item id="codes">478</item>
+		<item id="medal_moon">1029</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>MoonMain</scene>
+		<x>1330</x>
+		<y>900</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

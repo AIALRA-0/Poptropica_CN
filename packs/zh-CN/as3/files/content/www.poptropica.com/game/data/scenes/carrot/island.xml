@@ -1,0 +1,54 @@
+<island>
+	<name>24 根胡萝卜岛</name>
+	<eventsClass>game.scenes.carrot.CarrotEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>carrot</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>drone_freed_1</event>
+		<event>drone_freed_2</event>
+		<event>drone_freed_3</event>
+		<event>drone_freed_4</event>
+		<event>sewer_opened</event>
+		<event>security_disabled</event>
+		<event>milk_given</event>
+		<event>engine_on</event>
+		<event>destroyed_rabbot</event>
+		<event>cat_returned</event>
+		<event>all_drones_free</event>
+		<event>started</event>
+	</permanentEvents>
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	  	<item id="betaCostume">3329</item>
+	  	<item id="bowlOfMilk">47</item>
+	  	<item id="carrotTransporter">46</item>
+	  	<item id="crowbar">40</item>
+	  	<item id="droneEars">42</item>
+	  	<item id="emptyBowl">45</item>
+	  	<item id="medalCarrot">1004</item>
+	  	<item id="systemPassword">44</item>
+	  	<item id="ventBlueprints">43</item>
+	  	<item id="wireCutters">41</item>
+	</itemIdMap>
+	<!-- This is the scene that will be loaded on island reset or when accessing this island from the map. -->
+	<firstScene>
+		<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+		<x>740</x>
+		<y>940</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+    <!-- Invalidating island for 1.10 -->
+    
+    <playerMap></playerMap>
+	<medallion>medalCarrot</medallion>
+</island>

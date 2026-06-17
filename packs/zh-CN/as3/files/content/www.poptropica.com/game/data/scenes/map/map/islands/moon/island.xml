@@ -1,0 +1,16 @@
+<island>
+	<name>月球殖民地岛</name>
+	<island>moon</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/moon/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

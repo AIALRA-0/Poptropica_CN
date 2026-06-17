@@ -1,0 +1,44 @@
+<item id="3550"> <!-- Beach #1 Male-->
+	<type>store</type>
+	<subType>general</subType>
+	
+	<contentClass>
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+	
+	<buttons>
+		<btn>
+			<label>换装</label>
+			<actions>
+	        	<action type="costumize"/>
+	      	</actions>
+	    </btn>
+	</buttons>
+	
+	<textfields>
+		<text id="titlewhite">
+			<value>热带海滩装 1</value>
+			<y>-190</y>
+		</text>
+		<text id="instructionswhite">
+			<value>在阳光下偷个闲。</value>
+			<y>100</y>
+		</text>
+	</textfields>
+	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundRustRed.swf</assetPath>
+    	</asset>
+    </assets>
+    
+    <looks>
+	    <look>
+	    	<hair>beach_backwards_hat</hair>
+	    	<shirt>beach_tank_pink</shirt>
+			<overshirt>beach_shell_necklace</overshirt>
+			<pants>beach_shorts_blue</pants>
+			<item>beach_towel</item>
+	   	</look> 
+	</looks>
+</item>

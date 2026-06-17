@@ -1,0 +1,76 @@
+<item id="3487">
+  	<type>store</type>
+  	<subType>general</subType>
+
+    <contentClass> <!-- This displays avatar -->
+		<className>game.ui.card.CharacterContentView</className>
+		<y>24</y>
+	</contentClass>
+	
+	<radiobuttons>
+		<btn>
+			<color>0xE3DECD</color>
+			<val>0</val>
+		</btn>
+		<btn>
+			<color>0x223852</color>
+			<val>1</val>
+		</btn>
+		<btn>
+			<color>0x686361</color>
+			<val>2</val>
+		</btn>
+	</radiobuttons>
+	
+	<buttons>
+  		<btn>
+			<index>0</index>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+  	</buttons>
+
+		<textfields>
+		<text id="memberinstructions">
+		  <value>冬季礼包</value>
+		  <y>-175</y>
+		</text>
+		<text id="membertitle">
+		  <value>帽子</value>
+		   <y>-190</y>
+		</text>
+		<text id="memberinstructions">
+		  <value>______________________________</value>
+		  <y>-145</y>
+		</text>
+	</textfields>
+	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackground.swf</assetPath>
+    	</asset>
+		
+    </assets>
+	
+  	<looks>
+	    <look>
+			  <mouth>16</mouth>
+			 <marks>stor_winter_bpoofball</marks>
+			 <pants>2</pants>
+		</look>
+		<look>
+			 <mouth>16</mouth>
+			 <marks>stor_winter_btrapper</marks>
+			 <pants>2</pants>
+		</look>
+		<look>
+			 <mouth>16</mouth>
+			 <marks>stor_winter_bgrayhat</marks>
+			 <pants>2</pants>
+		</look>
+	</looks> 
+
+
+</item>

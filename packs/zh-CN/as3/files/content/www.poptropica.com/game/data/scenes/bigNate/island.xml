@@ -1,0 +1,65 @@
+<island>
+	<name>大内特岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>bigNate</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>gotComic1</event>
+		<event>gotComic2</event>
+		<event>gotComic3</event>
+		<event>gotComic4</event>
+		<event>gotComic5</event>
+		<event>gotComic6</event>
+		<event>gotComic7</event>
+		<event>gotComic8</event>
+		<event>gotComic9</event>
+		<event>joinedNate</event>
+		<event>completedComic</event>
+		<event>turnedLightHouse</event>
+		<event>sawMap</event>
+		<event>rangSchoolBell</event>
+		<event>foundCapsule</event>
+		<event>openedLocker</event>
+		<event>madeStinkBomb</event>
+		<event>usedStinkBomb</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="gum">90</item>
+		<item id="scuba_gear">91</item>
+		<item id="old_photo">92</item>
+		<item id="blueprint">93</item>
+		<item id="stink_bomb">94</item>
+		<item id="crackers">95</item>
+		<item id="trap">96</item>
+		<item id="lobster">97</item>
+		<item id="capsule_map">98</item>
+		<item id="comic">99</item>
+		<item id="keys">100</item>
+		<item id="bell_clapper">101</item>
+		<item id="jokes">102</item>
+		<item id="medal_big_nate">1008</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>BigNateMain</scene>
+		<x>480</x>
+		<y>560</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

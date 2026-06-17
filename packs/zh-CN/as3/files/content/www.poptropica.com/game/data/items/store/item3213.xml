@@ -1,0 +1,40 @@
+<item id="3213">
+	<type>store</type>
+	<subType>general</subType>
+	
+	<contentClass>
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+	
+	<buttons>
+		<btn>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+	</buttons>
+	
+	<textfields>
+	<text id="storeSubTitle">
+			<value>缩小射线岛</value>
+		</text>
+		<text id="storeTitle">
+			<value>尖刺弹力球</value>
+		</text>
+		<text id="storeInstructionsY">
+			<value>在缩小射击小游戏里像 Poptropica 破坏球一样冲破障碍！</value>
+			<y>70</y>
+		</text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack" />
+	</assets>
+	
+	<looks>
+		<look>
+			<overshirt>ShrinkRayPromo5</overshirt>
+		</look>
+	</looks>
+</item>

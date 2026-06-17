@@ -1,0 +1,86 @@
+<island>
+	<name>神秘列车岛</name>
+	<eventsClass>game.scenes.train.TrainEvents</eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>train</island>
+	
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>enteredTrain</event>
+		<event>metWeisz</event>
+		<event>metAnthony</event>
+		<event>metFerris</event>
+		<event>metNyTimes</event>
+		<event>metLeMonde</event>
+		<event>metEiffel</event>
+		<event>metTwain</event>
+		<event>metTesla</event>
+		<event>metEveryone</event>
+		<event>startedInvestigation</event>
+		<event>foundManuscript</event>
+		<event>trainStopped</event>
+		<event>investigatedCoal</event>
+		<event>investigatedJuice</event>
+		<event>caughtTesla</event>
+		<event>revealedFrenchItems</event>
+		<event>arrivedAtFair</event>
+		<event>finalChaseStarted</event>
+		<event>mid1ChaseStarted</event>
+		<event>mid2ChaseStarted</event>
+		<event>houdiniFell</event>
+		<event>houdiniSaved</event>
+		<event>talkedToCleveland</event>
+		<event>totemsFell</event>
+		<event>houdiniChaseStarted</event>
+		<event>getPortersOutfit</event>
+		<event>pushCrateChat</event>
+		<event>pushedCrate</event>
+		<event>pouredPitcher</event>
+		<event>gotPitcher</event>
+		<event>teslaLeftBathroom</event>
+		<event>teslaReturnBathroom</event>
+		<event>checkedTeslaCabin</event>
+		<event>briefcaseChat</event>
+		<event>telsaReleaseChat</event>
+		<event>releasedTesla</event>
+		<event>teslaFindDiff</event>
+		<event>metCoalMan</event>
+		<event>metPorter</event>
+	</permanentEvents>
+	
+	<itemIdMap>
+		<item id="newspaper">330</item>
+		<item id="paper">331</item>
+		<item id="outfit">332</item>
+		<item id="pamphlet">333</item>
+		<item id="ticket">334</item>
+		<item id="key">335</item>
+		<item id="picture">336</item>
+		<item id="bag">337</item>
+		<item id="transformer_sketch">338</item>
+		<item id="telegram">339</item>
+		<item id="pencil">340</item>
+		<item id="scissors">341</item>
+		<item id="notepad">342</item>
+		<item id="transformer">343</item>
+		<item id="tesla_sketch">344</item>
+		<item id="medal_train">1021</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+  		<!-- <scene>game.scenes.train.mainStreet.MainStreet</scene> -->
+  		<scene>TrainMain</scene>
+		<x>4690</x>
+		<y>850</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

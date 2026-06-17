@@ -1,0 +1,74 @@
+<island>
+	<name>小屁孩木板路岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>boardwalk</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>startedQuest</event>
+		<event>sawBill</event>
+		<event>usedVomit</event>
+		<event>beesSwarmed</event>
+		<event>closedTrash</event>
+		<event>gotLid</event>
+		<event>popcornFull</event>
+		<event>wentToBeach</event>
+		<event>sunbatherLeft</event>
+		<event>returnedFrisbee</event>
+		<event>foundFregley</event>
+		<event>usedFishSticks</event>
+		<event>caughtCrab</event>
+		<event>crabGotBill</event>
+		<event>heardSecret</event>
+		<event>tookPicture</event>
+		<event>wonCraneGame</event>
+		<event>foundKeys</event>
+		<event>startedDay2</event>
+		<event>completedDay2</event>
+		<event>wonThunderVolt</event>
+		<event>gotDetectorToken</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="sunblock">450</item>
+		<item id="lotion">451</item>
+		<item id="keychain_picture">452</item>
+		<item id="popcorn">453</item>
+		<item id="keys">454</item>
+		<item id="flip_flops">455</item>
+		<item id="frisbee">456</item>
+		<item id="fake_vomit">457</item>
+		<item id="fish_sticks">458</item>
+		<item id="rabbit_foot">459</item>
+		<item id="prize1">460</item>
+		<item id="prize2">461</item>
+		<item id="prize3">462</item>
+		<item id="prize4">463</item>
+		<item id="prize5">464</item>
+		<item id="jumbo_prize">465</item>
+		<item id="remote_helicopter">466</item>
+		<item id="metal_detector">467</item>
+		<item id="medal_boardwalk">1028</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>BoardwalkMain</scene>
+		<x>360</x>
+		<y>420</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

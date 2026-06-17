@@ -1,0 +1,15 @@
+<island>
+	<name>一千零一夜</name>
+	<island>arab3</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/arab3/</islandFolder>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

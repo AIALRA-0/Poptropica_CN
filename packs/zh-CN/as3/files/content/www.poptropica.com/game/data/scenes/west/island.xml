@@ -1,0 +1,72 @@
+<island>
+	<name>狂野西部岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>west</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>gotHorse</event>
+		<event>gotLetter</event>
+		<event>sawInvisibleCustomer</event>
+		<event>bankRobbed</event>
+		<event>gotHideoutMap1</event>
+		<event>gotHideoutMap2</event>
+		<event>fixedClock</event>
+		<event>lostBandits</event>
+		<event>gotTulip</event>
+		<event>gotPeaShooter</event>
+		<event>gotSpudGun</event>
+		<event>wonFinalShootout</event>
+		<event>beatMustachio</event>
+		<event>gotCalf</event>
+		<event>gotSaddle</event>
+		<event>gotNugget</event>
+		<event>talkedToBartender</event>
+		<event>wonGumSpit</event>
+		<event>gumInteraction</event>
+		<event>gotBadge</event>
+		<event>usedLetter</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="letter">260</item>
+		<item id="oil_can">261</item>
+		<item id="gold_pan">262</item>
+		<item id="key">263</item>
+		<item id="badge">264</item>
+		<item id="portrait">265</item>
+		<item id="pea_shooter">266</item>
+		<item id="spud_gun">267</item>
+		<item id="gold_map">268</item>
+		<item id="lasso">269</item>
+		<item id="saddle">270</item>
+		<item id="nugget">271</item>
+		<item id="tonics">272</item>
+		<item id="hideout_map">273</item>
+		<item id="tulip">274</item>
+		<item id="outfit">275</item>
+		<item id="whistle">276</item>
+		<item id="medal_west">1017</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>WestMain</scene>
+		<x>194</x>
+		<y>540</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

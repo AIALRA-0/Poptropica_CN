@@ -1,0 +1,54 @@
+<island>
+	<name>亚特兰蒂斯任务</name>
+	<eventsClass>game.scenes.deepDive1.DeepDive1Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>deepDive1</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>dumped_water</event>
+		<event>dumped_ink</event>
+		<event>used_bucket_full</event>
+		<event>used_key</event>
+		<event>player_said_whats_going_on</event>
+		<event>sailor_reacted_to_ink</event>
+		<event>sub_opened</event>
+		<event>tutorial_complete</event>
+		<event>angler_captured</event>
+		<event>barreleye_captured</event>
+		<event>cuttlefish_captured</event>
+		<event>seadragon_captured</event>
+		<event>stonefish_captured</event>
+		<event>saw_hydromedusa</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="bucket_empty">814</item>
+		<item id="bucket_full">815</item>
+		<item id="key">816</item>
+		<item id="fish_files">817</item>
+		<item id="medal_atlantis1">1040</item>
+		
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.deepDive1.ship.Ship</scene>
+		<x>900</x>
+		<y>1927</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	<!-- Invalidating island for 1.10 -->
+	
+	<playerMap>http://www.poptropica.com/player-maps/mission-atlantis.html</playerMap>
+	<medallion>medal_atlantis1</medallion>
+</island>

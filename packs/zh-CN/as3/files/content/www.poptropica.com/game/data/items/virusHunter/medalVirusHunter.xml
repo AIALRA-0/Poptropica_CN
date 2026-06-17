@@ -1,0 +1,49 @@
+<item id="medalVirusHunter">
+	<type>island</type>
+		<subType>virusHunter</subType>
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="tiggerEvent">
+		  			<parameters>
+		  				<param id="event">useMedal</param>
+					</parameters>
+				</action>
+				<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+  		<text>
+    		<value>岛屿奖章</value>
+  		</text>
+  		<text>
+    		<value>恭喜！&#10;你完成了&#10;病毒猎人岛任务。</value>
+   			<size>15</size>
+    		<y>65</y>
+  		</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+    <looks>
+	    <look>
+		 	<overshirt>medal_virus</overshirt>	<!-- TODO :: specify virus hunter medallion -->
+	   	</look> 
+	</looks>  
+	
+	<conditionals>
+    	<conditional type="hasLook" />
+    </conditionals>
+    	
+</item>

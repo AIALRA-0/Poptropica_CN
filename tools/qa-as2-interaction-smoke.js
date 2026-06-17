@@ -279,11 +279,22 @@ function runVisualGuard({ screenshotPath, outputPath, args, qaErrors, step }) {
     "--white-threshold",
     String(args.visualGuardWhiteThreshold || args["visual-guard-white-threshold"] || 245),
     "--max-white-edge-pct",
-    String(args.visualGuardMaxWhiteEdgePct || args["visual-guard-max-white-edge-pct"] || 60)
+    String(args.visualGuardMaxWhiteEdgePct || args["visual-guard-max-white-edge-pct"] || 60),
+    "--dark-threshold",
+    String(args.visualGuardDarkThreshold || args["visual-guard-dark-threshold"] || 16),
+    "--max-dark-edge-pct",
+    String(args.visualGuardMaxDarkEdgePct || args["visual-guard-max-dark-edge-pct"] || 100)
   ];
   const targetColor = String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim();
   if (targetColor) {
-    guardArgs.push("--target-color", targetColor);
+    guardArgs.push(
+      "--target-color",
+      targetColor,
+      "--target-tolerance",
+      String(args.visualGuardTargetTolerance || args["visual-guard-target-tolerance"] || 8),
+      "--max-target-edge-pct",
+      String(args.visualGuardMaxTargetEdgePct || args["visual-guard-max-target-edge-pct"] || 5)
+    );
   }
   try {
     return runPythonQa(guardArgs, {
@@ -293,6 +304,21 @@ function runVisualGuard({ screenshotPath, outputPath, args, qaErrors, step }) {
     qaErrors.push(formatQaError(`${step || "visual"}-visual-guard`, error));
     return null;
   }
+}
+
+function shouldRequireVisualGuard(args) {
+  return flagEnabled(args.requireVisualGuard) ||
+    Boolean(String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim());
+}
+
+function withLaunchQuery(url, args) {
+  const autoOpenMapAfterMs = String(args.autoOpenMapAfterMs || args["auto-open-map-after-ms"] || "").trim();
+  if (!autoOpenMapAfterMs) {
+    return url;
+  }
+  const nextUrl = new URL(url);
+  nextUrl.searchParams.set("flashpoint_auto_open_map_after_ms", autoOpenMapAfterMs);
+  return nextUrl.toString();
 }
 
 function captureWindowMatchesRuntime(capture, runtime) {
@@ -456,8 +482,8 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
     };
   }
   const point = stageRelativeToWindow(capture, stageRect, {
-    x: Number(args.mapX || 0.635),
-    y: Number(args.mapY || 0.27)
+    x: Number(args.mapX || 0.805),
+    y: Number(args.mapY || 0.05)
   });
   try {
     const clickArgs = [
@@ -479,6 +505,13 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
       clickArgs.push("--pid", String(runtime.pid));
     }
     appendWindowGeometryArgs(clickArgs, args);
+    if (flagEnabled(args.clickLargestChild || args["click-largest-child"]) || process.env.POPTROPICA_QA_CLICK_LARGEST_CHILD === "1") {
+      clickArgs.push("--largest-child");
+    }
+    const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "").trim();
+    if (clickChildClass) {
+      clickArgs.push("--child-class-contains", clickChildClass);
+    }
     runPythonQa(clickArgs, {
       timeoutMs: 20000
     });
@@ -561,8 +594,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
 
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
-  const launchHealth = await requestLaunchHealth(entry.launchUrl, args);
-  const runtime = spawnManagedRuntime(config, "as2", entry.launchUrl, {
+  const launchUrl = withLaunchQuery(entry.launchUrl, args);
+  const launchHealth = await requestLaunchHealth(launchUrl, args);
+  const runtime = spawnManagedRuntime(config, "as2", launchUrl, {
     detach: true,
     playerKey: String(args.playerKey || "flashpointnavigator-as2"),
     as2StartX: args.startX,
@@ -629,7 +663,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!initial.stage?.stageRect || Number(initial.stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
   }
-  if (flagEnabled(args.requireVisualGuard) && !initial.visualGuard?.ok) {
+  if (shouldRequireVisualGuard(args) && !initial.visualGuard?.ok) {
     failedChecks.push("initial_visual_guard_failed");
   }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
@@ -647,7 +681,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!map.skipped && flagEnabled(args.requireMapRequest) && !map.mapRequestSeen) {
     failedChecks.push("map_request_not_seen");
   }
-  if (!map.skipped && flagEnabled(args.requireVisualGuard) && !map.visualGuard?.ok) {
+  if (!map.skipped && shouldRequireVisualGuard(args) && !map.visualGuard?.ok) {
     failedChecks.push("map_visual_guard_failed");
   }
   for (const qaError of qaErrors) {
@@ -663,7 +697,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     islandParam: entry.islandParam,
     roomParam: entry.roomParam,
     sceneFolder: entry.sceneFolder,
-    launchUrl: entry.launchUrl,
+    launchUrl,
     launchHealth: summarizeLaunchHealth(launchHealth),
     visibleQaDefaults: args.visibleQaDefaults || null,
     runtime: {

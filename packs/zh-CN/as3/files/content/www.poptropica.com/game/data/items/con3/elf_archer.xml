@@ -1,0 +1,28 @@
+<item id="elf_archer">
+	<type>island</type>
+	<subType>con3</subType>
+	<value>4</value>
+	<textfields>
+ 		<text id="title">
+      		<value>精灵弓手</value>
+      		<styleFamily>CCG</styleFamily>
+      		<centerHeight>true</centerHeight>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="quotation">
+      		<value>“瞄准邪恶的心脏。”</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>105</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con3/background4.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/elf_archer.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

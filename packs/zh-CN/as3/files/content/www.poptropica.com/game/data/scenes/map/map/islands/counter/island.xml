@@ -1,0 +1,16 @@
+<island>
+	<name>赝品岛</name>
+	<island>counter</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/counter/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

@@ -1,0 +1,83 @@
+<island>
+	<name>Poptropicon 漫展岛</name>
+	<eventsClass>game.scenes.con3.Con3Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>con3</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>power_box_destroyed_1</event>
+		<event>power_box_destroyed_2</event>
+		<event>power_box_destroyed_3</event>
+		<event>power_box_destroyed_4</event>
+		<event>power_box_destroyed_5</event>
+		<event>power_box_destroyed_6</event>
+		<event>fuse_destroyed_1</event>
+		<event>fuse_destroyed_2</event>
+		<event>fuse_destroyed_3</event>
+		<event>fuse_destroyed_4</event>
+		<event>fuse_destroyed_5</event>
+		<event>gold_face_rescued</event>
+		<event>elf_archer_rescued</event>
+		<event>world_guy_rescued</event>
+		<event>goldface_spotted</event>
+		<event>world_guy_spotted</event>
+		<event>elf_archer_spotted</event>
+		<event>machine_broken</event>
+		<event>wizard_freed</event>
+		<event>gauntlets_charged</event>
+		<event>starter_deck</event>
+		<event>defeated_expert</event>
+		<event>defeated_dealer</event>
+		<event>defeated_hippie</event>
+		<event>defeated_card2</event>
+		<event>got_soda_1</event>
+		<event>got_soda_2</event>
+		<event>got_soda_3</event>
+		<event>has_soda_1</event>
+		<event>has_soda_2</event>
+		<event>has_soda_3</event>
+		<event>soda_placed_1</event>
+		<event>soda_placed_2</event>
+		<event>soda_placed_3</event>
+		<event>hit_crystal</event>
+		<event>player_through_portal</event>
+		<event>omegon_defeated</event>
+		<event>hq_destroyed</event>
+		<event>weapons_powered_up</event>
+		<event>first_soda</event>
+		<event>intro_complete</event>
+		<event>played_intro_cutscene</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="card_deck">900</item>
+		<item id="comic178">901</item>
+		<item id="comic367">902</item>
+		<item id="bow">903</item>
+		<item id="gauntlets">904</item>
+		<item id="old_shield">905</item>
+		<item id="shield">906</item>
+		<item id="soda">907</item>
+		<item id="medal_con3">1052</item>
+	</itemIdMap>
+	
+	<firstScene>
+  		<scene>game.scenes.con3.intro.Intro</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/poptropicon-ep3.html</playerMap>
+	<medallion>medal_con3</medallion>
+</island>

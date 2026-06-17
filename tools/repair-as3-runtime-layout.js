@@ -4,6 +4,7 @@ const { spawnSync } = require("node:child_process");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { ensureDirSync, fileExists, removeDirContents, writeJson, writeText } = require("./lib/fs-utils");
+const { AS3_DIRECT_WRAPPER_PATH, buildAs3DirectWrapperPhp } = require("./lib/as3-direct-wrapper");
 
 const AS3_BASE_PAGE = "content/www.poptropica.com/base.php";
 
@@ -92,12 +93,24 @@ function main() {
 
   const originalContent = fs.readFileSync(basePath, "utf8");
   const patchedContent = patchAs3BasePageLayout(originalContent);
-  const changed = patchedContent !== originalContent;
+  const changedFiles = [];
 
-  if (changed) {
+  if (patchedContent !== originalContent) {
     writeText(basePath, patchedContent);
+    changedFiles.push(AS3_BASE_PAGE);
+  }
+
+  const wrapperPath = path.join(workDir, AS3_DIRECT_WRAPPER_PATH.replace(/\//gu, path.sep));
+  const wrapperContent = buildAs3DirectWrapperPhp();
+  if (!fileExists(wrapperPath) || fs.readFileSync(wrapperPath, "utf8") !== wrapperContent) {
+    ensureDirSync(path.dirname(wrapperPath));
+    writeText(wrapperPath, wrapperContent);
+    changedFiles.push(AS3_DIRECT_WRAPPER_PATH);
+  }
+
+  if (changedFiles.length > 0) {
     const updateListPath = path.join(workDir, "as3-runtime-layout-update-list.txt");
-    fs.writeFileSync(updateListPath, `${AS3_BASE_PAGE.replace(/\//gu, "\\")}\r\n`, "utf8");
+    fs.writeFileSync(updateListPath, `${changedFiles.map((entry) => entry.replace(/\//gu, "\\")).join("\r\n")}\r\n`, "utf8");
     runChecked(sevenZip, ["u", paths.as3RuntimeZipPath, `@${updateListPath}`, "-mx=1"], {
       cwd: workDir
     });
@@ -113,7 +126,9 @@ function main() {
     generatedAt: new Date().toISOString(),
     runtimeZipPath: paths.as3RuntimeZipPath,
     assetPath: AS3_BASE_PAGE,
-    changed
+    directWrapperPath: AS3_DIRECT_WRAPPER_PATH,
+    changed: changedFiles.length > 0,
+    changedFiles
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-runtime-layout-repair.json");
   writeJson(reportPath, report);

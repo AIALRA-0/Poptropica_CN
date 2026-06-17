@@ -1,0 +1,91 @@
+<island>
+	<name>吸血鬼诅咒岛</name>
+  	<eventsClass>game.scens.vampire.VampireEvents</eventsClass>
+  	<gameVersion>AS2</gameVersion>
+  	<island>vampire</island>
+  	
+  	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>talkedToMother</event>
+		<event>usedLog</event>
+		<event>usedBellows0</event>
+		<event>usedBellows1</event>
+		<event>usedBellows2</event>
+		<event>usedVampireNovel</event>
+		<event>chandalier0On</event>
+		<event>chandalier1On</event>
+		<event>chandalier2On</event>
+		<event>chandalier3On</event>
+		<event>usedGlassEye</event>
+		<event>openedArmory</event>
+		<event>openedGreatHall</event>
+		<event>priedBoards</event>
+		<event>shotCannon0</event>
+		<event>shotCannon1</event>
+		<event>shotCannon2</event>
+		<event>usedCannonBall0</event>
+		<event>usedCannonBall1</event>
+		<event>usedCannonBall2</event>
+		<event>wateredVine</event>
+		<event>growVine</event>
+		<event>cannonDumbwaiter</event>
+		<event>dumbwaiterLever</event>
+		<event>freedKatya</event>
+		<event>canFindBook</event>
+		<event>shotCount</event>
+		<event>vineGrew</event>
+		<event>filledMoat</event>
+		<event>blockedFountains</event>
+		<event>filledBucket</event>
+		<event>turnedCrank</event>
+		<event>logFell</event>
+		<event>spokeToBoy</event>
+		<event>bridgeFell</event>
+		<event>wiltedWolfsbane</event>
+		<event>sawWolves</event>
+		<event>day2Start</event>
+		<event>day2Complete</event>
+		<event>day2GotGarlic</event>
+		<event>day2GotMandrake</event>
+		<event>day2GotWolfsbane</event>
+		<event>reachedGreenhouse</event>
+		<event>cannonBallGlow</event>
+		<event>countInPhoto</event>
+	</permanentEvents>
+	
+  	<itemIdMap>
+		<item id="novel">410</item>
+		<item id="crowbar">411</item>
+		<item id="glass_eye">412</item>
+		<item id="armory_key">413</item>
+		<item id="crossbow">414</item>
+		<item id="notebook">415</item>
+		<item id="garlic_extract">416</item>
+		<item id="wolfsbane">417</item>
+		<item id="root">418</item>
+		<item id="amulet">419</item>
+		<item id="log">420</item>
+		<item id="book">421</item>
+		<item id="syringe">422</item>
+		<item id="cage_key">423</item>
+		<item id="bucket">424</item>
+		<item id="medal_vampire">1025</item>
+	</itemIdMap>
+	
+  	<firstScene>
+  		<!-- This was for AS3. Going back to AS2 now. -->
+  		<!-- <scene>game.scenes.vampire.mainStreet.MainStreet</scene> -->
+  		<scene>VampireMain</scene>
+		<x>1026</x>
+		<y>490</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

@@ -1,0 +1,122 @@
+<island>
+	<name>怪物嘉年华岛</name>
+	<eventsClass>game.scenes.carnival.CarnivalEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>carnival</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>set_day</event>
+		<event>set_night</event>
+		<event>set_evening</event>
+		<event>set_morning</event>
+		<event>asked_sugar</event>
+		<event>asked_water</event>
+		<event>gave_sugar</event>
+		<event>water_fixed</event>
+		<event>need_weight</event>
+		<event>won_weight</event>
+		<event>got_fry_oil</event>
+		<event>got_blunted_dart</event>
+		<event>spoke_edgar_formula</event>
+		<event>escaped_ringmaster_tent</event>
+		<event>saw_duck_monster</event>
+		<event>replaced_lever</event>
+		<event>used_ball</event>
+		<event>used_blunt_dart</event>
+		<event>won_strength_game</event>
+		<event>won_balloon_pop</event>
+		<event>used_cotton_candy</event>
+		<event>enslaved_ringmaster</event>
+		<event>ferris_wheel_stopped</event>
+		<event>beat_ferris_monster</event>
+		<event>clues_flag1</event>
+		<event>clues_flag2</event>
+		<event>talked_to_duck_game_worker</event>
+		<event>spoke_marnie_hose</event>
+		<event>teens_in_tunnel</event>
+		<event>teens_frightened</event>
+		<event>fell_in_water</event>
+		<!--These are items, not events. Got it fixed.
+		<event>sugar</event>
+		<event>sugar_formula</event>
+		<event>salt</event>
+		<event>salt_formula</event>
+		<event>hypnotize_formula</event>
+		<event>hypnotize_powder</event>
+		<event>vial</event>
+		-->
+		<event>gave_salt</event>
+		<event>opened_vent</event>
+		<event>edgar_lunge</event>
+		<event>monsters_unleashed</event>
+		<event>reveal_chicken_man</event>
+		<event>started_bonus_quest</event>
+		<event>blocked_from_bonus</event>
+		<event>started_ea_demo</event>
+		<event>started_ea</event>
+		<event>blocked_from_ea</event>
+		<event>spoke_about_grease</event>
+		<event>spoke_with_ferris_worker</event>
+		<event>dan_show_tail</event>
+		<event>introduce_day_2</event>
+		<event>day_2_complete</event>
+		<event>dan_ran_away</event>
+		<event>spoke_edgar_carnival</event>
+		<event>spoke_ringmaster_formula</event>
+		<event>edgar_ran_tent</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	  	<item id="medal_carnival">1038</item>
+		
+		<item id="chemical_x">774</item>
+		<item id="chemical_x_award">775</item>
+		<item id="chemical_x_formula">773</item>
+		<item id="cola">770</item>
+		<item id="mushrooms">771</item>
+		<item id="pickle_juice">772</item>
+		
+	  	<item id="ball">776</item>
+		<item id="black_lightbulb">777</item>
+		<item id="cotton_candy">778</item>
+		<item id="cup_empty">779</item>
+		<item id="cup_oil">780</item>
+		<item id="dart_blunt">781</item>
+		<item id="dart_sharp">782</item>
+		<item id="dough">783</item>
+		<item id="flashlight">784</item>
+		<item id="flashlight_black">785</item>
+		<item id="fly_mask">786</item>
+		<item id="hammer">787</item>
+		<item id="hose">788</item>
+		<item id="hypnotize_formula">789</item>
+		<item id="hypnotize_powder">790</item>
+		<item id="lever">791</item>
+		<item id="salt">792</item>
+		<item id="salt_formula">793</item>
+		<item id="secret_message">794</item>
+		<item id="sugar">795</item>
+		<item id="sugar_formula">796</item>
+		<item id="vial">797</item>
+	</itemIdMap>
+	<firstScene>
+		<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+		<x>3030</x>
+		<y>575</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/monster-carnival.html</playerMap>
+	<medallion>medal_carnival</medallion>
+</island>

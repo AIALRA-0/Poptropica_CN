@@ -1,0 +1,74 @@
+<island>
+	<name>小屁孩奇境岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>wimpy</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>givenMission</event>
+		<event>exitedMannysWindow</event>
+		<event>sawMannyOnBigWheel</event>
+		<event>crushedSnowman</event>
+		<event>shoveledDrive</event>
+		<event>plowedLaundromat</event>
+		<event>gotCarrot</event>
+		<event>enteredLeisureTowers</event>
+		<event>enteredSchool</event>
+		<event>gotManny</event>
+		<event>sawMannyOnScooter</event>
+		<event>beatTwistedWizard</event>
+		<event>fixedWipers</event>
+		<event>wokeGrandpa</event>
+		<event>grandpaChat</event>
+		<event>ateSalad</event>
+		<event>flipChannels</event>
+		<event>openLaundryRoom</event>
+		<event>openedGarage</event>
+		<event>gregStoppedGame</event>
+		<event>sawSnowplow</event>
+		<event>wonBingo</event>
+		<event>usedClassicalMusic</event>
+		<event>wonSled</event>
+		<event>watchedTeensWalk</event>
+		<event>usedCarrot</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="address_book">280</item>
+		<item id="journal_page">281</item>
+		<item id="paper_scrap">282</item>
+		<item id="carrot">283</item>
+		<item id="game_guide">284</item>
+		<item id="wiper_fluid">285</item>
+		<item id="shovel">286</item>
+		<item id="club_card">287</item>
+		<item id="leaf_blower">288</item>
+		<item id="bingo_troll">289</item>
+		<item id="cd">290</item>
+		<item id="dog_dish">291</item>
+		<item id="bike">292</item>
+		<item id="wizard_game">293</item>
+		<item id="medal_wimpy">1018</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>WimpyMain</scene>
+		<x>2500</x>
+		<y>520</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

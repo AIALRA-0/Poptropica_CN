@@ -1,0 +1,27 @@
+<item id="world_guy">
+	<type>island</type>
+	<subType>con2</subType>
+	<value>4</value>
+	<textfields>
+ 		<text id="title">
+      		<value>世界侠</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="quotation">
+      		<value>“在友谊的旗帜下，世界和平并非不可能！”</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>95</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con2/background4.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/world_guy.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

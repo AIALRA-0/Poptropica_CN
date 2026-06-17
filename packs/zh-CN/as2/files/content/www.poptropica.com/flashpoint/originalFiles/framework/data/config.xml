@@ -109,7 +109,7 @@
 		<island>
 			<name>Carrot</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>24胡萝卜岛</clusterName>
+			<clusterName>24 Carrot Island</clusterName>
 			<medallion>1004</medallion>
 			<init_coords>643,250</init_coords>
 			<mobile>true</mobile>
@@ -245,7 +245,7 @@
 <!--		<island>
 			<name>Tribal</name>
 			<islandMain>TribalMain</islandMain>
-			<clusterName>Poptropica运动会</clusterName>
+			<clusterName>波普特罗波利斯运动会</clusterName>
 			<medallion>1027</medallion>
 			<init_coords>255,950</init_coords>
 			<mobile>false</mobile>
@@ -317,7 +317,7 @@
 		<island>
 			<name>Poptropolis</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>Poptropica运动会</clusterName>
+			<clusterName>波普特罗波利斯运动会</clusterName>
 			<medallion>1027</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>false</mobile>
@@ -341,7 +341,7 @@
 		<island>
 			<name>Survival1</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>生存 - 第1集</clusterName>
+			<clusterName>Survival - Episode 1</clusterName>
 			<medallion>1039</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -349,7 +349,7 @@
 		<island>
 			<name>DeepDive1</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>亚特兰蒂斯任务 - 第1集</clusterName>
+			<clusterName>Mission Atlantis - Episode 1</clusterName>
 			<medallion>1040</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -357,7 +357,7 @@
 		<island>
 			<name>Survival2</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>生存 - 第2集</clusterName>
+			<clusterName>Survival - Episode 2</clusterName>
 			<medallion>1041</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -365,7 +365,7 @@
 		<island>
 			<name>DeepDive2</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>亚特兰蒂斯任务 - 第2集</clusterName>
+			<clusterName>Mission Atlantis - Episode 2</clusterName>
 			<medallion>1042</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -373,7 +373,7 @@
 		<island>
 			<name>Survival3</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>生存 - 第3集</clusterName>
+			<clusterName>Survival - Episode 3</clusterName>
 			<medallion>1043</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -381,7 +381,7 @@
 		<island>
 			<name>Survival4</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>生存 - 第4集</clusterName>
+			<clusterName>Survival - Episode 4</clusterName>
 			<medallion>1044</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -389,7 +389,7 @@
 		<island>
 			<name>DeepDive3</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>亚特兰蒂斯任务 - 第3集</clusterName>
+			<clusterName>Mission Atlantis - Episode 3</clusterName>
 			<medallion>1045</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -405,7 +405,7 @@
 		<island>
 			<name>Con1</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>Poptropicon - 第1集</clusterName>
+			<clusterName>Poptropicon - Episode 1</clusterName>
 			<medallion>1046</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -413,7 +413,7 @@
 		<island>
 			<name>Survival5</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>生存岛 - 第5集</clusterName>
+			<clusterName>Survival - Episode 5</clusterName>
 			<medallion>1047</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -421,7 +421,7 @@
 		<island>
 			<name>Arab1</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>一千零一夜 - 第1集</clusterName>
+			<clusterName>Arabian Nights - Episode 1</clusterName>
 			<medallion>1048</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -429,7 +429,7 @@
 		<island>
 			<name>Con2</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>Poptropicon - 第2集</clusterName>
+			<clusterName>Poptropicon - Episode 2</clusterName>
 			<medallion>1049</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -437,7 +437,7 @@
 		<island>
 			<name>Arab2</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>一千零一夜 - 第2集</clusterName>
+			<clusterName>Arabian Nights - Episode 2</clusterName>
 			<medallion>1050</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -453,7 +453,7 @@
 		<island>
 			<name>Con3</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>Poptropicon - 第3集</clusterName>
+			<clusterName>Poptropicon - Episode 3</clusterName>
 			<medallion>1052</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>
@@ -469,7 +469,7 @@
 		<island>
 			<name>Arab3</name>
 			<islandMain>GlobalAS3Embassy</islandMain>
-			<clusterName>一千零一夜 - 第3集</clusterName>
+			<clusterName>Arabian Nights - Episode 3</clusterName>
 			<medallion>1054</medallion>
 			<init_coords>0,0</init_coords>
 			<mobile>true</mobile>

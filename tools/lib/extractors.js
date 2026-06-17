@@ -18,6 +18,7 @@ const includePathPatterns = [
   /\/game\/Shell\.swf$/iu,
   /\/game\/style\/styles\.xml$/iu,
   /\/game\/data\/languages\//iu,
+  /\/game\/data\/items\//iu,
   /\/framework\/data\//iu,
   /\/flashpoint\/memStatus\.swf$/iu,
   /\/framework\.swf$/iu,

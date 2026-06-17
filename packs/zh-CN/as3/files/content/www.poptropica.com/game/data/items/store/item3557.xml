@@ -1,0 +1,39 @@
+<item id="3556"> <!-- Spray Tan -->
+	<type>store</type>
+	<subType>general</subType>
+	
+	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+				<action type="activatePower"> <!-- change tracking call -->
+					<parameters>
+					  		<param id="trigger">true</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<textfields>
+		<text id="titlewhite">
+			<value>喷雾美黑！</value>
+			<y>-190</y>
+		</text>
+		<text id="instructionswhite">
+			<value>请大量喷涂到任意 Poptropica 角色身上！</value>
+			<y>100</y>
+		</text>
+	</textfields>
+	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundRustRed.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <specials>
+    	<specialAbility>spray_tan_all_npcs</specialAbility>
+	</specials>
+</item>

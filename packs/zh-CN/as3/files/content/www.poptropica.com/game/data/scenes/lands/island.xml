@@ -1,0 +1,44 @@
+<island>
+	<name>地图之谜</name>
+  	<eventsClass>game.scenes.lands.LandsEvents</eventsClass>
+  	<gameVersion>AS3</gameVersion>
+  	<island>lands</island>
+  	
+  	<accessible>true</accessible>
+  	<earlyAccess>false</earlyAccess>
+  	<nextIsland></nextIsland>
+  	
+  	<permanentEvents>
+		<event>took_survey</event>
+		<event>saw_instructions</event>
+		<event>reached_treasure</event>
+		<event>got_realms_hint</event>
+		<event>got_some_poptanium</event>
+		<event>saw_master_ghost</event>
+		<event>finished_master_ghost</event>
+		<event>saw_intro_video</event>
+  	</permanentEvents>
+  	
+  	<itemIdMap>
+		<item id="hammer">850</item>
+		<item id="journal">851</item>
+		<item id="pound">897</item>
+		<item id="hammerang">898</item>
+		<item id="creator">899</item>
+  	</itemIdMap>
+  	
+  	<firstScene>
+		<scene>game.scenes.lands.lab1.Lab1</scene>
+		<x></x>
+		<y></y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

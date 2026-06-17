@@ -1,0 +1,16 @@
+<island>
+	<name>鲨鱼牙岛</name>
+	<island>shark</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/shark/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

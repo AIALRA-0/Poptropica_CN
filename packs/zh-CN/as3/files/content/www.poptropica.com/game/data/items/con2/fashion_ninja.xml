@@ -1,0 +1,33 @@
+<item id="fashion_ninja">
+	<type>island</type>
+	<subType>con2</subType>
+	<value>1,skip</value>
+	<textfields>
+ 		<text id="title">
+      		<value>时尚忍者</value>
+      		<styleFamily>CCG</styleFamily>
+      		<styleId>title_long</styleId>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="power">
+      		<value>跳过一回合</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>40</y>
+    	</text>
+    	<text id="description">
+      		<value>对手的下一回合会被跳过。</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>105</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con2/background1.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/fashion_ninja.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

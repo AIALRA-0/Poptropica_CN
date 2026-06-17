@@ -1,0 +1,32 @@
+<island>
+	<name>亚特兰蒂斯任务</name>
+	<island>deepDive</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/deepDiveEpisodic/</islandFolder>
+	<numEpisodes>3</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode1/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode2/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode3/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

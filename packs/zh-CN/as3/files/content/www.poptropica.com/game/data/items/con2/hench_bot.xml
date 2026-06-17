@@ -1,0 +1,27 @@
+<item id="omrgon_hench_bot">
+	<type>island</type>
+	<subType>con2</subType>
+	<value>1</value>
+	<textfields>
+ 		<text id="title">
+      		<value>爪牙机器人</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="quotation">
+      		<value>“废铁堆里又多一个。”</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>105</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con2/background1.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/hench_bot.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

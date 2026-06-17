@@ -77,6 +77,18 @@ body, embed { background-color: #139ffd; }
     overflow: hidden;
 }
 
+#flashpointMapHotspot {
+    position: absolute;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0);
+    cursor: pointer;
+    touch-action: none;
+}
+
+#flashpointMapHotspot[hidden] {
+    display: none;
+}
+
 embed {
     outline-width: 0;
     position: absolute;
@@ -102,6 +114,7 @@ embed {
     </head>
     <body>
         <div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="139ffd" hidden></div>
+        <div id="flashpointMapHotspot" hidden aria-hidden="true"></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>
         <div id="errorText" hidden>Multiplayer features are unavailable.</div>
         <form method="POST">
@@ -131,15 +144,18 @@ const PATH_DEFAULT = "gameplay";
 
 const gameViewport = document.getElementById("gameViewport"),
       game = document.getElementById("game"),
+      flashpointMapHotspot = document.getElementById("flashpointMapHotspot"),
       sceneAudio = document.getElementById("flashpointSceneAudio"),
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
+      MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 44, width: 1010, height: 500 };
 
 main();
+initMapHotspotBridge();
 window.addEventListener("resize", () => applyCurrentViewport());
 
 function main() {
@@ -149,6 +165,67 @@ function main() {
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
     return null;
+}
+
+function initMapHotspotBridge() {
+    if(!flashpointMapHotspot)
+        return;
+
+    const requestHandler = function(event) {
+        if(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        requestFlashMapOpen();
+    };
+    flashpointMapHotspot.addEventListener("mousedown", requestHandler, true);
+    flashpointMapHotspot.addEventListener("click", requestHandler, true);
+    flashpointMapHotspot.addEventListener("touchstart", requestHandler, { capture: true, passive: false });
+}
+
+function requestFlashMapOpen() {
+    if(!game || !flashpointMapHotspot)
+        return false;
+
+    const now = Date.now();
+    if(flashpointMapHotspot.__zhLastRequestAt && now - flashpointMapHotspot.__zhLastRequestAt < 450)
+        return true;
+    flashpointMapHotspot.__zhLastRequestAt = now;
+
+    try {
+        if(typeof game.flashpointOpenMap === "function") {
+            game.flashpointOpenMap();
+            return true;
+        }
+    } catch(err) { }
+
+    try {
+        if(typeof game.SetVariable === "function") {
+            const token = String(now);
+            game.SetVariable("__zhExternalMapRequest", token);
+            game.SetVariable("_root.__zhExternalMapRequest", token);
+            game.SetVariable("_level0.__zhExternalMapRequest", token);
+            return true;
+        }
+    } catch(err) { }
+    return false;
+}
+
+function applyMapHotspot(viewport, gameState) {
+    if(!flashpointMapHotspot)
+        return;
+
+    if(gameState !== "return_user_standard") {
+        flashpointMapHotspot.hidden = true;
+        return;
+    }
+
+    const scale = viewport.useViewportCrop ? viewport.viewportScale : 1;
+    flashpointMapHotspot.hidden = false;
+    flashpointMapHotspot.style.left = `${ viewport.offsetLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px`;
+    flashpointMapHotspot.style.top = `${ viewport.offsetTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px`;
+    flashpointMapHotspot.style.width = `${ MAP_HOTSPOT.width * scale }px`;
+    flashpointMapHotspot.style.height = `${ MAP_HOTSPOT.height * scale }px`;
 }
 
 function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
@@ -165,13 +242,13 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
+        viewportScale = Math.max(0.25, Math.max(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
         viewportWidth = crop.width;
         viewportHeight = crop.height;
-        offsetLeft = Math.round((window.innerWidth - viewportWidth * viewportScale) / 2);
-        offsetTop = Math.round((window.innerHeight - viewportHeight * viewportScale) / 2);
+        offsetLeft = Math.min(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
+        offsetTop = Math.min(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
@@ -206,6 +283,7 @@ function applyGameViewport(viewport, gameState) {
         game.style.left = "0px";
         game.style.top = "0px";
     }
+    applyMapHotspot(viewport, gameState);
 }
 
 function applyCurrentViewport() {
@@ -382,6 +460,9 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     flashVars.set("island", island);
     flashVars.set("startup_path", path);
     flashVars.set("state", gameState);
+    const inputParams = getInput();
+    if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
+        flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
 
     if(getCharLazyLoadStatus()) {
         flashVars.set("charLazyLoad", "1");

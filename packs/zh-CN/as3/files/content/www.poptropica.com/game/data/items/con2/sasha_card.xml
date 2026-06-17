@@ -1,0 +1,37 @@
+<item id="sasha_card">
+	<type>island</type>
+	<subType>con2</subType>
+	<textfields>
+ 		<text>
+      		<value>萨莎的名片</value>
+    	</text>
+  	</textfields>
+  	<buttons>
+		<btn>
+    		<label>拨打号码</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">call_sasha_phone</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con2/background.swf</assetPath>
+ 			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>3</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-20</saturation>
+     			<hue>80</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/sasha_card.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

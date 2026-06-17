@@ -1,0 +1,25 @@
+<item id="ivoryCamel">
+	<type>island</type>
+	<subType>arab1</subType>
+	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">ivory_camel</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+ 		<text>
+      		<value>象牙骆驼</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

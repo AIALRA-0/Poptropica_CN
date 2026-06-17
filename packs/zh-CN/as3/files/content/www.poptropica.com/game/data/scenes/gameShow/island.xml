@@ -1,0 +1,66 @@
+<island>
+	<name>游戏秀岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>gameShow</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>beatSlidePuzzle1</event>
+		<event>beatSlidePuzzle2</event>
+		<event>beatSlidePuzzle3</event>
+		<event>beatSlidePuzzle4</event>
+		<event>museumVideo</event>
+		<event>hostShouting</event>
+		<event>hostChat</event>
+		<event>savedPrizes</event>
+		<event>wonSpin</event>
+		<event>chasedInventor</event>
+		<event>passedYoshi</event>
+		<event>fixedCircuit</event>
+		<event>wonScaredy</event>
+		<event>foundInventor</event>
+		<event>sawInventor</event>
+		<event>fixedBAPower</event>
+		<event>wonBrainiacs</event>
+		<event>wonKerplunk</event>
+		<event>didMoscow</event>
+		<event>enteredClub</event>
+		<event>gotYoshiTicket</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="heat_goggles">350</item>
+		<item id="toolkit">351</item>
+		<item id="fan">352</item>
+		<item id="nickel">353</item>
+		<item id="jet_remote">354</item>
+		<item id="thumb_drive">355</item>
+		<item id="brainiac_ticket">356</item>
+		<item id="scaredy_ticket">357</item>
+		<item id="spin_ticket">358</item>
+		<item id="kerplunk_ticket">359</item>
+		<item id="yoshi_ticket">360</item>
+		<item id="medal_game">1022</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>GameShowMain</scene>
+		<x>3786</x>
+		<y>750</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

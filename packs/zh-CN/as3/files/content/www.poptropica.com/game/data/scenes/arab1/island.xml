@@ -1,0 +1,56 @@
+<island>
+	<name>一千零一夜</name>
+	<eventsClass>game.scenes.arab1.Arab1Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>arab1</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>questAccepted</event>
+		<event>placed_telescope</event>
+		<event>cave_rope_lowered</event>
+		<event>intro_complete</event>
+		<event>entered_palace</event>
+		<event>guards_stand_down</event>
+		<event>player_holding_camel</event>
+		<event>smoke_bomb_left</event>
+		<event>cloth_on_dias</event>
+		<event>salt_on_dias</event>
+		<event>grain_on_dias</event>
+		<event>camel_on_dias</event>
+		<event>camel_taken</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="camel_harness">865</item>
+		<item id="cloth">866</item>
+		<item id="crown_jewel">867</item>
+	  	<item id="grain">868</item>
+	  	<item id="ivory_camel">869</item>
+	  	<item id="lamp">870</item>
+	  	<item id="pearl">871</item>
+	  	<item id="salt">872</item>
+		<item id="smoke_bomb">873</item>
+	  	<item id="spy_glass">874</item>
+		<item id="medal_arabian1">1048</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.arab1.bazaar.Bazaar</scene>
+		<x>2906</x>
+		<y>1520</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/arabian-nights.html</playerMap>
+	<medallion>medal_arabian1</medallion>
+</island>

@@ -1,0 +1,16 @@
+<island>
+	<name>病毒猎手岛</name>
+	<island>virusHunter</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/virusHunter/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

@@ -1,0 +1,69 @@
+<island>
+	<name>亚特兰蒂斯任务</name>
+	<eventsClass>game.scenes.deepDive2.DeepDive2Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>deepDive2</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>completed_pipes</event>
+		<event>played_intro</event>
+		<event>alien_wall_broken</event>
+		<event>got_puzzle_piece_1</event>
+		<event>got_puzzle_piece_2</event>
+		<event>got_puzzle_piece_3</event>
+		<event>got_puzzle_piece_4</event>
+		<event>got_puzzle_piece_5</event>
+		<event>got_puzzle_piece_6</event>
+		<event>puzzle_assembled</event>
+		<event>used_puzzle_key</event>
+		<event>got_all_puzzle_pieces</event>
+		<event>solved_puzzle</event>
+		<event>saw_button</event>
+		<event>used_pipes</event>
+		<event>trapped_shark</event>
+		<event>trapped_medusa</event>
+		<event>entered_medusa_area</event>
+		<event>medusa_opened_door</event>
+		<event>glyph_1</event>
+		<event>glyph_2</event>
+		<event>glyph_3</event>
+		<event>glyph_4</event>
+		<event>glyph_5</event>
+		<event>glyph_6</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="puzzle_key">837</item>
+		<item id="glyph_files">838</item>
+		<item id="medal_atlantis2">1042</item>
+		<!-- glyph items are not saved to CMS, only as events
+		<item id="glyph_1">0</item>
+		<item id="glyph_2">0</item>
+		<item id="glyph_3">0</item>
+		<item id="glyph_4">0</item>
+		<item id="glyph_5">0</item>
+		<item id="glyph_6">0</item>
+		-->
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.deepDive2.introCutscene.IntroCutscene</scene>
+		<x>500</x>
+		<y>500</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	<!-- Invalidating island for 1.10 -->
+	
+	<playerMap>http://www.poptropica.com/player-maps/mission-atlantis-ep2.html</playerMap>
+	<medallion>medal_atlantis2</medallion>
+</island>

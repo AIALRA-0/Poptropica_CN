@@ -1,0 +1,15 @@
+<island>
+	<name>生存岛</name>
+	<island>survival4</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/survival4/</islandFolder>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

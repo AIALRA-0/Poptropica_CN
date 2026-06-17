@@ -1,0 +1,16 @@
+<island>
+	<name>神秘列车岛</name>
+	<island>train</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/train/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

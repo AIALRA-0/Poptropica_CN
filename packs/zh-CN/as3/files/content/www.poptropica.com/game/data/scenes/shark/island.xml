@@ -1,0 +1,45 @@
+<island>
+	<name>鲨鱼牙岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>shark</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>usedPotion</event>
+		<event>savedBoy</event>
+		<event>madePotion</event>
+		<event>openedTemple</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="coconut_milk">10</item>
+		<item id="skirt">11</item>
+		<item id="bone">12</item>
+		<item id="inf">13</item>
+		<item id="potion">14</item>
+		<item id="key_ingredient">15</item>
+		<item id="translation_key">16</item>
+		<item id="medal_shark">1002</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>Mainstreet</scene>
+		<x>552</x>
+		<y>495</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

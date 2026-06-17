@@ -1,0 +1,68 @@
+<island>
+	<name>赝品岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>counter</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>usedTunnelTicket</event>
+		<event>completedTunnelTour</event>
+		<event>givenMission</event>
+		<event>turnedNight</event>
+		<event>turnedDay</event>
+		<event>gotJob</event>
+		<event>appliedForJob</event>
+		<event>canCheckTimecard</event>
+		<event>talkedToBaker</event>
+		<event>talkedToParrot</event>
+		<event>openedCottage</event>
+		<event>escapedBonds</event>
+		<event>beatBoss</event>
+		<event>gotPiece1</event>
+		<event>gotPiece2</event>
+		<event>gotPiece3</event>
+		<event>gotPiece4</event>
+		<event>gotPiece5</event>
+		<event>gotPiece6</event>
+		<event>gaveBalloon</event>
+		<event>showedScreenPrint</event>
+		<event>openedVault</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="ticket">131</item>
+		<item id="torn_paper">132</item>
+		<item id="xray_wand">133</item>
+		<item id="timecard">134</item>
+		<item id="screen_print">135</item>
+		<item id="key">136</item>
+		<item id="secret_ingredient">137</item>
+		<item id="crepe">138</item>
+		<item id="key_card">139</item>
+		<item id="starry_night">140</item>
+		<item id="art_watch">141</item>
+		<item id="tickets">142</item>
+		<item id="medal_counter">1010</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>CounterMain</scene>
+		<x>2536</x>
+		<y>990</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

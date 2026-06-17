@@ -1,0 +1,70 @@
+<island>
+	<name>查理和巧克力工厂岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>charlie</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>metCharlie</event>
+		<event>sawCharlieAtHouse</event>
+		<event>foundCoin</event>
+		<event>charlieGotTicket</event>
+		<event>escapedCrowd</event>
+		<event>ticketBlewAway</event>
+		<event>metWonka</event>
+		<event>startedMaze</event>
+		<event>ateGumball</event>
+		<event>turnedValves</event>
+		<event>turnedValve0</event>
+		<event>turnedValve1</event>
+		<event>turnedValve2</event>
+		<event>rescuedVeruca</event>
+		<event>savedCharlie</event>
+		<event>recoveredRecipes</event>
+		<event>mikeShrunk</event>
+		<event>mikeTakenAway</event>
+		<event>rescuedMike</event>
+		<event>wonJuicingGame</event>
+		<event>charlieFloated</event>
+		<event>fellTrash</event>
+		<event>bonusChat</event>
+		<event>day2Start</event>
+		<event>day2Complete</event>
+		<event>watchedAugustus</event>
+		<event>rescuedAugustus</event>
+		<event>blockedFromBonus</event>
+		<event>bonusStarted</event>
+		<event>juicePreview</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="golden_ticket">700</item>
+		<item id="silver_coin">701</item>
+		<item id="cane">702</item>
+		<item id="walnut">703</item>
+		<item id="whipped_cream">704</item>
+		<item id="fizzy_drink">705</item>
+		<item id="medal_charlie">1031</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>CharlieMain</scene>
+		<x>2162</x>
+		<y>1326</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

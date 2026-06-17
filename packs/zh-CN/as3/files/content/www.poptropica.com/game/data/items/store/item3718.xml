@@ -1,0 +1,44 @@
+<item id="3718">
+		<type>store</type>
+		<subType>general</subType>
+
+			<contentClass> <!-- This displays avatar  -->
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+
+	
+	<buttons>
+			<btn>
+			<index>0</index>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+		</buttons>
+
+		<textfields>
+		<text id="storeTitle">
+			<value>柠檬鲨</value>
+			 </text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack" />
+	</assets>
+
+	<looks>
+		<look>
+			   <mouth>fm3</mouth>
+			  <marks>store_lemonshark</marks>
+			  <facial>store_lemonshark</facial>
+			  <hair>store_lemonshark</hair>
+			  <shirt>2</shirt>
+			  <pants>2</pants>
+			  <pack>store_lemonshark</pack>
+			  <item>store_lemonshark</item>
+			  <overshirt>store_lemonshark</overshirt>
+			  <overpants>empty</overpants>
+		</look>
+	</looks> 
+</item>

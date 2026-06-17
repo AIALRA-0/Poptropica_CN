@@ -1,0 +1,70 @@
+<island>
+	<name>生存岛</name>
+	<eventsClass>game.scenes.survival4.Survival4Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>survival4</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>touched_down</event>
+		<event>tour_complete_1</event>
+		<event>tour_complete_2</event>
+		<event>tour_complete_3</event>
+		<event>tour_complete_4</event>
+		<event>spear_fell</event>
+		<event>gator_tilted</event>
+		<event>gator_fell</event>
+		<event>hyenia_fell</event>
+		<event>statue_fell</event>
+		<event>unlocked_armory</event>
+		<event>ate_meat</event>
+		<event>guest_room_intro</event>
+		<event>opened_guest_door</event>
+		<event>cameras_disabled</event>
+		<event>opened_van_burens_door</event>
+		<event>night_vision_on</event>
+		<event>night_vision_off</event>
+		<event>dog_ate_meat</event>
+		<event>welcome</event>
+		<event>moose_facing_1</event>
+		<event>moose_facing_2</event>
+		<event>moose_facing_3</event>
+		<event>trophy_room_unlocked</event>
+		<event>code_entered</event>
+		<event>tally_ho_down</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="armoryKey">839</item>
+		<item id="bearClaw">840</item>
+		<item id="emptyPitcher">841</item>
+		<item id="fullPitcher">842</item>
+		<item id="nightVision">843</item>
+		<item id="securityCode">844</item>
+		<item id="spear">845</item>
+		<item id="taintedMeat">846</item>
+		<item id="trophyRoomKey">847</item>
+		<item id="voiceRecording">848</item>
+		<item id="medal_survival4">1044</item>
+	</itemIdMap>
+	
+	<!-- TODO: Fix first scene -->
+	<firstScene>
+		<scene>game.scenes.survival4.touchDown.TouchDown</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap>http://www.poptropica.com/player-maps/survival-ep4.html</playerMap>
+	<medallion>medal_survival4</medallion>
+</island>

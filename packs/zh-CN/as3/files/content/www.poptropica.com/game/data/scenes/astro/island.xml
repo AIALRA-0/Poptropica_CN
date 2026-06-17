@@ -1,0 +1,75 @@
+<island>
+	<name>太空骑士岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>astro</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>allowedRocket</event>
+		<event>beatFireBoss</event>
+		<event>beatIceBoss</event>
+		<event>beatJungleBoss</event>
+		<event>beatMordred</event>
+		<event>brokeDirtWall</event>
+		<event>destroyedDroid</event>
+		<event>foundMerlin</event>
+		<event>gotMerlin</event>
+		<event>killedSharks</event>
+		<event>madeRocket</event>
+		<event>openedCathedralGate</event>
+		<event>openedDungeonGrate</event>
+		<event>openedHideout</event>
+		<event>openedPortal</event>
+		<event>reachedPrincessDoor</event>
+		<event>unlockedMill</event>
+		<event>usedBowRope</event>
+		<event>usedManure</event>
+		<event>usedMuseumCoin</event>
+		<event>usedGuide</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="fuel_rod">110</item>
+		<item id="gold_coin">111</item>
+		<item id="rope">112</item>
+		<item id="manure">113</item>
+		<item id="cheese">114</item>
+		<item id="mechanical_mouse">115</item>
+		<item id="symbols">116</item>
+		<item id="coordinates">117</item>
+		<item id="secret_message">118</item>
+		<item id="pamphlet">119</item>
+		<item id="tale">120</item>
+		<item id="journal">121</item>
+		<item id="journal_6">122</item>
+		<item id="weapons">123</item>
+		<item id="note">124</item>
+		<item id="slip">125</item>
+		<item id="key">126</item>
+		<item id="shield">127</item>
+		<item id="laser">128</item>
+		<item id="arrow">129</item>
+		<item id="medal_astro">1009</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>AstroMain</scene>
+		<x>355</x>
+		<y>534</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

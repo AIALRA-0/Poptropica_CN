@@ -1,0 +1,100 @@
+<island>
+	<name>提米·失败岛</name>
+	<eventsClass>game.scenes.timmy.TimmyEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>timmy</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>intro_complete</event>
+		<event>opened_office</event>
+		<event>unlocked_cabinet</event>
+		<event>garbanzo_dropped</event>
+		<event>key_eaten</event>
+		<event>placed_lazy_bear</event>
+		<event>watched_lazy_bear</event>
+		<event>crashed_car</event>
+		<event>got_detective_log_page_1</event>
+		<event>got_detective_log_page_2</event>
+		<event>got_detective_log_page_3</event>
+		<event>got_detective_log_page_4</event>
+		<event>got_detective_log_page_5</event>
+		<event>got_detective_log_page_6</event>
+		<event>got_detective_log_page_7</event>
+		<event>got_detective_log_page_8</event>
+		<event>got_detective_log_page_9</event>
+		<event>total_in_house</event>
+		<event>total_following</event>
+		<event>freed_rollo</event>
+		<event>freed_total</event>
+		<event>saw_timmy_on_tower</event>
+		<event>mollys_onto_you</event>
+		<event>returned_cat</event>
+		<event>scared_rollo_1</event>
+		<event>scared_rollo_2</event>
+		<event>scared_rollo_3</event>
+		<event>nose_fell_off</event>
+		<event>crocus_mad</event>
+		<event>chase_complete</event>
+		<event>dropped_camera</event>
+		<event>knocked_down_box</event>
+		<event>saw_timmy_mainstreet</event>
+		<event>attempted_bowling_game</event>
+		<event>got_costume</event>
+		<event>got_poster</event>
+		<event>got_coloring_poster</event>
+		<event>got_scarf_item</event>
+		<event>reminisce</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="beach_ball">940</item>
+		<item id="bonbons">941</item>
+		<item id="box">942</item>
+		<item id="bucket">943</item>
+		<item id="camera">944</item>
+		<item id="car_key">945</item>
+		<item id="cat">946</item>
+		<item id="change">947</item>
+		<item id="chicken_nuggets">948</item>
+		<item id="crispy_rice_treats">949</item>
+		<item id="detective_log">950</item>
+		<item id="garbanzo_man_head">951</item>
+		<item id="gardening_shears">952</item>
+		<item id="medal_timmy">1056</item>
+		<item id="money">953</item>
+		<item id="office_key">954</item>
+		<item id="permanent_marker">955</item>
+		<item id="pole">956</item>
+		<item id="rope">957</item>
+		<item id="screwdriver">958</item>
+		<item id="shoes">959</item>
+		<item id="wagon">960</item>
+	</itemIdMap>
+	
+	<!-- TODO: Fix first scene -->
+	<firstScene>
+		<scene>game.scenes.timmy.timmysStreet.TimmysStreet</scene>
+		<x>550</x>
+		<y>953</y>
+		<direction>right</direction>
+<!-- 		<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+		<x>4550</x>
+		<y>1555</y>
+		<direction>right</direction> 
+-->
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion>medal_timmy</medallion>
+</island>

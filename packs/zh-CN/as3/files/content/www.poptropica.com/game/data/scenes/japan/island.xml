@@ -1,0 +1,86 @@
+<island>
+	<name>红龙岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>japan</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>copiedNotation</event>
+		<event>wonSumo</event>
+		<event>ninjaTrained</event>
+		<event>brokeLSumoArch</event>
+		<event>brokeRSumoArch</event>
+		<event>enteredBackyard</event>
+		<event>brokeTire</event>
+		<event>enteredTreehouse</event>
+		<event>gaveGlasses</event>
+		<event>bookChat</event>
+		<event>enteredGarden</event>
+		<event>warpToGarden</event>
+		<event>openClosetDoor</event>
+		<event>gotKimono</event>
+		<event>trimmedBonsai</event>
+		<event>WonDragonBattle</event>
+		<event>warpHome</event>
+		<event>caughtKappa</event>
+		<event>fixedBridge</event>
+		<event>finalTraining</event>
+		<event>gotHaiku1</event>
+		<event>gotHaiku2</event>
+		<event>gotHaiku3</event>
+		<event>shopClosed</event>
+		<event>startedLevel2</event>
+		<event>startedLevel3</event>
+		<event>startedLevel4</event>
+		<event>startedLevel5</event>
+		<event>startedLevel6</event>
+		<event>caughtThief</event>
+		<event>talkedToBasho</event>
+		<event>wentToJail</event>
+		<event>kidsCaptured</event>
+		<event>passedFinalDialog</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="japan_book">300</item>
+		<item id="creek_book">301</item>
+		<item id="glasses">302</item>
+		<item id="kimonos">303</item>
+		<item id="grappling_hook">304</item>
+		<item id="throwing_stars">305</item>
+		<item id="smoke_bombs">306</item>
+		<item id="ninja_outfit">307</item>
+		<item id="bo_staff">308</item>
+		<item id="shuko">309</item>
+		<item id="scissors">310</item>
+		<item id="rotten_fish">311</item>
+		<item id="amulet">312</item>
+		<item id="mortar">313</item>
+		<item id="parchment">314</item>
+		<item id="slip">315</item>
+		<item id="haiku">316</item>
+		<item id="passport">317</item>
+		<item id="medal_japan">1019</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>JapanMain</scene>
+		<x>2273</x>
+		<y>690</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>

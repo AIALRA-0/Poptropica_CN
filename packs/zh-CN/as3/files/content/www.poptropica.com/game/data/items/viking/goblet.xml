@@ -1,0 +1,81 @@
+<item id="goblet"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>viking</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>高脚杯</value>
+  		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-49</saturation>
+     			<hue>4</hue>
+    			</effect>
+	    	</asset>
+    </assets>
+
+	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="true"/>
+		  			<parameters>
+		  				<param id="event">use_goblet</param>
+					</parameters>
+				</action>
+				<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="false"/>
+		  			<parameters>
+		  				<param id="event">cant_use_goblet</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+    
+    <contentClass>
+		<className>game.ui.card.MultiFrameContentView</className>
+		<parameters>
+			<param>items/viking/goblet.swf</param>
+		</parameters>
+	</contentClass>
+	
+    <conditionals>
+		<conditional type="inScene">
+    		<parameters>
+		  		<param id="validScenes">game.scenes.viking.dodoHabitat.DodoHabitat, game.scenes.viking.waterfall.Waterfall, game.scenes.viking.waterfall2.Waterfall2, game.scenes.viking.diningHall.DiningHall, game.scenes.viking.throneRoom.ThroneRoom</param>
+			</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="caught_fish" isTrue="false">
+    		<parameters>
+		  		<param id="event">caught_fish</param>
+		  		<param id="false">empty</param>
+			</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="caught_fish">
+    		<parameters>
+		  		<param id="event">caught_fish</param>
+		  		<param id="true">fish</param>
+			</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="placed_fish">
+    		<parameters>
+		  		<param id="event">placed_fish</param>
+		  		<param id="true">empty</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+	
+</item>

@@ -1,0 +1,50 @@
+<item id="medal_con1">
+	<type>island</type>
+	<subType>con1</subType>
+	<buttons>
+  		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="applyLook"/>
+				<action type="tiggerEvent">
+		  			<parameters>
+		  				<param id="event">useMedal</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+  		<text id="title">
+    		<value>岛屿奖章</value>
+  		</text>
+  		<text>
+    		<value>恭喜！&#10;你完成了&#10;PoptropiCon 漫展岛任务。</value>
+   			<size>15</size>
+    		<y>65</y>
+  		</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <looks>
+	    <look>
+		 	<overshirt>medalcon1</overshirt>
+	   	</look> 
+	</looks>  
+	
+	<conditionals>
+    	<conditional type="hasLook" />	<!-- if no lookId param is given uses first look by default -->
+    </conditionals>
+    
+</item>

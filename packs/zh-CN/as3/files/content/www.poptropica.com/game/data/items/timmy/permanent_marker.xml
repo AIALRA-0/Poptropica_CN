@@ -1,0 +1,52 @@
+<item id="permanent_marker">
+	<type>island</type>
+	<subType>timmy</subType>
+
+	<textfields>
+  		<text>
+    		<value>永久记号笔</value>
+		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>-45</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+    
+	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="true"/>
+		  			<parameters>
+		  				<param id="event">use_marker</param>
+					</parameters>
+				</action>
+				<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="false"/>
+		  			<parameters>
+		  				<param id="event">cant_use_marker</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+
+     <conditionals>
+    	<conditional type="inScene">
+    		<parameters>
+		  		<param id="validScenes">game.scenes.timmy.timmysHouse.TimmysHouse</param>
+			</parameters>
+    	</conditional>
+    </conditionals>	
+</item>

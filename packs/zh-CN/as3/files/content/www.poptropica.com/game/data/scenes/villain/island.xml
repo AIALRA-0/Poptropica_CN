@@ -1,0 +1,70 @@
+<island>
+	<name>超级反派岛</name>
+  	<eventsClass>game.scenes.villain.VillainEvents</eventsClass>
+  	<gameVersion>AS2</gameVersion>
+  	<island>villain</island>
+  	
+  	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>usedRadio</event>
+		<event>activatedPods</event>
+		<event>foremanChat</event>
+		<event>picassoClean</event>
+		<event>monetClean</event>
+		<event>vanGoghClean</event>
+		<event>spokeToWidow</event>
+		<event>widowClean</event>
+		<event>usedTurpentine</event>
+		<event>bonusChat</event>
+		<event>gotCode1</event>
+		<event>gotCode2</event>
+		<event>gotCode</event>
+		<event>day2Start</event>
+		<event>day2Complete</event>
+		<event>enteredPrison</event>
+		<event>passedSecurity</event>
+		<event>moveMountain</event>
+		<event>inHelicopter</event>
+		<event>sawHare</event>
+		<event>rodeInHelicopter</event>
+		<event>hareRanOff</event>
+		<event>mordredChange</event>
+		<event>beatZeus</event>
+		<event>inOcean</event>
+	</permanentEvents>
+	
+  	<itemIdMap>
+		<item id="trident">480</item>
+		<item id="turpentine">481</item>
+		<item id="empty_sprayer">482</item>
+		<item id="filled_sprayer">483</item>
+		<item id="potion">484</item>
+		<item id="key">485</item>
+		<item id="walkie_talkie">486</item>
+		<item id="drill">487</item>
+		<item id="stopwatch">488</item>
+		<item id="astrolabe_totem">489</item>
+		<item id="ship_totem">490</item>
+		<item id="paintbrush_totem">491</item>
+		<item id="carrot_totem">492</item>
+		<item id="codes">493</item>
+		<item id="medal_villain">1030</item>
+	</itemIdMap>
+  	
+  	<firstScene>
+  		<!-- This was for AS3. Going back to AS2 now. -->
+  		<!-- <scene>game.scenes.villain.mainStreet.MainStreet</scene> -->
+  		<scene>VillainMain</scene>
+		<x>2584</x>
+		<y>1465</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+   </firstScene>
+</island>

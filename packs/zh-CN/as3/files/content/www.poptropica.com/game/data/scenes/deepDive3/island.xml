@@ -1,0 +1,45 @@
+<island>
+	<name>亚特兰蒂斯任务</name>
+	<eventsClass>game.scenes.deepDive3.DeepDive3Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>deepDive3</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>lab_creature_revealed</event>
+		<event>lab_creatures</event>
+		<event>entered_cargo_bay</event>
+		<event>heard_alien_in_cb</event>
+		<event>spoke_with_ai</event>
+		<event>spoke_with_cam</event>
+		<event>stage_1_active</event>
+		<event>stage_2_active</event>
+		<event>stage_3_active</event>
+		<event>cockpit_unlocked</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="atlantis_captain">849</item>
+		<item id="medal_atlantis3">1045</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.deepDive3.cargoBay.CargoBay</scene>
+		<x>1000</x>
+		<y>920</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+    <!-- Invalidating island for 1.10 -->
+    
+    <playerMap>http://www.poptropica.com/player-maps/mission-atlantis-ep3.html</playerMap>
+	<medallion>medal_atlantis3</medallion>
+</island>

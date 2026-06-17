@@ -1,0 +1,63 @@
+<item id="puzzle_key">
+	<type>island</type>
+	<subType>deepDive2</subType>
+
+	<contentClass>
+		<className>game.scenes.deepDive2.shared.PuzzleKeyCardView</className>
+	</contentClass>
+
+	<textfields>
+		<text id="title">
+			<value>拼图钥匙</value>
+		</text>
+	</textfields>
+
+	<buttons>
+		<btn>
+			<conditional id="checkEvents" isTrue="false" />
+			<label>组装</label>
+			<actions>
+				<action type="openPopup">
+					<parameters>
+						<param id="className">game.scenes.deepDive2.shared.popups.PuzzleKey1Popup
+						</param>
+					</parameters>
+				</action>
+			</actions>
+		</btn>
+		<btn>
+			<conditional id="checkEvents" isTrue="true" />
+			<label>使用</label>
+			<actions>
+				<action type="triggerEvent">
+					<parameters>
+						<param id="event">used_puzzle_key</param>
+					</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+
+	<assets>
+		<asset id="cardBack">
+			<assetPath>items/deepDive1/background.swf</assetPath>
+			<effect>
+				<name>adjustColorFilter</name>
+				<enabled>true</enabled>
+				<brightness>0</brightness>
+				<contrast>0</contrast>
+				<saturation>-77</saturation>
+				<hue>119</hue>
+			</effect>
+		</asset>
+	</assets>
+
+	<conditionals>
+		<conditional type="checkEvents">
+			<parameters>
+				<param id="event">puzzle_assembled</param>
+			</parameters>
+		</conditional>
+	</conditionals>
+
+</item>

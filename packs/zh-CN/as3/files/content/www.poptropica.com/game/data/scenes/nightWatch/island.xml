@@ -1,0 +1,101 @@
+<island>
+	<name>夜巡岛</name>
+  	<eventsClass/>
+  	<gameVersion>AS2</gameVersion>
+  	<island>nightWatch</island>
+  	
+  	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>viewedPhone</event>
+		<event>usedWhoopzie</event>
+		<event>usedRobot</event>
+		<event>usedPhone</event>
+		<event>usedKey</event>
+		<event>usedBlowtorch</event>
+		<event>surprisedThief</event>
+		<event>startedBonusQuest</event>
+		<event>snakeIsMissing</event>
+		<event>sawThiefInCamera</event>
+		<event>sawTanningLady</event>
+		<event>sawSnakeInTanning</event>
+		<event>sawSnakeInGadget</event>
+		<event>sawBackRoom</event>
+		<event>sawApplication</event>
+		<event>ridingSegway</event>
+		<event>receivedPasswordList</event>
+		<event>openedSegwayCloset</event>
+		<event>openedSafe</event>
+		<event>gotJob</event>
+		<event>fooledByThief</event>
+		<event>fellThroughVent</event>
+		<event>fedSnake</event>
+		<event>completedTask1</event>
+		<event>completedTask2</event>
+		<event>completedBonusQuest</event>
+		<event>comingSoon</event>
+		<event>chargedSegway</event>
+		<event>catburglarRan</event>
+		<event>canGetBlowtorch</event>
+		<event>canApply</event>
+		<event>bonusStarted</event>
+		<event>bonusCard1</event>
+		<event>bonusCard2</event>
+		<event>bonusCard3</event>
+		<event>bonusCard4</event>
+		<event>bonusCard5</event>
+		<event>bonusCard6</event>
+		<event>bonusCard7</event>
+		<event>bonusCard8</event>
+		<event>bonusCard9</event>
+		<event>blockedFromBonus</event>
+		<event>applyingForJob</event>
+		<event>alert0</event>
+		<event>alert1_sp</event>
+		<event>alert1</event>
+		<event>alert2_sp</event>
+		<event>alert2</event>
+		<event>alert3_sp</event>
+		<event>alert3</event>
+		<event>alert4_sp</event>
+		<event>alert4</event>
+		<event>alert5_sp</event>
+		<event>alert5</event>
+		<event>alert6_sp</event>
+		<event>alert6</event>
+		<event>alert7_sp</event>
+		<event>alert7</event>
+	</permanentEvents>
+  	
+  	<itemIdMap>
+		<item id="phone">725</item>
+		<item id="robot">726</item>
+		<item id="key">727</item>
+		<item id="photocopy_card">728</item>
+		<item id="blowtorch">729</item>
+		<item id="baseball_card">730</item>
+		<item id="bird">731</item>
+		<item id="whoopzie_cushion">732</item>
+		<item id="quickcharger">733</item>
+		<item id="cover">734</item>
+		<item id="badge">735</item>
+		<item id="medal_nightWatch">1033</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+		<!-- <scene>game.scenes.nightWatch.mainStreet.MainStreet</scene>
+		<x>1315</x> -->
+  		<scene>NightWatchMain</scene>
+		<x>150</x>
+		<y>660</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

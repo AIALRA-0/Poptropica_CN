@@ -1,0 +1,54 @@
+<island>
+	<name>特工岛</name>
+  	<eventsClass>game.scenes.spy.SpyEvents</eventsClass>
+  	<gameVersion>AS2</gameVersion>
+  	<island>spy</island>
+  	
+  	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>gotClue2</event>
+		<event>gotClue3</event>
+		<event>gotClue4</event>
+		<event>gotClue5</event>
+		<event>gotClue6</event>
+		<event>gotClue7</event>
+		<event>startedSpy</event>
+		<event>passedSpyglass</event>
+		<event>cutBars</event>
+		<event>startedTeleporter</event>
+		<event>beatSpy</event>
+	</permanentEvents>
+ 	
+  	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	  	<item id="chameleon_suit">60</item>
+	  	<item id="goggles">61</item>
+	  	<item id="pen">62</item>
+	  	<item id="bowtie">63</item>
+	  	<item id="decoder_kit">64</item>
+	  	<item id="hat">65</item>
+	  	<item id="fingerprint">66</item>
+	  	<!-- <item id="">67</item> --> <!-- No item 67 in the CMS -->
+	  	<item id="clues">68</item>
+	  	<item id="letter">69</item>
+	  	<item id="medal_spy">1006</item>
+  	</itemIdMap>
+  	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+		<!-- <scene>game.scenes.spy.mainStreet.MainStreet</scene> -->
+  		<scene>SpyMain</scene>
+		<x>1270</x>
+		<y>1600</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

@@ -6,6 +6,7 @@ const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { buildAs3DirectSceneUrl } = require("./lib/as3-direct-wrapper");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
 const {
@@ -108,8 +109,13 @@ function shouldFailOnMissingRequests(args) {
 
 function applyVisibleQaDefaults(args) {
   const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const windowGeometry = resolveWindowGeometry(args);
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  if (windowGeometry.width && windowGeometry.height) {
+    process.env.POPTROPICA_WINDOW_WIDTH = String(windowGeometry.width);
+    process.env.POPTROPICA_WINDOW_HEIGHT = String(windowGeometry.height);
   }
   if (flagEnabled(args.interaction) && !flagEnabled(args.allowMouseClicks) && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
     process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
@@ -122,7 +128,7 @@ function applyVisibleQaDefaults(args) {
   }
   return {
     targetMonitor: targetMonitor || null,
-    windowGeometry: resolveWindowGeometry(args),
+    windowGeometry,
     postMessageClicks: flagEnabled(process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS),
     noForegroundCapture: flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND),
     missingRequestsFail: shouldFailOnMissingRequests(args)
@@ -199,6 +205,18 @@ function readJsonIfExists(filePath) {
   } catch (_error) {
     return null;
   }
+}
+
+function copyArtifactIfExists(sourcePath, targetPath) {
+  try {
+    if (fs.existsSync(sourcePath)) {
+      fs.copyFileSync(sourcePath, targetPath);
+      return true;
+    }
+  } catch (_error) {
+    // Best effort only; retry capture should continue even if preservation fails.
+  }
+  return false;
 }
 
 function acquireSmokeLock(lockPath, context) {
@@ -1317,6 +1335,98 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       qaErrors,
       step: "initial"
     });
+    if (!flagEnabled(args.skipVisualGuard) && !visualGuard?.ok && runtimeWindow?.match?.handle) {
+      const retryCount = Math.max(0, Number(
+        args.initialVisualGuardRetries ||
+        args["initial-visual-guard-retries"] ||
+        args.visualGuardRetries ||
+        args["visual-guard-retries"] ||
+        (flagEnabled(args.requireVisualGuard) ? 2 : 0)
+      ));
+      const retryDelayMs = Math.max(0, Number(
+        args.initialVisualGuardRetryDelayMs ||
+        args["initial-visual-guard-retry-delay-ms"] ||
+        args.visualGuardRetryDelayMs ||
+        args["visual-guard-retry-delay-ms"] ||
+        3500
+      ));
+      const preservedBase = path.join(islandDir, `${safeStem}-initial-visual-failed`);
+      let preservedInitialFailure = false;
+      if (retryCount > 0) {
+        preservedInitialFailure = [
+          copyArtifactIfExists(screenshotPath, `${preservedBase}.png`),
+          copyArtifactIfExists(captureMetadataPath, `${preservedBase}-capture.json`),
+          copyArtifactIfExists(stagePath, `${preservedBase}-stage.json`),
+          copyArtifactIfExists(visualGuardPath, `${preservedBase}-visual-guard.json`)
+        ].some(Boolean);
+      }
+      for (let attempt = 1; attempt <= retryCount; attempt += 1) {
+        if (retryDelayMs > 0) {
+          await sleep(retryDelayMs);
+        }
+        let retryCapture = null;
+        let retryStage = null;
+        try {
+          retryCapture = runPythonQa(buildCaptureArgs({
+            handle: runtimeWindow.match.handle,
+            runtime,
+            screenshotPath,
+            captureMetadataPath,
+            args
+          }), {
+            timeoutMs: 40000
+          });
+          retryCapture = rejectMismatchedCapture(retryCapture, runtime, qaErrors);
+        } catch (_retryCaptureError) {
+          continue;
+        }
+        if (!retryCapture || !fs.existsSync(screenshotPath)) {
+          continue;
+        }
+        try {
+          retryStage = runPythonQa([
+            "analyze-stage",
+            "--input",
+            screenshotPath,
+            "--output",
+            stagePath
+          ], {
+            timeoutMs: 30000
+          });
+        } catch (_retryStageError) {
+          retryStage = null;
+        }
+        const retryVisualGuard = runVisualGuard({
+          screenshotPath,
+          outputPath: visualGuardPath,
+          args,
+          qaErrors,
+          step: `initial-retry-${attempt}`
+        });
+        if (!retryVisualGuard) {
+          continue;
+        }
+        capture = retryCapture;
+        stage = retryStage || stage;
+        visualGuard = retryVisualGuard;
+        visualGuard.retryAttempt = attempt;
+        visualGuard.retryDelayMs = retryDelayMs;
+        if (preservedInitialFailure) {
+          visualGuard.initialFailureArtifacts = {
+            screenshotPath: `${preservedBase}.png`,
+            captureMetadataPath: `${preservedBase}-capture.json`,
+            stagePath: `${preservedBase}-stage.json`,
+            visualGuardPath: `${preservedBase}-visual-guard.json`
+          };
+        }
+        if (retryVisualGuard?.ok) {
+          visualGuard.recoveredFromInitialFailure = true;
+          writeJson(visualGuardPath, visualGuard);
+          break;
+        }
+        writeJson(visualGuardPath, visualGuard);
+      }
+    }
     if (!flagEnabled(args.skipOcr)) {
       try {
         ocr = runPythonQa([
@@ -1845,7 +1955,7 @@ async function main() {
         ...entries[0],
         as3TargetScene: overrideScene,
         roomParam: sceneParts.length >= 2 ? sceneParts[sceneParts.length - 2] : entries[0].roomParam,
-        launchUrl: `http://www.poptropica.com/game/Shell.swf?island&overrideScene=${encodeURIComponent(overrideScene)}`
+        launchUrl: buildAs3DirectSceneUrl(overrideScene)
       }];
     }
     if (!entries.length) {

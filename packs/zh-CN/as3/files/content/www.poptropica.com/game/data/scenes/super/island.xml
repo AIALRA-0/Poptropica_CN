@@ -1,0 +1,44 @@
+<island>
+	<name>超能力岛</name>
+	<eventsClass>game.scenes.superPower.SuperPowerEvents</eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>super</island>
+	
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>haveSuperPower</event>
+		<event>beatBoss1</event>
+		<event>beatBoss2</event>
+		<event>beatBoss3</event>
+		<event>beatBoss4</event>
+		<event>beatBoss5</event>
+		<event>beatBoss6</event>
+		<event>beatBosses</event>
+	</permanentEvents>
+	
+	<itemIdMap>
+		<item id="files">50</item>
+		<item id="handcuffs">51</item>
+		<item id="handbook">52</item>
+		<item id="id">53</item>
+		<item id="hotdog">54</item>
+		<item id="medal_super">1005</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<!-- This was for AS3. Going back to AS2 now. -->
+		<!-- <scene>game.scenes.super.mainStreet.MainStreet</scene> -->
+  		<scene>SuperMain</scene>
+		<x>2440</x>
+		<y>1270</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+</island>

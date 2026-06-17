@@ -1,0 +1,57 @@
+<island>
+	<name>生存岛</name>
+	<eventsClass>game.scenes.survival2.Survival2Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>survival2</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>engraved_name</event>
+		<event>dam_drained</event>
+		<event>played_intro</event>
+		<event>fell_after_intro</event>
+		<event>got_page1</event>
+		<event>got_page2</event>
+		<event>got_page3</event>
+		<event>got_journal</event>
+		<event>fishing_hole_tree_pushed</event>
+		<event>ice_broken</event>
+		<event>lake_tree1_down</event>
+		<event>lake_tree2_down</event>
+		<event>lake_raft_down</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="fishingPole">818</item>
+		<item id="grubs">819</item>
+		<item id="handbook">820</item>
+		<item id="handbookPage">821</item>
+		<item id="fishing_costume">822</item>
+		<item id="hook">823</item>
+		<item id="pillbugs">824</item>
+		<item id="shoelace1">825</item>
+		<item id="shoelace2">826</item>
+		<item id="worms">827</item>
+		<item id="medal_survival2">1041</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>game.scenes.survival2.intro.Intro</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+    <!-- Invalidating island for 1.10 -->
+    
+    <playerMap>http://www.poptropica.com/player-maps/survival-ep2.html</playerMap>
+    <medallion>medal_survival2</medallion>
+</island>

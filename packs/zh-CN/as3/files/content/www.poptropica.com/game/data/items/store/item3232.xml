@@ -1,0 +1,27 @@
+<item id="3232">
+  	<type>store</type>
+  	<subType>general</subType>
+	<buttons>
+			<btn>
+			<index>0</index>
+			<label>开始游戏</label>
+			<actions>
+				<action type="loadAS2Scene">
+						<parameters>
+							<param id="section">gameplay</param>
+							<param id="island">Shrink</param>
+							<param id="scene">Promo</param>
+						</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+  	<assets>
+		<asset id="cardBack">
+    		<assetPath>items/shared/PaidLimitedBackgroundBlue.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+			<assetPath>items/store/item3232.swf</assetPath>
+		</asset>
+  	</assets>
+</item>

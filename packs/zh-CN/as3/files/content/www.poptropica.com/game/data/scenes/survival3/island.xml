@@ -1,0 +1,66 @@
+<island>
+	<name>生存岛</name>
+	<eventsClass>game.scenes.survival3.Survival3Events</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>survival3</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>played_intro</event>
+		<event>started_quest</event>
+		<event>powered_radio</event>
+		<event>dropped_stairs</event>
+		<event>removed_bracket_1</event>
+		<event>removed_bracket_2</event>
+		<event>removed_bracket_3</event>
+		<event>removed_bracket_4</event>
+		<event>broke_ladder_1</event>
+		<event>broke_ladder_2</event>
+		<event>tipped_wing</event>
+		<event>cut_down_tree</event>
+		<event>plane_piece_fell</event>
+		<event>plane_fell_1</event>
+		<event>plane_fell_2</event>
+		<event>plane_fell_3</event>
+		<event>plane_fell_4</event>
+		<event>pulley_branch_broke</event>
+		<event>crate_smashed</event>
+		<event>use_saw</event>
+		<event>use_screwdriver</event>
+		<event>use_cork</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="hardHat">828</item>
+		<item id="wire">829</item>
+		<item id="pocketKnife">830</item>
+		<item id="batteryNote">831</item>
+		<item id="radio">832</item>
+		<item id="nail">833</item>
+		<item id="penny">834</item>
+		<item id="lemon">835</item>
+		<item id="manifest">836</item>
+		<item id="medal_survival3">1043</item>
+	</itemIdMap>
+	
+	<!-- TODO: Fix first scene -->
+	<firstScene>
+		<scene>game.scenes.survival3.intro.Intro</scene>
+		<x>0</x>
+		<y>0</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	<!-- Invalidating island for 1.10 -->
+	
+	<playerMap>http://www.poptropica.com/player-maps/survival-ep3.html</playerMap>
+	<medallion>medal_survival3</medallion>
+</island>

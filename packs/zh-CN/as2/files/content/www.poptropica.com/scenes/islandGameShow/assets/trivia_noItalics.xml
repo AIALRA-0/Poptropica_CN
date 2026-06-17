@@ -1,2009 +1,1086 @@
 <Quiz>
-	<Category name="著名地标">
-		<Question difficulty="1">
-			<Prompt>埃菲尔铁塔是为1889年世界博览会而建， 位于这座欧洲城市.</Prompt>
-			<Response>伦敦</Response>
-			<Response>罗马</Response>
-			<Response>马德里</Response>
-			<Response answer>Paris</Response>
-
-		
-	
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>美国总统居住在这座位于宾夕法尼亚大道1600号的官邸.</Prompt>
-			<Response>华盛顿纪念碑</Response>
-			<Response>肯尼迪中心</Response>
-			<Response>林肯纪念堂</Response>
-			<Response answer>The White House</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>在古罗马， 角斗士们在这座竞技场中相互搏斗.</Prompt>
-			<Response>马克西穆斯竞技场</Response>
-			<Response>万神殿</Response>
-			<Response>古罗马广场</Response>
-			<Response answer>The Colosseum</Response>
-
-		
-	
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>在1933年和2005年版的《金刚》中， 这只巨猿站在这座著名的纽约摩天大楼顶上时遭到飞机攻击.</Prompt>
-			<Response>克莱斯勒大厦</Response>
-			<Response>熨斗大厦</Response>
-			<Response>西尔斯大厦</Response>
-			<Response answer>The Empire State Building</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这座中国建筑最初为抵御入侵者而建， 长度近4000英里.</Prompt>
-			<Response>鸟巢体育场</Response>
-			<Response>紫禁城</Response>
-			<Response>六和塔</Response>
-			<Response answer>The Great Wall of China</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>风车通常与荷兰联系在一起， 荷兰是这个国家的一个地区.</Prompt>
-			<Response>法国</Response>
-			<Response>比利时</Response>
-			<Response>西班牙</Response>
-			<Response answer>The Netherlands</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>红场位于这座俄罗斯城市.</Prompt>
-			<Response>诺夫哥罗德</Response>
-			<Response>叶卡捷琳堡</Response>
-			<Response>圣彼得堡</Response>
-			<Response answer>Moscow</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>拉什莫尔山上雕刻着乔治·华盛顿、亚伯拉罕·林肯、托马斯·杰斐逊和这位总统.</Prompt>
-			<Response>约翰·亚当斯</Response>
-			<Response>约翰·F·肯尼迪</Response>
-			<Response>巴拉克·奥巴马</Response>
-			<Response answer>Theodore Roosevelt</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>金门大桥横跨这片水域.</Prompt>
-			<Response>切萨皮克湾</Response>
-			<Response>墨西哥湾</Response>
-			<Response>苏必利尔湖</Response>
-			<Response answer>San Francisco Bay</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>这座著名的大钟位于伦敦威斯敏斯特桥的一端.</Prompt>
-			<Response>准时钟</Response>
-			<Response>守时皮特</Response>
-			<Response>鸣钟查理</Response>
-			<Response answer>Big Ben</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>柏林墙曾矗立二十八年， 位于这个现今的国家.</Prompt>
-			<Response>葡萄牙</Response>
-			<Response>捷克共和国</Response>
-			<Response>波兰</Response>
-			<Response answer>德国</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>圣索菲亚大教堂是这座城市的著名旅游景点.</Prompt>
-			<Response>开罗</Response>
-			<Response>贝鲁特</Response>
-			<Response>雅典</Response>
-			<Response answer>Istanbul</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>吉萨大斯芬克斯像有着人的头部和这种动物的身体.</Prompt>
-			<Response>熊</Response>
-			<Response>毛毛虫</Response>
-			<Response>孔雀</Response>
-			<Response answer>A lion</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>救世基督像是一座位于这座南美城市的130英尺高雕像.</Prompt>
-			<Response>拉巴斯</Response>
-			<Response>加拉加斯</Response>
-			<Response>波哥大</Response>
-			<Response answer>Rio de Janeiro</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>泰姬陵位于这座印度城市.</Prompt>
-			<Response>孟买</Response>
-			<Response>德里</Response>
-			<Response>加尔各答</Response>
-			<Response answer>Agra</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="体育">
-		<Question difficulty="1">
-			<Prompt>迈克尔·乔丹职业生涯大部分时间效力于这支篮球队.</Prompt>
-			<Response>波士顿凯尔特人</Response>
-			<Response>洛杉矶湖人</Response>
-			<Response>迈阿密热火</Response>
-			<Response answer>Chicago Bulls</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>自由泳和蝶泳是这项运动的比赛项目.</Prompt>
-			<Response>田径</Response>
-			<Response>掰手腕</Response>
-			<Response>体操</Response>
-			<Response answer>Swimming</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>如果拳击手被击倒， 他们有这么长时间重新站起来.</Prompt>
-			<Response>五秒</Response>
-			<Response>三十秒</Response>
-			<Response>一小时</Response>
-			<Response answer>Ten seconds</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这场比赛的胜者将加冕NFL冠军.</Prompt>
-			<Response>世界大赛</Response>
-			<Response>奥运会</Response>
-			<Response>世界杯</Response>
-			<Response answer>The Super Bowl</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>如果你在扣球、二传或垫球， 那你玩的是这个项目.</Prompt>
-			<Response>水球</Response>
-			<Response>网球</Response>
-			<Response>羽毛球</Response>
-			<Response answer>Volleyball</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>大卫·贝克汉姆没有为这支球队效力过.</Prompt>
-			<Response>英格兰国家队</Response>
-			<Response>曼联</Response>
-			<Response>洛杉矶银河</Response>
-			<Response answer>Chelsea</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>足球比赛中， 球员被出示红牌会导致这个结果.</Prompt>
-			<Response>他们在替补席坐五分钟.</Response>
-			<Response>他们被评为本场最有价值球员.</Response>
-			<Response>他们得捡所有人的橘子皮.</Response>
-			<Response answer>They are ejected from the game.</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>德克·诺维茨基和凯文·杜兰特是这项运动的职业选手.</Prompt>
-			<Response>足球</Response>
-			<Response>棒球</Response>
-			<Response>长曲棍球</Response>
-			<Response answer>Basketball</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>小乔治·赫尔曼·鲁斯的外号是什么？</Prompt>
-			<Response>胖墩</Response>
-			<Response>G-罗</Response>
-			<Response>曼尼</Response>
-			<Response answer>小猪宝贝</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>亚历山大·奥维契金效力于哪支NHL球队？</Prompt>
-			<Response>波士顿棕熊队</Response>
-			<Response>温哥华加人队</Response>
-			<Response>匹兹堡企鹅队</Response>
-			<Response answer>Washington Capitals</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>这个橄榄球术语指的是在对方端区擒抱对手.</Prompt>
-			<Response>抄截</Response>
-			<Response>掉球</Response>
-			<Response>达阵</Response>
-			<Response answer>A safety</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>杰夫·戈登和赫利奥·卡斯特罗内维斯都参与这项运动.</Prompt>
-			<Response>击剑</Response>
-			<Response>相扑</Response>
-			<Response>跳水</Response>
-			<Response answer>Auto racing</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>这个板球术语指的是将球投向三柱门的球员.</Prompt>
-			<Response>水壶</Response>
-			<Response>投手</Response>
-			<Response>抛球手</Response>
-			<Response answer>Bowler</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5" noshuffle>
-			<Prompt>这是十瓶保龄球打出完美比赛所需的分数.</Prompt>
-			<Response>100</Response>
-			<Response>200</Response>
-			<Response answer>300</Response>
-			<Response>400</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>如果你在做阿克塞尔跳或鲁兹跳， 那你参加的是这项运动.</Prompt>
-			<Response>牛仔竞技</Response>
-			<Response>体操</Response>
-			<Response>高山滑雪</Response>
-			<Response answer>Figure skating</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-	</Category>
-	<Category name="我在哪儿见过他们？">
-		<Question difficulty="1">
-			<Prompt>维露卡·索尔特、奥古斯塔斯·格鲁普、威利·旺卡</Prompt>
-			<Response>up</Response>
-			<Response>冰河世纪</Response>
-			<Response>暮光之城</Response>
-			<Response answer>Charlie and the Chocolate Factory</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>板牙、哈德逊医生、闪电麦昆</Prompt>
-			<Response>美女与野兽</Response>
-			<Response>辣妈辣妹</Response>
-			<Response>天生一对</Response>
-			<Response answer>赛车总动员</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>火腿、胡迪、巴斯光年</Prompt>
-			<Response>赛车总动员</Response>
-			<Response>小猪宝贝</Response>
-			<Response>超人总动员</Response>
-			<Response answer>Toy Story</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>雅克、马林、多莉</Prompt>
-			<Response>虫虫危机</Response>
-			<Response>快乐的大脚</Response>
-			<Response>帝企鹅日记</Response>
-			<Response answer>Finding Nemo</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>威尔·特纳、伊丽莎白·斯旺、杰克·斯派洛</Prompt>
-			<Response>怪兽电力公司</Response>
-			<Response>怪物史莱克</Response>
-			<Response>绿野仙踪</Response>
-			<Response answer>Pirates of the Caribbean: The Curse of the Black Pearl</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>悍娇虎、师父、阿宝</Prompt>
-			<Response>森林王子</Response>
-			<Response>狮子王</Response>
-			<Response>阿拉丁</Response>
-			<Response answer>功夫熊猫</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>格雷、罗利、弗雷格利</Prompt>
-			<Response>驯龙高手</Response>
-			<Response>神偷奶爸</Response>
-			<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
-			<Response answer>小屁孩日记</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>亚丝翠、史图依克、小嗝嗝</Prompt>
-			<Response>神偷奶爸</Response>
-			<Response>小屁孩日记</Response>
-			<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
-			<Response answer>驯龙高手</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>艾格尼丝、维克多、格鲁</Prompt>
-			<Response>驯龙高手</Response>
-			<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
-			<Response>小屁孩日记</Response>
-			<Response answer>神偷奶爸</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>莱娅公主、汉·索罗、卢克·天行者</Prompt>
-			<Response>星际迷航</Response>
-			<Response>一个明星的诞生</Response>
-			<Response>太空炮弹</Response>
-			<Response answer>星球大战</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>拉飞奇、木法沙、辛巴</Prompt>
-			<Response>森林王子</Response>
-			<Response>功夫熊猫</Response>
-			<Response>哈姆雷特</Response>
-			<Response answer>狮子王</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>萨拉、玛丽昂·瑞文伍德、印第安纳·琼斯</Prompt>
-			<Response>星球大战</Response>
-			<Response>罗宾汉</Response>
-			<Response>印第安纳人</Response>
-			<Response answer>Raiders of the Lost Ark</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>斯库特·法库斯、兰迪、拉尔菲</Prompt>
-			<Response>圣诞怪杰</Response>
-			<Response>圣诞颂歌</Response>
-			<Response>圣诞假期</Response>
-			<Response answer>A Christmas Story</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>韦斯特利、巴特卡普、伊尼戈·蒙托亚</Prompt>
-			<Response>罗宾汉</Response>
-			<Response>三个火枪手</Response>
-			<Response>基督山伯爵</Response>
-			<Response answer>The Princess Bride</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>拉里·戴利、匈奴王阿提拉、泰迪·罗斯福</Prompt>
-			<Response>拜见岳父大人</Response>
-			<Response>马达加斯加</Response>
-			<Response>摇滚校园</Response>
-			<Response answer>Night at the Museum</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="补全歌名">
-		<Question difficulty="1">
-			<Prompt>Lady GaGa: Poker. . .</Prompt>
-			<Response>微笑</Response>
-			<Response>eyes</Response>
-			<Response>游戏</Response>
-			<Response answer>Face</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>Weezer: Pork and. . .</Prompt>
-			<Response>soda</Response>
-			<Response>鸡蛋</Response>
-			<Response>棒棒糖</Response>
-			<Response answer>Beans</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>Bon Jovi: Wanted Dead or. . .</Prompt>
-			<Response>哭泣</Response>
-			<Response>入狱</Response>
-			<Response>镣铐</Response>
-			<Response answer>Alive</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>AC/DC：回到. . . . . .</Prompt>
-			<Response>白色</Response>
-			<Response>红色</Response>
-			<Response>蓝色</Response>
-			<Response answer>Black</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>绿日乐队：美国. . . . . .</Prompt>
-			<Response>man</Response>
-			<Response>旗帜</Response>
-			<Response>band</Response>
-			<Response answer>Idiot</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>格温·史蒂芬妮：甜蜜. . . . . .</Prompt>
-			<Response>生活</Response>
-			<Response>投降</Response>
-			<Response>糖</Response>
-			<Response answer>Escape</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>艾薇儿·拉维尼：滑板. . . . . .</Prompt>
-			<Response>女孩</Response>
-			<Response>鞋子</Response>
-			<Response>伙计</Response>
-			<Response answer>Boi</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>巴哈人乐队：谁让. . . . . .</Prompt>
-			<Response>厨房里的猪</Response>
-			<Response>鸡吃了我的三明治</Response>
-			<Response>豚鼠玩我的袜子</Response>
-			<Response answer>The Dogs Out</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>旅程乐队：不要停止. . . . . .</Prompt>
-			<Response>梦想</Response>
-			<Response>歌唱</Response>
-			<Response>呼吸</Response>
-			<Response answer>Believing</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>乔丁·斯帕克斯：没有. . . . . .</Prompt>
-			<Response>snow</Response>
-			<Response>雨</Response>
-			<Response>阳光</Response>
-			<Response answer>air</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>Guns n&apos; Roses: Sweet Child O&apos;. . .</Prompt>
-			<Response>丛林</Response>
-			<Response>你的</Response>
-			<Response>我们的</Response>
-			<Response answer>Mine</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>Dropkick Murphys: Shipping Up to. . .</Prompt>
-			<Response>曼哈顿</Response>
-			<Response>芝加哥</Response>
-			<Response>洛杉矶</Response>
-			<Response answer>Boston</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>Led Zeppelin: Stairway to. . .</Prompt>
-			<Response>永恒</Response>
-			<Response>生活</Response>
-			<Response>阁楼</Response>
-			<Response answer>Heaven</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>Michael Jackson: Billie. . .</Prompt>
-			<Response>joe</Response>
-			<Response>鲍勃</Response>
-			<Response>雷金纳德</Response>
-			<Response answer>Jean</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>Beatles: Hey. . .</Prompt>
-			<Response>joe</Response>
-			<Response>乔什</Response>
-			<Response>还我钱包</Response>
-			<Response answer>Jude</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="坏蛋">
-		<Question difficulty="1">
-			<Prompt>这个绿发蝙蝠侠反派在《黑暗骑士》中出现过.</Prompt>
-			<Response>企鹅人</Response>
-			<Response>猫女</Response>
-			<Response>谜语人</Response>
-			<Response answer>The Joker</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>这个坏蛋整天带着他的猫阿兹瑞尔， 想方设法抓蓝精灵.</Prompt>
-			<Response>达斯塔德利</Response>
-			<Response>马特利</Response>
-			<Response>马吉拉大猩猩</Response>
-			<Response answer>Gargamel</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>这档节目里的坏蛋们总爱抱怨， 说要不是那些爱管闲事的小孩， 他们的罪行早就得逞了</Prompt>
-			<Response>杰森一家</Response>
-			<Response>摩登原始人</Response>
-			<Response>蓝精灵</Response>
-			<Response answer>Scooby Doo</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这位霸天虎的首领是《变形金刚》系列中的反派.</Prompt>
-			<Response>擎天柱</Response>
-			<Response>铁皮</Response>
-			<Response>大黄蜂</Response>
-			<Response answer>Megatron</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这位残暴的独裁者于1933年成为德国总理， 并通过入侵波兰发动了第二次世界大战.</Prompt>
-			<Response>温斯顿·丘吉尔</Response>
-			<Response>贝尼托·墨索里尼</Response>
-			<Response>萨达姆·侯赛因</Response>
-			<Response answer>Adolf Hitler</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这只巨大的蛞蝓状生物生活在塔图因星， 曾在那里抓住了卢克·天行者及其伙伴.</Prompt>
-			<Response>达斯·维达</Response>
-			<Response>波巴·费特</Response>
-			<Response>丘巴卡</Response>
-			<Response answer>Jabba the Hutt</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>这位长着尖刺外壳的反派， 不忙着绑架碧琪公主的时候， 就会和马里奥他们比赛卡丁车.</Prompt>
-			<Response>大金刚</Response>
-			<Response>奇诺比奥</Response>
-			<Response>路易吉</Response>
-			<Response answer>Bowser</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>在《小美人鱼》里， 这个女反派偷走了爱丽儿的声音.</Prompt>
-			<Response>scar</Response>
-			<Response>库伊拉·德维尔</Response>
-			<Response>花木兰</Response>
-			<Response answer>Ursula</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>库伊拉·德·维尔是这部迪士尼经典作品中的主要反派.</Prompt>
-			<Response>小姐与流浪汉</Response>
-			<Response>狐狸与猎狗</Response>
-			<Response>灰姑娘</Response>
-			<Response answer>One Hundred and One Dalmations</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>在《圣诞颂歌》中, 这位吝啬鬼在被三个幽灵拜访后才幡然醒悟.</Prompt>
-			<Response>雅各布·马利</Response>
-			<Response>鲍勃·克拉特基特</Response>
-			<Response>小蒂姆</Response>
-			<Response answer>Ebeneezer Scrooge</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>这个蜘蛛侠反派以他的四只金属触手而闻名.</Prompt>
-			<Response>绿魔</Response>
-			<Response>沙人</Response>
-			<Response>毒液</Response>
-			<Response answer>Doctor Octopus</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>这个金属脸反派帮助眼镜蛇指挥官对抗特种部队.</Prompt>
-			<Response>蛇眼</Response>
-			<Response>白幽灵</Response>
-			<Response>达斯·维达</Response>
-			<Response answer>Destro</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>在《汤姆·索亚历险记》中， 这个反派被困在洞穴里， 结局悲惨.</Prompt>
-			<Response>哈克贝利·费恩</Response>
-			<Response>波莉姨妈</Response>
-			<Response>贝琪·撒切尔</Response>
-			<Response answer>Injun Joe</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>这位绰号“比利小子”的亡命徒， 本名威廉·H·邦尼， 于1881年命丧警长帕特·加勒特之手， 结束了他短暂的一生.</Prompt>
-			<Response>小比利</Response>
-			<Response>婴儿伊恩</Response>
-			<Response>年轻的埃德加</Response>
-			<Response answer>Billy the Kid</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>这位残忍的海盗， 又名爱德华·蒂奇， 在战斗时会在手上绑点燃的引信来吓唬敌人.</Prompt>
-			<Response>黄胡子</Response>
-			<Response>红胡子</Response>
-			<Response>杰克·斯派洛</Response>
-			<Response answer>Blackbeard</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="同音词">
-		<Question difficulty="1">
-			<Prompt>用来划船的工具. . . 也是一种花</Prompt>
-			<Response>船桨. . . 桨</Response>
-			<Response>掌舵. . . 舵</Response>
-			<Response>康乃馨. . . 康乃馨</Response>
-			<Response answer>Rows... Rose</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>用来观察的器官. . . 指代自己的词</Prompt>
-			<Response>鼻子. . . 知道</Response>
-			<Response>心脏. . . 雄鹿</Response>
-			<Response>我. . . 我</Response>
-			<Response answer>Eye... I</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>贴邮票的信件. . . 不是女孩</Prompt>
-			<Response>卡片. . . 卡片</Response>
-			<Response>男孩. . . 男孩</Response>
-			<Response>男人. . . 男人</Response>
-			<Response answer>Mail... Male</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>接触. . . 肉铺里买的东西</Prompt>
-			<Response>面粉. . . 花朵</Response>
-			<Response>知道. . . 不</Response>
-			<Response>连续. . . 麦片</Response>
-			<Response answer>Meet... Meat</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>短暂休息. . . 狗的爪子</Prompt>
-			<Response>故事. . . 尾巴</Response>
-			<Response>小睡. . . 敲击</Response>
-			<Response>冷杉. . . 皮毛</Response>
-			<Response answer>Pause... Paws</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>卖食物的人. . . 更恶心</Prompt>
-			<Response>小贩. . . 贩卖者</Response>
-			<Response>收银员. . . 现金员</Response>
-			<Response>药剂师. . . 药房师</Response>
-			<Response answer>Grocer... Grosser</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>预测. . . 来访者</Prompt>
-			<Response>应该. . . 支持</Response>
-			<Response>制作. . . 女仆</Response>
-			<Response>小时. . . 我们的</Response>
-			<Response answer>Guessed... Guest</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>山顶. . . 快速一瞥</Prompt>
-			<Response>巨人</Response>
-			<Response>高度</Response>
-			<Response>天花板</Response>
-			<Response answer>Peak... Peek</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>圆形物体. . . 大声哭泣</Prompt>
-			<Response>圆圈</Response>
-			<Response>球体</Response>
-			<Response>鲸鱼</Response>
-			<Response answer>Ball... Bawl</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>坚固材料. . . 不问自取</Prompt>
-			<Response>男爵</Response>
-			<Response>木头</Response>
-			<Response>混凝土</Response>
-			<Response answer>Steel... Steal</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>不弯曲的. . . 狭窄的水道</Prompt>
-			<Response>平坦的. . . 平坦</Response>
-			<Response>看见. . . 大海</Response>
-			<Response>湖泊. . . 湖</Response>
-			<Response answer>Straight... Strait</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>灌木上结的果实. . . 用土覆盖</Prompt>
-			<Response>梨子. . . 削皮</Response>
-			<Response>茶. . . 球座</Response>
-			<Response>牛排. . . 木桩</Response>
-			<Response answer>Berry... Bury</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>二十四小时的时段. . . 使震惊</Prompt>
-			<Response>小时. . . 我们的</Response>
-			<Response>年. . . 年</Response>
-			<Response>月. . . 月</Response>
-			<Response answer>Days... Daze</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>等待时需要什么. . . 医生候诊室里的人们</Prompt>
-			<Response>票. . . 票</Response>
-			<Response>脚. . . 功绩</Response>
-			<Response>金库. . . 咳嗽的人</Response>
-			<Response answer>Patience... Patients</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>借东西给别人. . . 独自一人</Prompt>
-			<Response>交易. . . 交易</Response>
-			<Response>木板. . . 无聊</Response>
-			<Response>是. . . 蜜蜂</Response>
-			<Response answer>Loan... Lone</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="流行趋势">
-		<Question difficulty="1">
-			<Prompt>皮卡丘和喷火龙是来自这个系列的两个角色， 该系列在20世纪90年代首次流行起来.</Prompt>
-			<Response>Ben 10</Response>
-			<Response>万智牌</Response>
-			<Response>龙与地下城</Response>
-			<Response answer>Pokemon</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>滑板和单板滑雪都属于这类运动， 在90年代风靡一时.</Prompt>
-			<Response>板类运动</Response>
-			<Response>极限运动</Response>
-			<Response>酷哥运动</Response>
-			<Response answer>Extreme Sports</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>涅槃乐队和珍珠果酱乐队让这种音乐风格在90年代流行起来.</Prompt>
-			<Response>情绪摇滚</Response>
-			<Response>长发金属</Response>
-			<Response>迪斯科</Response>
-			<Response answer>Grunge</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>如果你是《大人物拿破仑》的粉丝， 可能穿过印有“投票给”这个人的流行T恤.</Prompt>
-			<Response>里科叔叔</Response>
-			<Response>基普</Response>
-			<Response>萨默</Response>
-			<Response answer>Pedro</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>这种流行鞋款上的孔洞很适合用来安装小饰品.</Prompt>
-			<Response>人字拖</Response>
-			<Response>暴走鞋</Response>
-			<Response>高筒靴</Response>
-			<Response answer>Crocs</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>莱昂纳多和米开朗基罗是这些“半壳英雄”中的两位</Prompt>
-			<Response>库巴</Response>
-			<Response>蟹堡王</Response>
-			<Response>宇宙蛤蜊</Response>
-			<Response answer>Teenage Mutant Ninja Turtles</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>这种70年代的音乐风格包括《活着》和《哈索舞》等热门歌曲</Prompt>
-			<Response>电子乐</Response>
-			<Response>嘻哈</Response>
-			<Response>情绪摇滚</Response>
-			<Response answer>迪斯科</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>在腰间旋转这种玩具是50年代最流行的风潮之一.</Prompt>
-			<Response>溜溜球</Response>
-			<Response>机灵鬼</Response>
-			<Response>挠痒痒艾摩</Response>
-			<Response answer>Hula Hoop</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>上世纪50年代， 很多女孩的裙子上都绣着这种狗.</Prompt>
-			<Response>金毛寻回犬</Response>
-			<Response>吉娃娃</Response>
-			<Response>巴吉度猎犬</Response>
-			<Response answer>Poodle</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>这款70年代流行的配饰据说能通过变色来显示你的心情.</Prompt>
-			<Response>情绪吊坠</Response>
-			<Response>心情帽子</Response>
-			<Response>友谊手链</Response>
-			<Response answer>Mood rings</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>以前酷小孩都爱去汽车餐厅， 那里的服务员会穿着这个把食物送到你车上.</Prompt>
-			<Response>暴走鞋</Response>
-			<Response>直排轮</Response>
-			<Response>猩猩装</Response>
-			<Response answer>Roller skates</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>信不信由你， 很多70年代的小孩都养这个当宠物.</Prompt>
-			<Response>砖头</Response>
-			<Response>灯泡</Response>
-			<Response>毛线球</Response>
-			<Response answer>Rocks</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>最近哪种潮流是让人躺在奇怪的地方？</Prompt>
-			<Response>登车</Response>
-			<Response>压扁</Response>
-			<Response>伐木</Response>
-			<Response answer>Planking</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>这个1980年代的潮流玩具， 目标是通过转动它的行列， 让六个面都变成纯色.</Prompt>
-			<Response>魔法链</Response>
-			<Response>彩虹行</Response>
-			<Response>博特的方块</Response>
-			<Response answer>Rubik&apos;s Cube</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>上世纪50年代， 大学生们流行挤进这种狭小空间.</Prompt>
-			<Response>电梯</Response>
-			<Response>卫生间</Response>
-			<Response>清洁工储物间</Response>
-			<Response answer>Phone booths</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<Category name="Poptropica世界">
-		<Question difficulty="1">
-			<Prompt>莱纳斯、查理·布朗和史努比是这座岛上的角色.</Prompt>
-			<Response>红龙岛</Response>
-			<Response>狂野西部岛</Response>
-			<Response>太空骑士岛</Response>
-			<Response answer>Great Pumpkin Island</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>在这座岛上， 你必须击败野兔博士.</Prompt>
-			<Response>红龙岛</Response>
-			<Response>狂野西部岛</Response>
-			<Response>太空骑士岛</Response>
-			<Response answer>24 Carrot Island</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="1">
-			<Prompt>在这座岛上， 你需要与海盗和海怪战斗.</Prompt>
-			<Response>鲨鱼牙岛</Response>
-			<Response>神秘生物岛</Response>
-			<Response>超能力岛</Response>
-			<Response answer>诡计岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>在这座岛上， 穿上草裙会让你看起来像个当地人.</Prompt>
-			<Response>诡计岛</Response>
-			<Response>时空迷踪岛</Response>
-			<Response>大内特岛</Response>
-			<Response answer>鲨鱼牙岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>你在这座岛上从尘土镇的主街开始冒险.</Prompt>
-			<Response>真人秀岛</Response>
-			<Response>神话岛</Response>
-			<Response>红龙岛</Response>
-			<Response answer>狂野西部岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="2">
-			<Prompt>如果你在波波的小丑商店， 那你一定在这座岛上.</Prompt>
-			<Response>神秘生物岛</Response>
-			<Response>小屁孩的奇幻乐园</Response>
-			<Response>时空迷踪岛</Response>
-			<Response answer>赝品岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>在这座岛上， 赫拉克勒斯亲笔签名照只卖10德拉克马.</Prompt>
-			<Response>赝品岛</Response>
-			<Response>超能力岛</Response>
-			<Response>诡计岛</Response>
-			<Response answer>神话岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>如果你发现自己身处经典漫画店， 那你一定在这座岛上.</Prompt>
-			<Response>小屁孩的奇幻乐园</Response>
-			<Response>真人秀岛</Response>
-			<Response>赝品岛</Response>
-			<Response answer>大内特岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="3">
-			<Prompt>在这座岛上， 你可以试试玩扭曲巫师游戏.</Prompt>
-			<Response>大内特岛</Response>
-			<Response>太空骑士岛</Response>
-			<Response>时空迷踪岛</Response>
-			<Response answer>小屁孩的奇幻乐园</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>当这个撞上监狱时， 罪犯们从超能力岛逃跑了.</Prompt>
-			<Response>一头犀牛</Response>
-			<Response>一辆冰淇淋车</Response>
-			<Response>一场海啸</Response>
-			<Response answer>A meteor</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>你必须在这座岛上找到尼斯湖水怪存在的证据.</Prompt>
-			<Response>红龙岛</Response>
-			<Response>太空骑士岛</Response>
-			<Response>鲨鱼牙岛</Response>
-			<Response answer>神秘生物岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="4">
-			<Prompt>在这座岛上， 你会获得手里剑和忍者服装.</Prompt>
-			<Response>超能力岛</Response>
-			<Response>时空迷踪岛</Response>
-			<Response>狂野西部岛</Response>
-			<Response answer>红龙岛</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>这位真人秀明星正躲在真人秀岛的一家汽车旅馆里.</Prompt>
-			<Response>杰基·斯旺森</Response>
-			<Response>莉比·本森</Response>
-			<Response>斯努基</Response>
-			<Response answer>Bucky Lucas</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>你必须在时间错乱岛上登上这座山的顶峰.</Prompt>
-			<Response>富士山</Response>
-			<Response>拉什莫尔山</Response>
-			<Response>维苏威火山</Response>
-			<Response answer>Mt. Everest</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-		<Question difficulty="5">
-			<Prompt>你必须在太空骑士岛上拯救这个王国.</Prompt>
-			<Response>卡美洛</Response>
-			<Response>阿瓦隆</Response>
-			<Response>王者之剑</Response>
-			<Response answer>Arturus</Response>
-
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	</Category>
-	<FinalCategory name="艺术">
-		<Question>
-			<Prompt>这位文艺复兴巨匠画了《蒙娜丽莎》， 还绘制了早期飞行器的草图.</Prompt>
-			<Response>米开朗基罗</Response>
-			<Response>多纳泰罗</Response>
-			<Response>拉斐尔</Response>
-			<Response>马基雅维利</Response>
-			<Response>波提切利</Response>
-			<Response answer>Leonardo Da Vinci</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
-	<FinalCategory name="发明家">
-		<Question>
-			<Prompt>亚历山大·格拉汉姆·贝尔因这项发明而闻名.</Prompt>
-			<Response>电灯泡</Response>
-			<Response>飞机</Response>
-			<Response>汽车</Response>
-			<Response>懒人毯</Response>
-			<Response>俗语“该怎样就怎样. ”</Response>
-			<Response answer>the telephone</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
-	<FinalCategory name="美国">
-		<Question>
-			<Prompt>这是美国50个州中最新的一个.</Prompt>
-			<Response>阿拉斯加</Response>
-			<Response>德克萨斯</Response>
-			<Response>罗德岛</Response>
-			<Response>加利福尼亚</Response>
-			<Response>佛罗里达</Response>
-			<Response answer>Hawaii</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
-	<FinalCategory name="古代文明">
-		<Question>
-			<Prompt>斯巴达和雅典是现今这个国家的城邦.</Prompt>
-			<Response>俄罗斯</Response>
-			<Response>德国</Response>
-			<Response>意大利</Response>
-			<Response>法国</Response>
-			<Response>印度</Response>
-			<Response answer>Greece</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
-	<FinalCategory name="词义">
-		<Question>
-			<Prompt>恐水症指的是对这种事物的恐惧.</Prompt>
-			<Response>蛇</Response>
-			<Response>蜘蛛</Response>
-			<Response>air</Response>
-			<Response>小丑</Response>
-			<Response>黑暗</Response>
-			<Response answer>Water</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
-	<FinalCategory name="地理">
-		<Question>
-			<Prompt>太平洋和大西洋通过一条横跨这个中美洲国家的运河相连.</Prompt>
-			<Response>伯利兹</Response>
-			<Response>尼加拉瓜</Response>
-			<Response>萨尔瓦多</Response>
-			<Response>哥斯达黎加</Response>
-			<Response>洪都拉斯</Response>
-			<Response answer>Panama</Response>
-
-		
-		
-		
-		
-		
-		
-		
-			</Question>
-
-
-	
-
-	</FinalCategory>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<Category name="Famous Landmarks">
+
+	<Question difficulty="1">
+		<Prompt>埃菲尔铁塔是为1889年世界博览会而建，位于这座欧洲城市。</Prompt>
+	<Response>伦敦</Response>
+		<Response>罗马</Response>
+		<Response>马德里</Response>
+		<Response answer="true">Paris</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>美国总统居住在这座位于宾夕法尼亚大道1600号的官邸。</Prompt>
+		<Response>华盛顿纪念碑</Response>
+		<Response>肯尼迪中心</Response>
+		<Response>林肯纪念堂</Response>
+		<Response answer="true">The White House</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>在古罗马，角斗士们在这座竞技场中相互搏斗。</Prompt>
+	<Response>马克西穆斯竞技场</Response>
+		<Response>万神殿</Response>
+		<Response>古罗马广场</Response>
+		<Response answer="true">The Colosseum</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>在1933年和2005年版的《金刚》中，这只巨猿站在这座著名的纽约摩天大楼顶上时遭到飞机攻击。</Prompt>
+		<Response>克莱斯勒大厦</Response>
+		<Response>熨斗大厦</Response>
+		<Response>西尔斯大厦</Response>
+		<Response answer="true">The Empire State Building</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这座中国建筑最初为抵御入侵者而建，长度近4000英里。</Prompt>
+		<Response>鸟巢体育场</Response>
+		<Response>紫禁城</Response>
+		<Response>六和塔</Response>
+		<Response answer="true">The Great Wall of China</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>风车通常与荷兰联系在一起，荷兰是这个国家的一个地区。</Prompt>
+		<Response>法国</Response>
+		<Response>比利时</Response>
+		<Response>西班牙</Response>
+		<Response answer="true">The Netherlands</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>红场位于这座俄罗斯城市。</Prompt>
+		<Response>诺夫哥罗德</Response>
+		<Response>叶卡捷琳堡</Response>
+		<Response>圣彼得堡</Response>
+		<Response answer="true">Moscow</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>拉什莫尔山上雕刻着乔治·华盛顿、亚伯拉罕·林肯、托马斯·杰斐逊和这位总统。</Prompt>
+		<Response>约翰·亚当斯</Response>
+		<Response>约翰·F·肯尼迪</Response>
+		<Response>巴拉克·奥巴马</Response>
+		<Response answer="true">Theodore Roosevelt</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>金门大桥横跨这片水域。</Prompt>
+		<Response>切萨皮克湾</Response>
+		<Response>墨西哥湾</Response>
+		<Response>苏必利尔湖</Response>
+		<Response answer="true">San Francisco Bay</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>这座著名的大钟位于伦敦威斯敏斯特桥的一端。</Prompt>
+		<Response>准时钟</Response>
+		<Response>守时皮特</Response>
+		<Response>鸣钟查理</Response>
+		<Response answer="true">Big Ben</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>柏林墙曾矗立二十八年，位于这个现今的国家。</Prompt>
+		<Response>葡萄牙</Response>
+		<Response>捷克共和国</Response>
+		<Response>波兰</Response>
+		<Response answer="true">德国</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>圣索菲亚大教堂是这座城市的著名旅游景点。</Prompt>
+		<Response>开罗</Response>
+		<Response>贝鲁特</Response>
+		<Response>雅典</Response>
+		<Response answer="true">Istanbul</Response>
+	</Question>
+
+
+	<Question difficulty="5">
+		<Prompt>吉萨大斯芬克斯像有着人的头部和这种动物的身体。</Prompt>
+		<Response>熊</Response>
+		<Response>毛毛虫</Response>
+		<Response>孔雀</Response>
+		<Response answer="true">A lion</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>救世基督像是一座位于这座南美城市的130英尺高雕像。</Prompt>
+		<Response>拉巴斯</Response>
+		<Response>加拉加斯</Response>
+		<Response>波哥大</Response>
+		<Response answer="true">Rio de Janeiro</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>泰姬陵位于这座印度城市。</Prompt>
+		<Response>孟买</Response>
+		<Response>德里</Response>
+		<Response>加尔各答</Response>
+		<Response answer="true">Agra</Response>
+	</Question>
+
+</Category>
+
+<Category name="Sports">
+
+	<Question difficulty="1">
+		<Prompt>迈克尔·乔丹职业生涯大部分时间效力于这支篮球队。</Prompt>
+		<Response>波士顿凯尔特人</Response>
+		<Response>洛杉矶湖人</Response>
+		<Response>迈阿密热火</Response>
+		<Response answer="true">Chicago Bulls</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>自由泳和蝶泳是这项运动的比赛项目。</Prompt>
+		<Response>田径</Response>
+		<Response>掰手腕</Response>
+		<Response>体操</Response>
+		<Response answer="true">Swimming</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>如果拳击手被击倒，他们有这么长时间重新站起来。</Prompt>
+		<Response>五秒</Response>
+		<Response>三十秒</Response>
+		<Response>一小时</Response>
+		<Response answer="true">Ten seconds</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这场比赛的胜者将加冕NFL冠军。</Prompt>
+		<Response>世界大赛</Response>
+		<Response>奥运会</Response>
+		<Response>世界杯</Response>
+		<Response answer="true">The Super Bowl</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>如果你在扣球、二传或垫球，那你玩的是这个项目。</Prompt>
+		<Response>水球</Response>
+		<Response>网球</Response>
+		<Response>羽毛球</Response>
+		<Response answer="true">Volleyball</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>大卫·贝克汉姆没有为这支球队效力过。</Prompt>
+		<Response>英格兰国家队</Response>
+		<Response>曼联</Response>
+		<Response>洛杉矶银河</Response>
+		<Response answer="true">Chelsea</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>足球比赛中，球员被出示红牌会导致这个结果。</Prompt>
+		<Response>他们在替补席坐五分钟。</Response>
+		<Response>他们被评为本场最有价值球员。</Response>
+		<Response>他们得捡所有人的橘子皮。</Response>
+		<Response answer="true">They are ejected from the game.</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>德克·诺维茨基和凯文·杜兰特是这项运动的职业选手。</Prompt>
+		<Response>足球</Response>
+		<Response>棒球</Response>
+		<Response>长曲棍球</Response>
+		<Response answer="true">Basketball</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>小乔治·赫尔曼·鲁斯的外号是什么？</Prompt>
+		<Response>胖墩</Response>
+		<Response>G-罗</Response>
+		<Response>曼尼</Response>
+		<Response answer="true">小猪宝贝</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>亚历山大·奥维契金效力于哪支NHL球队？</Prompt>
+		<Response>波士顿棕熊队</Response>
+		<Response>温哥华加人队</Response>
+		<Response>匹兹堡企鹅队</Response>
+		<Response answer="true">Washington Capitals</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>这个橄榄球术语指的是在对方端区擒抱对手。</Prompt>
+		<Response>抄截</Response>
+		<Response>掉球</Response>
+		<Response>达阵</Response>
+		<Response answer="true">A safety</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>杰夫·戈登和赫利奥·卡斯特罗内维斯都参与这项运动。</Prompt>
+		<Response>击剑</Response>
+		<Response>相扑</Response>
+		<Response>跳水</Response>
+		<Response answer="true">Auto racing</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>这个板球术语指的是将球投向三柱门的球员。</Prompt>
+		<Response>水壶</Response>
+		<Response>投手</Response>
+		<Response>抛球手</Response>
+		<Response answer="true">Bowler</Response>
+	</Question>
+
+	<Question difficulty="5" noshuffle="true">
+		<Prompt>这是十瓶保龄球打出完美比赛所需的分数。</Prompt>
+		<Response>100</Response>
+		<Response>200</Response>
+		<Response answer="true">300</Response>
+		<Response>400</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>如果你在做阿克塞尔跳或鲁兹跳，那你参加的是这项运动。</Prompt>
+		<Response>牛仔竞技</Response>
+		<Response>体操</Response>
+		<Response>高山滑雪</Response>
+		<Response answer="true">Figure skating</Response>
+	</Question>
+
+
+</Category>
+
+<Category name="Now, Where Did I See Them?">
+
+	<Question difficulty="1">
+		<Prompt>维露卡·索尔特、奥古斯塔斯·格鲁普、威利·旺卡</Prompt>
+		<Response>上</Response>
+		<Response>冰河世纪</Response>
+		<Response>暮光之城</Response>
+		<Response answer="true">Charlie and the Chocolate Factory</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>板牙、哈德逊医生、闪电麦昆</Prompt>
+		<Response>美女与野兽</Response>
+		<Response>辣妈辣妹</Response>
+		<Response>天生一对</Response>
+		<Response answer="true">赛车总动员</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>火腿、胡迪、巴斯光年</Prompt>
+		<Response>赛车总动员</Response>
+		<Response>小猪宝贝</Response>
+		<Response>超人总动员</Response>
+		<Response answer="true">Toy Story</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>雅克、马林、多莉</Prompt>
+		<Response>虫虫危机</Response>
+		<Response>快乐的大脚</Response>
+		<Response>帝企鹅日记</Response>
+		<Response answer="true">Finding Nemo</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>威尔·特纳、伊丽莎白·斯旺、杰克·斯派洛</Prompt>
+		<Response>怪兽电力公司</Response>
+		<Response>怪物史莱克</Response>
+		<Response>绿野仙踪</Response>
+		<Response answer="true">Pirates of the Caribbean: The Curse of the Black Pearl</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>悍娇虎、师父、阿宝</Prompt>
+		<Response>森林王子</Response>
+		<Response>狮子王</Response>
+		<Response>阿拉丁</Response>
+		<Response answer="true">功夫熊猫</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>格雷、罗利、弗雷格利</Prompt>
+		<Response>驯龙高手</Response>
+		<Response>神偷奶爸</Response>
+		<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
+		<Response answer="true">小屁孩日记</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>亚丝翠、史图依克、小嗝嗝</Prompt>
+		<Response>神偷奶爸</Response>
+		<Response>小屁孩日记</Response>
+		<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
+		<Response answer="true">驯龙高手</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>艾格尼丝、维克多、格鲁</Prompt>
+		<Response>驯龙高手</Response>
+		<Response>纳尼亚传奇：狮子、女巫和魔衣橱</Response>
+		<Response>小屁孩日记</Response>
+		<Response answer="true">神偷奶爸</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>莱娅公主、汉·索罗、卢克·天行者</Prompt>
+		<Response>星际迷航</Response>
+		<Response>一个明星的诞生</Response>
+		<Response>太空炮弹</Response>
+		<Response answer="true">星球大战</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>拉飞奇、木法沙、辛巴</Prompt>
+		<Response>森林王子</Response>
+		<Response>功夫熊猫</Response>
+		<Response>哈姆雷特</Response>
+		<Response answer="true">狮子王</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>萨拉、玛丽昂·瑞文伍德、印第安纳·琼斯</Prompt>
+		<Response>星球大战</Response>
+		<Response>罗宾汉</Response>
+		<Response>印第安纳人</Response>
+		<Response answer="true">Raiders of the Lost Ark</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>斯库特·法库斯、兰迪、拉尔菲</Prompt>
+		<Response>圣诞怪杰</Response>
+		<Response>圣诞颂歌</Response>
+		<Response>圣诞假期</Response>
+		<Response answer="true">A Christmas Story</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>韦斯特利、巴特卡普、伊尼戈·蒙托亚</Prompt>
+		<Response>罗宾汉</Response>
+		<Response>三个火枪手</Response>
+		<Response>基督山伯爵</Response>
+		<Response answer="true">The Princess Bride</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>拉里·戴利、匈奴王阿提拉、泰迪·罗斯福</Prompt>
+		<Response>拜见岳父大人</Response>
+		<Response>马达加斯加</Response>
+		<Response>摇滚校园</Response>
+		<Response answer="true">Night at the Museum</Response>
+	</Question>
+
+</Category>
+
+<Category name="Complete the Song Title">
+
+	<Question difficulty="1">
+		<Prompt>嘎嘎小姐：《扑克脸》</Prompt>
+		<Response>微笑</Response>
+		<Response>眼睛</Response>
+		<Response>游戏</Response>
+		<Response answer="true">Face</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>威泽乐队：《猪肉和豆子》</Prompt>
+		<Response>汽水</Response>
+		<Response>鸡蛋</Response>
+		<Response>棒棒糖</Response>
+		<Response answer="true">Beans</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>邦·乔维：《死活通缉》</Prompt>
+		<Response>哭泣</Response>
+		<Response>入狱</Response>
+		<Response>镣铐</Response>
+		<Response answer="true">Alive</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>AC/DC：回到……</Prompt>
+		<Response>白色</Response>
+		<Response>红色</Response>
+		<Response>蓝色</Response>
+		<Response answer="true">Black</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>绿日乐队：美国……</Prompt>
+		<Response>人</Response>
+		<Response>旗帜</Response>
+		<Response>乐队</Response>
+		<Response answer="true">Idiot</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>格温·史蒂芬妮：甜蜜……</Prompt>
+		<Response>生活</Response>
+		<Response>投降</Response>
+		<Response>糖</Response>
+		<Response answer="true">Escape</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>艾薇儿·拉维尼：滑板……</Prompt>
+		<Response>女孩</Response>
+		<Response>鞋子</Response>
+		<Response>伙计</Response>
+		<Response answer="true">Boi</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>巴哈人乐队：谁让……</Prompt>
+		<Response>厨房里的猪</Response>
+		<Response>鸡吃了我的三明治</Response>
+		<Response>豚鼠玩我的袜子</Response>
+		<Response answer="true">The Dogs Out</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>旅程乐队：不要停止……</Prompt>
+		<Response>梦想</Response>
+		<Response>歌唱</Response>
+		<Response>呼吸</Response>
+		<Response answer="true">Believing</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>乔丁·斯帕克斯：没有……</Prompt>
+		<Response>雪</Response>
+		<Response>雨</Response>
+		<Response>阳光</Response>
+		<Response answer="true">空气</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>枪炮与玫瑰：《甜蜜孩子》</Prompt>
+		<Response>丛林</Response>
+		<Response>你的</Response>
+		<Response>我们的</Response>
+		<Response answer="true">Mine</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>踢踏墨菲乐队：《奔赴波士顿》</Prompt>
+		<Response>曼哈顿</Response>
+		<Response>芝加哥</Response>
+		<Response>洛杉矶</Response>
+		<Response answer="true">Boston</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>齐柏林飞艇：《天堂阶梯》</Prompt>
+		<Response>永恒</Response>
+		<Response>生活</Response>
+		<Response>阁楼</Response>
+		<Response answer="true">Heaven</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>迈克尔·杰克逊：《比莉·珍》</Prompt>
+		<Response>乔</Response>
+		<Response>鲍勃</Response>
+		<Response>雷金纳德</Response>
+		<Response answer="true">Jean</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>披头士乐队：《嘿，裘德》</Prompt>
+		<Response>乔</Response>
+		<Response>乔什</Response>
+		<Response>还我钱包</Response>
+		<Response answer="true">Jude</Response>
+	</Question>
+
+</Category>
+
+<Category name="Bad Guys">
+
+	<Question difficulty="1">
+		<Prompt>这个绿发蝙蝠侠反派在《黑暗骑士》中出现过。</Prompt>
+		<Response>企鹅人</Response>
+		<Response>猫女</Response>
+		<Response>谜语人</Response>
+		<Response answer="true">The Joker</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>这个坏蛋整天带着他的猫阿兹瑞尔，想方设法抓蓝精灵。</Prompt>
+		<Response>达斯塔德利</Response>
+		<Response>马特利</Response>
+		<Response>马吉拉大猩猩</Response>
+		<Response answer="true">Gargamel</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>这档节目里的坏蛋们总爱抱怨，说要不是那些爱管闲事的小孩，他们的罪行早就得逞了</Prompt>
+		<Response>杰森一家</Response>
+		<Response>摩登原始人</Response>
+		<Response>蓝精灵</Response>
+		<Response answer="true">Scooby Doo</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这位霸天虎的首领是《变形金刚》系列中的反派。</Prompt>
+		<Response>擎天柱</Response>
+		<Response>铁皮</Response>
+		<Response>大黄蜂</Response>
+		<Response answer="true">Megatron</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这位残暴的独裁者于1933年成为德国总理，并通过入侵波兰发动了第二次世界大战。</Prompt>
+		<Response>温斯顿·丘吉尔</Response>
+		<Response>贝尼托·墨索里尼</Response>
+		<Response>萨达姆·侯赛因</Response>
+		<Response answer="true">Adolf Hitler</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这只巨大的蛞蝓状生物生活在塔图因星，曾在那里抓住了卢克·天行者及其伙伴。</Prompt>
+		<Response>达斯·维达</Response>
+		<Response>波巴·费特</Response>
+		<Response>丘巴卡</Response>
+		<Response answer="true">Jabba the Hutt</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>这位长着尖刺外壳的反派，不忙着绑架碧琪公主的时候，就会和马里奥他们比赛卡丁车。</Prompt>
+		<Response>大金刚</Response>
+		<Response>奇诺比奥</Response>
+		<Response>路易吉</Response>
+		<Response answer="true">Bowser</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>在《小美人鱼》里，这个女反派偷走了爱丽儿的声音。</Prompt>
+		<Response>疤痕</Response>
+		<Response>库伊拉·德维尔</Response>
+		<Response>花木兰</Response>
+		<Response answer="true">Ursula</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>库伊拉·德·维尔是这部迪士尼经典作品中的主要反派。</Prompt>
+		<Response>小姐与流浪汉</Response>
+		<Response>狐狸与猎狗</Response>
+		<Response>灰姑娘</Response>
+		<Response answer="true">One Hundred and One Dalmations</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>在《圣诞颂歌》中，这位吝啬鬼在被三个幽灵拜访后才幡然醒悟。</Prompt>
+		<Response>雅各布·马利</Response>
+		<Response>鲍勃·克拉特基特</Response>
+		<Response>小蒂姆</Response>
+		<Response answer="true">Ebeneezer Scrooge</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>这个蜘蛛侠反派以他的四只金属触手而闻名。</Prompt>
+		<Response>绿魔</Response>
+		<Response>沙人</Response>
+		<Response>毒液</Response>
+		<Response answer="true">Doctor Octopus</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>这个金属脸反派帮助眼镜蛇指挥官对抗特种部队。</Prompt>
+		<Response>蛇眼</Response>
+		<Response>白幽灵</Response>
+		<Response>达斯·维达</Response>
+		<Response answer="true">Destro</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>在《汤姆·索亚历险记》中，这个反派被困在洞穴里，结局悲惨。</Prompt>
+		<Response>哈克贝利·费恩</Response>
+		<Response>波莉姨妈</Response>
+		<Response>贝琪·撒切尔</Response>
+		<Response answer="true">Injun Joe</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>这位绰号“比利小子”的亡命徒，本名威廉·H·邦尼，于1881年命丧警长帕特·加勒特之手，结束了他短暂的一生。</Prompt>
+		<Response>小比利</Response>
+		<Response>婴儿伊恩</Response>
+		<Response>年轻的埃德加</Response>
+		<Response answer="true">Billy the Kid</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>这位残忍的海盗，又名爱德华·蒂奇，在战斗时会在手上绑点燃的引信来吓唬敌人。</Prompt>
+		<Response>黄胡子</Response>
+		<Response>红胡子</Response>
+		<Response>杰克·斯派洛</Response>
+		<Response answer="true">Blackbeard</Response>
+	</Question>
+
+</Category>
+
+<Category name="Homophones">
+
+	<Question difficulty="1">
+		<Prompt>用来划船的工具……也是一种花</Prompt>
+		<Response>船桨……桨</Response>
+		<Response>掌舵……舵</Response>
+		<Response>康乃馨……康乃馨</Response>
+		<Response answer="true">Rows... Rose</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>用来观察的器官……指代自己的词</Prompt>
+		<Response>鼻子……知道</Response>
+		<Response>心脏……雄鹿</Response>
+		<Response>我……我</Response>
+		<Response answer="true">Eye... I</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>贴邮票的信件……不是女孩</Prompt>
+		<Response>卡片……卡片</Response>
+		<Response>男孩……男孩</Response>
+		<Response>男人……男人</Response>
+		<Response answer="true">Mail... Male</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>接触……肉铺里买的东西</Prompt>
+		<Response>面粉……花朵</Response>
+		<Response>知道……不</Response>
+		<Response>连续……麦片</Response>
+		<Response answer="true">Meet... Meat</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>短暂休息……狗的爪子</Prompt>
+		<Response>故事……尾巴</Response>
+		<Response>小睡……敲击</Response>
+		<Response>冷杉……皮毛</Response>
+		<Response answer="true">Pause... Paws</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>卖食物的人……更恶心</Prompt>
+		<Response>小贩……贩卖者</Response>
+		<Response>收银员……现金员</Response>
+		<Response>药剂师……药房师</Response>
+		<Response answer="true">Grocer... Grosser</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>预测……来访者</Prompt>
+		<Response>应该……支持</Response>
+		<Response>制作……女仆</Response>
+		<Response>小时……我们的</Response>
+		<Response answer="true">Guessed... Guest</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>山顶……快速一瞥</Prompt>
+		<Response>巨人</Response>
+		<Response>高度</Response>
+		<Response>天花板</Response>
+		<Response answer="true">Peak... Peek</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>圆形物体……大声哭泣</Prompt>
+		<Response>圆圈</Response>
+		<Response>球体</Response>
+		<Response>鲸鱼</Response>
+		<Response answer="true">Ball... Bawl</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>坚固材料……不问自取</Prompt>
+		<Response>男爵</Response>
+		<Response>木头</Response>
+		<Response>混凝土</Response>
+		<Response answer="true">Steel... Steal</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>不弯曲的……狭窄的水道</Prompt>
+		<Response>平坦的……平坦</Response>
+		<Response>看见……大海</Response>
+		<Response>湖泊……湖</Response>
+		<Response answer="true">Straight... Strait</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>灌木上结的果实……用土覆盖</Prompt>
+		<Response>梨子……削皮</Response>
+		<Response>茶……球座</Response>
+		<Response>牛排……木桩</Response>
+		<Response answer="true">Berry... Bury</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>二十四小时的时段……使震惊</Prompt>
+		<Response>小时……我们的</Response>
+		<Response>年……年</Response>
+		<Response>月……月</Response>
+		<Response answer="true">Days... Daze</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>等待时需要什么……医生候诊室里的人们</Prompt>
+		<Response>票……票</Response>
+		<Response>脚……功绩</Response>
+		<Response>金库……咳嗽的人</Response>
+		<Response answer="true">Patience... Patients</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>借东西给别人……独自一人</Prompt>
+		<Response>交易……交易</Response>
+		<Response>木板……无聊</Response>
+		<Response>是……蜜蜂</Response>
+		<Response answer="true">Loan... Lone</Response>
+	</Question>
+
+</Category>
+
+<Category name="Popular Trends">
+
+	<Question difficulty="1">
+		<Prompt>皮卡丘和喷火龙是来自这个系列的两个角色，该系列在20世纪90年代首次流行起来。</Prompt>
+		<Response>Ben 10</Response>
+		<Response>万智牌</Response>
+		<Response>龙与地下城</Response>
+		<Response answer="true">Pokemon</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>滑板和单板滑雪都属于这类运动，在90年代风靡一时。</Prompt>
+		<Response>板类运动</Response>
+		<Response>极限运动</Response>
+		<Response>酷哥运动</Response>
+		<Response answer="true">Extreme Sports</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>涅槃乐队和珍珠果酱乐队让这种音乐风格在90年代流行起来。</Prompt>
+		<Response>情绪摇滚</Response>
+		<Response>长发金属</Response>
+		<Response>迪斯科</Response>
+		<Response answer="true">Grunge</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>如果你是《大人物拿破仑》的粉丝，可能穿过印有“投票给”这个人的流行T恤。</Prompt>
+		<Response>里科叔叔</Response>
+		<Response>基普</Response>
+		<Response>萨默</Response>
+		<Response answer="true">Pedro</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>这种流行鞋款上的孔洞很适合用来安装小饰品。</Prompt>
+		<Response>人字拖</Response>
+		<Response>暴走鞋</Response>
+		<Response>高筒靴</Response>
+		<Response answer="true">Crocs</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>莱昂纳多和米开朗基罗是这些“半壳英雄”中的两位</Prompt>
+		<Response>库巴</Response>
+		<Response>蟹堡王</Response>
+		<Response>宇宙蛤蜊</Response>
+		<Response answer="true">Teenage Mutant Ninja Turtles</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>这种70年代的音乐风格包括《活着》和《哈索舞》等热门歌曲</Prompt>
+		<Response>电子乐</Response>
+		<Response>嘻哈</Response>
+		<Response>情绪摇滚</Response>
+		<Response answer="true">迪斯科</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>在腰间旋转这种玩具是50年代最流行的风潮之一。</Prompt>
+		<Response>溜溜球</Response>
+		<Response>机灵鬼</Response>
+		<Response>挠痒痒艾摩</Response>
+		<Response answer="true">Hula Hoop</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>上世纪50年代，很多女孩的裙子上都绣着这种狗。</Prompt>
+		<Response>金毛寻回犬</Response>
+		<Response>吉娃娃</Response>
+		<Response>巴吉度猎犬</Response>
+		<Response answer="true">Poodle</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>这款70年代流行的配饰据说能通过变色来显示你的心情。</Prompt>
+		<Response>情绪吊坠</Response>
+		<Response>心情帽子</Response>
+		<Response>友谊手链</Response>
+		<Response answer="true">Mood rings</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>以前酷小孩都爱去汽车餐厅，那里的服务员会穿着这个把食物送到你车上。</Prompt>
+		<Response>暴走鞋</Response>
+		<Response>直排轮</Response>
+		<Response>猩猩装</Response>
+		<Response answer="true">Roller skates</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>信不信由你，很多70年代的小孩都养这个当宠物。</Prompt>
+		<Response>砖头</Response>
+		<Response>灯泡</Response>
+		<Response>毛线球</Response>
+		<Response answer="true">Rocks</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>最近哪种潮流是让人躺在奇怪的地方？</Prompt>
+		<Response>登车</Response>
+		<Response>压扁</Response>
+		<Response>伐木</Response>
+		<Response answer="true">Planking</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>这个1980年代的潮流玩具，目标是通过转动它的行列，让六个面都变成纯色。</Prompt>
+		<Response>魔法链</Response>
+		<Response>彩虹行</Response>
+		<Response>博特的方块</Response>
+		<Response answer="true">Rubik's Cube</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>上世纪50年代，大学生们流行挤进这种狭小空间。</Prompt>
+		<Response>电梯</Response>
+		<Response>卫生间</Response>
+		<Response>清洁工储物间</Response>
+		<Response answer="true">Phone booths</Response>
+	</Question>
+
+</Category>
+
+<Category name="The World of Poptropica">
+
+	<Question difficulty="1">
+		<Prompt>莱纳斯、查理·布朗和史努比是这座岛上的角色。</Prompt>
+		<Response>红龙岛</Response>
+		<Response>狂野西部岛</Response>
+		<Response>太空骑士岛</Response>
+		<Response answer="true">Great Pumpkin Island</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>在这座岛上，你必须击败野兔博士。</Prompt>
+		<Response>红龙岛</Response>
+		<Response>狂野西部岛</Response>
+		<Response>太空骑士岛</Response>
+		<Response answer="true">24 Carrot Island</Response>
+	</Question>
+
+	<Question difficulty="1">
+		<Prompt>在这座岛上，你需要与海盗和海怪战斗。</Prompt>
+		<Response>鲨鱼牙岛</Response>
+		<Response>神秘生物岛</Response>
+		<Response>超能力岛</Response>
+		<Response answer="true">诡计岛</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>在这座岛上，穿上草裙会让你看起来像个当地人。</Prompt>
+		<Response>诡计岛</Response>
+		<Response>时空迷踪岛</Response>
+		<Response>大内特岛</Response>
+		<Response answer="true">鲨鱼牙岛</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>你在这座岛上从尘土镇的主街开始冒险。</Prompt>
+		<Response>真人秀岛</Response>
+		<Response>神话岛</Response>
+		<Response>红龙岛</Response>
+		<Response answer="true">狂野西部岛</Response>
+	</Question>
+
+	<Question difficulty="2">
+		<Prompt>如果你在波波的小丑商店，那你一定在这座岛上。</Prompt>
+		<Response>神秘生物岛</Response>
+		<Response>小屁孩的奇幻乐园</Response>
+		<Response>时空迷踪岛</Response>
+		<Response answer="true">赝品岛</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>在这座岛上，赫拉克勒斯亲笔签名照只卖10德拉克马。</Prompt>
+		<Response>赝品岛</Response>
+		<Response>超能力岛</Response>
+		<Response>诡计岛</Response>
+		<Response answer="true">神话岛</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>如果你发现自己身处经典漫画店，那你一定在这座岛上。</Prompt>
+		<Response>小屁孩的奇幻乐园</Response>
+		<Response>真人秀岛</Response>
+		<Response>赝品岛</Response>
+		<Response answer="true">大内特岛</Response>
+	</Question>
+
+	<Question difficulty="3">
+		<Prompt>在这座岛上，你可以试试玩扭曲巫师游戏。</Prompt>
+		<Response>大内特岛</Response>
+		<Response>太空骑士岛</Response>
+		<Response>时空迷踪岛</Response>
+		<Response answer="true">小屁孩的奇幻乐园</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>当这个撞上监狱时，罪犯们从超能力岛逃跑了。</Prompt>
+		<Response>一头犀牛</Response>
+		<Response>一辆冰淇淋车</Response>
+		<Response>一场海啸</Response>
+		<Response answer="true">A meteor</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>你必须在这座岛上找到尼斯湖水怪存在的证据。</Prompt>
+		<Response>红龙岛</Response>
+		<Response>太空骑士岛</Response>
+		<Response>鲨鱼牙岛</Response>
+		<Response answer="true">神秘生物岛</Response>
+	</Question>
+
+	<Question difficulty="4">
+		<Prompt>在这座岛上，你会获得手里剑和忍者服装。</Prompt>
+		<Response>超能力岛</Response>
+		<Response>时空迷踪岛</Response>
+		<Response>狂野西部岛</Response>
+		<Response answer="true">红龙岛</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>这位真人秀明星正躲在真人秀岛的一家汽车旅馆里。</Prompt>
+		<Response>杰基·斯旺森</Response>
+		<Response>莉比·本森</Response>
+		<Response>斯努基</Response>
+		<Response answer="true">Bucky Lucas</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>你必须在时间错乱岛上登上这座山的顶峰。</Prompt>
+		<Response>富士山</Response>
+		<Response>拉什莫尔山</Response>
+		<Response>维苏威火山</Response>
+		<Response answer="true">Mt. Everest</Response>
+	</Question>
+
+	<Question difficulty="5">
+		<Prompt>你必须在太空骑士岛上拯救这个王国。</Prompt>
+		<Response>卡美洛</Response>
+		<Response>阿瓦隆</Response>
+		<Response>王者之剑</Response>
+		<Response answer="true">Arturus</Response>
+	</Question>
+
+</Category>
+
+<FinalCategory name="Art">
+
+	<Question>
+		<Prompt>这位文艺复兴巨匠画了《蒙娜丽莎》，还绘制了早期飞行器的草图。</Prompt>
+		<Response>米开朗基罗</Response>
+		<Response>多纳泰罗</Response>
+		<Response>拉斐尔</Response>
+		<Response>马基雅维利</Response>
+		<Response>波提切利</Response>
+		<Response answer="true">Leonardo Da Vinci</Response>
+	</Question>
+
+</FinalCategory>
+
+
+<FinalCategory name="Inventors">
+
+	<Question>
+		<Prompt>亚历山大·格拉汉姆·贝尔因这项发明而闻名。</Prompt>
+		<Response>电灯泡</Response>
+		<Response>飞机</Response>
+		<Response>汽车</Response>
+		<Response>懒人毯</Response>
+		<Response>俗语“该怎样就怎样。 ”</Response>
+		<Response answer="true">the telephone</Response>
+	</Question>
+
+</FinalCategory>
+
+
+<FinalCategory name="The United States">
+
+	<Question>
+		<Prompt>这是美国50个州中最新的一个。</Prompt>
+		<Response>阿拉斯加</Response>
+		<Response>德克萨斯</Response>
+		<Response>罗德岛</Response>
+		<Response>加利福尼亚</Response>
+		<Response>佛罗里达</Response>
+		<Response answer="true">Hawaii</Response>
+	</Question>
+
+</FinalCategory>
+
+
+<FinalCategory name="Ancient Civilizations">
+
+	<Question>
+		<Prompt>斯巴达和雅典是现今这个国家的城邦。</Prompt>
+		<Response>俄罗斯</Response>
+		<Response>德国</Response>
+		<Response>意大利</Response>
+		<Response>法国</Response>
+		<Response>印度</Response>
+		<Response answer="true">Greece</Response>
+	</Question>
+
+</FinalCategory>
+
+
+<FinalCategory name="Word Meanings">
+
+	<Question>
+		<Prompt>恐水症指的是对这种事物的恐惧。</Prompt>
+		<Response>蛇</Response>
+		<Response>蜘蛛</Response>
+		<Response>空气</Response>
+		<Response>小丑</Response>
+		<Response>黑暗</Response>
+		<Response answer="true">Water</Response>
+	</Question>
+
+</FinalCategory>
+
+
+<FinalCategory name="Geography">
+
+	<Question>
+		<Prompt>太平洋和大西洋通过一条横跨这个中美洲国家的运河相连。</Prompt>
+		<Response>伯利兹</Response>
+		<Response>尼加拉瓜</Response>
+		<Response>萨尔瓦多</Response>
+		<Response>哥斯达黎加</Response>
+		<Response>洪都拉斯</Response>
+		<Response answer="true">Panama</Response>
+	</Question>
+
+</FinalCategory>
 
 </Quiz>

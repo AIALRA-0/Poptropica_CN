@@ -1394,6 +1394,8 @@ function sanitizeNavigatorProfile(config) {
   const profileDir = flashpoint.navigatorProfileDir;
   const prefsPath = path.join(profileDir, "prefs.js");
   const userJsPath = path.join(profileDir, "user.js");
+  const chromeDir = path.join(profileDir, "chrome");
+  const userChromePath = path.join(chromeDir, "userChrome.css");
   const workArea = readPrimaryScreenWorkArea();
   const overrideBrowserZoom = parsePositiveFloatEnv("POPTROPICA_BROWSER_ZOOM");
   const computedBrowserZoom = overrideBrowserZoom || (() => {
@@ -1413,6 +1415,7 @@ function sanitizeNavigatorProfile(config) {
     ["media.gmp-manager.url", "\"http://127.0.0.1/flashpoint-gmp-dummy.xml\""],
     ["media.gmp-manager.url.override", "\"http://127.0.0.1/flashpoint-gmp-dummy.xml\""],
     ["browser.sessionstore.resume_from_crash", "false"],
+    ["toolkit.legacyUserProfileCustomizations.stylesheets", "true"],
     ["layers.acceleration.disabled", "true"],
     ["gfx.direct2d.disabled", "true"],
     ["layers.offmainthreadcomposition.enabled", "false"],
@@ -1426,6 +1429,42 @@ function sanitizeNavigatorProfile(config) {
     }
     writeText(targetPath, content.replace(/\r?\n/gu, "\r\n"));
   }
+
+  ensureDirSync(chromeDir);
+  writeText(userChromePath, [
+    "/* POPTROPICA_FLASH managed game-window profile chrome. */",
+    "#TabsToolbar,",
+    "#nav-bar,",
+    "#PersonalToolbar,",
+    "#toolbar-menubar,",
+    "#addon-bar,",
+    "#status-bar,",
+    "#browser-bottombox,",
+    "#global-notificationbox,",
+    "#high-priority-global-notificationbox,",
+    "#statuspanel,",
+    "statuspanel,",
+    ".statuspanel-label,",
+    "findbar,",
+    "#FindToolbar {",
+    "  visibility: collapse !important;",
+    "  min-height: 0 !important;",
+    "  height: 0 !important;",
+    "  max-height: 0 !important;",
+    "  padding: 0 !important;",
+    "  margin: 0 !important;",
+    "  overflow: hidden !important;",
+    "}",
+    "",
+    "#browser,",
+    "#appcontent,",
+    "#content,",
+    "browser[type='content-primary'] {",
+    "  margin: 0 !important;",
+    "  padding: 0 !important;",
+    "}",
+    ""
+  ].join("\r\n"));
 }
 
 function readPrimaryScreenWorkArea() {

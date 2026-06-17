@@ -1,0 +1,27 @@
+<item id="3231">
+  	<type>store</type>
+  	<subType>general</subType>
+	<buttons>
+			<btn>
+			<index>0</index>
+			<label>访问</label>
+			<actions>
+				<action type="loadAS2Scene">
+						<parameters>
+							<param id="section">gameplay</param>
+							<param id="island">Japan</param>
+							<param id="scene">JapanPromo</param>
+						</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+  	<assets>
+		<asset id="cardBack">
+    		<assetPath>items/shared/PaidLimitedBackgroundRustRed.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+			<assetPath>items/store/item3231.swf</assetPath>
+		</asset>
+  	</assets>
+</item>

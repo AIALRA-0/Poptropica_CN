@@ -1,0 +1,72 @@
+<island>
+	<name>蒸汽工厂岛</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS2</gameVersion>
+	<island>steam</island>
+	
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>	<!-- Every island should have a permanent 'started' event -->
+		<event>beatBoss</event>
+		<event>brokeVines</event>
+		<event>completedStorage</event>
+		<event>droppedBridge</event>
+		<event>finalMission</event>
+		<event>mazeDone</event>
+		<event>openedHatch</event>
+		<event>openedHibernation</event>
+		<event>openedHole</event>
+		<event>openedQuarters</event>
+		<event>openedShop</event>
+		<event>openedSkylight</event>
+		<event>openedWindmill</event>
+		<event>pipesDone</event>
+		<event>poweredFactory</event>
+		<event>spinlockDone</event>
+		<event>sprocketFollows</event>
+		<event>sprocketTalks</event>
+		<event>usedBeaker</event>
+		<event>usedCrank</event>
+		<event>usedDynamite</event>
+		<event>usedMixture</event>
+		<event>usedMotor</event>
+		<event>usedVine</event>
+	</permanentEvents>
+	
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="vine">200</item>
+		<item id="multi_tool">201</item>
+		<item id="battery">202</item>
+		<item id="beaker">203</item>
+		<item id="crab">204</item>
+		<item id="sully_key">205</item>
+		<item id="mallet">206</item>
+		<item id="bridge_key">207</item>
+		<item id="weed_whacker">208</item>
+		<item id="motor">209</item>
+		<item id="quarters_key">210</item>
+		<item id="crank">211</item>
+		<item id="blaster">212</item>
+		<item id="teleporter">213</item>
+		<item id="medal_steam">1014</item>
+	</itemIdMap>
+	
+	<firstScene>
+		<scene>SteamMain</scene>
+		<x>330</x>
+		<y>1500</y>
+		<direction>right</direction>
+		<label>
+			<text>Exit</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+	
+	<playerMap></playerMap>
+	<medallion></medallion>
+</island>
