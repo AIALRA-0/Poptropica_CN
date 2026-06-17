@@ -1,0 +1,37 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" baseVolume="0.7">Safari_Extended.mp3</asset>
+	</sound>
+	<sound type="effects" action="doorOpened">
+		<asset>paper_flap_01.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="bounce">ls_bounce_01.mp3, ls_bounce_02.mp3, ls_bounce_03.mp3</asset>
+		<asset id="floor">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+		<asset id="grass">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="sand">ls_fine_sand_01.mp3, ls_fine_sand_02.mp3</asset>
+		<asset id="water">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+		<asset id="waterWalk">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+		<asset id="wood">ls_wood_01.mp3, ls_wood_02.mp3</asset>
+		<asset id="woodPlank">ls_wood_plank_01.mp3, ls_wood_plank_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="floor">fs_concrete_01.mp3, fs_concrete_02.mp3</asset>
+		<asset id="grass">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="sand">fs_fine_sand_01.mp3, fs_fine_sand_02.mp3, fs_fine_sand_03.mp3, fs_fine_sand_04.mp3</asset>
+		<asset id="water">fs_water_01.mp3, fs_water_02.mp3, fs_water_03.mp3, fs_water_04.mp3</asset>
+		<asset id="waterWalk">fs_water_01.mp3, fs_water_02.mp3, fs_water_03.mp3, fs_water_04.mp3</asset>
+		<asset id="wood">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
+		<asset id="woodPlank">fs_wood_plank_01.mp3, fs_wood_plank_02.mp3,fs_wood_plank_03.mp3, fs_wood_plank_04.mp3</asset>
+	</sound>
+
+	<sound type="effects">
+		<!-- scene sounds -->
+		<asset triggeredByEvent="birdSound">ostrich_01.mp3</asset>
+		<asset triggeredByEvent="monkey1Sound" baseVolume="1.5">whoosh_01.mp3</asset>
+		<asset triggeredByEvent="zebraSound" baseVolume="1.5">stone_impact_05.mp3</asset>
+		<asset triggeredByEvent="explodingCameramanSound" baseVolume="1.5">small_explosion_04.mp3</asset>
+		<asset triggeredByEvent="explodingCameramanSound2" baseVolume="1.5">kids_screaming_01.mp3</asset>
+		<asset triggeredByEvent="giraffeSound" baseVolume="1.5">rhino_huff_01.mp3</asset>
+	</sound>
+</sounds>

@@ -11,7 +11,7 @@ const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
 const { isItemXmlVisibleText, isProtectedTranslationRow } = require("./translation-guards");
 const { AS3_DIRECT_WRAPPER_PATH, buildAs3DirectWrapperPhp } = require("./as3-direct-wrapper");
 
-const RUNTIME_FIX_VERSION = 26;
+const RUNTIME_FIX_VERSION = 28;
 const AS3_STAGE_BACKGROUND_RGB = Buffer.from([0x13, 0x9f, 0xfd]);
 // Startup/login SWFs are excluded from the default runtime override set.
 // They still rely on embedded legacy fonts, and forcing Chinese into those

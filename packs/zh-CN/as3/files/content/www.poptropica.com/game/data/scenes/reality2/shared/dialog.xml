@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="probably">
+		<statement id="winners">该宣布获胜者了！我高兴得直冒汗！</statement>
+		<statement id="winners2">该宣布获胜者了！小蛇把我勒得好紧。</statement>
+		<statement id="winners3">该宣布获胜者了，然后我要去打个盹。</statement>
+		<statement id="second">接下来是第二名……会是谁呢？</statement>
+		<statement id="second2">接下来是第二名……一位非常出色的人。</statement>
+		<statement id="second3">第二名……一位亲爱的朋友。</statement>
+		<statement id="drum roll">获胜者就是……</statement>
+		<statement id="congrats">祝贺我们的挑战者！</statement>
+		<statement id="next">开始第二项挑战！</statement>
+		<statement id="next2">开始第三项挑战！</statement>
+		<statement id="next3">现在到了大家期待已久的时刻。谁会成为我们的真人秀冠军？</statement>
+		<statement id="monkeys">把猴子带上来！！！</statement>
+    </character>
+    <character id="player">
+		<statement id="me">希望其中一个是我。</statement>
+    </character>
+</dialogs>

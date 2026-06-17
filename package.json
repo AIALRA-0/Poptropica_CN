@@ -41,6 +41,7 @@
     "patch:as3-shell-hud-labels": "node tools/patch-as3-shell-hud-labels.js",
     "patch:as3-shell-inventory-tab": "node tools/patch-as3-shell-inventory-tab.js",
     "patch:as3-scene-static-overlays": "node tools/patch-as3-scene-static-overlays.js",
+    "patch:reality2-xml": "node tools/patch-reality2-xml-translations.js",
     "patch:as3-shell-ui-text": "node tools/patch-as3-shell-ui-text.js",
     "patch:as3-shell-layout-live": "node tools/patch-as3-shell-layout-live.js",
     "patch:as3-shell-layout-cover": "node tools/patch-as3-shell-layout-cover.js",

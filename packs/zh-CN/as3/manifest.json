@@ -337,7 +337,17 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 574,
+    "replacementCount": 648,
     "swfRuntimeOverrides": "safe_subset"
+  },
+  "archivedReality2Resources": {
+    "generatedAt": "2026-06-17T21:38:52.538Z",
+    "source": "Internet Archive raw replay of original www.poptropica.com reality2 resources",
+    "provenancePath": "packs/zh-CN/as3/provenance/reality2-archive-import.json",
+    "importHash": "380206a34476b0302da24153bf6b8441c3b80a99",
+    "importedCount": 74,
+    "sceneResourceCount": 72,
+    "soundResourceCount": 2,
+    "totalBytes": 5800139
   }
 }

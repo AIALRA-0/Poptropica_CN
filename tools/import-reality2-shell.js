@@ -49,7 +49,7 @@ function selectShellCandidate(probe, args) {
     .filter((candidate) =>
       candidate.source === "wayback" &&
       candidate.rawReplayUrl &&
-      candidate.scan?.targetPackagePresent &&
+      candidate.scan?.targetClassPresent &&
       CONTROL_PACKAGES.every((pkg) => candidate.scan?.controlPackages?.[pkg])
     )
     .sort((left, right) => String(left.timestamp || "").localeCompare(String(right.timestamp || "")));
@@ -64,7 +64,7 @@ function validateShellBuffer(buffer) {
   const missingControls = CONTROL_PACKAGES.filter((pkg) => !scan.controlPackages?.[pkg]);
   const signatureOk = ["FWS", "CWS", "ZWS"].includes(scan.signature);
   return {
-    ok: Boolean(scan.inspected && signatureOk && scan.targetPackagePresent && missingControls.length === 0),
+    ok: Boolean(scan.inspected && signatureOk && scan.targetClassPresent && missingControls.length === 0),
     signatureOk,
     missingControls,
     scan
@@ -115,6 +115,7 @@ async function main() {
     throw new Error(`Downloaded Shell failed validation: ${JSON.stringify({
       signature: validation.scan.signature,
       targetPackagePresent: validation.scan.targetPackagePresent,
+      targetClassPresent: validation.scan.targetClassPresent,
       missingControls: validation.missingControls
     })}`);
   }

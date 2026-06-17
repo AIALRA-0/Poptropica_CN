@@ -1,0 +1,55 @@
+<scene>
+	<sceneType>default</sceneType>
+	<suppressFollower>true</suppressFollower>
+	<suppressAbility>true</suppressAbility>
+	<cameraLimits>
+		<left>0</left>
+		<top>0</top>
+		<right>960</right>
+		<bottom>21000</bottom>
+	</cameraLimits>
+	<bounds>
+		<left>60</left>
+		<top>0</top>
+		<right>900</right>
+		<bottom>20050</bottom>
+	</bounds>
+	<data>npcs.xml,sounds.xml,hits.xml,segmentPatterns.xml</data>
+	<assets></assets>
+	<layers>
+		<!-- will have to see how this was intended to look
+		<layer>
+			<asset>backdrop.swf</asset>
+			<rate>1</rate>
+			<height>1000</height>
+			<offsetY>0</offsetY>
+			<wrapY>1000</wrapY>
+		</layer>
+		 -->
+		<layer>
+			<asset>background1.swf</asset>
+			<rate>1</rate>
+			<height>1000</height>
+			<offsetY>0</offsetY>
+			<wrapY>2000</wrapY>
+		</layer>
+		<layer>
+			<asset>background2.swf</asset>
+			<rate>1</rate>
+			<height>1000</height>
+			<offsetY>1000</offsetY>
+			<wrapY>2000</wrapY>
+		</layer>
+		<layer hit="true">
+			<asset>interactive.swf</asset>
+			<rate>1</rate>
+		</layer>
+	</layers>
+	<player>
+		<defaultPosition>
+			<x>800</x>
+			<y>200</y>
+		</defaultPosition>
+		<defaultDirection>right</defaultDirection>
+	</player>
+</scene>

@@ -1,0 +1,9 @@
+<motionMaster>
+	<axis>x</axis>
+	<direction>-</direction>
+	<velocity>400</velocity> <!--  -200  -->
+	<minVelocity>300</minVelocity>
+	<maxVelocity>600</maxVelocity> <!--  600  -->
+	<acceleration>50</acceleration>
+	<goalDistance>40200</goalDistance>
+</motionMaster>

@@ -1,0 +1,77 @@
+<hits>
+	<hit id="floor" color="0x00ff00" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="grass" color="0xffcc00" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="sand" color="0xCBB4AA" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="wall" color="0xff6600">
+		<component type="wall"/>
+	</hit>
+	<hit id="water" color="0x0000ff">
+		<component type="water">
+			<splashColor1>0x65DCFE</splashColor1>
+			<splashColor2>0xA7EBFE</splashColor2>
+		</component>
+	</hit>
+	<hit id="waterWalk" color="0x9999ff" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="wood" color="0x993300" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="woodPlank" color="0x996600" platform="true">
+		<component type="platform"/>
+	</hit>
+	<hit id="bounce" color="0xff0000" platform="true">
+		<component type="bounce">
+			<velocity>
+				<x>0</x>
+				<y>-800</y>
+			</velocity>
+		</component>
+	</hit>
+	<hit id="bird_hit" color="0xffff22" platform="true">
+		<component type="bounce">
+			<velocity>
+				<x>0</x>
+				<y>-800</y>
+			</velocity>
+		</component>
+	</hit>
+	<hit id="helicopterPlat1">
+		<component type="movingPlatform">
+			<velocity>1000</velocity>
+			<!-- <visible>helicopter1</visible> -->
+			<points>
+				<point>
+					<x>792</x>
+					<y>258</y>
+				</point>
+				<point>
+					<x>793</x>
+					<y>245</y>
+				</point>
+				<point>
+					<x>795</x>
+					<y>260</y>
+				</point>
+				<point>
+					<x>785</x>
+					<y>245</y>
+				</point>
+				<point>
+					<x>783</x>
+					<y>265</y>
+				</point>
+			</points><!---->
+		</component>
+	</hit>
+	<hit id="helicopterPlat2">
+		<component type="movingPlatform">
+		</component>
+	</hit>
+</hits>

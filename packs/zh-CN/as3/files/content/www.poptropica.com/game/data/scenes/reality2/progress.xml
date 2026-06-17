@@ -1,0 +1,11 @@
+<progress>
+	<island>reality2</island>
+	<events>
+		<event>started</event>
+		<event>saw_intro</event>
+		<event>completed_game_1</event>
+		<event>completed_game_2</event>
+		<event>completed_game_3</event>
+		<event>gotItem_medal_reality2</event>
+	</events>
+</progress>

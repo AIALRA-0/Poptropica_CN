@@ -1899,3 +1899,42 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Commit and push the checkpoint branch.
 - Continue deeper per-island playthrough testing beyond launch/resize smokes, especially quest-specific progression blockers.
 - Continue static-art replacement planning for non-icon bitmap labels; keep `MENU` and logo/icon art as English until replaced with real bitmap assets.
+
+## 2026-06-17 Reality2 Durable Resource Import And Shell-Code Blocker
+
+- Made the Reality2/Wild Safari archive import durable instead of runtime-only:
+  - `tools/import-reality2-archive.js` now writes original `www.poptropica.com` resources into tracked AS3 pack inputs under `packs/zh-CN/as3/files/content/...`.
+  - Import result: `importedCount: 74`, `sceneResourceCount: 72`, `soundResourceCount: 2`, `totalBytes: 5800139`.
+  - Runtime rebuild after import: AS3 `replacementCount: 648`.
+  - Provenance report: `packs/zh-CN/as3/provenance/reality2-archive-import.json`.
+- Added visible Reality2 XML translation patching:
+  - Script: `tools/patch-reality2-xml-translations.js`.
+  - Command: `npm run patch:reality2-xml`.
+  - Result: `translationCount: 275`, `fileCount: 8`, `unmapped: []`.
+  - Follow-up visible-tag scan over Reality2 XML found `remaining: 0` ordinary English visible strings after excluding the protected runtime placeholder `[Player Name]`.
+  - Report: `packs/zh-CN/as3/provenance/reality2-translation-report.json`.
+- Added imported Reality2 music resources:
+  - `Safari_Extended.mp3`
+  - `Train_Finale.mp3`
+  - Runtime sound reference audit after import: `missing: 0`, `totalReferences: 12424`, `resolved: 12388`, `ignored: 36`, `soundsXmlCount: 423`.
+- Tightened AS3 Shell class evidence:
+  - AS3 SWF class names can appear in AVM2 form like `game.scenes.reality2.mainStreet:MainStreet`, not only dotted `game.scenes.reality2.mainStreet.MainStreet`.
+  - Updated launch manifest and Reality2 Shell probe tooling to search both strict dotted and colon class encodings.
+  - Current stable AS3 Shell still does not contain the Reality2 main-street class, so Wild Safari remains unlaunchable even though its data, asset, audio, and translations are now present.
+- Latest launch gap state:
+  - `npm run qa:launch-gaps` reports `ok: true`, `manifestTotalEntries: 47`, `launchable: 46`, `unresolved: 1`.
+  - Sole unresolved entry: `reality-tv-wild-safari`.
+  - Resource evidence is present, but Shell code evidence is missing from the stable runtime Shell.
+- Archived Shell experiments:
+  - `20201112013740` Shell contains Reality2 class evidence but behaves like a loader shell and stalled on loading animation.
+  - `20200121200659` Shell contains Reality2 class evidence and BrowserShell/overrideScene strings, but direct launch, ShellLoader launch, object embedding, and temporary asset-host experiments still failed to reach the scene.
+  - Conclusion: whole-Shell replacement is not a clean fix. The next technical route should be merging/importing the Reality2 ABC/classes into the current stable Shell, or finding a fully compatible code bundle from the same Shell generation.
+- Static icon policy remains explicit:
+  - HUD/menu/static icon art such as `MENU` stays original English unless replaced by real bitmap art.
+  - Do not cover static icon textures with Chinese text layers; only translate normal dynamic text and non-icon content where it renders cleanly.
+
+## TODO Next Iteration After Reality2 Durable Import
+
+- Commit and push the Reality2 durable resource/import/translation checkpoint after verification.
+- Investigate a code-level Shell merge path for `game.scenes.reality2.*` classes into the current stable AS3 Shell, or locate a compatible full Shell generation that launches existing AS3 islands and Reality2 together.
+- Re-run all-island AS2/AS3 interaction and resize smoke after any Shell-code change; do not call Wild Safari playable until a real scene screenshot and interaction evidence pass.

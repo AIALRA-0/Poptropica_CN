@@ -1,0 +1,84 @@
+<scene>
+	<sceneType>shortmain</sceneType>
+	<cameraLimits>
+		<left>0</left>
+		<top>0</top>
+		<right>960</right>
+		<bottom>630</bottom>
+	</cameraLimits>
+	<bounds>
+		<left>-100</left>
+		<top>0</top>
+		<right>960</right>
+		<bottom>540</bottom>
+	</bounds>
+	<data>hits.xml,motionMaster.xml,npcs.xml,sounds.xml</data>
+	<assets></assets>
+	<layers>
+		<layer>
+			<asset>sky.swf</asset>
+			<rate>0</rate>
+		</layer>
+
+		<layer>
+			<asset>paralax1.swf</asset>
+			<rate>1</rate>
+			<width>3589</width>
+			<motionRate>.5</motionRate>
+			<subGroup>paralax</subGroup>
+		</layer>
+		<layer>
+			<asset>paralax2.swf</asset>
+			<rate>1</rate>
+			<width>3589</width>
+			<motionRate>.5</motionRate>
+			<subGroup>paralax</subGroup>
+		</layer>
+		<layer>
+			<asset>background1.swf</asset>
+			<rate>1</rate>
+			<width>1800</width>
+			<motionRate>1</motionRate>
+			<subGroup>background</subGroup>
+
+		</layer>
+		<layer>
+			<asset>background2.swf</asset>
+			<rate>1</rate>
+			<width>1800</width>
+			<motionRate>1</motionRate>
+			<subGroup>background</subGroup>
+
+		</layer>
+
+
+		<layer hit="true">
+			<asset>interactive.swf</asset>
+			<rate>1</rate>
+			<!-- <elementsToBitmap>lizard, frontBush1, backBush2, frontBush2, trunk1, branch1, trunk2, branch2, puddleBack1, puddleBack2</elementsToBitmap> -->
+		</layer>
+		<layer>
+			<asset>foreground1.swf</asset>
+			<rate>1</rate>
+			<width>1800</width>
+			<motionRate>1.5</motionRate>
+			<subGroup>foreground</subGroup>
+		</layer>
+		<layer>
+			<asset>foreground2.swf</asset>
+			<rate>1</rate>
+			<width>1800</width>
+			<motionRate>1.5</motionRate>
+			<subGroup>foreground</subGroup>
+		</layer>
+	</layers>
+	<player>
+		<defaultPosition>
+			<x>-100</x>
+			<y>550</y>
+		</defaultPosition>
+		<defaultDirection>right</defaultDirection>
+	</player>
+	<suppressFollower>true</suppressFollower>
+	<suppressAbility>true</suppressAbility>
+</scene>

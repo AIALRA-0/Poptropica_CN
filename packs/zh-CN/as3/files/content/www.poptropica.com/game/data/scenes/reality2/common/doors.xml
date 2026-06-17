@@ -1,0 +1,15 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.reality2.mainStreet.MainStreet</scene>
+		<x>1969</x>
+		<y>984</y>
+		<label>
+			<text>出口</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>349</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

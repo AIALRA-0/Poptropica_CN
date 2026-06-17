@@ -1,27 +1,19 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
-const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const { ensureDirSync, fileExists, readJson, removeDirContents, writeJson } = require("./lib/fs-utils");
+const { buildRuntimeZipForSourceGroup } = require("./lib/pack");
 const { requestSample } = require("./qa-reality2-source-probe");
 const paths = require("./lib/paths");
 
 const IMPORT_ROOT = "content/www.poptropica.com";
 const REALITY2_CAPTURE_PATTERN = /https:\/\/www\.poptropica\.com\/game\/(?:data|assets)\/scenes\/reality2\//iu;
 const REALITY2_MUSIC_PATTERN = /https:\/\/www\.poptropica\.com\/game\/sound\/music\/(?:Safari_Extended|Train_Finale)\.mp3$/iu;
-
-function findSevenZip(config) {
-  const candidates = [
-    config?.sources?.flashpointRoot ? path.join(config.sources.flashpointRoot, "Launcher", "extern", "7zip-bin", "win", "x64", "7za.exe") : null,
-    config?.sources?.flashpointRoot ? path.join(config.sources.flashpointRoot, "Launcher", "extern", "7zip-bin", "win", "ia32", "7za.exe") : null,
-    "C:\\Program Files\\7-Zip\\7z.exe",
-    "C:\\Program Files\\AMD\\CIM\\Bin64\\7z.exe",
-    "C:\\Program Files\\Autodesk\\AdODIS\\V1\\Setup\\7za.exe"
-  ];
-  return candidates.find((candidate) => candidate && fileExists(candidate)) || null;
-}
+const SOURCE_GROUP = "as3";
+const AS3_PACK_FILES_ROOT = path.join(paths.as3PackDir, "files");
+const REALITY2_PROVENANCE_PATH = path.join(paths.as3PackDir, "provenance", "reality2-archive-import.json");
 
 function captureImportable(capture) {
   const original = String(capture.original || "");
@@ -43,6 +35,17 @@ function archivePathForOriginal(original) {
 
 function hashBuffer(buffer) {
   return crypto.createHash("sha1").update(buffer).digest("hex");
+}
+
+function hashImportedSet(imported) {
+  const hash = crypto.createHash("sha1");
+  for (const entry of [...imported].sort((left, right) => left.archivePath.localeCompare(right.archivePath, "en"))) {
+    hash.update(entry.archivePath);
+    hash.update("\n");
+    hash.update(entry.sha1);
+    hash.update("\n");
+  }
+  return hash.digest("hex");
 }
 
 async function downloadBuffer(url, options = {}) {
@@ -133,24 +136,25 @@ function validateDownloadedAsset(archivePath, buffer) {
   };
 }
 
-function runChecked(command, args, options = {}) {
-  const result = spawnSync(command, args, {
-    cwd: options.cwd || paths.projectRoot,
-    encoding: "utf8",
-    windowsHide: true,
-    maxBuffer: options.maxBuffer || 1024 * 1024 * 64,
-    timeout: options.timeoutMs || 180000
-  });
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed: ${(result.stderr || result.stdout || "").trim()}`);
-  }
-  return result;
+function packPathForArchivePath(archivePath) {
+  return path.join(AS3_PACK_FILES_ROOT, ...archivePath.split("/"));
 }
 
-function writeImportList(rootDir, archivePaths) {
-  const listPath = path.join(rootDir, "reality2-import-list.txt");
-  fs.writeFileSync(listPath, archivePaths.map((entry) => entry.replace(/\//gu, "\\")).join("\r\n") + "\r\n", "utf8");
-  return listPath;
+function copyImportedAssetsToPack(workRoot, imported) {
+  return imported.map((entry) => {
+    const tempPath = path.join(workRoot, ...entry.archivePath.split("/"));
+    const packPath = packPathForArchivePath(entry.archivePath);
+    ensureDirSync(path.dirname(packPath));
+    fs.copyFileSync(tempPath, packPath);
+    return {
+      ...entry,
+      packRelativePath: path.relative(paths.as3PackDir, packPath).replace(/\\/gu, "/")
+    };
+  });
+}
+
+function manifestPathForSourceGroup(sourceGroup) {
+  return path.join(sourceGroup === "as2" ? paths.as2PackDir : paths.as3PackDir, "manifest.json");
 }
 
 async function main() {
@@ -170,10 +174,6 @@ async function main() {
   const runtimeZipPath = args["runtime-zip"] || paths.as3RuntimeZipPath;
   if (!fileExists(runtimeZipPath)) {
     throw new Error(`AS3 runtime zip is missing: ${runtimeZipPath}`);
-  }
-  const sevenZip = findSevenZip(config);
-  if (!sevenZip) {
-    throw new Error("7-Zip executable was not found.");
   }
 
   const captures = (probe.cdx?.captures || [])
@@ -242,27 +242,69 @@ async function main() {
     throw new Error(`Failed to download ${failures.length} archived reality2 resource(s).`);
   }
 
-  const archivePaths = imported.map((entry) => entry.archivePath);
-  const listPath = writeImportList(workRoot, archivePaths);
-  runChecked(sevenZip, ["u", runtimeZipPath, `@${listPath}`, "-mx=1"], {
-    cwd: workRoot,
-    timeoutMs: Number(args.zipTimeoutMs || args["zip-timeout-ms"] || 300000)
+  const persisted = copyImportedAssetsToPack(workRoot, imported);
+  const provenancePath = args.provenance || REALITY2_PROVENANCE_PATH;
+  const importHash = hashImportedSet(persisted);
+  writeJson(provenancePath, {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    source: "Internet Archive raw replay of original www.poptropica.com reality2 resources",
+    probePath,
+    importHash,
+    importedCount: persisted.length,
+    sceneResourceCount: persisted.filter((entry) => /\/game\/(?:data|assets)\/scenes\/reality2\//iu.test(entry.archivePath)).length,
+    soundResourceCount: persisted.filter((entry) => /\/game\/sound\/music\/(?:Safari_Extended|Train_Finale)\.mp3$/iu.test(entry.archivePath)).length,
+    totalBytes: persisted.reduce((sum, entry) => sum + entry.bytes, 0),
+    imported: persisted
   });
-  runChecked(sevenZip, ["t", runtimeZipPath], {
-    timeoutMs: Number(args.zipTimeoutMs || args["zip-timeout-ms"] || 300000)
+
+  const manifestPath = manifestPathForSourceGroup(SOURCE_GROUP);
+  const manifest = fileExists(manifestPath)
+    ? readJson(manifestPath, {})
+    : {
+        generatedAt: new Date().toISOString(),
+        sourceGroup: SOURCE_GROUP,
+        canonicalKeys: [],
+        assetsPatched: 0,
+        externalTextAssets: [],
+        swfPatchedAssets: [],
+        pendingSwfAssets: []
+      };
+  manifest.archivedReality2Resources = {
+    generatedAt: new Date().toISOString(),
+    source: "Internet Archive raw replay of original www.poptropica.com reality2 resources",
+    provenancePath: path.relative(paths.projectRoot, provenancePath).replace(/\\/gu, "/"),
+    importHash,
+    importedCount: persisted.length,
+    sceneResourceCount: persisted.filter((entry) => /\/game\/(?:data|assets)\/scenes\/reality2\//iu.test(entry.archivePath)).length,
+    soundResourceCount: persisted.filter((entry) => /\/game\/sound\/music\/(?:Safari_Extended|Train_Finale)\.mp3$/iu.test(entry.archivePath)).length,
+    totalBytes: persisted.reduce((sum, entry) => sum + entry.bytes, 0)
+  };
+  const runtimeZip = buildRuntimeZipForSourceGroup({
+    config,
+    sourceGroup: SOURCE_GROUP,
+    manifest
   });
+  if (runtimeZip.status !== "ready" && runtimeZip.status !== "reused") {
+    throw new Error(`AS3 runtime rebuild failed after reality2 import: ${runtimeZip.error || runtimeZip.status}`);
+  }
+  writeJson(manifestPath, manifest);
 
   const report = {
     ok: true,
     generatedAt: new Date().toISOString(),
     probePath,
     runtimeZipPath,
-    sevenZip,
-    importedCount: imported.length,
-    sceneResourceCount: imported.filter((entry) => /\/game\/(?:data|assets)\/scenes\/reality2\//iu.test(entry.archivePath)).length,
-    soundResourceCount: imported.filter((entry) => /\/game\/sound\/music\/(?:Safari_Extended|Train_Finale)\.mp3$/iu.test(entry.archivePath)).length,
-    totalBytes: imported.reduce((sum, entry) => sum + entry.bytes, 0),
-    imported
+    manifestPath,
+    packFilesRoot: AS3_PACK_FILES_ROOT,
+    provenancePath,
+    importHash,
+    importedCount: persisted.length,
+    sceneResourceCount: persisted.filter((entry) => /\/game\/(?:data|assets)\/scenes\/reality2\//iu.test(entry.archivePath)).length,
+    soundResourceCount: persisted.filter((entry) => /\/game\/sound\/music\/(?:Safari_Extended|Train_Finale)\.mp3$/iu.test(entry.archivePath)).length,
+    totalBytes: persisted.reduce((sum, entry) => sum + entry.bytes, 0),
+    runtimeZip,
+    imported: persisted
   };
   const outputPath = args.output || path.join(paths.qaDir, "reality2-import-latest.json");
   writeJson(outputPath, report);
@@ -273,6 +315,9 @@ async function main() {
     sceneResourceCount: report.sceneResourceCount,
     soundResourceCount: report.soundResourceCount,
     totalBytes: report.totalBytes,
+    packFilesRoot: report.packFilesRoot,
+    provenancePath,
+    runtimeZip,
     runtimeZipPath,
     reportPath: outputPath
   });

@@ -119,14 +119,24 @@ function readAs3ShellClassEvidence(archivePath, tarBin) {
   };
 }
 
+function swfClassSearchCandidates(qualifiedClassName) {
+  if (!qualifiedClassName) {
+    return [];
+  }
+  const parts = String(qualifiedClassName).split(".");
+  const className = parts.pop();
+  const packageName = parts.join(".");
+  return [
+    qualifiedClassName,
+    packageName && className ? `${packageName}:${className}` : null
+  ].filter(Boolean);
+}
+
 function shellContainsTargetClass(shellEvidence, as3TargetScene, sceneFolder) {
   if (!shellEvidence?.inspected || !shellEvidence.buffer || !as3TargetScene) {
     return null;
   }
-  const candidates = [
-    as3TargetScene,
-    sceneFolder ? `game.scenes.${sceneFolder}` : null
-  ].filter(Boolean);
+  const candidates = swfClassSearchCandidates(as3TargetScene);
   return candidates.some((candidate) => shellEvidence.buffer.includes(Buffer.from(candidate, "utf8")));
 }
 

@@ -98,6 +98,25 @@ function coverageForAggregate(report, expectedCount, extraChecks = {}) {
   };
 }
 
+function interactionCoverageForAggregate(report, expectedCount, extraChecks = {}) {
+  const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
+  const countOk = Number(report?.total || 0) === expectedCount &&
+    Number(report?.passed || 0) === expectedCount &&
+    Number(report?.failed || 0) === 0 &&
+    failedKeys.length === 0;
+  const missingRequestsOk = Number(report?.withMissingLogRequests || 0) === 0;
+  const checks = {
+    countOk,
+    missingRequestsOk,
+    ...extraChecks
+  };
+  return {
+    ok: Object.values(checks).every(Boolean),
+    checks,
+    missingKeys: failedKeys
+  };
+}
+
 function findLatestAs2AllIslandVisualReport(expectedCount) {
   const dir = path.join(paths.projectRoot, "runtime-data/qa/as2/interaction-smoke");
   let entries = [];
@@ -158,9 +177,11 @@ function gitEvidence() {
   const log = run("git", ["log", "-1", "--oneline"], { timeoutMs: 30000 });
   const lines = status.stdout.split(/\r?\n/u).filter(Boolean);
   const branchLine = lines[0] || "";
+  const alignedWithTrackedOrigin = /\.\.\.origin\/[^\s\[]+/u.test(branchLine) &&
+    !/\[(?:ahead|behind|gone)/iu.test(branchLine);
   return {
     ok: status.ok && log.ok,
-    clean: lines.length === 1 && /\.\.\.origin\/main\b/u.test(branchLine) && !/\[(?:ahead|behind|gone)/iu.test(branchLine),
+    clean: lines.length === 1 && alignedWithTrackedOrigin,
     branchLine,
     latestCommit: log.stdout,
     rawStatus: status.stdout,
@@ -202,9 +223,12 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
     mapOk: Number(reports.as2Aggregate.data?.mapClicksPassed || 0) === as2Launchable.length,
     sceneOk: Number(reports.as2Aggregate.data?.sceneEvidencePassed || 0) === as2Launchable.length
   });
-  const as3Coverage = coverageForAggregate(reports.as3Aggregate.data, as3Launchable.length, {
-    audioOk: Number(reports.as3Aggregate.data?.audioActive || 0) === as3Launchable.length,
-    sceneOk: as3SceneSignalsOk(reports.as3Aggregate.data, as3Launchable.length)
+  const as3LatestInteraction = reports.as3Interaction.data;
+  const as3Coverage = interactionCoverageForAggregate(as3LatestInteraction, as3Launchable.length, {
+    audioOk: Number(as3LatestInteraction?.audioActive || 0) === as3Launchable.length,
+    sceneOk: Number(as3LatestInteraction?.sceneEvidencePassed || 0) === as3Launchable.length,
+    visualOk: Number(as3LatestInteraction?.visualGuardPassed || 0) === as3Launchable.length,
+    interactionOk: Number(as3LatestInteraction?.interactionsPassed || 0) === as3Launchable.length
   });
 
   const web = reports.webLauncher.data;
@@ -238,7 +262,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
     Number(sound.fixableDedupeExtension || 0) === 0 &&
     Number(sound.crossFolderMatches || 0) === 0 &&
     Number(reports.as2Aggregate.data?.audioActive || 0) === as2Launchable.length &&
-    Number(reports.as3Aggregate.data?.audioActive || 0) === as3Launchable.length;
+    Number(as3LatestInteraction?.audioActive || 0) === as3Launchable.length;
 
   const as3Interaction = reports.as3Interaction.data;
   const as3InteractionVisualOk = as3Interaction?.ok === true &&
@@ -272,11 +296,14 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
           },
           as3Aggregate: {
             ok: as3Coverage.ok,
-            total: reports.as3Aggregate.data?.total,
-            passed: reports.as3Aggregate.data?.passed,
-            audioActive: reports.as3Aggregate.data?.audioActive,
-            sceneEvidencePassed: reports.as3Aggregate.data?.sceneEvidencePassed,
-            withMissingLogRequests: reports.as3Aggregate.data?.withMissingLogRequests
+            source: "as3-interaction-smoke-latest",
+            total: as3LatestInteraction?.total,
+            passed: as3LatestInteraction?.passed,
+            audioActive: as3LatestInteraction?.audioActive,
+            interactionsPassed: as3LatestInteraction?.interactionsPassed,
+            sceneEvidencePassed: as3LatestInteraction?.sceneEvidencePassed,
+            visualGuardPassed: as3LatestInteraction?.visualGuardPassed,
+            withMissingLogRequests: as3LatestInteraction?.withMissingLogRequests
           },
           launchGapAudit: reports.launchGaps.data
             ? {
@@ -409,7 +436,8 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
         {
           soundReferenceAudit: sound || null,
           as2AudioActive: reports.as2Aggregate.data?.audioActive,
-          as3AudioActive: reports.as3Aggregate.data?.audioActive
+          as3AudioActive: as3LatestInteraction?.audioActive,
+          as3AudioSource: "as3-interaction-smoke-latest"
         },
         soundOk ? [] : ["Run npm run audit:sound-refs:runtime and aggregate audio-enabled AS2/AS3 reports."]
       )

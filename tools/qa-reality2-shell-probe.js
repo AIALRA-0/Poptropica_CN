@@ -46,6 +46,23 @@ function inflateSwf(buffer) {
   return buffer;
 }
 
+function swfClassSearchCandidates(qualifiedClassName) {
+  if (!qualifiedClassName) {
+    return [];
+  }
+  const parts = String(qualifiedClassName).split(".");
+  const className = parts.pop();
+  const packageName = parts.join(".");
+  return [
+    qualifiedClassName,
+    packageName && className ? `${packageName}:${className}` : null
+  ].filter(Boolean);
+}
+
+function bufferIncludesAny(buffer, values) {
+  return values.some((value) => buffer.includes(Buffer.from(value, "utf8")));
+}
+
 function scanSwfBuffer(buffer) {
   const searchable = inflateSwf(buffer);
   const text = searchable ? searchable.toString("latin1") : "";
@@ -58,7 +75,7 @@ function scanSwfBuffer(buffer) {
     searchableBytes: searchable?.length || 0,
     signature: buffer?.subarray(0, 3).toString("ascii") || null,
     targetPackagePresent: searchable ? searchable.includes(Buffer.from(TARGET_PACKAGE, "utf8")) : false,
-    targetClassPresent: searchable ? searchable.includes(Buffer.from(TARGET_CLASS, "utf8")) : false,
+    targetClassPresent: searchable ? bufferIncludesAny(searchable, swfClassSearchCandidates(TARGET_CLASS)) : false,
     controlPackages: Object.fromEntries(CONTROL_PACKAGES.map((pkg) => [
       pkg,
       searchable ? searchable.includes(Buffer.from(pkg, "utf8")) : false

@@ -1,0 +1,76 @@
+<hits>
+	<hit id="baseGround" platform="true">
+		<component type="platform"/>
+	</hit>
+
+
+	<hit id="zebra1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="lion1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="ostrich1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="bird1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="meercat1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="croc1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="rhino1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="turtle1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="finish1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+			<lastObject>true</lastObject>
+		</component>
+	</hit>
+	<hit id="lizard1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<firstObject>true</firstObject>
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+	<hit id="hippo1">
+		<component type="looper">
+			<!-- <visibles followProperties="x,y">backBush1, frontBush1</visibles> -->
+			<visualWidth>400</visualWidth>
+		</component>
+	</hit>
+
+</hits>
