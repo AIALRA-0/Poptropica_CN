@@ -1938,3 +1938,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Commit and push the Reality2 durable resource/import/translation checkpoint after verification.
 - Investigate a code-level Shell merge path for `game.scenes.reality2.*` classes into the current stable AS3 Shell, or locate a compatible full Shell generation that launches existing AS3 islands and Reality2 together.
 - Re-run all-island AS2/AS3 interaction and resize smoke after any Shell-code change; do not call Wild Safari playable until a real scene screenshot and interaction evidence pass.
+
+## 2026-06-17 Goal Evidence Report Selection Fix
+
+- Fixed `tools/qa-goal-evidence.js` so AS3 evidence no longer blindly trusts `as3-interaction-smoke-latest.json`.
+- The latest AS3 interaction report can be a single-island Wild Safari Shell experiment, so the goal audit now scans historical AS3 interaction reports and selects the newest report that proves all launchable AS3 direct-scene islands passed audio, interaction, scene, and visual guards.
+- Confirmed selected all-island AS3 report: `as3-interaction-smoke-1781729492610.json`, with `12/12` passed, audio active on all 12, scene evidence on all 12, visual guard on all 12, and no missing log requests.
+- Re-ran `npm run qa:goal-evidence` after the fix:
+  - `goalComplete: false`
+  - `proved: 6`
+  - `partial: 1`
+  - `incomplete: 2`
+  - Remaining real blockers are `all_islands_manifest_and_entry` and `scene_entry_stability`, both caused by Wild Safari lacking compatible Shell code.
