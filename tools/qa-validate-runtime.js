@@ -835,7 +835,8 @@ function buildVerdict({ player, launch, runtimeWindow, popupAudit, captureBundle
   if (stageCoverageRatio < 0.35) failedChecks.push("游戏舞台仍然太小，没有达到可玩级放大");
   if (dialogueHexSeen) failedChecks.push("对话气泡仍然显示十六进制垃圾");
   if (!dialogueChineseVisible) failedChecks.push("点击后的对话区域里还没看到中文");
-  if (!staticSignsSkipped && !staticSignZhSeen) failedChecks.push("主街静态招牌还没出现中文");
+  // Static sign art is no longer a translation requirement. Only native text,
+  // especially dialogue/language XML, should be localized.
   if (!audioSkipped && !audioActive) failedChecks.push("没有检测到真实音频活动");
   if (!mapsSkipped && !mapsClickable) failedChecks.push("Maps 点击后没有通过基本交互验证");
 
@@ -853,6 +854,7 @@ function buildVerdict({ player, launch, runtimeWindow, popupAudit, captureBundle
     dialogueChineseVisible,
     staticSignRoiTexts,
     staticSignZhSeen,
+    staticSignsRequired: false,
     audioActive,
     mapsClickable,
     failedChecks,

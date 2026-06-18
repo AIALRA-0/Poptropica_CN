@@ -280,5 +280,14 @@
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
     "replacementCount": 48,
     "swfRuntimeOverrides": "enabled"
+  },
+  "staticTextOverlayPolicy": {
+    "generatedAt": "2026-06-18T00:26:40.757Z",
+    "status": "disabled",
+    "rule": "Do not translate scene signs or other static artwork with TextField overlays. Keep original art unless a real bitmap replacement pipeline is used.",
+    "strippedAssetPath": "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
+    "strippedScripts": [
+      "scripts/DefineSprite_595/frame_1/DoAction.as"
+    ]
   }
 }

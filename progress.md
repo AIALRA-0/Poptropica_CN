@@ -1950,3 +1950,54 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - `partial: 1`
   - `incomplete: 2`
   - Remaining real blockers are `all_islands_manifest_and_entry` and `scene_entry_stability`, both caused by Wild Safari lacking compatible Shell code.
+
+## 2026-06-18 Reality2 Shell Merge And Native-Only Translation Policy
+
+- Merged the 18 `game.scenes.reality2.*` classes from archived donor Shell `Shell-20201112013740.swf` into the current stable AS3 pack Shell using RABCDAsm, instead of replacing the whole Shell.
+- Added repeatable merge tooling:
+  - `tools/merge-reality2-shell-classes.js`
+  - npm script `merge:reality2-shell`
+  - provenance `packs/zh-CN/as3/provenance/reality2-shell-merge.json`
+- Added missing native language resource `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/languages/en/islands/reality2/language.xml`, clearing the Wild Safari `reality2/language.xml` 404.
+- Rebuilt AS3 runtime zip successfully after Shell merge and language XML import: replacement count `649`.
+- Launch manifest gap audit now reports all entries launchable:
+  - `manifestTotalEntries: 47`
+  - `manifestLaunchableCount: 47`
+  - `manifestUnresolvedCount: 0`
+- Wild Safari single-island AS3 interaction smoke passed after the durable Shell merge:
+  - Report `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781742655827.json`.
+  - Result `1/1`, `audioActive: 1`, `sceneEvidencePassed: 1`, `visualGuardPassed: 1`, `withMissingLogRequests: 0`.
+- User clarified the translation policy again: do not hard-translate scene signs, posters, logos, HUD badges, inventory art, or any other static artwork with TextField/overlay layers. Translate only native translatable resources, mainly dialogue/language/XML/dynamic text.
+- Implemented that policy:
+  - Added `tools/strip-static-text-overlays.js` and npm script `strip:static-overlays`.
+  - Changed `patch:as3-scene-static-overlays` and `patch:as3-shell-inventory-tab` to run the strip tool rather than re-adding hard overlays.
+  - Removed AS3 `GameScene` static scene-art overlays.
+  - Removed AS3 Inventory custom/prize static trophy-art overlay.
+  - Removed AS2 Super Power DownTown `主街` hard overlay.
+  - Updated `tools/lib/pack.js` so future AS2 Super Power scene repacks remove the old static overlay rather than injecting it.
+  - Updated `tools/qa-validate-runtime.js` so static sign Chinese is no longer a required AS2 verdict item.
+- Confirmed by FFDec source export that AS3 `GameScene.loaded()` no longer calls `zhApplyStaticSceneTextOverlays()` and `InventoryTab.init()` no longer calls `zhLocalizeStaticTabArt()`. AS2 DownTown binary scan no longer contains `zhAddDownTownMainStreetLabel` or `__zhMainStreetLabel`.
+- Post-policy AS3 all-island interaction smoke passed:
+  - Report `runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-1781742743596.json`.
+  - Result `13/13`, `audioActive: 13`, `interactionsPassed: 13`, `sceneEvidencePassed: 13`, `visualGuardPassed: 13`, `withMissingLogRequests: 0`.
+- Post-policy AS3 all-island resize smoke passed:
+  - Report `runtime-data/qa/as3/resize-smoke/as3-resize-smoke-1781743890033.json`.
+  - Result `13/13`, target monitor `G32QC`, every resized capture passed stage and visual guard.
+- Post-policy AS2 Super Power single-island interaction smoke passed:
+  - Report `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781745025226.json`.
+  - Result `1/1`, `audioActive: 1`, `mapClicksPassed: 1`, `sceneEvidencePassed: 1`, `visualGuardPassed: 1`, `withMissingLogRequests: 0`.
+- AS2 aggregate refreshed after the Super Power rerun:
+  - Report `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-aggregate-1781745107837.json`.
+  - Result `34/34`, `audioActive: 34`, `mapClicksPassed: 34`, `sceneEvidencePassed: 34`, `visualGuardPassed: 34`, `withMissingLogRequests: 0`.
+- Runtime sound reference audit remains clean after Reality2 import and overlay stripping:
+  - `totalReferences: 12424`
+  - `resolved: 12388`
+  - `ignored: 36`
+  - `missing: 0`
+  - `soundsXmlCount: 423`
+
+## TODO After Native-Only Translation Policy
+
+- Stage the new tracked pack inputs/scripts, rerun `npm run verify:pack-inputs`, translation audits, `npm run qa:goal-evidence`, then commit and push.
+- Treat static English in bitmap scene art as acceptable unless a real bitmap replacement pipeline is explicitly requested later.
+- Continue deeper per-quest playthrough testing separately from launch/resize/audio smoke evidence.

@@ -2,7 +2,7 @@
   "generatedAt": "2026-06-09T23:01:09.203Z",
   "sourceGroup": "as3",
   "canonicalKeys": [],
-  "assetsPatched": 150,
+  "assetsPatched": 151,
   "externalTextAssets": [
     {
       "assetId": "as3-island-names:curated-zh-cn",
@@ -14,21 +14,6 @@
   "swfPatchedAssets": [
     {
       "assetId": "as3-shell:layout-cover-scale",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf"
-    },
-    {
-      "assetId": "as3-shell:inventory-tab-prize-art-zh",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf"
-    },
-    {
-      "assetId": "as3-shell:inventory-tab-prize-art-zh",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf"
-    },
-    {
-      "assetId": "as3-shell:hud-menu-label-zh",
       "assetPath": "content/www.poptropica.com/game/Shell.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf"
     },
@@ -104,232 +89,39 @@
       ]
     },
     {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
       "assetId": "as3-shell:hud-menu-text-overlay-removed",
       "assetPath": "content/www.poptropica.com/game/Shell.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf"
     },
     {
-      "assetId": "as3-shell:scene-static-text-overlays",
+      "assetId": "as3-shell:reality2-class-merge",
       "assetPath": "content/www.poptropica.com/game/Shell.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
       "classes": [
-        "game.scene.template.GameScene"
+        "game.scenes.reality2.Reality2Events",
+        "game.scenes.reality2.common.Common",
+        "game.scenes.reality2.shared.RealityScene",
+        "game.scenes.reality2.shared.Contest",
+        "game.scenes.reality2.cheetahRun.CheetahRun",
+        "game.scenes.reality2.mainStreet.MainStreet",
+        "game.scenes.reality2.gameShow.GameShow",
+        "game.scenes.reality2.spearThrow.SpearThrow",
+        "game.scenes.reality2.deepDive.DeepDive",
+        "game.scenes.reality2.shared.RankingsPopup",
+        "game.scenes.reality2.spearThrow.ai.AiInput",
+        "game.scenes.reality2.shared.Contestant",
+        "game.scenes.reality2.deepDive.diveSystem.Diver",
+        "game.scenes.reality2.deepDive.diveSystem.DiverSystem",
+        "game.scenes.reality2.deepDive.diveSystem.DiverObstacle",
+        "game.scenes.reality2.spearThrow.ai.SpearThrowAiSystem",
+        "game.scenes.reality2.spearThrow.ai.SpearThrowAiNode",
+        "game.scenes.reality2.deepDive.diveSystem.DiverNode"
       ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/",
-        "scenes/virusHunter/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/",
-        "scenes/virusHunter/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/",
-        "scenes/virusHunter/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/",
-        "scenes/virusHunter/mainStreet/"
-      ]
-    },
-    {
-      "assetId": "as3-shell:scene-static-text-overlays",
-      "assetPath": "content/www.poptropica.com/game/Shell.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
-      "classes": [
-        "game.scene.template.GameScene"
-      ],
-      "scenes": [
-        "scenes/mocktropica/mainStreet/",
-        "scenes/con1/parking/",
-        "scenes/carnival/mainStreet/",
-        "scenes/virusHunter/mainStreet/",
-        "scenes/timmy/mainStreet/"
-      ]
+      "donorShellPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\reality2-shell-candidates\\Shell-20201112013740.swf",
+      "donorSha1": "013144efff329facaeb360ec198ac82e0bb61fcd",
+      "outputSha1": "40a458eda0203a51fc7a6af5ec46304a1d09b6b2",
+      "provenancePath": "packs/zh-CN/as3/provenance/reality2-shell-merge.json",
+      "generatedAt": "2026-06-17T23:24:20.473Z"
     }
   ],
   "pendingSwfAssets": [],
@@ -337,7 +129,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 648,
+    "replacementCount": 649,
     "swfRuntimeOverrides": "safe_subset"
   },
   "archivedReality2Resources": {
@@ -349,5 +141,23 @@
     "sceneResourceCount": 72,
     "soundResourceCount": 2,
     "totalBytes": 5800139
+  },
+  "reality2ShellMerge": {
+    "generatedAt": "2026-06-17T23:24:20.473Z",
+    "assetId": "as3-shell:reality2-class-merge",
+    "provenancePath": "packs/zh-CN/as3/provenance/reality2-shell-merge.json",
+    "classCount": 18,
+    "donorSha1": "013144efff329facaeb360ec198ac82e0bb61fcd",
+    "outputSha1": "40a458eda0203a51fc7a6af5ec46304a1d09b6b2"
+  },
+  "staticTextOverlayPolicy": {
+    "generatedAt": "2026-06-18T00:21:23.030Z",
+    "status": "disabled",
+    "rule": "Do not translate scene signs, static icon art, logos, or other bitmap/static artwork with TextField overlays. Keep native art unchanged unless a real bitmap replacement pipeline is used.",
+    "sourceGroup": "as3",
+    "strippedClasses": [
+      "game.scene.template.GameScene",
+      "game.ui.inventory.InventoryTab"
+    ]
   }
 }

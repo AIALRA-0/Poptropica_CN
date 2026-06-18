@@ -1988,7 +1988,7 @@ function applyAs2SuperPowerSceneValidationPatch({ sourceScriptRoot, translatedSc
     const baseContent = fileExists(targetFile) ? fs.readFileSync(targetFile, "utf8") : originalContent;
     let patchedContent = normalizeScriptContent(baseContent);
     patchedContent = applyLiteralStringReplacements(patchedContent, AS2_SUPER_POWER_SCENE_DIALOGUE_REPLACEMENTS);
-    patchedContent = applyAs2SuperPowerStaticLabelPatch(patchedContent, assetPath);
+    patchedContent = removeAs2SuperPowerStaticLabelPatch(patchedContent);
     if (patchedContent === normalizeScriptContent(baseContent)) {
       continue;
     }
@@ -1999,59 +1999,12 @@ function applyAs2SuperPowerSceneValidationPatch({ sourceScriptRoot, translatedSc
   return { ok: true, changed };
 }
 
-function applyAs2SuperPowerStaticLabelPatch(content, assetPath) {
-  const normalizedAssetPath = String(assetPath || "").replace(/\\/gu, "/");
+function removeAs2SuperPowerStaticLabelPatch(content) {
   const normalizedContent = normalizeScriptContent(content);
-  if (!/scenes\/islandSuper\/sceneDownTown\.swf$/iu.test(normalizedAssetPath)) {
-    return normalizedContent;
-  }
-  if (normalizedContent.includes("function zhAddDownTownMainStreetLabel(")) {
-    return normalizedContent;
-  }
-  const overlaySnippet = `function zhAddDownTownMainStreetLabel(targetClip)
-{
-   var _loc1_;
-   var _loc2_;
-   if(targetClip == undefined || targetClip.__zhMainStreetLabel != undefined)
-   {
-      return undefined;
-   }
-   _loc1_ = targetClip.createEmptyMovieClip("__zhMainStreetLabel",1000000);
-   _loc1_._x = 54;
-   _loc1_._y = 2024;
-   _loc1_._xscale = 100;
-   _loc1_._yscale = 100;
-   _loc1_.beginFill(5212463,100);
-   _loc1_.lineStyle(3,13361319,100);
-   _loc1_.moveTo(0,0);
-   _loc1_.lineTo(92,0);
-   _loc1_.lineTo(92,58);
-   _loc1_.lineTo(0,58);
-   _loc1_.lineTo(0,0);
-   _loc1_.endFill();
-   _loc1_.createTextField("label",1,0,8,92,44);
-   _loc2_ = new TextFormat();
-   _loc2_.font = "_sans";
-   _loc2_.size = 25;
-   _loc2_.bold = true;
-   _loc2_.color = 16777215;
-   _loc2_.align = "center";
-   _loc1_.label.embedFonts = false;
-   _loc1_.label.selectable = false;
-   _loc1_.label.multiline = false;
-   _loc1_.label.wordWrap = false;
-   _loc1_.label.setNewTextFormat(_loc2_);
-   _loc1_.label.text = "主街";
-   _loc1_.label.setTextFormat(_loc2_);
-}
-zhAddDownTownMainStreetLabel(this);`;
-  if (normalizedContent.includes("_root.makeBackdrop();")) {
-    return normalizedContent.replace("_root.makeBackdrop();", `_root.makeBackdrop();\n${overlaySnippet}`);
-  }
-  if (normalizedContent.includes("_root.makeBackground();")) {
-    return normalizedContent.replace("_root.makeBackground();", `_root.makeBackground();\n${overlaySnippet}`);
-  }
-  return normalizedContent;
+  return normalizedContent.replace(
+    /\n?function zhAddDownTownMainStreetLabel\(targetClip\)\n\{[\s\S]*?\n\}\nzhAddDownTownMainStreetLabel\(this\);/u,
+    ""
+  );
 }
 
 const AS2_SUPER_POWER_SCENE_LOADCHECK_BASE_SNIPPET = `this.createEmptyMovieClip("loadCheck",1);
