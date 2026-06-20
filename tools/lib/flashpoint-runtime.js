@@ -1718,16 +1718,34 @@ function buildRuntimeCommand(config, sourceGroup, url, options = {}) {
   };
 }
 
+function withRuntimeHtmlAudioMute(sourceGroup, url) {
+  if (String(sourceGroup || "").toLowerCase() !== "as2" || process.env.POPTROPICA_QA_MUTE_HTML_AUDIO === "0") {
+    return url;
+  }
+  try {
+    const nextUrl = new URL(url);
+    if (!nextUrl.searchParams.has("flashpointQaMuteAudio") && !nextUrl.searchParams.has("flashpoint_mute_audio")) {
+      nextUrl.searchParams.set("flashpointQaMuteAudio", "1");
+    }
+    return nextUrl.toString();
+  } catch (_error) {
+    return url;
+  }
+}
+
 function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
-  const command = buildRuntimeCommand(config, sourceGroup, url, options);
+  const runtimeUrl = withRuntimeHtmlAudioMute(sourceGroup, url);
+  const command = buildRuntimeCommand(config, sourceGroup, runtimeUrl, options);
   const navigatorConfig = ensureNavigatorFlashPlugin(config, sourceGroup);
+  const audioMuteWatcher = spawnRuntimeMuteWatcher();
   stopNavigatorProcesses();
   syncUserAudioOverrides(path.join(paths.managedServiceRootDir, "Legacy"));
   const flashState = sourceGroup === "as2" ? ensurePoptropicaAs2FlashState({
-    launchUrl: url,
+    launchUrl: runtimeUrl,
     xPos: options.as2StartX,
     yPos: options.as2StartY,
-    forceDefaultChar: Boolean(options.forceAs2CharState)
+    forceDefaultChar: Boolean(options.forceAs2CharState),
+    useTemplateChar: Boolean(options.useTemplateChar)
   }) : null;
   cleanupNavigatorSession(config);
   sanitizeNavigatorProfile(config);
@@ -1740,17 +1758,26 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
     stdio: "ignore",
     env: getRuntimeEnvironment(config, sourceGroup)
   });
+  const layoutWatcher = spawnRuntimeLayoutWatcher(command, child.pid, sourceGroup);
 
   writeRuntimeMarker("active-runtime.json", {
     sourceGroup,
-    url,
+    url: runtimeUrl,
+    requestedUrl: url,
     playerKey: command.playerKey,
     executable: command.executable,
     args: command.args,
     pid: child.pid,
     startedAt: new Date().toISOString(),
+    targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
+    windowGeometry: {
+      width: parsePositiveIntEnv("POPTROPICA_WINDOW_WIDTH"),
+      height: parsePositiveIntEnv("POPTROPICA_WINDOW_HEIGHT")
+    },
     wrapperLaunch: Boolean(command.useWrapper),
     navigatorConfig,
+    audioMuteWatcher,
+    layoutWatcher,
     ...(flashState ? { flashState } : {})
   });
 
@@ -1764,8 +1791,157 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
     executable: command.executable,
     args: command.args,
     pid: child.pid,
-    processNames: command.processNames || []
+    processNames: command.processNames || [],
+    ...(flashState ? { flashState } : {})
   };
+}
+
+function spawnRuntimeMuteWatcher() {
+  if (process.env.POPTROPICA_QA_MUTE_RUNTIME === "0") {
+    return { started: false, reason: "disabled_by_env" };
+  }
+
+  const scriptPath = path.join(paths.toolsRoot, "mute-poptropica-runtime.ps1");
+  if (!fileExists(scriptPath)) {
+    return { started: false, reason: "script_missing" };
+  }
+
+  const requestedDurationSeconds = Number(process.env.POPTROPICA_QA_MUTE_SECONDS || 43200);
+  const durationSeconds = Number.isFinite(requestedDurationSeconds)
+    ? Math.max(1, Math.round(requestedDurationSeconds))
+    : 43200;
+  const requestedIntervalMs = Number(process.env.POPTROPICA_QA_MUTE_INTERVAL_MS || 250);
+  const intervalMs = Number.isFinite(requestedIntervalMs)
+    ? Math.max(100, Math.round(requestedIntervalMs))
+    : 250;
+  try {
+    const child = spawn("powershell.exe", [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      scriptPath,
+      "-DurationSeconds",
+      String(durationSeconds),
+      "-IntervalMs",
+      String(intervalMs)
+    ], {
+      detached: true,
+      windowsHide: true,
+      stdio: "ignore"
+    });
+    child.unref();
+    return {
+      started: true,
+      pid: child.pid,
+      durationSeconds,
+      intervalMs
+    };
+  } catch (error) {
+    return {
+      started: false,
+      reason: "spawn_failed",
+      error: String(error.message || error)
+    };
+  }
+}
+
+function spawnRuntimeLayoutWatcher(command, runtimePid, sourceGroup) {
+  if (process.env.POPTROPICA_QA_LAYOUT_WATCHER === "0") {
+    return { started: false, reason: "disabled_by_env" };
+  }
+  if (!runtimePid) {
+    return { started: false, reason: "missing_runtime_pid" };
+  }
+
+  const processNames = (command.processNames || [])
+    .map((name) => String(name || "").trim())
+    .filter(Boolean)
+    .join(",");
+  if (!processNames) {
+    return { started: false, reason: "missing_process_names" };
+  }
+
+  const helperPath = path.join(paths.toolsRoot, "qa-helper.py");
+  if (!fileExists(helperPath)) {
+    return { started: false, reason: "helper_missing" };
+  }
+
+  const requestedDurationSeconds = Number(process.env.POPTROPICA_QA_LAYOUT_WATCHER_SECONDS || 43200);
+  const durationSeconds = Number.isFinite(requestedDurationSeconds)
+    ? Math.max(1, Math.round(requestedDurationSeconds))
+    : 43200;
+  const requestedIntervalMs = Number(process.env.POPTROPICA_QA_LAYOUT_WATCHER_INTERVAL_MS || 300);
+  const intervalMs = Number.isFinite(requestedIntervalMs)
+    ? Math.max(100, Math.round(requestedIntervalMs))
+    : 300;
+  const requestedStartDelayMs = Number(process.env.POPTROPICA_QA_LAYOUT_WATCHER_START_DELAY_MS || 0);
+  const startDelayMs = Number.isFinite(requestedStartDelayMs)
+    ? Math.max(0, Math.round(requestedStartDelayMs))
+    : 0;
+  const resizeRelaunch = String(sourceGroup || "").toLowerCase() === "as3" && process.env.POPTROPICA_QA_RESIZE_RELAUNCH !== "0";
+  const resizeRelaunchMinDelta = Number(process.env.POPTROPICA_QA_RESIZE_RELAUNCH_MIN_DELTA || 24);
+  const resizeRelaunchStableMs = Number(process.env.POPTROPICA_QA_RESIZE_RELAUNCH_STABLE_MS || 900);
+  const helperArgs = [
+    helperPath,
+    "watch-window-layout",
+    "--process-names",
+    processNames,
+    "--pid",
+    String(runtimePid),
+    "--duration-sec",
+    String(durationSeconds),
+    "--interval-ms",
+    String(intervalMs),
+    "--quiet"
+  ];
+  if (startDelayMs > 0) {
+    helperArgs.push("--start-delay-ms", String(startDelayMs));
+  }
+  if (resizeRelaunch) {
+    helperArgs.push(
+      "--resize-relaunch",
+      "--resize-relaunch-source-group",
+      String(sourceGroup || ""),
+      "--resize-relaunch-script",
+      path.join(paths.toolsRoot, "runtime-resize-relaunch.js"),
+      "--resize-relaunch-min-delta",
+      String(Number.isFinite(resizeRelaunchMinDelta) ? Math.max(16, Math.round(resizeRelaunchMinDelta)) : 24),
+      "--resize-relaunch-stable-ms",
+      String(Number.isFinite(resizeRelaunchStableMs) ? Math.max(250, Math.round(resizeRelaunchStableMs)) : 900)
+    );
+  }
+  const pythonBinary = process.env.PYTHON || "python";
+
+  try {
+    const child = spawn(pythonBinary, helperArgs, {
+      cwd: paths.projectRoot,
+      detached: true,
+      windowsHide: true,
+      stdio: "ignore",
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8"
+      }
+    });
+    child.unref();
+    return {
+      started: true,
+      pid: child.pid,
+      runtimePid,
+      processNames,
+      durationSeconds,
+      intervalMs,
+      startDelayMs,
+      resizeRelaunch
+    };
+  } catch (error) {
+    return {
+      started: false,
+      reason: "spawn_failed",
+      error: String(error.message || error)
+    };
+  }
 }
 
 function spawnNavigator(config, url) {

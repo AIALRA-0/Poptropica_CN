@@ -559,6 +559,90 @@ function buildSceneEvidence(entry, segment, args) {
   };
 }
 
+function expectedInteractionSceneEvidence(segment, args) {
+  const raw = String(
+    args.expectedInteractionScene ||
+    args["expected-interaction-scene"] ||
+    args.expectedInteractionRoom ||
+    args["expected-interaction-room"] ||
+    ""
+  ).trim();
+  if (!raw) {
+    return null;
+  }
+  const normalized = raw.replace(/\\/gu, "/");
+  const parts = normalized.split(/[/.]/gu).filter(Boolean);
+  const sceneFolder = String(
+    args.expectedInteractionSceneFolder ||
+    args["expected-interaction-scene-folder"] ||
+    args.expectedInteractionIsland ||
+    args["expected-interaction-island"] ||
+    (parts.length >= 2 ? parts[0] : "con1")
+  ).trim();
+  const roomParam = String(
+    args.expectedInteractionRoom ||
+    args["expected-interaction-room"] ||
+    (parts.length >= 2 ? parts[1] : parts[0] || raw)
+  ).trim();
+  const sceneClass = String(
+    args.expectedInteractionSceneClass ||
+    args["expected-interaction-scene-class"] ||
+    (roomParam ? `${roomParam.slice(0, 1).toUpperCase()}${roomParam.slice(1)}` : "")
+  ).trim();
+  const decodedLines = String(segment || "")
+    .split(/\r?\n/gu)
+    .filter(Boolean)
+    .map((line) => ({
+      raw: line,
+      decoded: decodeLogLine(line)
+    }));
+  const dataPrefix = sceneFolder && roomParam
+    ? `/game/data/scenes/${sceneFolder}/${roomParam}/`
+    : null;
+  const assetPrefix = sceneFolder && roomParam
+    ? `/game/assets/scenes/${sceneFolder}/${roomParam}/`
+    : null;
+  const dataLines = dataPrefix
+    ? decodedLines
+        .filter((line) => line.decoded.toLowerCase().includes(dataPrefix.toLowerCase()))
+        .map((line) => line.raw)
+    : [];
+  const assetLines = assetPrefix
+    ? decodedLines
+        .filter((line) => line.decoded.toLowerCase().includes(assetPrefix.toLowerCase()))
+        .map((line) => line.raw)
+    : [];
+  const sceneLoadedLines = decodedLines
+    .filter((line) =>
+      /brain\/track\.php/iu.test(line.decoded) &&
+      lineHasQueryValue(line.decoded, "event", "SceneLoaded") &&
+      (!sceneFolder || lineHasQueryValue(line.decoded, "cluster", sceneFolder)) &&
+      (!sceneClass || lineHasQueryValue(line.decoded, "scene", sceneClass))
+    )
+    .map((line) => line.raw);
+  return {
+    name: "expected_interaction_scene",
+    ok: dataLines.length > 0 || sceneLoadedLines.length > 0,
+    expected: {
+      sceneFolder,
+      roomParam,
+      sceneClass,
+      dataPrefix,
+      assetPrefix
+    },
+    counts: {
+      data: dataLines.length,
+      asset: assetLines.length,
+      sceneLoaded: sceneLoadedLines.length
+    },
+    samples: [
+      ...sceneLoadedLines.slice(0, 4),
+      ...dataLines.slice(0, 4),
+      ...assetLines.slice(0, 2)
+    ].slice(0, 8)
+  };
+}
+
 function isLikelyLoadingScreen(ocr, logSummary = null) {
   if (ocr?.skipped) {
     return false;
@@ -930,6 +1014,12 @@ function runInteractionStep({ runDir, safeStem, runtime, runtimeWindow, capture,
     if (Number(step.moveIntervalMs || 0) > 0) {
       commandArgs.push("--move-interval-ms", String(Math.round(Number(step.moveIntervalMs))));
     }
+    if (flagEnabled(args.interactionLargestChild) || flagEnabled(args.clickLargestChild)) {
+      commandArgs.push("--largest-child");
+    }
+    if (args.interactionChildClassContains || args.clickChildClassContains) {
+      commandArgs.push("--child-class-contains", String(args.interactionChildClassContains || args.clickChildClassContains));
+    }
   }
   if (runtime.pid) {
     commandArgs.push("--pid", String(runtime.pid));
@@ -1092,6 +1182,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
     const segment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
     fs.writeFileSync(logPath, segment, "utf8");
     const logSummary = summarizeLogSegment(segment);
+    const expectedSceneCheck = expectedInteractionSceneEvidence(segment, args);
     const stageStable = Boolean(postStage?.stageRect);
     const ocrText = String(postOcr?.text || "");
     const ocrMatched = matchesExpectedOcr(ocrText, target.expectedOcrPattern);
@@ -1116,7 +1207,8 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
             expectedAtLeast: minChangedPixelRatio,
             observed: changedPixelRatio
           }
-        : null
+        : null,
+      expectedSceneCheck
     ].filter(Boolean);
     const evidenceOk = evidenceChecks.length > 0
       ? evidenceChecks.every((check) => check.ok)
@@ -1263,32 +1355,36 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
         timeoutMs: 40000
       });
       capture = rejectMismatchedCapture(capture, runtime, qaErrors);
-    } catch (error) {
-      let recoveredWindow = null;
-      try {
-        recoveredWindow = runPythonQa(buildWaitArgs({
-          runtime,
-          timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-          outputPath: recaptureWindowPath,
-          args
-        }), {
-          timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
-        });
-      } catch (_pidError) {
+      } catch (error) {
+        let recoveredWindow = null;
         try {
           recoveredWindow = runPythonQa(buildWaitArgs({
             runtime,
             timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-            outputPath: recaptureAnyPidWindowPath,
+          outputPath: recaptureWindowPath,
+          args
+        }), {
+            timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+          });
+        } catch (_pidError) {
+          if (runtime.pid && !flagEnabled(args.allowAnyPidRecapture || args["allow-any-pid-recapture"])) {
+            recoveredWindow = null;
+          } else {
+          try {
+            recoveredWindow = runPythonQa(buildWaitArgs({
+              runtime,
+              timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+              outputPath: recaptureAnyPidWindowPath,
             includePid: false,
             args
           }), {
-            timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
-          });
-        } catch (_anyPidError) {
-          recoveredWindow = null;
+              timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+            });
+          } catch (_anyPidError) {
+            recoveredWindow = null;
+          }
+          }
         }
-      }
       if (recoveredWindow?.match?.handle) {
         runtimeWindow = recoveredWindow;
         const samePid = !runtime.pid || Number(recoveredWindow.match.pid || 0) === Number(runtime.pid);
@@ -1462,6 +1558,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
           String(args.audioSampleRate || 16000),
           "--peak-threshold",
           String(args.audioPeakThreshold || 0.0005),
+          ...(flagEnabled(process.env.POPTROPICA_QA_MUTE_RUNTIME) || flagEnabled(args.respectSessionMute || args["respect-session-mute"])
+            ? ["--respect-session-mute"]
+            : []),
           "--output",
           attemptAudioPath
         ], {
@@ -1594,7 +1693,10 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       active: Boolean(audio?.audioLikelyActive),
       rms: audio?.loopback?.rms ?? null,
       peak: audio?.loopback?.peak ?? null,
+      loopbackActive: Boolean(audio?.loopback?.active),
       sessionCount: audio?.sessionCount ?? null,
+      audibleSessionCount: audio?.audibleSessionCount ?? null,
+      respectSessionMute: Boolean(audio?.respectSessionMute),
       attempt: audio?.attempt ?? null
     },
     interaction,
@@ -1837,6 +1939,22 @@ function writeFatalSmokeReport({ reportPath, latestPath, startedAt, artifactDir,
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (flagEnabled(args.help || args.h)) {
+    process.stdout.write([
+      "Usage: node tools/qa-as3-islands-smoke.js --islands <canonical-key> [options]",
+      "",
+      "Focused options:",
+      "  --override-scene <AS3 class>   Launch a specific AS3 scene class.",
+      "  --direct-scene <AS3 class>     Alias for --override-scene.",
+      "  --interaction 1                Run one or more background click/key steps.",
+      "  --interaction-x <0..1>         Stage-relative click X.",
+      "  --interaction-y <0..1>         Stage-relative click Y.",
+      "  --target-monitor G32QC         Place the test window on the side monitor.",
+      "  --window-size 1186x760         Request a fixed test window size.",
+      ""
+    ].join("\n"));
+    return;
+  }
   args.visibleQaDefaults = applyVisibleQaDefaults(args);
   const config = loadConfig();
   const aggregateMode = flagEnabled(args.aggregateLatest) || flagEnabled(args.aggregate);
@@ -1945,17 +2063,31 @@ async function main() {
     if (limit > 0) {
       entries = entries.slice(0, limit);
     }
-    if (args.overrideScene) {
+    const overrideSceneArg = args.overrideScene || args["override-scene"] || args.directScene || args["direct-scene"];
+    if (overrideSceneArg) {
       if (entries.length !== 1) {
         throw new Error("--overrideScene requires exactly one selected AS3 island.");
       }
-      const overrideScene = String(args.overrideScene);
+      const overrideScene = String(overrideSceneArg);
       const sceneParts = overrideScene.split(".");
+      const overrideOptions = {
+        seedIsland: args.seedIsland || args["seed-island"],
+        seedEvents: args.seedEvents || args["seed-events"],
+        startX: args.startX || args["start-x"],
+        startY: args.startY || args["start-y"],
+        startDirection: args.startDirection || args["start-direction"],
+        qaDialogNpc: args.qaDialogNpc || args["qa-dialog-npc"],
+        qaDialogId: args.qaDialogId || args["qa-dialog-id"],
+        qaAutoScene: args.qaAutoScene || args["qa-auto-scene"],
+        qaAutoSceneDelayMs: args.qaAutoSceneDelayMs || args["qa-auto-scene-delay-ms"],
+        qaLoadingHoldMs: args.qaLoadingHoldMs || args["qa-loading-hold-ms"],
+        autoLoadIsland: args.autoLoadIsland || args["auto-load-island"] || args.flashpointAutoLoadIsland || args["flashpoint-auto-load-island"]
+      };
       entries = [{
         ...entries[0],
         as3TargetScene: overrideScene,
         roomParam: sceneParts.length >= 2 ? sceneParts[sceneParts.length - 2] : entries[0].roomParam,
-        launchUrl: buildAs3DirectSceneUrl(overrideScene)
+        launchUrl: buildAs3DirectSceneUrl(overrideScene, overrideOptions)
       }];
     }
     if (!entries.length) {

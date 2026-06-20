@@ -1,172 +1,4 @@
-const AS3_DIRECT_WRAPPER_PATH = "content/www.poptropica.com/flashpoint/as3-direct.php";
-
-function normalizeResizeMode(value) {
-  if (value === true) {
-    return "page";
-  }
-  if (value === false) {
-    return "0";
-  }
-  if (value === undefined || value === null || value === "") {
-    return "page";
-  }
-  const mode = String(value || "").trim().toLowerCase();
-  if (mode === "1" || mode === "true" || mode === "yes" || mode === "frame" || mode === "iframe") {
-    return "frame";
-  }
-  if (mode === "page" || mode === "top" || mode === "reload") {
-    return "page";
-  }
-  return "0";
-}
-
-function normalizeSeedIsland(value) {
-  const text = String(value || "").trim();
-  return /^[A-Za-z0-9_]+$/u.test(text) ? text : "";
-}
-
-function normalizeAutoLoadIsland(value) {
-  const text = String(value || "").trim();
-  return /^[A-Za-z0-9_]+$/u.test(text) ? text : "";
-}
-
-function normalizeSeedEvents(value) {
-  const raw = Array.isArray(value) ? value : String(value || "").split(",");
-  const seen = new Set();
-  const events = [];
-  for (const entry of raw) {
-    const event = String(entry || "").trim();
-    if (!/^[A-Za-z0-9_]+$/u.test(event) || seen.has(event)) {
-      continue;
-    }
-    seen.add(event);
-    events.push(event);
-  }
-  return events;
-}
-
-function normalizeStartCoordinate(value) {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-  const number = Number(value);
-  return Number.isFinite(number) ? String(number) : "";
-}
-
-function normalizeStartDirection(value) {
-  const direction = String(value || "").trim().toLowerCase();
-  return direction === "left" || direction === "right" ? direction : "";
-}
-
-function normalizeQaLoadingHoldMs(value) {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-  const number = Number(value);
-  if (!Number.isFinite(number) || number <= 0) {
-    return "";
-  }
-  return String(Math.min(15000, Math.max(0, Math.round(number))));
-}
-
-function normalizeQaDialogNpc(value) {
-  const text = String(value || "").trim();
-  return /^[A-Za-z][A-Za-z0-9_]{0,63}$/u.test(text) ? text : "";
-}
-
-function normalizeQaDialogId(value) {
-  const text = String(value || "").trim();
-  return /^[A-Za-z0-9_ -]{1,64}$/u.test(text) ? text : "";
-}
-
-function normalizeQaAutoScene(value) {
-  const text = String(value || "").trim();
-  return /^(center)$/u.test(text) ? text : "";
-}
-
-function normalizeQaAutoSceneDelayMs(value) {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-  const number = Number(value);
-  if (!Number.isFinite(number) || number <= 0) {
-    return "";
-  }
-  return String(Math.min(15000, Math.max(500, Math.round(number))));
-}
-
-function normalizeEmbedDelayMs(value) {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-  const number = Number(value);
-  if (!Number.isFinite(number) || number <= 0) {
-    return "";
-  }
-  return String(Math.min(10000, Math.max(0, Math.round(number))));
-}
-
-function buildAs3DirectSceneUrl(as3TargetScene, options = {}) {
-  const params = new URLSearchParams();
-  const targetScene = String(as3TargetScene || "").trim();
-  if (targetScene) {
-    params.set("overrideScene", targetScene);
-  }
-  params.set("reloadOnResize", normalizeResizeMode(options.reloadOnResize));
-  const seedIsland = normalizeSeedIsland(options.seedIsland || options.flashpointSeedIsland);
-  const seedEvents = normalizeSeedEvents(options.seedEvents || options.flashpointSeedEvents);
-  const startX = normalizeStartCoordinate(options.startX || options.flashpointStartX);
-  const startY = normalizeStartCoordinate(options.startY || options.flashpointStartY);
-  const startDirection = normalizeStartDirection(options.startDirection || options.flashpointStartDirection);
-  const qaLoadingHoldMs = normalizeQaLoadingHoldMs(options.qaLoadingHoldMs || options.flashpointQaLoadingHoldMs);
-  const qaDialogNpc = normalizeQaDialogNpc(options.qaDialogNpc || options.flashpointQaDialogNpc);
-  const qaDialogId = normalizeQaDialogId(options.qaDialogId || options.flashpointQaDialogId);
-  const qaAutoScene = normalizeQaAutoScene(options.qaAutoScene || options.flashpointQaAutoScene);
-  const qaAutoSceneDelayMs = normalizeQaAutoSceneDelayMs(options.qaAutoSceneDelayMs || options.flashpointQaAutoSceneDelayMs);
-  const embedDelayMs = normalizeEmbedDelayMs(options.embedDelayMs || options.flashpointEmbedDelayMs);
-  const autoLoadIsland = normalizeAutoLoadIsland(options.autoLoadIsland || options.flashpointAutoLoadIsland);
-  if (seedIsland) {
-    params.set("flashpointSeedIsland", seedIsland);
-  }
-  if (autoLoadIsland) {
-    params.set("flashpointAutoLoadIsland", autoLoadIsland);
-  }
-  if (seedEvents.length) {
-    params.set("flashpointSeedEvents", seedEvents.join(","));
-  }
-  if (startX) {
-    params.set("flashpointStartX", startX);
-  }
-  if (startY) {
-    params.set("flashpointStartY", startY);
-  }
-  if (startDirection) {
-    params.set("flashpointStartDirection", startDirection);
-  }
-  if (qaLoadingHoldMs) {
-    params.set("flashpointQaLoadingHoldMs", qaLoadingHoldMs);
-  }
-  if (qaDialogNpc) {
-    params.set("flashpointQaDialogNpc", qaDialogNpc);
-  }
-  if (qaDialogId) {
-    params.set("flashpointQaDialogId", qaDialogId);
-  }
-  if (qaAutoScene) {
-    params.set("flashpointQaAutoScene", qaAutoScene);
-  }
-  if (qaAutoSceneDelayMs) {
-    params.set("flashpointQaAutoSceneDelayMs", qaAutoSceneDelayMs);
-  }
-  if (embedDelayMs) {
-    params.set("flashpointEmbedDelayMs", embedDelayMs);
-  }
-  const query = params.toString();
-  return `http://www.poptropica.com/flashpoint/as3-direct.php${query ? `?${query}` : ""}`;
-}
-
-function buildAs3DirectWrapperPhp() {
-  return `<?php
+<?php
 function flashpoint_as3_param($name, $default = '') {
     return isset($_GET[$name]) ? (string)$_GET[$name] : $default;
 }
@@ -193,11 +25,11 @@ if(!preg_match('/^[A-Za-z0-9_,]+$/', $seedEvents)) {
     $seedEvents = '';
 }
 $startX = flashpoint_as3_param('flashpointStartX', flashpoint_as3_param('startX', ''));
-if(!preg_match('/^-?[0-9]+(?:\\.[0-9]+)?$/', $startX)) {
+if(!preg_match('/^-?[0-9]+(?:\.[0-9]+)?$/', $startX)) {
     $startX = '';
 }
 $startY = flashpoint_as3_param('flashpointStartY', flashpoint_as3_param('startY', ''));
-if(!preg_match('/^-?[0-9]+(?:\\.[0-9]+)?$/', $startY)) {
+if(!preg_match('/^-?[0-9]+(?:\.[0-9]+)?$/', $startY)) {
     $startY = '';
 }
 $startDirection = strtolower(flashpoint_as3_param('flashpointStartDirection', flashpoint_as3_param('startDirection', '')));
@@ -382,17 +214,3 @@ if($qaLoadingHoldMs !== '') {
   </script>
 </body>
 </html>
-`;
-}
-
-module.exports = {
-  AS3_DIRECT_WRAPPER_PATH,
-  buildAs3DirectSceneUrl,
-  normalizeSeedEvents,
-  normalizeSeedIsland,
-  normalizeResizeMode,
-  normalizeQaDialogNpc,
-  normalizeQaLoadingHoldMs,
-  normalizeEmbedDelayMs,
-  buildAs3DirectWrapperPhp
-};

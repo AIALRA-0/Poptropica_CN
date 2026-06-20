@@ -1,89 +1,153 @@
 <dialogs>
 	<character id="timmy">
-		<statement id="nefarious" link="trying_to_help" linkEntityId="corrina">终于，我有证据证明你的坏事了，你这个阴险的骗子！</statement>
-		<statement id="magistrate" link="good_luck" linkEntityId="corrina">留着跟法官说吧。你下半辈子都要戴着镣铐过了！</statement>
-	
-		<statement id="got_her" link="advanced_tech">她这下失算了。垃圾臭味是最理想的嗅觉伪装。</statement>
-		<statement id="advanced_tech" link="wait" linkEntityId="player">正是这种高级侦探技巧，才让我能在完全没有外援的情况下破案。</statement>
-		<statement id="case_notes" link="remember_different" linkEntityId="player">我当然破了！我是世上最伟大的侦探。我的案情笔记就是证据。</statement>
-    
-    	<statement id="got_pants">我的裤子！我那条好看又显身材的裤子！</statement>
-    	<statement id="innocent">别装无辜了。我知道你干了什么。</statement>
-    	<statement id="clearly">很明显，是你偷了我的裤子，再把它放回去，好把破案功劳抢走！</statement>
-    	<statement id="huckster">终于，我有证据证明你的坏事了，你这个阴险的骗子！</statement>
-    	<statement id="magistrate2">留着跟法官说吧。你下半辈子都要戴着镣铐过了！</statement>
-    	
-    	<statement id="got_her2">她这下失算了。垃圾臭味是最理想的嗅觉伪装。</statement>
-<!--   	<statement id="advanced_tech2">正是这种高级侦探技巧，才让我能在完全没有外援的情况下破案。</statement>
-		<statement id="case_notes2">我当然破了！我是世上最伟大的侦探。我的案情笔记就是证据。</statement> -->
-   		<statement id="medal">如果这样就能让你离开，那也行。希望我们永远别再见。</statement>
-   		
-   		<statement id="got_medal">我仍然是镇上最棒的侦探！</statement>
-		
-		<!-- New dialog for moving timmy into timmys street -->
-		<statement id="mishap" link="unleash">好吧，这可不妙。我们需要 B 计划。</statement>
-		<statement id="unleash" link="yes" linkEntityId="player">我本来希望不用走到这一步，但现在该释放……</statement>
-		<statement id="silence" triggerEvent="triggerEvent" triggerEventArgs="dramatic_pause">安静！让我把这个戏剧性的停顿做完。</statement>
-		
-		<statement id="totalmobile" link="the_what" linkEntityId="player">……托塔尔车！</statement>
-		<statement id="dire" link="gather">它只用于最危急的情况，但很难想象还有比现在更关键的时刻。</statement>
-		<statement id="gather" triggerEvent="triggerEvent" triggerEventArgs="get_page_9">这是说明书。把需要的装备收集齐，然后回来找我。</statement>
-		
-		<!--  have all the total mobile pieces -->
+		<statement id="nefarious" link="trying_to_help" linkEntityId="corrina">终于让我抓到你的把柄了，你这个奸诈的骗子。</statement>
+		<statement id="magistrate" link="good_luck" linkEntityId="corrina">留着跟法官说吧。你下半辈子都得戴着镣铐！</statement>
+		<statement id="got_her" link="advanced_tech">她失算了。垃圾的臭味是完美的嗅觉伪装。</statement>
+		<statement id="advanced_tech" link="wait" linkEntityId="player">正是这种先进的侦探技巧，让我一开始就能独立破案。</statement>
+		<statement id="case_notes" link="remember_different" linkEntityId="player">当然是我！我是最伟大的侦探。我的案件笔记就是证明。</statement>
+		<statement id="got_pants">我的裤子！我那条帅气又合身的裤子！</statement>
+		<statement id="innocent">别装无辜了，我知道你干了什么。</statement>
+		<statement id="clearly">很明显，是你偷了我的裤子，然后栽赃嫁祸，想抢破案的功劳！</statement>
+		<statement id="huckster">终于，我抓到你作恶的证据了，你这个狡猾的骗子！</statement>
+		<statement id="magistrate2">留着跟法官说吧，你下半辈子都得戴着镣铐了！</statement>
+		<statement id="got_her2">她失算了。垃圾的臭味可是完美的气味伪装。</statement>
+		<statement id="medal">如果这样能让你离开，那就这样吧。但愿我们永不再见。</statement>
+		<statement id="got_medal">我依然是镇上最棒的侦探！</statement>
+		<statement id="mishap" link="unleash">嗯，这可不行。我们需要B计划。</statement>
+		<statement id="unleash" link="yes" linkEntityId="player">我本希望不会走到这一步，但现在是时候释放……</statement>
+		<statement id="silence" triggerEvent="triggerEvent" triggerEventArgs="dramatic_pause">安静！让我享受这个戏剧性的停顿。</statement>
+		<statement id="totalmobile" link="the_what" linkEntityId="player">……全能移动车！</statement>
+		<statement id="dire" link="gather">它只在紧急关头使用，但我想象不出比这更危急的时刻了。</statement>
+		<statement id="gather" triggerEvent="triggerEvent" triggerEventArgs="get_page_9">这是说明书。收集必要的装备，然后回来找我。</statement>
 		<statement id="one_problem" link="what_now" linkEntityId="player">只有一个问题。</statement>
-		<statement id="she" link="effort" linkEntityId="player">那个不能提名字的人！她也盯上了垃圾车！</statement>
-		<statement id="lets_go">恰恰相反！我们必须抢先一步！走吧！</statement>
+		<statement id="she" link="effort" linkEntityId="player">那个不能提名字的人！她也在追垃圾车！</statement>
+		<statement id="lets_go">恰恰相反！我们必须抢先一步！出发！</statement>
+		<statement id="gather_equipment">等你收集好必要的装备，就回来找我。</statement>
+		<statement id="distracted">哦，他又在跳舞了。托托真是个戏精。</statement>
+
 		
-		<statement id="gather_equipment">等你收集齐需要的装备，就回来找我。</statement>
-		<statement id="distracted">哦，我看他又跳起舞来了。托塔尔真会抢戏。</statement>
-    </character>
+		
+	
+		
+		
+		
     
-    <character id="corrina">
-    	<statement id="trying_to_help" link="magistrate" linkEntityId="timmy">你在说什么？我是在帮你！</statement>
-    	<statement id="good_luck" triggerEvent="triggerEvent" triggerEventArgs="exit_corrina">我没时间陪你闹。祝你好运，把身上的垃圾臭味洗掉吧。</statement>
-       
-        <statement id="drama">其实应该有办法不用闹这么大也能把它们拿回来。</statement>
-    	<statement id="excuse">你说什么？</statement>
-    	<statement id="help">你在说什么？我是在帮你！</statement>
-    	<statement id="good_luck2">我没时间陪你闹。祝你好运，把身上的垃圾臭味洗掉吧。</statement>
-    </character>
-    
-    <character id="crocus">
-    	<statement id="what_the">这到底怎么回事？！克里斯平那个小混混的车为什么在我客厅里？</statement>
-    	<randomSet id="random">
-	    	<statement>青春都浪费在你们这些小鬼身上了。</statement>
-	    	<statement>离我的草坪远点。</statement>
-	    	<statement>老人家就不能在自己家里清静一会儿吗？</statement>
-    	</randomSet>
-    	<statement id="distracted">一只会跳舞的北极熊，我今天真是开眼了。</statement>
-    </character>
-    
-    <character id="player">
-    	<statement id="wait" link="case_notes" linkEntityId="timmy">等一下。这个案子不是你一个人破的。</statement>
-    	<statement id="remember_different" triggerEvent="triggerEvent" triggerEventArgs="intro_complete, true">这可不是我记得的样子。完全不是我记得的样子……</statement>
-    	<statement id="lost_them">可恶，跟丢了。那是什么？</statement>
-<!--	<statement id="wait2">等一下。这个案子不是你一个人破的。</statement>  -->
-    	<statement id="not_again">别再来这一套了。把该死的奖章给我就行。</statement>  
-    	<statement id="must_see_timmy">我的车报废了！现在怎么办？</statement>
     	
-    	<statement id="ready">托塔尔车准备好了。我们只需要把它组装起来。</statement>
+    	
+    	
+    	
+    	
+    	
+    	
+
+   		
+   		
+   		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	</character>
+	<character id="corrina">
+		<statement id="trying_to_help" link="magistrate" linkEntityId="timmy">你在说什么？我是在帮你啊！</statement>
+		<statement id="good_luck" triggerEvent="triggerEvent" triggerEventArgs="exit_corrina">我没空跟你耗，祝你好运洗掉这身垃圾味。</statement>
+		<statement id="drama">也许有办法不用这么折腾就能拿回裤子。</statement>
+		<statement id="excuse">你说什么？</statement>
+		<statement id="help">你在说什么？我是在帮你啊！</statement>
+		<statement id="good_luck2">我没空跟你耗，祝你好运洗掉这身垃圾味。</statement>
+
+    	
+    	
+       
+        
+    	
+    	
+    	
+    	</character>
+	<character id="crocus">
+		<statement id="what_the">搞什么鬼？！那个混混克里斯平的车怎么在我客厅里？</statement>
+		<statement id="distracted">跳舞的北极熊，这下我真是大开眼界了。</statement>
+		<randomSet id="random">
+			<statement>你们这些小屁孩真是浪费青春。</statement>
+			<statement>离我的草坪远点。</statement>
+			<statement>一个老头在自己家都不能清静会儿吗？</statement>
+
+	    	
+	    	
+	    	
+    			</randomSet>
+
+    	
+    	
+    	
+    	</character>
+	<character id="player">
+		<statement id="wait" link="case_notes" linkEntityId="timmy">等一下，这案子不是你一个人破的。</statement>
+		<statement id="remember_different" triggerEvent="triggerEvent" triggerEventArgs="intro_complete, true">我记得不是这样的。完全不是这样……</statement>
+		<statement id="lost_them">糟糕，跟丢了。那是什么？</statement>
+		<statement id="not_again">别再折腾一遍了。直接把那该死的奖章给我。</statement>
+		<statement id="must_see_timmy">我的车完蛋了！现在怎么办？</statement>
+		<statement id="ready">全能移动车准备好了。我们只需要把它组装起来。</statement>
 		<statement id="what_now">现在怎么办？</statement>
-		<statement id="effort">哦，所以也许我们根本不用费这么大劲。</statement>
-		<statement id="too_tight">我进不去，这里有东西挡着。</statement>
-		
-		<!-- New dialog for moving timmy into timmys street -->
-		<statement id="mishap" link="unleash" linkEntityId="timmy">车出了点小事故。我们需要 B 计划。</statement>
-		<statement id="yes" link="silence" linkEntityId="timmy">……然后呢？</statement>
-		
-		<statement id="the_what" link="dire" linkEntityId="timmy">什么车？</statement>
-		
-		<statement id="ready" link="one_problem" linkEntityId="timmy">托塔尔车准备好了。我们只需要把它组装起来。</statement>
+		<statement id="effort">哦，那也许我们根本不用费这么大劲。</statement>
+		<statement id="too_tight">我从这儿进不去，有东西挡着。</statement>
+		<statement id="mishap" link="unleash" linkEntityId="timmy">车子出了点小意外。我们需要备用方案。</statement>
+		<statement id="yes" link="silence" linkEntityId="timmy">……是吗？</statement>
+		<statement id="the_what" link="dire" linkEntityId="timmy">什么东西？</statement>
+		<statement id="ready" link="one_problem" linkEntityId="timmy">全能移动器准备好了，我们只需要组装起来。</statement>
 		<statement id="what_now" link="she" linkEntityId="timmy">现在怎么办？</statement>
-		<statement id="effort" link="lets_go" linkEntityId="timmy">哦，所以也许我们根本不用费这么大劲。</statement>
-    </character>
+		<statement id="effort" link="lets_go" linkEntityId="timmy">哦，那也许我们根本不用费这么大劲。</statement>
+
+    	
+    	
+    	
+
+    	  
+    	
+    	
+    	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	</character>
+	<character id="molly">
+		<statement>布利托先生真是最漂亮、最可爱、毛茸茸的小家伙。</statement>
+		<statement id="likes_you">哇，布利托先生喜欢你。我一看就知道你是好人。</statement>
+
+    	
+    	
+    	</character>
+
+	
     
-    <character id="molly">
-    	<statement>卷饼先生真是最漂亮、最可爱、最毛茸茸的小宝贝。</statement>
-    	<statement id="likes_you">啊，卷饼先生喜欢你。我就是靠这个判断谁是好人的。</statement>
-    </character>
+    
+    
+    
+    
+    
+    
+    
 </dialogs>
