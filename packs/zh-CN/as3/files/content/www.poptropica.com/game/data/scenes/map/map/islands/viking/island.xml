@@ -1,0 +1,18 @@
+<island>
+	<name>地图之谜</name>
+	<island>viking</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/viking/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+
+	<notification>《Poptropica：秘密社团》第 3 册现已推出！</notification>
+
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

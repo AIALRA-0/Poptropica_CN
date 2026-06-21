@@ -107,6 +107,20 @@ const DEFAULT_DIALOGUE_TARGETS = {
       y: 1490,
       direction: "left"
     }
+  },
+  "mystery-of-the-map": {
+    x: 0.52,
+    y: 0.34,
+    waitMs: 5500,
+    holdMs: 100,
+    attempts: 1,
+    label: "viking-jungle-octavian-dialogue",
+    qaDialogNpc: "octavian",
+    qaDialogId: "getDown",
+    start: {
+      seedIsland: "viking",
+      seedEvents: ["intro_complete", "qa_dialog_viking_jungle_octavian_getDown"]
+    }
   }
 };
 const AS3_START_FLOW_ENTRY = {
@@ -1013,14 +1027,40 @@ async function clickDialogue({ runDir, stem, runtime, windowInfo, baseCapture, b
     try {
       const suffix = attemptCount > 1 ? `-attempt-${attemptIndex + 1}` : "";
       const outputPath = path.join(runDir, `${stem}-click${suffix}.json`);
-      const click = clickWindowPoint({
-        runtime,
-        windowInfo: currentWindowInfo,
-        point,
-        outputPath,
-        hoverMs: Number(relativeTarget.hoverMs || target.hoverMs || 0),
-        holdMs: Number(relativeTarget.holdMs || target.holdMs || 90)
-      });
+      let clickWindowInfo = currentWindowInfo;
+      let click = null;
+      try {
+        click = clickWindowPoint({
+          runtime,
+          windowInfo: clickWindowInfo,
+          point,
+          outputPath,
+          hoverMs: Number(relativeTarget.hoverMs || target.hoverMs || 0),
+          holdMs: Number(relativeTarget.holdMs || target.holdMs || 90)
+        });
+      } catch (clickError) {
+        const message = String(clickError.message || clickError);
+        if (!/Window handle \d+ is not valid/iu.test(message)) {
+          throw clickError;
+        }
+        clickWindowInfo = await waitForWindow(
+          runtime,
+          path.join(runDir, `${stem}-click-window-refresh${suffix}.json`),
+          null,
+          15000,
+          false,
+          "poptropica",
+          true
+        );
+        click = clickWindowPoint({
+          runtime,
+          windowInfo: clickWindowInfo,
+          point,
+          outputPath: path.join(runDir, `${stem}-click-refreshed${suffix}.json`),
+          hoverMs: Number(relativeTarget.hoverMs || target.hoverMs || 0),
+          holdMs: Number(relativeTarget.holdMs || target.holdMs || 90)
+        });
+      }
       await sleep(Number(relativeTarget.waitMs || target.waitMs || 3500));
       const postWindow = await waitForWindow(
         runtime,

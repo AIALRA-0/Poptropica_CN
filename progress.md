@@ -4217,3 +4217,76 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `13. mystery-of-the-map`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Mystery of the Map Current-Build Sealed Baseline Pass
+
+- Continued island 13 (`mystery-of-the-map`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External route sanity check:
+  - Poptropica Help Blog and Poptropica Wiki describe Mystery of the Map as the Mya/Oliver/Jorge/Octavian Viking-map route, matching the local `viking` scene family rather than `lands`.
+- Entry and map fixes:
+  - Fixed `catalog/launch-overrides.json`: `mystery-of-the-map` now launches `sceneFolder=viking`, `roomParam=jungle`, `islandParam=viking`.
+  - Regenerated `catalog/launch-manifest.json`; `mystery-of-the-map` now resolves to `game.scenes.viking.jungle.Jungle`.
+  - Added/fixed the Viking map XML pack files:
+    - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/viking/island.xml`.
+    - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/viking/island/page.xml`.
+    - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/viking/island.xml`.
+  - Synchronized those XML entries into the AS3 runtime zip with `tools/update-as3-runtime-entries.js`.
+  - Map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782081341123.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782081341123/01-mystery-of-the-map-map.png`.
+  - Visual review: title/description/buttons are Chinese and centered; static `MYSTERY of the MAP ISLAND` logo remains original English art. The map overview list label is treated as static/embedded art and is not hard-covered.
+- Runtime support added:
+  - Added `tools/patch-as3-viking-dialog-proof.js`.
+  - The patch adds QA-only native Dialog proof support for `game.scenes.viking.jungle.Jungle`; it requires both `flashpointQaDialogNpc/Id` query params and a seed event like `qa_dialog_viking_jungle_octavian_getDown`.
+  - Updated `tools/qa-as3-dialogue-stability.js` so it generates Viking Jungle QA seed events.
+  - Updated `tools/qa-as3-p0-playability.js` with a Mystery default QA dialogue seed and a stale-window-handle refresh path for post-resize dialogue clicks.
+  - Patch report: `runtime-data/qa/as3/as3-viking-dialog-proof-patch.json`.
+  - Runtime Shell update report: `runtime-data/qa/as3/as3-runtime-shell-only-update.json`; latest Shell sha256 `324d0549fb7fda0b2545e31f81c28aee07434f572916540b57d5c062d529d941`, runtime zip sha256 `300fe9c5782fb74af6c0ac685bc78310fe63fdb6100347e557d05ee881c16320`.
+- Jungle scene-entry proof:
+  - Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782081438275.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782081438275/01-mystery-of-the-map.png`.
+  - Result: `ok=true`, scene evidence present, visual guard passed, `audioActive=0`.
+  - Visual review: player is visible, real Viking Jungle scene loaded, MENU is stable, and static `Viking's Grotto` art remains original.
+- Window/resize/maximize/loading regression passed:
+  - Pure viewport/dialogue-preservation report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782084123056.json`.
+  - Result: `ok=true`, `failedChecks=[]`, startup loading observed, resize/maximize stable.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782084123056/01-mystery-of-the-map-launch-loading-120.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782084123056/01-mystery-of-the-map-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782084123056/01-mystery-of-the-map-maximized-retry-1.png`.
+  - Manual review: loading logo/dots are centered; after resize/maximize, the scene is stable, MENU remains top-right, no blue void or main-screen capture appears, and the Chinese dialogue bubble remains visible.
+  - True fullscreen loading proof: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782082091089.json`, with `fullscreenLike=true`, `loading.observed=true`, `loading.centerOk=true`.
+  - Representative true fullscreen loading screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782082091089/f11-loading-sequence/f11-loading-1000.png`.
+- HUD/menu/button evidence passed:
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782082400503.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782082400503/01-mystery-of-the-map-inventory.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782082615238.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782082615238/01-mystery-of-the-map-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782082841936.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782082841936/01-mystery-of-the-map-secondary.png`.
+  - Manual review: Chinese panel labels/buttons are centered and do not overlap; static HUD icon art, `MENU`, and trophy `PRIZE` remain original English/art.
+- Three native Chinese dialogue stability samples passed:
+  - Octavian `getDown`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782083205609.json`, OCR `快把我弄下来！`.
+  - Octavian `look`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782083306370.json`, OCR `喂，你！往上看！`.
+  - Octavian `thisMap`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782083410914.json`, OCR `这座岛上一定有你能用的东西。这张地图会帮你找到它。`.
+  - Representative screenshots inspected:
+    - `runtime-data/qa/as3/dialogue-stability/run-1782083205609/sequence/dialogue-1000.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782083306370/sequence/dialogue-1000.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782083410914/sequence/dialogue-1000.png`.
+  - All three use native Dialog paths, show Chinese, have 6/6 stable samples, `visualStable=true`, and `duplicateExpectedSampleCount=0`.
+- Failed/partial evidence not counted:
+  - `as3-f11-loading-transition-1782081899913.json` used PostMessage F11 and did not reach fullscreen-sized capture.
+  - P0 `as3-p0-playability-1782083512761.json` used a generic click point and did not trigger a real Chinese dialogue.
+  - P0 `as3-p0-playability-1782083839170.json` exposed a stale post-resize window handle during a dialogue click; the QA script was fixed and `1782084123056` supersedes it.
+- Static-art policy remained intact:
+  - `MENU`, map logo, `Viking's Grotto`, scene signs, posters, arrows, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Current Mystery of the Map conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: entry corrected to Viking Jungle, map intro, HUD, Jungle scene entry, window/resize/max visual stability, startup and true fullscreen loading, 3 native Chinese dialogue samples, no dialogue repeat/twitch, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Viking beach/fortress/diningHall/throneRoom/river/waterfall/peak, more NPC natural hot zones, item chain, and ending remain future full-island deep QA.
+- Next island:
+  - Move current execution to `14. early-poptropica`.
+  - Use the same sequence adapted for AS2: map intro, window/resize/F11, loading, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

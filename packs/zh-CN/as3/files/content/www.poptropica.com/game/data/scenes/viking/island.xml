@@ -1,0 +1,78 @@
+<island>
+	<name>地图之谜</name>
+	<eventsClass>game.scenes.viking.VikingEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>viking</island>
+
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>octavian_freed</event>
+		<event>goblet_dropped</event>
+		<event>caught_fish</event>
+		<event>placed_fish</event>
+		<event>peak_exploded</event>
+		<event>placed_gunpowder</event>
+		<event>placed_rope</event>
+		<event>saw_river_change</event>
+		<event>start_serve_drinks</event>
+		<event>holding_tray</event>
+		<event>has_drink_1</event>
+		<event>has_drink_2</event>
+		<event>has_drink_3</event>
+		<event>goblet_placed</event>
+		<event>pigs_freed</event>
+		<event>drippings_flung</event>
+		<event>done_spying</event>
+		<event>guard_covered</event>
+		<event>pig_pen_open</event>
+		<event>gave_furs</event>
+		<event>gave_helmet</event>
+		<event>balance_game_started</event>
+		<event>balance_game_complete</event>
+		<event>octavian_ran_away</event>
+		<event>looking_for_goblet</event>
+		<event>thorlak_framed</event>
+		<event>served_underling_1</event>
+		<event>served_underling_2</event>
+		<event>served_giant</event>
+		<event>river_completed</event>
+		<event>log_cut_down</event>
+	</permanentEvents>
+
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="axe">908</item>
+		<item id="candybar">909</item>
+		<item id="drippings">910</item>
+		<item id="fish">911</item>
+		<item id="furs">912</item>
+		<item id="goblet">913</item>
+		<item id="gunpowder">914</item>
+		<item id="helmet">915</item>
+		<item id="lens">916</item>
+		<item id="map">917</item>
+		<item id="rope">918</item>
+		<item id="shovel">919</item>
+		<item id="book">920</item>
+		<item id="book2">961</item>
+		<item id="medal_viking">1053</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.viking.jungle.Jungle</scene>
+		<x>1655</x>
+		<y>1032</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+
+	<playerMap>http://www.poptropica.com/player-maps/mystery-of-the-map.html</playerMap>
+	<medallion>medal_viking</medallion>
+</island>

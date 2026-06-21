@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T22:22:30.028Z",
+  "generatedAt": "2026-06-21T22:18:28.562Z",
   "sources": {
     "as2Configured": true,
     "as3Configured": true,
@@ -19,13 +19,13 @@
   "as3Shell": {
     "shellPath": "content/www.poptropica.com/game/Shell.swf",
     "inspected": true,
-    "compressedBytes": 5118160,
-    "searchableBytes": 10977497
+    "compressedBytes": 5036337,
+    "searchableBytes": 10373901
   },
   "summary": {
     "totalEntries": 47,
-    "launchableCount": 46,
-    "unresolvedCount": 1
+    "launchableCount": 47,
+    "unresolvedCount": 0
   },
   "entries": [
     {
@@ -1344,13 +1344,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.virusHunter.mainStreet.MainStreet",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.virusHunter.mainStreet.MainStreet&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.virusHunter.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1387,13 +1387,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.mainStreet.MainStreet",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.mainStreet.MainStreet&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.mocktropica.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1438,13 +1438,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.carnival.mainStreet.MainStreet",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.carnival.mainStreet.MainStreet&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.carnival.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1475,13 +1475,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.survival1.crashLanding.CrashLanding",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.survival1.crashLanding.CrashLanding&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.survival1.crashLanding.CrashLanding",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1491,7 +1491,7 @@
       "runtime": "flash",
       "launchable": true,
       "islandParam": "deepDive1",
-      "roomParam": "reef",
+      "roomParam": "ship",
       "startupPath": "gameplay",
       "sceneFolder": "deepDive1",
       "discoveredRooms": [
@@ -1511,13 +1511,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.deepDive1.reef.Reef",
-      "as3TargetScene": "game.scenes.deepDive1.reef.Reef",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.deepDive1.ship.Ship&reloadOnResize=frame",
+      "as3TargetScene": "game.scenes.deepDive1.ship.Ship",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1546,13 +1546,17 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.con1.parking.Parking",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.con1.parking.Parking&reloadOnResize=frame&flashpointSeedIsland=con1&flashpointStartX=1740&flashpointStartY=1430&flashpointStartDirection=right",
       "as3TargetScene": "game.scenes.con1.parking.Parking",
+      "seedIsland": "con1",
+      "startX": 1740,
+      "startY": 1430,
+      "startDirection": "right",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1583,13 +1587,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.arab1.bazaar.Bazaar",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.arab1.bazaar.Bazaar&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.arab1.bazaar.Bazaar",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1598,35 +1602,43 @@
       "sourceGroup": "as3",
       "runtime": "flash",
       "launchable": true,
-      "islandParam": "lands",
-      "roomParam": "lab1",
+      "islandParam": "viking",
+      "roomParam": "jungle",
       "startupPath": "gameplay",
-      "sceneFolder": "lands",
+      "sceneFolder": "viking",
       "discoveredRooms": [
-        "adMixed1",
-        "biomes",
+        "adStreet1",
+        "adStreet2",
+        "beach",
+        "blocker.xml",
+        "common",
+        "diningHall",
+        "dodoHabitat",
+        "embedsCamp",
         "eventGroups.xml",
+        "falls",
+        "fortress",
         "island.xml",
-        "lab1",
-        "master_dialog.xml",
-        "monsters.xml",
+        "jungle",
+        "mobileAssets.txt",
+        "peak",
+        "pen",
         "progress.xml",
-        "resources.xml",
-        "review",
-        "templates",
-        "templates.xml",
-        "tiles.xml",
-        "worlds"
+        "river",
+        "shared",
+        "throneRoom",
+        "waterfall",
+        "waterfall2"
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.lands.lab1.Lab1",
-      "as3TargetScene": "game.scenes.lands.lab1.Lab1",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.viking.jungle.Jungle&reloadOnResize=frame",
+      "as3TargetScene": "game.scenes.viking.jungle.Jungle",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1663,13 +1675,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.prison.hill.Hill",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.prison.hill.Hill&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.prison.hill.Hill",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1705,13 +1717,20 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.timmy.mainStreet.MainStreet",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.timmy.mainStreet.MainStreet&reloadOnResize=frame&flashpointSeedIsland=timmy&flashpointSeedEvents=intro_complete&flashpointStartX=3050&flashpointStartY=1530&flashpointStartDirection=left",
       "as3TargetScene": "game.scenes.timmy.mainStreet.MainStreet",
+      "seedIsland": "timmy",
+      "seedEvents": [
+        "intro_complete"
+      ],
+      "startX": 3050,
+      "startY": 1530,
+      "startDirection": "left",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1752,13 +1771,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ghd.barren1.Barren1",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ghd.barren1.Barren1&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.ghd.barren1.Barren1",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1768,7 +1787,7 @@
       "runtime": "flash",
       "launchable": true,
       "islandParam": "ftue",
-      "roomParam": "beach",
+      "roomParam": "mainLand",
       "startupPath": "gameplay",
       "sceneFolder": "ftue",
       "discoveredRooms": [
@@ -1786,13 +1805,13 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ftue.beach.Beach",
-      "as3TargetScene": "game.scenes.ftue.beach.Beach",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ftue.mainLand.MainLand&reloadOnResize=frame",
+      "as3TargetScene": "game.scenes.ftue.mainLand.MainLand",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
         "targetClassPresent": true
       }
     },
@@ -1800,12 +1819,11 @@
       "canonicalKey": "reality-tv-wild-safari",
       "sourceGroup": "as3",
       "runtime": "flash",
-      "launchable": false,
-      "fallbackMode": "unresolved",
+      "launchable": true,
+      "islandParam": "reality2",
+      "roomParam": "mainStreet",
       "startupPath": "gameplay",
       "sceneFolder": "reality2",
-      "roomParam": "mainStreet",
-      "islandParam": "reality2",
       "discoveredRooms": [
         "cheetahRun",
         "common",
@@ -1819,17 +1837,17 @@
         "shared",
         "spearThrow"
       ],
+      "fallbackMode": "as3-direct-wrapper",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.reality2.mainStreet.MainStreet&reloadOnResize=frame",
       "as3TargetScene": "game.scenes.reality2.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5118160,
-        "searchableBytes": 10977497,
-        "targetClassPresent": false
-      },
-      "notes": [
-        "AS3 Shell does not contain target scene class game.scenes.reality2.mainStreet.MainStreet."
-      ]
+        "compressedBytes": 5036337,
+        "searchableBytes": 10373901,
+        "targetClassPresent": true
+      }
     }
   ]
 }

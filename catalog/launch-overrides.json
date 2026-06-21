@@ -40,14 +40,32 @@
     "mocktropica": { "sceneFolder": "mocktropica", "roomParam": "mainStreet", "islandParam": "mocktropica", "startupPath": "gameplay" },
     "monster-carnival": { "sceneFolder": "carnival", "roomParam": "mainStreet", "islandParam": "carnival", "startupPath": "gameplay" },
     "survival": { "sceneFolder": "survival1", "roomParam": "crashLanding", "islandParam": "survival1", "startupPath": "gameplay" },
-    "mission-atlantis": { "sceneFolder": "deepDive1", "roomParam": "reef", "islandParam": "deepDive1", "startupPath": "gameplay" },
-    "poptropicon": { "sceneFolder": "con1", "roomParam": "parking", "islandParam": "con1", "startupPath": "gameplay" },
+    "mission-atlantis": { "sceneFolder": "deepDive1", "roomParam": "ship", "islandParam": "deepDive1", "startupPath": "gameplay" },
+    "poptropicon": {
+      "sceneFolder": "con1",
+      "roomParam": "parking",
+      "islandParam": "con1",
+      "startupPath": "gameplay",
+      "startX": 1740,
+      "startY": 1430,
+      "startDirection": "right"
+    },
     "arabian-nights": { "sceneFolder": "arab1", "roomParam": "bazaar", "islandParam": "arab1", "startupPath": "gameplay" },
-    "mystery-of-the-map": { "sceneFolder": "lands", "roomParam": "lab1", "islandParam": "lands", "startupPath": "gameplay" },
+    "mystery-of-the-map": { "sceneFolder": "viking", "roomParam": "jungle", "islandParam": "viking", "startupPath": "gameplay" },
     "escape-from-pelican-rock": { "sceneFolder": "prison", "roomParam": "hill", "islandParam": "prison", "startupPath": "gameplay" },
-    "timmy-failure": { "sceneFolder": "timmy", "roomParam": "mainStreet", "islandParam": "timmy", "startupPath": "gameplay" },
+    "timmy-failure": {
+      "sceneFolder": "timmy",
+      "roomParam": "mainStreet",
+      "islandParam": "timmy",
+      "startupPath": "gameplay",
+      "seedIsland": "timmy",
+      "seedEvents": ["intro_complete"],
+      "startX": 3050,
+      "startY": 1530,
+      "startDirection": "left"
+    },
     "galactic-hot-dogs": { "sceneFolder": "ghd", "roomParam": "barren1", "islandParam": "ghd", "startupPath": "gameplay" },
-    "monkey-wrench": { "sceneFolder": "ftue", "roomParam": "beach", "islandParam": "ftue", "startupPath": "gameplay" },
+    "monkey-wrench": { "sceneFolder": "ftue", "roomParam": "mainLand", "islandParam": "ftue", "startupPath": "gameplay" },
     "reality-tv-wild-safari": { "sceneFolder": "reality2", "roomParam": "mainStreet", "islandParam": "reality2", "startupPath": "gameplay" }
   }
 }
