@@ -24,6 +24,7 @@ const GHD_MUSHROOM2_SCENE = "game.scenes.ghd.mushroom2.Mushroom2";
 const GHD_PREHISTORIC2_SCENE = "game.scenes.ghd.prehistoric2.Prehistoric2";
 const GHD_GHOST_SHIP_SCENE = "game.scenes.ghd.ghostShip.GhostShip";
 const VIRUS_PDC_LAB_SCENE = "game.scenes.virusHunter.pdcLab.PdcLab";
+const MOCKTROPICA_MAIN_STREET_SCENE = "game.scenes.mocktropica.mainStreet.MainStreet";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -52,7 +53,8 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
     sceneName !== GHD_MUSHROOM2_SCENE &&
     sceneName !== GHD_PREHISTORIC2_SCENE &&
     sceneName !== GHD_GHOST_SHIP_SCENE &&
-    sceneName !== VIRUS_PDC_LAB_SCENE
+    sceneName !== VIRUS_PDC_LAB_SCENE &&
+    sceneName !== MOCKTROPICA_MAIN_STREET_SCENE
   ) {
     return [];
   }
@@ -81,6 +83,9 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
   }
   if (sceneName === VIRUS_PDC_LAB_SCENE) {
     return [`qa_dialog_virus_pdcLab_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === MOCKTROPICA_MAIN_STREET_SCENE) {
+    return [`qa_dialog_mocktropica_mainStreet_${npcPart}_${dialogPart}`];
   }
   return [`qa_dialog_prison_hill_${npcPart}_${dialogPart}`];
 }

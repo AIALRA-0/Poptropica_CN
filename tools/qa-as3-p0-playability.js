@@ -633,6 +633,7 @@ function windowInfoFromCapture(capture, fallbackWindowInfo) {
 
 async function captureAndAnalyzeStable({ runDir, stem, runtime, windowInfo, size = null, maximize = false, qaErrors, retries = 2, retrySettleMs = 5000, allowAnyPid = false }) {
   let lastCapture = null;
+  let lastAttemptQaErrors = [];
   const attempts = [];
   const maxAttempts = Math.max(1, Number(retries || 0) + 1);
   for (let attemptIndex = 0; attemptIndex < maxAttempts; attemptIndex += 1) {
@@ -640,6 +641,7 @@ async function captureAndAnalyzeStable({ runDir, stem, runtime, windowInfo, size
       await sleep(Number(retrySettleMs || 0));
     }
     const attemptStem = attemptIndex === 0 ? stem : `${stem}-retry-${attemptIndex}`;
+    const attemptQaErrors = [];
     const capture = captureAndAnalyze({
       runDir,
       stem: attemptStem,
@@ -647,7 +649,7 @@ async function captureAndAnalyzeStable({ runDir, stem, runtime, windowInfo, size
       windowInfo,
       size,
       maximize,
-      qaErrors,
+      qaErrors: attemptQaErrors,
       allowAnyPid
     });
     attempts.push({
@@ -658,9 +660,11 @@ async function captureAndAnalyzeStable({ runDir, stem, runtime, windowInfo, size
       loadingOverlay: captureLooksLoadingOverlay(capture),
       pluginCrash: captureLooksPluginCrash(capture),
       nonGameUi: captureLooksNonGameUi(capture),
-      stable: captureLooksStable(capture)
+      stable: captureLooksStable(capture),
+      qaErrorCount: attemptQaErrors.length
     });
     lastCapture = capture;
+    lastAttemptQaErrors = attemptQaErrors;
     if (captureLooksStable(capture)) {
       capture.stabilityAttempts = attempts;
       return capture;
@@ -668,6 +672,9 @@ async function captureAndAnalyzeStable({ runDir, stem, runtime, windowInfo, size
   }
   if (lastCapture) {
     lastCapture.stabilityAttempts = attempts;
+  }
+  if (Array.isArray(qaErrors)) {
+    qaErrors.push(...lastAttemptQaErrors);
   }
   return lastCapture;
 }
@@ -904,6 +911,10 @@ function loadingCenterEvidence(sample) {
     return { detected: false, reason: "no_ocr_or_image_size" };
   }
   const text = String(sample.ocr?.text || "");
+  const stableSceneVisible = Number(sample?.stage?.stageCoverageRatio || 0) >= 0.8 && Boolean(sample?.visual?.ok);
+  if (stableSceneVisible && !/\b(?:LOADING|LOAD|STARTING)\b/iu.test(text)) {
+    return { detected: false, reason: "stable_scene_not_loading_ocr" };
+  }
   if (!/\b(?:LOADING|LOAD|STARTING)\b/iu.test(text)) {
     const logoEvidence = centralPoptropicaLogoEvidence(image, lines, text);
     if (logoEvidence) {
