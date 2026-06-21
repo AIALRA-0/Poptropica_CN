@@ -2,7 +2,7 @@
   "generatedAt": "2026-06-09T23:01:09.203Z",
   "sourceGroup": "as3",
   "canonicalKeys": [],
-  "assetsPatched": 259,
+  "assetsPatched": 260,
   "externalTextAssets": [
     {
       "assetId": "as3-island-names:curated-zh-cn",
@@ -1009,7 +1009,8 @@
         "game.scenes.con1.center.Center",
         "game.scenes.con1.adStreet3.AdStreet3",
         "game.scenes.con1.adMixed.AdMixed",
-        "game.scenes.timmy.mainStreet.MainStreet"
+        "game.scenes.timmy.mainStreet.MainStreet",
+        "game.scenes.deepDive1.ship.Ship"
       ]
     }
   ],
@@ -1018,7 +1019,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 1280,
+    "replacementCount": 1286,
     "swfRuntimeOverrides": "safe_subset"
   },
   "archivedReality2Resources": {

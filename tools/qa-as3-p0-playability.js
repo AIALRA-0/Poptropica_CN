@@ -72,6 +72,23 @@ const DEFAULT_DIALOGUE_TARGETS = {
       y: 1280,
       direction: "left"
     }
+  },
+  "mission-atlantis": {
+    x: 0.5,
+    y: 0.72,
+    waitMs: 5500,
+    holdMs: 100,
+    attempts: 1,
+    label: "deepDive1-ship-cam-dialogue",
+    qaDialogNpc: "cam",
+    qaDialogId: "findKey",
+    start: {
+      seedIsland: "deepDive1",
+      seedEvents: ["hasItem_fish_files"],
+      x: 1100,
+      y: 1890,
+      direction: "right"
+    }
   }
 };
 const AS3_START_FLOW_ENTRY = {
@@ -1106,7 +1123,7 @@ function launchUrlForEntry(entry, args) {
   const hasQaLoadingHold = qaLoadingHoldMs !== undefined && qaLoadingHoldMs !== null && qaLoadingHoldMs !== "";
   const fallback = DEFAULT_DIALOGUE_TARGETS[entry.canonicalKey] || null;
   const qaDialogNpc = String(args.qaDialogNpc || args["qa-dialog-npc"] || args.flashpointQaDialogNpc || args["flashpoint-qa-dialog-npc"] || fallback?.qaDialogNpc || "").trim();
-  const qaDialogId = String(args.qaDialogId || args["qa-dialog-id"] || args.flashpointQaDialogId || args["flashpoint-qa-dialog-id"] || "").trim();
+  const qaDialogId = String(args.qaDialogId || args["qa-dialog-id"] || args.flashpointQaDialogId || args["flashpoint-qa-dialog-id"] || fallback?.qaDialogId || "").trim();
   const qaAutoScene = String(args.qaAutoScene || args["qa-auto-scene"] || args.flashpointQaAutoScene || args["flashpoint-qa-auto-scene"] || "").trim();
   const qaAutoSceneDelayMs = args.qaAutoSceneDelayMs || args["qa-auto-scene-delay-ms"] ||
     args.flashpointQaAutoSceneDelayMs || args["flashpoint-qa-auto-scene-delay-ms"];

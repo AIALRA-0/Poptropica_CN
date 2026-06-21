@@ -16,6 +16,7 @@ const POPTOPICON_CENTER_CLASS = "game.scenes.con1.center.Center";
 const POPTOPICON_ADSTREET3_CLASS = "game.scenes.con1.adStreet3.AdStreet3";
 const POPTOPICON_ADMIXED_CLASS = "game.scenes.con1.adMixed.AdMixed";
 const TIMMY_CLASS = "game.scenes.timmy.mainStreet.MainStreet";
+const MISSION_SHIP_CLASS = "game.scenes.deepDive1.ship.Ship";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -1188,6 +1189,132 @@ function patchTimmyMainStreet(content) {
   return next;
 }
 
+function patchMissionAtlantisShip(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import engine.components.Display;", "   import engine.util.Command;");
+  next = addImport(next, "   import game.util.SceneUtil;", "   import game.util.ProxyUtils;");
+
+  const afterLoadMethod = `      private function flashpointQaSayMissionDialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
+         {
+            return;
+         }
+         npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+         dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
+         if(npcId != "cam" && npcId != "sailor2" && npcId != "player")
+         {
+            return;
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSayMissionDialog,npcId,dialogId)));
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSayMissionDialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         if(param1 == "cam")
+         {
+            target = _cam != null ? _cam : getEntityById("cam");
+         }
+         else if(param1 == "sailor2")
+         {
+            target = _sailor2 != null ? _sailor2 : getEntityById("sailor2");
+         }
+         else if(param1 == "player")
+         {
+            target = player;
+         }
+         if(param2 == null || param2 == "")
+         {
+            if(param1 == "cam")
+            {
+               param2 = "findKey";
+            }
+            else if(param1 == "sailor2")
+            {
+               param2 = "water";
+            }
+            else if(param1 == "player")
+            {
+               param2 = "whatsGoingOn";
+            }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
+               }
+               else
+               {
+                  CharUtils.sayDialog(target);
+               }
+            }
+            else
+            {
+               CharUtils.sayDialog(target);
+            }
+         }
+      }
+`;
+
+  const loadedCallMarker = "         super.loaded();\n";
+  const loadedCallBlock = `${loadedCallMarker}         this.flashpointQaSayMissionDialogAfterLoad();\n`;
+  if (!next.includes(loadedCallBlock)) {
+    if (!next.includes(loadedCallMarker)) {
+      throw new Error("Unable to locate Mission Atlantis Ship loaded marker.");
+    }
+    next = next.replace(loadedCallMarker, loadedCallBlock);
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      private function setup() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Mission Atlantis Ship setup marker.");
+    }
+    const resizeMethod = `
+      
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayMissionDialogAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  }
+
+  if (!next.includes("private function flashpointQaSayMissionDialogAfterLoad")) {
+    const marker = "\n      private function setup() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Mission Atlantis Ship setup marker for QA dialog methods.");
+    }
+    next = next.replace(marker, `\n      \n${afterLoadMethod}      \n${sayDialogMethod}${marker}`);
+  } else {
+    next = replaceAs3Function(next, "      private function flashpointQaSayMissionDialogAfterLoad() : void", afterLoadMethod);
+    next = replaceAs3Function(next, '      private function flashpointQaSayMissionDialog(param1:String, param2:String = "") : void', sayDialogMethod);
+  }
+
+  if (!next.includes('npcId != "cam" && npcId != "sailor2" && npcId != "player"') || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSayMissionDialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.sayById(param2)") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId")') || !next.includes("this.flashpointQaSayMissionDialogAfterLoad();")) {
+    throw new Error("Mission Atlantis Ship QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -1277,6 +1404,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Timmy MainStreet class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    MISSION_SHIP_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Mission Atlantis Ship class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -1310,6 +1446,10 @@ function main() {
   if (!timmyScriptPath) {
     throw new Error("Exported Timmy MainStreet.as was not found.");
   }
+  const missionShipScriptPath = findScript(scriptRoot, "game/scenes/deepDive1/ship/Ship.as");
+  if (!missionShipScriptPath) {
+    throw new Error("Exported Mission Atlantis Ship.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -1318,6 +1458,7 @@ function main() {
   writeText(poptropiconAdStreet3ScriptPath, patchPoptropiconAdScene(fs.readFileSync(poptropiconAdStreet3ScriptPath, "utf8"), "AdStreet3"));
   writeText(poptropiconAdMixedScriptPath, patchPoptropiconAdScene(fs.readFileSync(poptropiconAdMixedScriptPath, "utf8"), "AdMixed"));
   writeText(timmyScriptPath, patchTimmyMainStreet(fs.readFileSync(timmyScriptPath, "utf8")));
+  writeText(missionShipScriptPath, patchMissionAtlantisShip(fs.readFileSync(missionShipScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -1375,14 +1516,22 @@ function main() {
     POPTOPICON_ADMIXED_CLASS,
     poptropiconAdMixedScriptPath
   ], "replace Poptropicon AdMixed class");
-  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const timmySwf = path.join(workDir, "Shell-monster-qa-dialog-timmy.swf");
   runFfdec(ffdecCli, [
     "-replace",
     poptropiconAdMixedSwf,
-    outputSwf,
+    timmySwf,
     TIMMY_CLASS,
     timmyScriptPath
   ], "replace Timmy MainStreet class");
+  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  runFfdec(ffdecCli, [
+    "-replace",
+    timmySwf,
+    outputSwf,
+    MISSION_SHIP_CLASS,
+    missionShipScriptPath
+  ], "replace Mission Atlantis Ship class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -1404,7 +1553,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -1435,9 +1584,11 @@ function main() {
       poptropiconAdMixedClassName: POPTOPICON_ADMIXED_CLASS,
       poptropiconAdMixedScriptPath,
       timmyClassName: TIMMY_CLASS,
-      timmyScriptPath
+      timmyScriptPath,
+      missionShipClassName: MISSION_SHIP_CLASS,
+      missionShipScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, and Timmy native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, and Mission Atlantis native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);

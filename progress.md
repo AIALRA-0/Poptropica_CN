@@ -3685,3 +3685,61 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `05. mission-atlantis`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Mission Atlantis Current-Build Sealed Baseline Pass
+
+- Continued island 05 (`mission-atlantis`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Added Mission map metadata:
+  - `deepDive1/island/page.xml`, `deepDive2/island/page.xml`, `deepDive3/island/page.xml`.
+  - `deepDiveEpisodic/episode1/page.xml`, `episode2/page.xml`, `episode3/page.xml`.
+  - Passing strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782012530130.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782012530130/01-mission-atlantis-map.png`.
+- Fixed one native Mission language leak:
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/languages/en/islands/deepDive1/language.xml`.
+  - Reef hint now says `那是管眼鱼！想办法把它赶到开阔处。`.
+- Extended the native AS3 QA dialogue hook for Mission:
+  - `tools/patch-as3-monster-qa-dialog.js` now supports `game.scenes.deepDive1.ship.Ship`.
+  - Mission QA accepts `flashpointQaDialogNpc=cam|sailor2|player` and `flashpointQaDialogId`.
+  - It calls native `Dialog.sayById()` once after a delayed `TimedEvent(2,1,...)`, with `DialogData.timeOverride=60` and `forceOnScreen=true`.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and the AS3 runtime zip; latest patch report is `runtime-data/qa/as3/as3-monster-qa-dialog-patch.json`, runtime replacementCount `1286`.
+- Final Mission window/resize/maximize regression passed:
+  - Updated `tools/qa-as3-p0-playability.js` to add the Mission default dialogue target `cam/findKey` and to include fallback `qaDialogId` in launch URLs.
+  - Passing report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782015178827.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `dialogueChinese=true`, `postResizeDialogueChinese=true`, `visualStable=true`, `nonGameUiCapture=false`.
+  - Screenshots reviewed:
+    - `runtime-data/qa/as3/p0-playability/run-1782015178827/01-mission-atlantis-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782015178827/01-mission-atlantis-maximized-retry-2.png`.
+- F11/fullscreen loading-center evidence passed with no foreground keyboard takeover:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782015395985.json`.
+  - Command used `--post-message-f11 1`, with `noForegroundCapture=true`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782015395985/f11-loading-sequence/f11-loading-500.png`.
+  - Result: `ok=true`, 5 loading samples detected and centered, `f11.fullscreenLike=true`.
+- Three real native Chinese dialogue stability samples passed:
+  - Cam `findKey`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782014515149.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782014515149/sequence/dialogue-0.png`.
+  - Cam `subOpen`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782014590550.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782014590550/sequence/dialogue-0.png`.
+  - Cam `needHelp`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782014753128.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782014753128/sequence/dialogue-0.png`.
+  - All three use native `Dialog.sayById()`; no repeated bubble spam; `duplicateExpectedSampleCount=0` and `visualStable=true`.
+  - Failed calibration not counted: Sailor2 `dumpedInk`, `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782014671451.json`, OCR only saw MENU.
+- HUD/map/button evidence passed with effective secondary clicks:
+  - Settings: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782016582947.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782016582947/01-mission-atlantis-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782016779009.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782016779009/01-mission-atlantis-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782016946794.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782016946794/01-mission-atlantis-secondary.png`.
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782017109548.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782017109548/01-mission-atlantis-secondary.png`.
+  - Discarded HUD pre-runs `1782015569485`, `1782015747040`, `1782015929603`, `1782016116337` because they opened only the menu and did not perform secondary button clicks.
+  - A wrong-coordinate settings run `1782016369750` clicked the middle of the expanded HUD instead of the gear; not counted.
+- Static-art policy remained intact:
+  - `MENU`, `MISSION ATLANTIS`, Ship `introPopup.swf` title/body/START art, and the backpack card art `Sea Creatures` remain English/static.
+  - `fish_files.xml` already supplies the native card title `海洋生物档案` and button `查看`; the visible `Sea Creatures` text is card art and was not covered with Chinese text.
+  - Tried FFDec text replacement on `introPopup.swf`; import failed with `Error during text import`, so no unsafe SWF text import was kept. Future localization must use real image/SWF asset replacement.
+- Current Mission conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full three-episode story completion proof; deeper scene traversal, natural story progression, and optional static intro art replacement remain future full-island deep QA.
+- Next island:
+  - Move current execution to `06. monkey-wrench`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
