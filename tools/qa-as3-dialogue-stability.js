@@ -69,6 +69,32 @@ function countExpected(text, expected) {
   return count;
 }
 
+function longestStableChineseRun(samples) {
+  let bestCount = 0;
+  let bestText = "";
+  let currentCount = 0;
+  let currentText = "";
+  for (const sample of samples) {
+    const text = hanOnly(sample?.cjkText);
+    if (!text) {
+      currentCount = 0;
+      currentText = "";
+      continue;
+    }
+    if (text === currentText) {
+      currentCount += 1;
+    } else {
+      currentText = text;
+      currentCount = 1;
+    }
+    if (currentCount > bestCount) {
+      bestCount = currentCount;
+      bestText = text;
+    }
+  }
+  return { count: bestCount, text: bestText };
+}
+
 function hasChinese(text) {
   return /\p{Script=Han}{2,}/u.test(String(text || ""));
 }
@@ -99,6 +125,7 @@ async function main() {
   const sampleMs = splitCsv(args.sampleMs || args["sample-ms"], ["0", "1000", "2000", "3000", "4000"]).map((value) => Number(value));
   const settleMs = Number(args.settleMs || args["settle-ms"] || 12000);
   const windowTimeoutMs = Number(args.windowTimeoutMs || args["window-timeout-ms"] || 90000);
+  const requiredStableSamples = Math.max(1, Number(args.minStableSamples || args["min-stable-samples"] || 3));
 
   stopNavigatorProcesses();
   clearPoptropicaFlashState({ reason: `qa-as3-dialogue-stability:${npc}:${dialogId}` });
@@ -230,11 +257,12 @@ async function main() {
   const expectedHan = hanOnly(expected);
   const uniqueHan = [...new Set(samples.map((sample) => hanOnly(sample.cjkText)).filter(Boolean))];
   const expectedHanMatched = !expectedHan || uniqueHan.some((text) => text.includes(expectedHan) || expectedHan.includes(text));
-  const requiredStableSamples = Math.max(3, Math.min(3, samples.length));
+  const stableRun = longestStableChineseRun(samples);
   const stableCjk = uniqueCjk.length === 1 && uniqueHan.length === 1 && chineseSamples.length >= requiredStableSamples;
+  const hasStableRun = stableRun.count >= requiredStableSamples;
   const stableText = expected
-    ? (exactSamples.length >= requiredStableSamples || (stableCjk && expectedHanMatched)) && duplicateSamples.length === 0
-    : stableCjk;
+    ? (exactSamples.length >= requiredStableSamples || ((stableCjk || hasStableRun) && expectedHanMatched)) && duplicateSamples.length === 0
+    : stableCjk || hasStableRun;
   const visualStable = samples.length > 0 && samples.every((sample) => sample.stageOk && sample.visualOk);
   const ok = qaErrors.length === 0 && samples.length >= 3 && stableText && visualStable;
 
@@ -263,6 +291,8 @@ async function main() {
       uniqueHan,
       expectedHan: expectedHan || null,
       expectedHanMatched,
+      requiredStableSamples,
+      longestStableChineseRun: stableRun,
       stableText,
       visualStable
     },

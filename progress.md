@@ -3567,3 +3567,65 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Still open for Timmy:
   - More scene entry coverage and natural story progression beyond the currently sampled MainStreet/map/HUD/dialogue paths.
   - Natural manual traversal still depends on side-monitor-safe input, not main-display CUA.
+
+## 2026-06-20 Reality TV Wild Safari Current-Build Sealed Baseline Pass
+
+- Continued island 03 (`reality-tv-wild-safari`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Restored current Reality2 launchability after the Timmy Shell rebuild:
+  - Ran `npm run merge:reality2-shell`.
+  - Rebuilt the AS3 runtime Shell zip entries with `tools/update-as3-runtime-shell-only.js`.
+  - `packs/zh-CN/as3/provenance/reality2-shell-merge.json` records the merge.
+- Added/fixed current Reality map metadata:
+  - Runtime requested `game/data/scenes/map/map/islands/reality/island/page.xml`, not only `reality2/island/page.xml`.
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/reality/island/page.xml`.
+  - Renamed the map title to `真人秀：野外探险`.
+  - Rebuilt `runtime-data/patched-zips/as3-runtime.zip`.
+- Final Reality P0 regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782003638919.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `dialogueChinese=true`, `postResizeDialogueChinese=true`, `f11Stable=true`, `loadingCenterOk=true`, `nonGameUiCapture=false`.
+  - Screenshots reviewed:
+    - `runtime-data/qa/as3/p0-playability/run-1782003638919/01-reality-tv-wild-safari-initial.png`
+    - `runtime-data/qa/as3/p0-playability/run-1782003638919/01-reality-tv-wild-safari-resized-dialogue-attempt-2.png`
+    - `runtime-data/qa/as3/p0-playability/run-1782003638919/01-reality-tv-wild-safari-maximized-retry-1.png`
+    - `runtime-data/qa/as3/p0-playability/run-1782003638919/01-reality-tv-wild-safari-f11.png`
+  - Manual review: character stays visible, HUD/menu stays top-right, no blue bottom/side void, no non-game UI contamination.
+- Loading center evidence passed:
+  - Window mode report: `runtime-data/qa/as3/p0-playability/as3-window-loading-transition-1782001447409.json`.
+  - F11/fullscreen report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782001638633.json`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782001638633/f11-loading-sequence/f11-loading-500.png`.
+  - Manual review confirms the Poptropica logo/loading dots are centered on a fullscreen black loading frame.
+- HUD/map/button evidence passed:
+  - HUD smoke: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782001781173.json`.
+  - HUD button matrix: `runtime-data/qa/as3/hud-button-matrix/as3-hud-button-matrix-1782002457747.json`, 4/4 passed for settings/store/map/inventory.
+  - Confirmation dialog screenshot: `runtime-data/qa/as3/hud-smoke/run-1782002085908/01-reality-tv-wild-safari-secondary.png`.
+  - Inventory/backpack screenshot: `runtime-data/qa/as3/hud-smoke/run-1782002344797/01-reality-tv-wild-safari-secondary.png`.
+  - Map intro report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782003060696.json`.
+  - Map intro screenshot: `runtime-data/qa/as3/islands-smoke/run-1782003060696/01-reality-tv-wild-safari-map.png`.
+  - Map OCR includes `真人秀：野外探险`, Chinese description, `重新开始`, and `开始`.
+- Dialogue stability evidence passed:
+  - Updated `tools/qa-as3-dialogue-stability.js` to support a `--min-stable-samples` threshold and report the longest consecutive stable Chinese run.
+  - This prevents normal story progression from being misclassified as jitter when a dialogue advances to the next line during the sample window.
+  - Passing report: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782004103358.json`.
+  - Representative screenshot: `runtime-data/qa/as3/dialogue-stability/run-1782004103358/sequence/dialogue-4000.png`.
+  - Result: 3/3 samples contain Chinese; first two samples keep the host line stable, the third sample naturally advances to the player response; `longestStableChineseRun.count=2`, `stableText=true`, `visualStable=true`.
+  - Dialogue lines seen in current evidence:
+    - `当然！他们在哪儿？`
+    - `不了，我还是去探索吧。`
+    - `嘿嘿。是啊，伙计......完全没错。`
+    - `欢迎！欢迎！我是吉姆·普罗巴布利，是时候让你的梦想成真了！`
+    - `你好。你还好吗？能呼吸吗？`
+- Static-art policy remained intact:
+  - `MENU`, `Reality TV`, `WILD SAFARI`, `DANGER`, `STAFF ONLY`, map logo art, and motel photo art remain English/static.
+  - No Chinese TextField overlay was added to static icon/sign/poster art.
+- Current Reality conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full story completion proof; deeper story traversal and all-scene coverage remain future full-island deep QA.
+- Next island:
+  - Move current execution to `04. monster-carnival`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

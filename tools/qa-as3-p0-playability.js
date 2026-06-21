@@ -950,7 +950,10 @@ async function clickDialogue({ runDir, stem, runtime, windowInfo, baseCapture, b
         runtime,
         path.join(runDir, `${stem}-window${suffix}.json`),
         null,
-        15000
+        15000,
+        false,
+        "poptropica",
+        true
       );
       const captureStem = attemptCount > 1 ? `${stem}${suffix}` : stem;
       const capture = captureAndAnalyze({ runDir, stem: captureStem, runtime, windowInfo: postWindow, qaErrors });
