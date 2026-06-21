@@ -23,6 +23,7 @@ const GHD_BARREN2_SCENE = "game.scenes.ghd.barren2.Barren2";
 const GHD_MUSHROOM2_SCENE = "game.scenes.ghd.mushroom2.Mushroom2";
 const GHD_PREHISTORIC2_SCENE = "game.scenes.ghd.prehistoric2.Prehistoric2";
 const GHD_GHOST_SHIP_SCENE = "game.scenes.ghd.ghostShip.GhostShip";
+const VIRUS_PDC_LAB_SCENE = "game.scenes.virusHunter.pdcLab.PdcLab";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -50,7 +51,8 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
     sceneName !== GHD_BARREN2_SCENE &&
     sceneName !== GHD_MUSHROOM2_SCENE &&
     sceneName !== GHD_PREHISTORIC2_SCENE &&
-    sceneName !== GHD_GHOST_SHIP_SCENE
+    sceneName !== GHD_GHOST_SHIP_SCENE &&
+    sceneName !== VIRUS_PDC_LAB_SCENE
   ) {
     return [];
   }
@@ -76,6 +78,9 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
   }
   if (sceneName === GHD_GHOST_SHIP_SCENE) {
     return [`qa_dialog_ghd_ghostship_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === VIRUS_PDC_LAB_SCENE) {
+    return [`qa_dialog_virus_pdcLab_${npcPart}_${dialogPart}`];
   }
   return [`qa_dialog_prison_hill_${npcPart}_${dialogPart}`];
 }

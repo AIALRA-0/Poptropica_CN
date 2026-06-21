@@ -409,6 +409,28 @@ function adaptiveHudTargetX(width, buttonCount, buttonIndex, menuLine = null) {
 }
 
 function clickPointForHudButtonIndex(capture, menuLine, args) {
+  const rawExplicitX = args.secondaryClickX ?? args["secondary-click-x"];
+  const rawExplicitY = args.secondaryClickY ?? args["secondary-click-y"];
+  const explicitX = Number(rawExplicitX);
+  const explicitY = Number(rawExplicitY);
+  if (Number.isFinite(explicitX) && Number.isFinite(explicitY)) {
+    const width = Number(capture?.imageSize?.width || 0);
+    const height = Number(capture?.imageSize?.height || 0);
+    const offsets = chromeOffsetsFromCapture(capture, args);
+    const screenshotX = Math.round(explicitX);
+    const screenshotY = Math.round(explicitY);
+    return {
+      x: screenshotX + Math.round(offsets.x),
+      y: screenshotY + Math.round(offsets.y),
+      screenshotX,
+      screenshotY,
+      browserChromeOffsetX: offsets.x,
+      browserChromeOffsetY: offsets.y,
+      explicit: true,
+      insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= height
+    };
+  }
+
   const rawIndex = args.secondaryButtonIndex ?? args["secondary-button-index"];
   if (rawIndex === undefined || rawIndex === null || rawIndex === "") {
     return null;

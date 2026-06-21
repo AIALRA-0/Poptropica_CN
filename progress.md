@@ -4082,3 +4082,70 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `11. virus-hunter`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Virus Hunter Current-Build Sealed Baseline Pass
+
+- Continued island 11 (`virus-hunter` / `virusHunter`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External route sanity check:
+  - Poptropica Help Blog and Poptropica Wiki describe Virus Hunter as a PDC/Dr. Lange investigation that enters infected body systems, matching local `virusHunter` scenes selected for proof.
+  - Sources used only for route/NPC sanity check: `https://poptropi.ca/island-help/virus-hunter/`, `https://poptropica.fandom.com/wiki/Virus_Hunter_Island`.
+- Map intro:
+  - First real map test `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782074117564.json` exposed English map intro text.
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/virusHunter/island/page.xml`.
+  - Inserted the new XML into runtime zip with `tools/update-as3-runtime-entries.js`.
+  - Final map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782074274865.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782074274865/01-virus-hunter-map.png`.
+  - Visual review: title/description/buttons are Chinese and centered; static `VIRUS HUNTER ISLAND` logo remains original English art.
+- Runtime support added:
+  - Added `tools/patch-as3-virus-hunter-dialog-proof.js`.
+  - The patch adds QA-only native Dialog proof support for `game.scenes.virusHunter.pdcLab.PdcLab`; it requires both `flashpointQaDialogNpc/Id` query params and a seed event like `qa_dialog_virus_pdcLab_npc2_checkIn`.
+  - `tools/qa-as3-dialogue-stability.js` now generates Virus Hunter PdcLab QA seed events.
+  - `tools/qa-as3-hud-smoke.js` now supports explicit `--secondary-click-x/y` so HUD proof can click real icon centers instead of relying on a brittle index map.
+  - Patch report: `runtime-data/qa/as3/as3-virus-hunter-dialog-proof-patch.json`.
+  - Runtime Shell update report: `runtime-data/qa/as3/as3-runtime-shell-only-update.json`; latest Shell sha256 `b330b469f1ac24a011584ed5c36f0f5cbefe3f5b61f3f4c9c76d103aabafe17f`, runtime zip sha256 `d9baad695e040250cc6b6c9bb8b21914a74de7578b1f3fa4e441711d1d401129`.
+- Window/resize/maximize/F11 visual regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782074363553.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `f11Stable=true`, `nonGameUiCapture=false`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782074363553/01-virus-hunter-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782074363553/01-virus-hunter-maximized-retry-2.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782074363553/01-virus-hunter-f11-retry-1.png`.
+  - Manual review: character remains visible, MENU stays top-right, scene is constrained, no blue void or main-screen capture.
+- F11/fullscreen loading-center evidence passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782074683572.json`.
+  - Result: `ok=true`, `f11.fullscreenLike=true`, `relaunchAdoption.adopted=true`, `loading.observed=true`, `loading.centerOk=true`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782074683572/f11-loading-sequence/f11-loading-1000.png`.
+- HUD/menu/button evidence passed:
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782074921756.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782074921756/01-virus-hunter-inventory.png`.
+  - Settings: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782075051207.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782075051207/01-virus-hunter-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782075975053.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782075975053/01-virus-hunter-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782075862106.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782075862106/01-virus-hunter-secondary.png`.
+  - Public confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782075327599.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782075327599/01-virus-hunter-secondary.png`.
+  - Manual review: Chinese labels/buttons are centered and do not overlap; static HUD icon art and `MENU` remain original English/art.
+- Three native Chinese dialogue stability samples passed:
+  - PDC `npc2/checkIn`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782076303669.json`, OCR `去跟我们的项目负责人兰格博士报到吧。`.
+  - PDC `npc/workAroundClock`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782076399318.json`, OCR `我们一直在连轴转。`.
+  - PDC `npc4/default`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782076596782.json`, OCR `坐电梯下去，找兰格博士谈谈。`.
+  - All three use native Dialog/CharUtils paths, show Chinese, have 6/6 stable samples, `visualStable=true`, and `duplicateExpectedSampleCount=0`.
+  - Failed calibration not counted:
+    - `npc3/tech` `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782076495845.json` produced a gray/blank capture, likely a camera/target-state issue, and is not promoted as evidence.
+- Scene-entry regression after the new Shell passed:
+  - MainStreet: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782076686386.json`.
+  - PdcLab: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782076773714.json`.
+  - Both returned `ok=true`, `audioActive=0`, scene evidence present, and visual guard passed.
+- Static-art policy remained intact:
+  - `MENU`, map logo, scene signs, posters, arrows, wall text, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Current Virus Hunter conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: map, HUD, window/resize/F11, true fullscreen loading, MainStreet/PdcLab scene entry, 3 native Chinese NPC dialogue samples, no dialogue repeat/twitch, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Body-system scenes, the dog/Joe route, ship gameplay, more NPC natural hot zones, and final completion remain future full-island deep QA.
+- Next island:
+  - Move current execution to `12. mocktropica`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
