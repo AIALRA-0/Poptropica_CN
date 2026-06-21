@@ -17,6 +17,7 @@ const POPTOPICON_ADSTREET3_CLASS = "game.scenes.con1.adStreet3.AdStreet3";
 const POPTOPICON_ADMIXED_CLASS = "game.scenes.con1.adMixed.AdMixed";
 const TIMMY_CLASS = "game.scenes.timmy.mainStreet.MainStreet";
 const MISSION_SHIP_CLASS = "game.scenes.deepDive1.ship.Ship";
+const FTUE_MAINLAND_CLASS = "game.scenes.ftue.mainLand.MainLand";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -186,7 +187,6 @@ function patchMainStreet(content) {
       throw new Error("Unable to locate MainStreet loaded marker.");
     }
     const resizeMethod = `
-      
       override public function resize(param1:Number, param2:Number) : void
       {
          super.resize(param1,param2);
@@ -603,7 +603,7 @@ function patchPoptropiconParking(content) {
       throw new Error("Unable to locate Parking loaded marker.");
     }
     const resizeMethod = `
-      
+
       override public function resize(param1:Number, param2:Number) : void
       {
          super.resize(param1,param2);
@@ -1157,7 +1157,6 @@ function patchTimmyMainStreet(content) {
       throw new Error("Unable to locate Timmy MainStreet setupAssets marker.");
     }
     const resizeMethod = `
-      
       override public function resize(param1:Number, param2:Number) : void
       {
          super.resize(param1,param2);
@@ -1315,6 +1314,139 @@ function patchMissionAtlantisShip(content) {
   return next;
 }
 
+function patchFtueMainLand(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import game.util.PlatformUtils;", "   import game.util.ProxyUtils;");
+
+  const afterLoadMethod = `      private function flashpointQaSayFtueDialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
+         {
+            return;
+         }
+         npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+         dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
+         if(npcId != "crusoe" && npcId != "amelia" && npcId != "monkey" && npcId != "player")
+         {
+            return;
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSayFtueDialog,npcId,dialogId)));
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSayFtueDialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         switch(param1)
+         {
+            case "crusoe":
+               target = crusoe != null ? crusoe : getEntityById("crusoe");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "look";
+               }
+               break;
+            case "amelia":
+               target = amelia != null ? amelia : getEntityById("amelia");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "strange";
+               }
+               break;
+            case "monkey":
+               target = monkey != null ? monkey : getEntityById("monkey");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "hello";
+               }
+               break;
+            case "player":
+               target = player;
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "no_fruit";
+               }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
+               }
+               else
+               {
+                  CharUtils.sayDialog(target);
+               }
+            }
+            else
+            {
+               CharUtils.sayDialog(target);
+            }
+         }
+      }
+`;
+
+  const loadedEndMarker = `         if(crusoe && crusoe.has(Skin))
+         {
+            facialPart = SkinUtils.getSkinPartEntity(crusoe,"facial");
+            facialPart.get(Timeline).handleLabel("pop",crusoeBubblePop,false);
+            facialPart.get(Timeline).handleLabel("pop2",crusoeBubblePop,false);
+         }
+`;
+  const loadedCallBlock = `${loadedEndMarker}         this.flashpointQaSayFtueDialogAfterLoad();\n`;
+  if (!next.includes(loadedCallBlock)) {
+    if (!next.includes(loadedEndMarker)) {
+      throw new Error("Unable to locate FTUE MainLand loaded end marker.");
+    }
+    next = next.replace(loadedEndMarker, loadedCallBlock);
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      private function setupFruitCanvas() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate FTUE MainLand setupFruitCanvas marker.");
+    }
+    const resizeMethod = `
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayFtueDialogAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  }
+
+  if (!next.includes("private function flashpointQaSayFtueDialogAfterLoad")) {
+    const marker = "\n      private function setupFruitCanvas() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate FTUE MainLand setupFruitCanvas marker for QA dialog methods.");
+    }
+    next = next.replace(marker, `\n      \n${afterLoadMethod}      \n${sayDialogMethod}${marker}`);
+  } else {
+    next = replaceAs3Function(next, "      private function flashpointQaSayFtueDialogAfterLoad() : void", afterLoadMethod);
+    next = replaceAs3Function(next, '      private function flashpointQaSayFtueDialog(param1:String, param2:String = "") : void', sayDialogMethod);
+  }
+
+  if (!next.includes('npcId != "crusoe" && npcId != "amelia" && npcId != "monkey" && npcId != "player"') || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSayFtueDialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.sayById(param2)") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId")') || !next.includes("this.flashpointQaSayFtueDialogAfterLoad();")) {
+    throw new Error("FTUE MainLand QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -1413,6 +1545,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Mission Atlantis Ship class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    FTUE_MAINLAND_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Monkey Wrench MainLand class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -1450,6 +1591,10 @@ function main() {
   if (!missionShipScriptPath) {
     throw new Error("Exported Mission Atlantis Ship.as was not found.");
   }
+  const ftueMainLandScriptPath = findScript(scriptRoot, "game/scenes/ftue/mainLand/MainLand.as");
+  if (!ftueMainLandScriptPath) {
+    throw new Error("Exported Monkey Wrench MainLand.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -1459,6 +1604,7 @@ function main() {
   writeText(poptropiconAdMixedScriptPath, patchPoptropiconAdScene(fs.readFileSync(poptropiconAdMixedScriptPath, "utf8"), "AdMixed"));
   writeText(timmyScriptPath, patchTimmyMainStreet(fs.readFileSync(timmyScriptPath, "utf8")));
   writeText(missionShipScriptPath, patchMissionAtlantisShip(fs.readFileSync(missionShipScriptPath, "utf8")));
+  writeText(ftueMainLandScriptPath, patchFtueMainLand(fs.readFileSync(ftueMainLandScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -1524,14 +1670,22 @@ function main() {
     TIMMY_CLASS,
     timmyScriptPath
   ], "replace Timmy MainStreet class");
-  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const missionShipSwf = path.join(workDir, "Shell-monster-qa-dialog-mission.swf");
   runFfdec(ffdecCli, [
     "-replace",
     timmySwf,
-    outputSwf,
+    missionShipSwf,
     MISSION_SHIP_CLASS,
     missionShipScriptPath
   ], "replace Mission Atlantis Ship class");
+  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  runFfdec(ffdecCli, [
+    "-replace",
+    missionShipSwf,
+    outputSwf,
+    FTUE_MAINLAND_CLASS,
+    ftueMainLandScriptPath
+  ], "replace Monkey Wrench MainLand class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -1553,7 +1707,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -1586,9 +1740,11 @@ function main() {
       timmyClassName: TIMMY_CLASS,
       timmyScriptPath,
       missionShipClassName: MISSION_SHIP_CLASS,
-      missionShipScriptPath
+      missionShipScriptPath,
+      ftueMainLandClassName: FTUE_MAINLAND_CLASS,
+      ftueMainLandScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, Timmy, and Mission Atlantis native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, and Monkey Wrench native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);

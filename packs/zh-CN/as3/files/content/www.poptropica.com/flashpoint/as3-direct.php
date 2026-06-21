@@ -8,7 +8,7 @@ if(!preg_match('/^[A-Za-z0-9_.$]+$/', $scene)) {
     $scene = '';
 }
 
-$resizeMode = flashpoint_as3_param('reloadOnResize', '0');
+$resizeMode = flashpoint_as3_param('reloadOnResize', 'frame');
 if(!in_array($resizeMode, array('0', 'frame', 'iframe', '1', 'page', 'top', 'reload'), true)) {
     $resizeMode = '0';
 }

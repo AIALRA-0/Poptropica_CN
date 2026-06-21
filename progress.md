@@ -3743,3 +3743,68 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `06. monkey-wrench`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Monkey Wrench Current-Build Sealed Baseline Pass
+
+- Continued island 06 (`monkey-wrench` / `ftue`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Added Monkey Wrench map/island metadata:
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/ftue/island/page.xml`
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/ftue/island.xml`
+  - Passing strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782018890966.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782018890966/01-monkey-wrench-map.png`.
+- Extended native AS3 QA dialogue hook for FTUE:
+  - `tools/patch-as3-monster-qa-dialog.js` now supports `game.scenes.ftue.mainLand.MainLand`.
+  - FTUE QA accepts `flashpointQaDialogNpc=amelia|crusoe|monkey|player` and `flashpointQaDialogId`.
+  - It still calls native `Dialog.sayById()` once with `DialogData.timeOverride=60` and `forceOnScreen=true`; no repeated bubble refresh.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and the AS3 runtime zip; latest runtime rebuild reported `replacementCount=1298`.
+- Fixed resize reload default for AS3 direct scenes:
+  - `tools/lib/as3-direct-wrapper.js` now defaults missing `reloadOnResize` to `frame`.
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/flashpoint/as3-direct.php` now defaults `reloadOnResize` to `frame`.
+  - This repaired the earlier Monkey Wrench P0 failure where `reloadOnResize=page` reloaded the whole wrapper and left the maximized window stuck on loading.
+- Final Monkey Wrench window/resize/maximize regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782019656438.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `postResizeDialogueChinese=true`, `maximizedViewportDialogueChinese=true`, `loadingCenterOk=true`, `nonGameUiCapture=false`.
+  - Reviewed screenshot: `runtime-data/qa/as3/p0-playability/run-1782019656438/01-monkey-wrench-maximized.png`.
+  - Manual review: character visible, HUD/menu top-right, Chinese dialogue stable, no blue void, no Codex/non-game capture.
+- F11/fullscreen loading-center evidence passed with no foreground keyboard takeover:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782021663340.json`.
+  - Command used `--post-message-f11=1`, `noForegroundCapture=true`, target monitor `G32QC`.
+  - Result: `ok=true`, `f11.fullscreenLike=true`, G32QC capture `2560x1440`, 3 loading samples detected and centered.
+  - Representative screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782021663340/f11-before-transition.png`
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782021663340/f11-loading-sequence/f11-loading-0.png`
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782021663340/f11-loading-sequence/f11-loading-1000.png`
+  - Discarded F11/loading attempts:
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782019893931.json` detected centered fullscreen samples at 0/500/1000ms but later samples captured Codex/desktop; not counted as pass.
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782021399945.json` used too short F11 settle; it stayed window-sized/gray and is invalid.
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782021517022.json` showed a seeded full-screen relaunch gray screen when `seedEvents/startX/startY` were forced; this is recorded as a QA path limitation, not accepted evidence.
+- Three native Chinese dialogue stability samples passed:
+  - Amelia `strange`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782020113936.json`, text `这是什么，热带度假村吗？`.
+  - Amelia `dialog_speed`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782020195440.json`, text `那个克鲁索话真多，要我教你快速跳过对话吗？`.
+  - Amelia `ring_bell`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782020541562.json`, text `我们按铃叫人来吧。`.
+  - All accepted samples use native `Dialog.sayById()`, have stable Chinese frames, `duplicateExpectedSampleCount=0`, and `visualStable=true`.
+  - Failed calibration not counted: Crusoe `look` (`1782020282470`), Amelia `guests` (`1782020368878`), player `no_fruit` (`1782020448090`) captured gray/blank screens.
+- HUD/menu/button evidence:
+  - Settings panel passed: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782020668442.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782020668442/01-monkey-wrench-secondary.png`.
+  - Backpack passed after switching from generic button index to the actual FTUE right-side icon position: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782021205618.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782021205618/01-monkey-wrench-secondary.png`.
+  - The backpack screenshot shows `扳手猴岛`, `背包里还没有物品。`, and `去岛上探索，看看能找到什么！` centered with no overlap.
+  - FTUE `mainLand` expanded HUD exposes only settings, audio, home, costumizer, backpack, and exit/door. It does not expose public store/map icons in this scene, so generic 8-button HUD matrix is not applicable.
+  - Discarded HUD attempts:
+    - `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782020999440.json` used `--secondary-button-index=4` and clicked the wrong scene point; not counted.
+    - `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782021889627.json` clicked the exit/door icon but no confirmation panel appeared; not counted as confirmation proof.
+- Static-art policy remained intact:
+  - `MENU`, map logo, `Juice Machine`, `Reception`, `CRUSOE'S CASTAWAY RETREAT`, scene arrows, and other sign/poster art remain English/static.
+  - No Chinese TextField overlay was added to static icons, posters, signs, or art-lettering.
+- Current Monkey Wrench conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full tutorial/story completion proof; natural route from intro to finale, more FTUE scenes, and any public store/map/confirmation UI exposed later remain future full-island deep QA.
+- Next island:
+  - Move current execution to `07. survival`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

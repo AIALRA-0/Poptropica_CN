@@ -1010,7 +1010,8 @@
         "game.scenes.con1.adStreet3.AdStreet3",
         "game.scenes.con1.adMixed.AdMixed",
         "game.scenes.timmy.mainStreet.MainStreet",
-        "game.scenes.deepDive1.ship.Ship"
+        "game.scenes.deepDive1.ship.Ship",
+        "game.scenes.ftue.mainLand.MainLand"
       ]
     }
   ],
@@ -1019,8 +1020,8 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 1286,
-    "swfRuntimeOverrides": "safe_subset"
+    "replacementCount": 1298,
+    "swfRuntimeOverrides": "enabled"
   },
   "archivedReality2Resources": {
     "generatedAt": "2026-06-17T21:38:52.538Z",

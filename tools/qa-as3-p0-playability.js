@@ -89,6 +89,23 @@ const DEFAULT_DIALOGUE_TARGETS = {
       y: 1890,
       direction: "right"
     }
+  },
+  "monkey-wrench": {
+    x: 0.5,
+    y: 0.72,
+    waitMs: 5500,
+    holdMs: 100,
+    attempts: 1,
+    label: "ftue-mainland-amelia-dialogue",
+    qaDialogNpc: "amelia",
+    qaDialogId: "strange",
+    start: {
+      seedIsland: "ftue",
+      seedEvents: ["three_ingredients"],
+      x: 1020,
+      y: 1490,
+      direction: "left"
+    }
   }
 };
 const AS3_START_FLOW_ENTRY = {
