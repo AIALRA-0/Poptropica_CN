@@ -17,6 +17,7 @@ const {
 
 const CHILD_CLASS = "Gecko";
 const ARAB1_BAZAAR_SCENE = "game.scenes.arab1.bazaar.Bazaar";
+const PRISON_HILL_SCENE = "game.scenes.prison.hill.Hill";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,7 +37,8 @@ function qaSeedPart(value, fallback) {
 }
 
 function qaDialogSeedEventsForScene(scene, npc, dialogId) {
-  if (String(scene || "") !== ARAB1_BAZAAR_SCENE) {
+  const sceneName = String(scene || "");
+  if (sceneName !== ARAB1_BAZAAR_SCENE && sceneName !== PRISON_HILL_SCENE) {
     return [];
   }
   const npcPart = qaSeedPart(npc, "");
@@ -44,7 +46,10 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
     return [];
   }
   const dialogPart = qaSeedPart(dialogId, "default");
-  return [`qa_dialog_arab1_${npcPart}_${dialogPart}`];
+  if (sceneName === ARAB1_BAZAAR_SCENE) {
+    return [`qa_dialog_arab1_${npcPart}_${dialogPart}`];
+  }
+  return [`qa_dialog_prison_hill_${npcPart}_${dialogPart}`];
 }
 
 function flagEnabled(value) {

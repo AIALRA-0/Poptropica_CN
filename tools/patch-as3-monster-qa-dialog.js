@@ -20,6 +20,7 @@ const MISSION_SHIP_CLASS = "game.scenes.deepDive1.ship.Ship";
 const FTUE_MAINLAND_CLASS = "game.scenes.ftue.mainLand.MainLand";
 const SURVIVAL4_MAINHALL_CLASS = "game.scenes.survival4.mainHall.MainHall";
 const ARAB1_BAZAAR_CLASS = "game.scenes.arab1.bazaar.Bazaar";
+const PRISON_HILL_CLASS = "game.scenes.prison.hill.Hill";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -1914,6 +1915,242 @@ function patchArab1Bazaar(content) {
   return next;
 }
 
+function patchPrisonHill(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import flash.geom.Rectangle;", "   import flash.utils.getDefinitionByName;");
+  next = addImport(next, "   import game.data.TimedEvent;", "   import game.data.scene.characterDialog.DialogData;");
+  next = addImport(next, "   import game.util.MotionUtils;", "   import game.util.ProxyUtils;");
+
+  const afterLoadMethod = `      private function flashpointQaSayPrisonHillDialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         if(super.groupContainer != null && super.groupContainer.root != null && super.groupContainer.root.loaderInfo != null)
+         {
+            npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+            dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
+         }
+         if(npcId == null || npcId == "")
+         {
+            if(shellApi.checkEvent("qa_dialog_prison_hill_player_tower") || shellApi.checkEvent("qa_dialog_prison_hill_player"))
+            {
+               npcId = "player";
+               dialogId = "tower";
+            }
+            else if(shellApi.checkEvent("qa_dialog_prison_hill_tex_listen_up") || shellApi.checkEvent("qa_dialog_prison_hill_tex"))
+            {
+               npcId = "tex";
+               dialogId = "listen_up";
+            }
+            else if(shellApi.checkEvent("qa_dialog_prison_hill_p1_stop") || shellApi.checkEvent("qa_dialog_prison_hill_p1"))
+            {
+               npcId = "p1";
+               dialogId = "stop";
+            }
+            else if(shellApi.checkEvent("qa_dialog_prison_hill_p2_stop") || shellApi.checkEvent("qa_dialog_prison_hill_p2"))
+            {
+               npcId = "p2";
+               dialogId = "stop";
+            }
+            else if(shellApi.checkEvent("qa_dialog_prison_hill_bandit_odds") || shellApi.checkEvent("qa_dialog_prison_hill_bandit"))
+            {
+               npcId = "bandit";
+               dialogId = "odds";
+            }
+         }
+         if(npcId != "player" && npcId != "tex" && npcId != "bandit" && npcId != "sal" && npcId != "les" && npcId != "p1" && npcId != "p2" && npcId != "p3" && npcId != "p4" && npcId != "p5" && npcId != "p6")
+         {
+            return;
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSayPrisonHillDialog,npcId,dialogId)));
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSayPrisonHillDialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         if(param1 == "player")
+         {
+            target = player;
+         }
+         else
+         {
+            target = getEntityById(param1);
+         }
+         if(param2 == "default")
+         {
+            param2 = "";
+         }
+         if(param2 == null || param2 == "")
+         {
+            if(param1 == "player")
+            {
+               param2 = "tower";
+            }
+            else if(param1 == "tex")
+            {
+               param2 = "listen_up";
+            }
+            else if(param1 == "bandit")
+            {
+               param2 = "odds";
+            }
+            else if(param1 == "sal" || param1 == "les")
+            {
+               param2 = "vamoose";
+            }
+            else
+            {
+               param2 = "stop";
+            }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
+               }
+               else
+               {
+                  CharUtils.sayDialog(target);
+               }
+            }
+            else
+            {
+               CharUtils.sayDialog(target);
+            }
+         }
+      }
+`;
+
+  const autoSceneAfterLoadMethod = `      private function flashpointQaAutoPrisonSceneAfterLoad() : void
+      {
+         var delayMs:Number = NaN;
+         var delaySeconds:Number = 4;
+         var targetScene:String = null;
+         if(super.groupContainer != null && super.groupContainer.root != null && super.groupContainer.root.loaderInfo != null)
+         {
+            targetScene = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene") as String;
+            delayMs = Number(ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoSceneDelayMs"));
+         }
+         if(targetScene == null || targetScene == "")
+         {
+            if(shellApi.checkEvent("qa_auto_scene_prison_yard"))
+            {
+               targetScene = "game.scenes.prison.yard.Yard";
+            }
+            else if(shellApi.checkEvent("qa_auto_scene_prison_cellBlock"))
+            {
+               targetScene = "game.scenes.prison.cellBlock.CellBlock";
+            }
+         }
+         if(targetScene == null || targetScene == "" || targetScene == "game.scenes.prison.hill.Hill")
+         {
+            return;
+         }
+         if(targetScene.indexOf("game.scenes.prison.") != 0)
+         {
+            return;
+         }
+         if(!isNaN(delayMs) && delayMs > 0)
+         {
+            if(delayMs > 15000)
+            {
+               delayMs = 15000;
+            }
+            delaySeconds = Math.max(0.5,delayMs / 1000);
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(delaySeconds,1,Command.create(this.flashpointQaLoadPrisonScene,targetScene)));
+      }
+`;
+
+  const autoSceneLoadMethod = `      private function flashpointQaLoadPrisonScene(param1:String) : void
+      {
+         var sceneClass:Class = null;
+         if(param1 == null || param1 == "" || param1.indexOf("game.scenes.prison.") != 0)
+         {
+            return;
+         }
+         sceneClass = getDefinitionByName(param1) as Class;
+         if(sceneClass != null)
+         {
+            this.shellApi.loadScene(sceneClass,1400,900,"right");
+         }
+      }
+`;
+
+  const loadedCallMarker = "         setupBandit();\n";
+  const sayDialogCall = "         this.flashpointQaSayPrisonHillDialogAfterLoad();\n";
+  const autoSceneCall = "         this.flashpointQaAutoPrisonSceneAfterLoad();\n";
+  const loadedSayDialogBlock = `${loadedCallMarker}${sayDialogCall}`;
+  const loadedCallBlock = `${loadedCallMarker}${sayDialogCall}${autoSceneCall}`;
+  if (!next.includes(loadedCallBlock)) {
+    if (!next.includes(loadedCallMarker)) {
+      throw new Error("Unable to locate Prison Hill setupBandit marker.");
+    }
+    if (next.includes(loadedSayDialogBlock)) {
+      next = next.replace(loadedSayDialogBlock, loadedCallBlock);
+    } else {
+      next = next.replace(loadedCallMarker, loadedCallBlock);
+    }
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      override protected function eventTriggered";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Prison Hill eventTriggered marker.");
+    }
+    const resizeMethod = `
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayPrisonHillDialogAfterLoad();
+         this.flashpointQaAutoPrisonSceneAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  }
+
+  if (!next.includes("private function flashpointQaSayPrisonHillDialogAfterLoad")) {
+    const marker = "\n      override protected function eventTriggered";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Prison Hill methods marker.");
+    }
+    const methods = `\n      \n${afterLoadMethod}      \n${sayDialogMethod}      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}`;
+    next = next.replace(marker, `${methods}${marker}`);
+  } else {
+    next = replaceAs3Function(next, "      private function flashpointQaSayPrisonHillDialogAfterLoad() : void", afterLoadMethod);
+    next = replaceAs3Function(next, '      private function flashpointQaSayPrisonHillDialog(param1:String, param2:String = "") : void', sayDialogMethod);
+    if (!next.includes("private function flashpointQaAutoPrisonSceneAfterLoad")) {
+      const marker = "\n      override protected function eventTriggered";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate Prison Hill eventTriggered marker for QA auto scene methods.");
+      }
+      next = next.replace(marker, `\n      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaAutoPrisonSceneAfterLoad() : void", autoSceneAfterLoadMethod);
+      next = replaceAs3Function(next, "      private function flashpointQaLoadPrisonScene(param1:String) : void", autoSceneLoadMethod);
+    }
+  }
+
+  if (!next.includes('npcId != "player" && npcId != "tex" && npcId != "bandit" && npcId != "sal" && npcId != "les" && npcId != "p1"') || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSayPrisonHillDialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.sayById(param2)") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId")') || !next.includes('shellApi.checkEvent("qa_dialog_prison_hill_tex_listen_up")') || !next.includes("this.flashpointQaSayPrisonHillDialogAfterLoad();") || !next.includes("this.flashpointQaAutoPrisonSceneAfterLoad();") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene")') || !next.includes('shellApi.checkEvent("qa_auto_scene_prison_yard")') || !next.includes("getDefinitionByName(param1) as Class") || !next.includes('param1.indexOf("game.scenes.prison.") != 0')) {
+    throw new Error("Prison Hill QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -2039,6 +2276,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Arabian Bazaar class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    PRISON_HILL_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Prison Hill class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -2088,6 +2334,10 @@ function main() {
   if (!arab1BazaarScriptPath) {
     throw new Error("Exported Arabian Bazaar.as was not found.");
   }
+  const prisonHillScriptPath = findScript(scriptRoot, "game/scenes/prison/hill/Hill.as");
+  if (!prisonHillScriptPath) {
+    throw new Error("Exported Prison Hill.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -2100,6 +2350,7 @@ function main() {
   writeText(ftueMainLandScriptPath, patchFtueMainLand(fs.readFileSync(ftueMainLandScriptPath, "utf8")));
   writeText(survival4MainHallScriptPath, patchSurvival4MainHall(fs.readFileSync(survival4MainHallScriptPath, "utf8")));
   writeText(arab1BazaarScriptPath, patchArab1Bazaar(fs.readFileSync(arab1BazaarScriptPath, "utf8")));
+  writeText(prisonHillScriptPath, patchPrisonHill(fs.readFileSync(prisonHillScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -2189,14 +2440,22 @@ function main() {
     SURVIVAL4_MAINHALL_CLASS,
     survival4MainHallScriptPath
   ], "replace Survival4 MainHall class");
-  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const prisonHillSwf = path.join(workDir, "Shell-monster-qa-dialog-prison-hill.swf");
   runFfdec(ffdecCli, [
     "-replace",
     arab1BazaarSwf,
-    outputSwf,
+    prisonHillSwf,
     ARAB1_BAZAAR_CLASS,
     arab1BazaarScriptPath
   ], "replace Arabian Bazaar class");
+  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  runFfdec(ffdecCli, [
+    "-replace",
+    prisonHillSwf,
+    outputSwf,
+    PRISON_HILL_CLASS,
+    prisonHillScriptPath
+  ], "replace Prison Hill class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -2218,7 +2477,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS, ARAB1_BAZAAR_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS, ARAB1_BAZAAR_CLASS, PRISON_HILL_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -2257,9 +2516,11 @@ function main() {
       survival4MainHallClassName: SURVIVAL4_MAINHALL_CLASS,
       survival4MainHallScriptPath,
       arab1BazaarClassName: ARAB1_BAZAAR_CLASS,
-      arab1BazaarScriptPath
+      arab1BazaarScriptPath,
+      prisonHillClassName: PRISON_HILL_CLASS,
+      prisonHillScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, Survival, and Arabian Nights native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, Survival, Arabian Nights, and Escape from Pelican Rock native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);

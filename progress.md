@@ -3936,3 +3936,77 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `09. escape-from-pelican-rock`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Escape from Pelican Rock Current-Build Sealed Baseline Pass
+
+- Continued island 09 (`escape-from-pelican-rock` / `prison`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External reference check:
+  - Poptropica Wiki and Poptropica Help Blog both identify Escape from Pelican Rock as the prison/framed-crime island, matching the local `prison` asset family.
+  - Sources used only for synopsis sanity check: `https://poptropica.fandom.com/wiki/Escape_from_Pelican_Rock_Island`, `https://poptropi.ca/island-help/escape/`.
+- Added Pelican Rock map metadata:
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/prison/island/page.xml`.
+  - Added `tools/update-as3-runtime-entries.js` so new pack XML entries can be written into `runtime-data/patched-zips/as3-runtime.zip` without rebuilding the whole runtime.
+  - Final strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782038868052.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782038868052/01-escape-from-pelican-rock-map.png`.
+  - Visual review: `逃离鹈鹕岩`, Chinese description, `重新开始/开始`; static `ESCAPE FROM PELICAN ROCK` map logo remains English/art.
+  - Discarded map attempts:
+    - `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782038469318.json` still showed English because the new page XML had not yet been inserted into the runtime zip.
+    - `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782038327704.json` and `1782038630339` produced invalid gray frames under the wrong reload/difficulty path; not counted.
+- Extended Pelican runtime QA support:
+  - `tools/patch-as3-monster-qa-dialog.js` now supports `game.scenes.prison.hill.Hill`.
+  - Native Dialog QA accepts `player`, `tex`, `bandit`, `sal`, `les`, and `p1..p6`; it calls native `Dialog.sayById()` once with `DialogData.timeOverride=60` and `forceOnScreen=true`.
+  - Added QA-only `flashpointQaAutoScene` path for `game.scenes.prison.*` scene classes, used for loading-center transition proof.
+  - `tools/qa-as3-dialogue-stability.js` injects seed events such as `qa_dialog_prison_hill_player_tower`.
+  - `tools/qa-as3-islands-smoke.js` now honors `--reload-on-resize`, needed for stable map direct override checks.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf`; updated runtime Shell with `tools/update-as3-runtime-shell-only.js`; inserted the new map XML with `tools/update-as3-runtime-entries.js`.
+- Final Pelican window/resize/maximize/F11 regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782039033401.json`.
+  - Result: `ok=true`, `failedChecks=[]`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782039033401/01-escape-from-pelican-rock-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782039033401/01-escape-from-pelican-rock-maximized-retry-1.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782039033401/01-escape-from-pelican-rock-f11.png`.
+  - Manual review: character visible, MENU top-right, scene constrained with no blue void, no Codex/main-screen UI capture. The first maximize frame was unstable and the retry is the accepted evidence.
+- Window and F11/fullscreen loading-center evidence passed:
+  - Window report: `runtime-data/qa/as3/p0-playability/as3-window-loading-transition-1782039314137.json`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-window-loading-1782039314137/window-loading-sequence/window-loading-1000.png`.
+  - Result: `ok=true`, `loading.observed=true`, `centerOk=true`, 8 loading samples detected and centered.
+  - F11 report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782039474396.json`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782039474396/f11-loading-sequence/f11-loading-1000.png`.
+  - Result: `ok=true`, `f11.fullscreenLike=true`, `loading.observed=true`, `centerOk=true`, 9 loading samples detected and centered; F11 proof used PostMessage F11, not foreground keyboard takeover.
+- HUD/menu/button evidence passed:
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782039730282.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782039730282/01-escape-from-pelican-rock-inventory.png`.
+  - Settings: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782040006268.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782040006268/01-escape-from-pelican-rock-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782040688698.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782040688698/01-escape-from-pelican-rock-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782040849648.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782040849648/01-escape-from-pelican-rock-secondary.png`.
+  - Manual review: Chinese title/labels/buttons are centered and do not overlap. Static HUD icon art remains original.
+  - Two early store runs were stopped because the full HUD smoke flow was still waiting; no partial report was promoted as evidence.
+- Three native Chinese dialogue stability samples passed:
+  - Player `tower`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782041030923.json`, expected `我得去那座塔上`.
+  - Tex `listen_up`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782041218501.json`, expected stable substring `监狱有人越狱了`.
+  - P2 `gee`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782041576351.json`, no exact expected substring because OCR mangles the short sentence, but 5/5 samples contained stable Chinese text and `visualStable=true`.
+  - Representative screenshots inspected:
+    - `runtime-data/qa/as3/dialogue-stability/run-1782041030923/sequence/dialogue-1000.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782041218501/sequence/dialogue-1000.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782041576351/sequence/dialogue-1000.png`.
+  - Failed calibration not counted:
+    - Tex `listen_up` `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782041123097.json` was visually Chinese but failed the first-line exact expected OCR check.
+    - P1 `stop` `1782041299847` and Bandit `odds` `1782041389025` did not display a bubble in the current direct-scene seed.
+    - P2 `gee` `1782041472212` was visually Chinese but failed exact expected OCR; the stable-Chinese rerun `1782041576351` is the accepted evidence.
+- Static-art policy remained intact:
+  - `MENU`, `ESCAPE FROM PELICAN ROCK`, map logo, scene signs, arrows, posters, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, or art-lettering.
+- Current Pelican conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full story completion proof. Historical direct-scene notes still require deeper follow-up: `yard`, `cellBlock`, `hill`, `roof1`, `roof2`, and `metalShop` were usable; `messHall`, `prisonPromo`, `roof3`, and `tower` need natural-route/resource-level follow-up.
+  - More prison interiors, natural NPC interactions, item-chain progression, and end-to-end escape/clear-name story completion remain future full-island deep QA.
+- Next island:
+  - Move current execution to `10. galactic-hot-dogs`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

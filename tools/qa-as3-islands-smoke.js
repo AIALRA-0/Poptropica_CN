@@ -2105,6 +2105,7 @@ async function main() {
       const overrideScene = String(overrideSceneArg);
       const sceneParts = overrideScene.split(".");
       const overrideOptions = {
+        reloadOnResize: args.reloadOnResize || args["reload-on-resize"],
         seedIsland: args.seedIsland || args["seed-island"],
         seedEvents: args.seedEvents || args["seed-events"],
         startX: args.startX || args["start-x"],
