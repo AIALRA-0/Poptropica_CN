@@ -16,6 +16,7 @@ const {
 } = require("./lib/flashpoint-runtime");
 
 const CHILD_CLASS = "Gecko";
+const ARAB1_BAZAAR_SCENE = "game.scenes.arab1.bazaar.Bazaar";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,6 +28,23 @@ function splitCsv(value, fallback = []) {
     return fallback;
   }
   return text.split(",").map((entry) => entry.trim()).filter(Boolean);
+}
+
+function qaSeedPart(value, fallback) {
+  const text = String(value || "").trim().replace(/[^A-Za-z0-9_]+/gu, "_").replace(/^_+|_+$/gu, "");
+  return text || fallback;
+}
+
+function qaDialogSeedEventsForScene(scene, npc, dialogId) {
+  if (String(scene || "") !== ARAB1_BAZAAR_SCENE) {
+    return [];
+  }
+  const npcPart = qaSeedPart(npc, "");
+  if (!npcPart) {
+    return [];
+  }
+  const dialogPart = qaSeedPart(dialogId, "default");
+  return [`qa_dialog_arab1_${npcPart}_${dialogPart}`];
 }
 
 function flagEnabled(value) {
@@ -126,13 +144,19 @@ async function main() {
   const settleMs = Number(args.settleMs || args["settle-ms"] || 12000);
   const windowTimeoutMs = Number(args.windowTimeoutMs || args["window-timeout-ms"] || 90000);
   const requiredStableSamples = Math.max(1, Number(args.minStableSamples || args["min-stable-samples"] || 3));
+  const seedEvents = splitCsv(args.seedEvents || args["seed-events"], ["intro_complete"]);
+  for (const eventName of qaDialogSeedEventsForScene(scene, npc, dialogId)) {
+    if (!seedEvents.includes(eventName)) {
+      seedEvents.push(eventName);
+    }
+  }
 
   stopNavigatorProcesses();
   clearPoptropicaFlashState({ reason: `qa-as3-dialogue-stability:${npc}:${dialogId}` });
 
   const launchUrl = buildAs3DirectSceneUrl(scene, {
     seedIsland: args.seedIsland || args["seed-island"] || "timmy",
-    seedEvents: args.seedEvents || args["seed-events"] || "intro_complete",
+    seedEvents,
     startX: args.startX || args["start-x"],
     startY: args.startY || args["start-y"],
     startDirection: args.startDirection || args["start-direction"],

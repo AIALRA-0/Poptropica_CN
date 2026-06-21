@@ -1,6 +1,6 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-21 02:10 EDT
+更新时间：2026-06-21 06:15 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
@@ -15,6 +15,8 @@
 2026-06-20 21:15 EDT：Reality TV Wild Safari 当前 build 封版基线通过。已通过 Shell class merge 恢复 `reality2` 可启动性，并重建 AS3 runtime；最终 P0 报告 `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782003638919.json` 证明窗口模式、resize、maximize、F11、loading 观察、post-resize 中文对话和视觉稳定均通过，截图 `run-1782003638919/01-reality-tv-wild-safari-initial.png`、`...resized-dialogue-attempt-2.png`、`...maximized-retry-1.png`、`...f11.png` 已人工检查，角色不消失、菜单不漂移、不露蓝底。窗口 loading `as3-window-loading-transition-1782001447409.json` 和 F11/fullscreen loading `as3-f11-loading-transition-1782001638633.json` 通过，`run-f11-loading-1782001638633/f11-loading-sequence/f11-loading-500.png` 显示真全屏 loading 居中。地图介绍中文通过 `as3-island-smoke-1782003060696.json`，截图 `run-1782003060696/01-reality-tv-wild-safari-map.png` 显示 `真人秀：野外探险`、中文介绍、`重新开始/开始` 按钮。HUD/按钮通过 `as3-hud-smoke-1782001781173.json` 与 `as3-hud-button-matrix-1782002457747.json`；背包、确认框和设置/商店/地图入口按钮均按原生 UI 居中。对话稳定性通过 `as3-dialogue-stability-1782004103358.json`，3 张样本全中文，前两张同一句稳定，第三张正常进入下一句剧情；未发现重复气泡或抽搐。静态 `MENU`、`Reality TV/WILD SAFARI`、`DANGER/STAFF ONLY`、地图 Logo/Motel 图等美术字继续保留英文，不做中文叠层。
 
 2026-06-21 02:10 EDT：Monkey Wrench 当前 build 封版基线通过，下一轮进入 Survival。已补 `ftue` 地图中文标题/介绍并重建 AS3 runtime；`as3-island-smoke-1782018890966.json` 显示 `扳手猴岛` 与中文介绍。P0 报告 `as3-p0-playability-1782019656438.json` 证明 `reloadOnResize=frame` 下窗口 resize、maximize 后角色、HUD、场景和中文对话稳定，未再出现页面级重载卡 loading。F11/loading 通过 `as3-f11-loading-transition-1782021663340.json`，G32QC 真全屏 `2560x1440`，3 个 `Poptropica` logo/loading 样本居中，无主屏/Codex 污染。对话稳定样本通过 Amelia `strange` `1782020113936`、Amelia `dialog_speed` `1782020195440`、Amelia `ring_bell` `1782020541562`，均为原生 Dialog 气泡，中文稳定、无重复抽搐。HUD 证据：设置面板 `as3-hud-smoke-1782020668442.json` 通过，背包 `as3-hud-smoke-1782021205618.json` 通过并显示 `扳手猴岛`、`背包里还没有物品。`、`去岛上探索...` 居中。FTUE `mainLand` 展开 HUD 本身不暴露商店/地图按钮，退出图标没有弹出确认框；这些记录为本岛 HUD 设计差异/后续自然路线补证，不用错误坐标强行点。静态 `MENU` 图标、`Juice Machine`、`Reception`、`CRUSOE'S CASTAWAY RETREAT`、地图 logo 和场景箭头/招牌按规则保留英文，不用中文文字层硬盖。废弃证据：`1782020999440` 背包误点、`1782021889627` 退出确认框未出现、`1782019893931` 后段采到 Codex 桌面、`1782021399945` F11 settle 过短、`1782021517022` 带 QA 起点 seed 的全屏灰屏，均不计入通过。
+
+2026-06-21 06:15 EDT：Arabian Nights 当前 build 封版基线通过，下一轮进入 Escape from Pelican Rock。已补 `arab1/arab2/arab3` 与 `arabEpisodic` 地图中文标题/介绍；地图 smoke `as3-island-smoke-1782029786436.json` 显示第 1 集中文介绍与 `重新开始/开始`。最新 Shell 已扩展 `game.scenes.arab1.bazaar.Bazaar` 原生 Dialog QA hook 和 `qa_auto_scene_arab1_desert` loading 专用切场 hook；AS3 runtime zip 已写入新 Shell。窗口 resize/maximize 回归 `as3-p0-playability-1782036700970.json` 通过，最终截图 `run-1782036700970/01-arabian-nights-resized.png` 与 `...maximized-retry-1.png` 证明角色可见、MENU 右上稳定、无蓝底/非游戏 UI。窗口 loading `as3-window-loading-transition-1782036333988.json` 通过，代表图 `run-window-loading-1782036333988/window-loading-sequence/window-loading-4000.png`；F11/fullscreen loading `as3-f11-loading-transition-1782036503309.json` 通过，代表图 `run-f11-loading-1782036503309/f11-loading-sequence/f11-loading-0.png`，G32QC 真全屏且 loading 居中。HUD 样本通过：背包 `1782031265590`、设置 `1782031427653`、商店确认 `1782031583317`、地图确认 `1782031745867`。三段真实原生中文对话通过：Trader2 `1782034402463`、Trader1 `1782034488207`、Trader3 `1782034573399`，均为 `Dialog.sayById()`，中文气泡稳定；player `need_spy_glass` `1782034258831` 作为额外校准通过。静态 `MENU`、`Grand Bazaar`、`Your Highness`、海报、摊位招牌和场景美术字保持英文/原图，未使用中文文字层硬盖。
 
 2026-06-20 11:56 EDT：按封版验收口径停止全局矩阵，只保留 Poptropicon 单岛任务。已修复 MapIslandLoader clean-build 回退问题：地图场景不再卡 loading，岛名不再显示 `function Function(){}`；新增 `flashpointAutoLoadIsland` direct 参数用于验收时自动打开指定岛屿介绍，不影响默认地图流程。证据：地图页 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781969723905.json` 与截图 `runtime-data/qa/as3/islands-smoke/run-1781969723905/01-poptropicon-map.png`；PoptropiCon 地图介绍中文弹窗 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1781970833623.json` 与截图 `runtime-data/qa/as3/islands-smoke/run-1781970833623/01-poptropicon-map.png`，OCR 捕获“第1章：排队从这里开始”“PoptropiCon 是镇上最热门的入场券...”“开始”。当前仍未封版：地图弹窗左下 `RESTART`、更多菜单/背包/商店/确认框按钮居中、最新窗口/F11/loading/3 个 NPC 对话复测仍需继续。
 
@@ -314,6 +316,21 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | 废弃证据 | 已标记 | 入口 P0 `1782024092292`/`1782024416868`/`1782024707320`、F11 灰屏/延迟错误 `1782025153784`/`1782026819879`、Winston/Van Buren/security QA hook 未触发 `1782027284860`/`1782027499679`/`1782028804754` 均不作为通过证据 |
 | 当前剩余 | 非封版 blocker | 未证明 Survival 五集从头到尾通关；真实自然 NPC 热区、更多房间、猎场/逃脱剧情、以及 MainHall NPC QA hook 后续仍需深测补证。本轮封版基线已可进入下一个岛 |
 
+## 当前 Arabian Nights 状态
+
+| 验收项 | 状态 | 当前证据 |
+|---|---|---|
+| Shell/入口可启动 | 通过 | `tools/patch-as3-monster-qa-dialog.js` 已扩展 `game.scenes.arab1.bazaar.Bazaar` 原生 Dialog QA hook，并新增 `qa_auto_scene_arab1_desert` QA-only 切场 hook；`runtime-data/qa/as3/as3-monster-qa-dialog-patch.json` 和 `runtime-data/qa/as3/as3-runtime-shell-only-update.json` 已更新，runtime Shell sha256 `55e2ddbc...` |
+| 地图打开/介绍中文 | 通过 | 新增 `arab1/arab2/arab3` 与 `arabEpisodic/episode1..3` 地图 page XML；严格中文 map smoke `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782029786436.json` 通过；截图 `runtime-data/qa/as3/islands-smoke/run-1782029786436/01-arabian-nights-map.png` 显示第 1 集中文标题/介绍、`重新开始/开始` |
+| 窗口缩放/最大化稳定 | 通过 | 最新 P0 报告 `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782036700970.json` 通过；截图 `run-1782036700970/01-arabian-nights-resized.png` 与 `run-1782036700970/01-arabian-nights-maximized-retry-1.png` 已人工检查：角色可见、MENU 稳定右上、场景不露蓝底、不捕获主屏 UI |
+| 窗口与 F11/fullscreen loading 居中 | 通过 | 窗口模式 `runtime-data/qa/as3/p0-playability/as3-window-loading-transition-1782036333988.json` 通过，9 个 loading 样本居中；代表截图 `run-window-loading-1782036333988/window-loading-sequence/window-loading-4000.png`。F11/fullscreen `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782036503309.json` 通过，`f11.fullscreenLike=true`、10 个 loading 样本居中；代表截图 `run-f11-loading-1782036503309/f11-loading-sequence/f11-loading-0.png` |
+| HUD/菜单/背包/商店/地图/设置按钮居中 | 通过本轮样本 | 背包 `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782031265590.json`，设置 `1782031427653`，商店确认 `1782031583317`，地图确认 `1782031745867`。人工复核对应截图：`一千零一夜`、空背包文案、`设置`、`进入商店？/确定`、`确定要前往地图吗？/确定` 居中，不重叠 |
+| 3 个真实中文剧情/NPC 对话 | 通过 | Trader2 `comment`：`runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782034402463.json`；Trader1 `comment`：`1782034488207`；Trader3 `comment`：`1782034573399`。三条均为原生 `Dialog.sayById()` 气泡，截图 `run-*/sequence/dialogue-0.png` 已人工检查 |
+| 对话不重复/不抽搐 | 通过本轮样本 | 三个稳定性报告均中文样本稳定，`visualStable=true`，未观察到重复刷新或多气泡抽搐；player `need_spy_glass` `1782034258831` 作为额外中文气泡校准通过 |
+| 静态美术字规则 | 通过 | `MENU`、`Your Highness/Grand Bazaar`、海报、摊位牌、地图 logo、箭头/场景美术字保持英文/原图；未用中文 TextField 覆盖静态图标、招牌、海报 |
+| 废弃证据 | 已标记 | `as3-window-loading-transition-1782035113292.json`、`1782035732803` 未触发或采样错过 loading；`1782036150548` 实际已切到 Desert 但采样晚，不能当 loading 居中证据；`as3-p0-playability-1782034693409.json` 初始等待太短采到灰启动帧，后续 `1782034910525` 和最新 `1782036700970` 已通过 |
+| 当前剩余 | 非封版 blocker | 未证明三集从头到尾自然通关；更多房间、自然热区、宫殿/洞穴/沙漠剧情和全流程后续深测补证。本轮封版基线已可进入下一个岛 |
+
 ## 当前下一步
 
 1. Poptropicon 保留 1 个 blocker：con1 自然往返切换需要真实侧屏鼠标 pass 或更可靠的后台输入 harness；不能用 direct-room smoke 冒充自然通行完成。
@@ -323,14 +340,15 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 5. Mission Atlantis 当前 build 封版基线已通过：地图介绍、窗口缩放/最大化、F11/loading、HUD/背包/确认框、3 段真实中文剧情对话、对话稳定性和静态美术规则均有截图证据；下一轮不再在 Mission 上空转。
 6. Monkey Wrench 当前 build 封版基线已通过：地图介绍、窗口缩放/最大化、F11/loading、设置/背包、3 段真实中文剧情对话、对话稳定性和静态美术规则均有截图证据；FTUE `mainLand` 不暴露商店/地图按钮，作为设计差异记录。
 7. Survival 当前 build 封版基线已通过：地图介绍、resize/maximize/F11、fullscreen loading、菜单/背包/设置/商店确认/地图确认、3 条中文剧情对话稳定性和静态美术规则均有截图证据；下一步只补更多自然 NPC/房间/剧情覆盖。
-8. 下一岛进入 Arabian Nights，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
-9. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
+8. Arabian Nights 当前 build 封版基线已通过：地图介绍、resize/maximize、窗口和 F11 loading、HUD/背包/设置/商店确认/地图确认、3 条真实中文 NPC 对话稳定性和静态美术规则均有截图证据。
+9. 下一岛进入 Escape from Pelican Rock，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
+10. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
 
 ## 逐岛执行顺序
 
 原则：一个岛达到“窗口/F11/loading、主要场景切换、NPC/剧情对话、菜单/地图/背包 UI、原生箭头标签、静态美术字不硬盖、音频静音、截图记录”这一套通过标准后，才进入下一个岛。
 
-当前执行：`08. arabian-nights`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench` 和 `07. survival` 当前 build 封版基线通过。
+当前执行：`09. escape-from-pelican-rock`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench`、`07. survival` 和 `08. arabian-nights` 当前 build 封版基线通过。
 
 | 顺序 | 岛屿 | 引擎 | 当前状态 |
 |---|---|---|---|
@@ -341,8 +359,8 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | 05 | mission-atlantis | AS3 | 当前 build 封版基线通过；`1782015178827` 覆盖 resize/maximize 与中文对话；`1782015395985` 覆盖 PostMessage F11/fullscreen loading；`1782014515149`/`1782014590550`/`1782014753128` 覆盖 3 条真实剧情中文稳定对话；HUD smoke `1782016582947`、`1782016779009`、`1782016946794`、`1782017109548` 通过 |
 | 06 | monkey-wrench | AS3 | 当前 build 封版基线通过；`1782019656438` 覆盖 resize/maximize 与中文对话；`1782021663340` 覆盖 PostMessage F11/fullscreen loading；`1782020113936`/`1782020195440`/`1782020541562` 覆盖 3 条真实剧情中文稳定对话；设置 `1782020668442` 和背包 `1782021205618` 通过；FTUE `mainLand` 不暴露商店/地图按钮，已记录为设计差异 |
 | 07 | survival | AS3 | 当前 build 封版基线通过；`1782024946797` 覆盖 resize/maximize 与中文剧情对话；`1782027006669` 覆盖 PostMessage F11/fullscreen loading；`1782027406622`/`1782027601502`/`1782027689650` 覆盖 3 条中文剧情稳定对话；HUD smoke `1782027860270`、`1782028291170`、`1782028443657`、`1782028603276` 通过；NPC 自然热区/更多房间后续深测 |
-| 08 | arabian-nights | AS3 | 当前下一岛，待开始 |
-| 09 | escape-from-pelican-rock | AS3 | 待开始 |
+| 08 | arabian-nights | AS3 | 当前 build 封版基线通过；`1782036700970` 覆盖 resize/maximize；`1782036333988`/`1782036503309` 覆盖窗口和 F11/fullscreen loading；`1782034402463`/`1782034488207`/`1782034573399` 覆盖 3 条真实中文 NPC 稳定对话；HUD smoke `1782031265590`、`1782031427653`、`1782031583317`、`1782031745867` 通过 |
+| 09 | escape-from-pelican-rock | AS3 | 当前下一岛，待开始 |
 | 10 | galactic-hot-dogs | AS3 | 待开始 |
 | 11 | virus-hunter | AS3 | 待开始 |
 | 12 | mocktropica | AS3 | 待开始 |
@@ -386,9 +404,9 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 
 - 尚未证明所有 47 个岛从头到尾剧情通关。
 - 尚未逐房间遍历所有内部房间。
-- F11 真全屏已有 Reality TV/Poptropicon/Timmy/Mission Atlantis/Monkey Wrench/Survival 代表样本通过；AS2 Mystery Train 主街已有 F11 尺寸门槛和人工稳定截图通过，但还不是 AS2 全岛覆盖。
-- 加载条中心已有 AS3 1186x760、1450x900 窗口模式、AS3 Poptropicon F11 场景切换、Timmy 窗口/F11 loading、Reality TV 窗口/F11 loading、Mission Atlantis F11 loading、Monkey Wrench F11 loading、Survival F11 loading，以及 AS2 Mystery Train 窗口模式通过证据；尚未覆盖全部 AS2 F11/fullscreen loading、更多 AS3 场景和更多窗口尺寸。
-- 跨岛 NPC 对话中文仍未全闭环；AS3 Timmy、Reality TV、Poptropicon、Monster、Mission Atlantis、Monkey Wrench、Survival 有可靠截图；AS2 Mystery Train `EdisonCabin` 和 Spy `SpyMain` 已有原生中文气泡截图，但 AS2 全岛/全剧情对话仍未覆盖。
-- Monster Carnival、Mission Atlantis、Monkey Wrench 和 Survival 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区/更多深海/更多 FTUE/Survival 更多房间和全流程仍未全审。
-- 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival、Mission Atlantis、Survival 的背包/地图/商店确认框/设置面板首批证据；Monkey Wrench 已有设置/背包证据但 FTUE `mainLand` 不暴露商店/地图按钮；全岛屿/全部面板仍未系统审计。
+- F11 真全屏已有 Reality TV/Poptropicon/Timmy/Mission Atlantis/Monkey Wrench/Survival/Arabian Nights 代表样本通过；AS2 Mystery Train 主街已有 F11 尺寸门槛和人工稳定截图通过，但还不是 AS2 全岛覆盖。
+- 加载条中心已有 AS3 1186x760、1450x900 窗口模式、AS3 Poptropicon F11 场景切换、Timmy 窗口/F11 loading、Reality TV 窗口/F11 loading、Mission Atlantis F11 loading、Monkey Wrench F11 loading、Survival F11 loading、Arabian Nights 窗口/F11 loading，以及 AS2 Mystery Train 窗口模式通过证据；尚未覆盖全部 AS2 F11/fullscreen loading、更多 AS3 场景和更多窗口尺寸。
+- 跨岛 NPC 对话中文仍未全闭环；AS3 Timmy、Reality TV、Poptropicon、Monster、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights 有可靠截图；AS2 Mystery Train `EdisonCabin` 和 Spy `SpyMain` 已有原生中文气泡截图，但 AS2 全岛/全剧情对话仍未覆盖。
+- Monster Carnival、Mission Atlantis、Monkey Wrench、Survival 和 Arabian Nights 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区/更多深海/更多 FTUE/Survival/Arabian 更多房间和全流程仍未全审。
+- 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival、Mission Atlantis、Survival、Arabian Nights 的背包/地图/商店确认框/设置面板首批证据；Monkey Wrench 已有设置/背包证据但 FTUE `mainLand` 不暴露商店/地图按钮；全岛屿/全部面板仍未系统审计。
 - AS3 原生箭头/导航/native label 当前扫描范围已完成；AS2 native label 和静态资产替换清单未完成。

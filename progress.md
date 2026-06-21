@@ -3876,3 +3876,63 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `08. arabian-nights`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Arabian Nights Current-Build Sealed Baseline Pass
+
+- Continued island 08 (`arabian-nights` / `arab1`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Added Arabian map metadata:
+  - `arab1/island/page.xml`, `arab2/island/page.xml`, `arab3/island/page.xml`.
+  - `arabEpisodic/episode1/page.xml`, `episode2/page.xml`, `episode3/page.xml`.
+  - Passing strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782029786436.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782029786436/01-arabian-nights-map.png`.
+- Extended Arabian runtime QA support:
+  - `tools/patch-as3-monster-qa-dialog.js` now supports `game.scenes.arab1.bazaar.Bazaar`.
+  - Native Dialog QA accepts Bazaar NPCs `npc1..npc4`, `trader1..trader3`, and `player`; it calls `Dialog.sayById()` once with `DialogData.timeOverride=60` and `forceOnScreen=true`.
+  - Because Flash loader query params are not reliable in this class, `tools/qa-as3-dialogue-stability.js` injects seed events such as `qa_dialog_arab1_trader2_comment`.
+  - Added QA-only `qa_auto_scene_arab1_desert` fallback so loading tests can transition Bazaar -> Desert without foreground input.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and updated `runtime-data/patched-zips/as3-runtime.zip` via `tools/update-as3-runtime-shell-only.js`; latest Shell sha256 in report is `55e2ddbcf5b77ce9ccd9690d443fcab977c52e8a3cfafbf8c6f7524b6eba3aee`.
+- Final Arabian window/resize/maximize regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782036700970.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `nonGameUiCapture=false`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782036700970/01-arabian-nights-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782036700970/01-arabian-nights-maximized-retry-1.png`.
+  - Manual review: character visible, MENU stays top-right, no blue void, no main-screen/Codex capture. The first maximize frame caught loading, then retry settled correctly; the retry is the accepted evidence.
+- Window and F11/fullscreen loading-center evidence passed:
+  - Window report: `runtime-data/qa/as3/p0-playability/as3-window-loading-transition-1782036333988.json`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-window-loading-1782036333988/window-loading-sequence/window-loading-4000.png`.
+  - Result: `ok=true`, `loading.observed=true`, `centerOk=true`, 9 loading samples detected and centered.
+  - F11 report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782036503309.json`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782036503309/f11-loading-sequence/f11-loading-0.png`.
+  - Result: `ok=true`, `f11.fullscreenLike=true`, `loading.observed=true`, `centerOk=true`, 10 loading samples detected and centered.
+  - Discarded loading attempts:
+    - `as3-window-loading-transition-1782035113292.json` and `1782035732803` did not trigger/capture the transition.
+    - `as3-window-loading-transition-1782036150548.json` had already reached Desert before sampling; useful as transition proof, not loading-center proof.
+- Three native Chinese dialogue stability samples passed:
+  - Trader2 `comment`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782034402463.json`, expected `我的望远镜`.
+  - Trader1 `comment`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782034488207.json`, expected `神灯`.
+  - Trader3 `comment`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782034573399.json`, expected `最美的骆驼`.
+  - Extra calibration: player `need_spy_glass`, `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782034258831.json`, expected `看起来这是用来放望远镜`.
+  - All accepted samples use the native Dialog data path, display Chinese, and were visually inspected via `sequence/dialogue-0.png`; no repeated bubble spam or twitching was observed.
+- HUD/menu/button evidence passed:
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782031265590.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782031265590/01-arabian-nights-inventory.png`.
+  - Settings: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782031427653.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782031427653/01-arabian-nights-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782031583317.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782031583317/01-arabian-nights-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782031745867.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782031745867/01-arabian-nights-secondary.png`.
+  - Manual review: Chinese labels/buttons are centered and do not overlap.
+- Static-art policy remained intact:
+  - `MENU`, `Your Highness/Grand Bazaar`, map logo, posters, market signs, arrows, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, or art-lettering.
+- Current Arabian conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full three-episode story completion proof; more rooms, natural scene traversal, palace/cave/desert story route, and end-to-end story completion remain future full-island deep QA.
+- Next island:
+  - Move current execution to `09. escape-from-pelican-rock`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

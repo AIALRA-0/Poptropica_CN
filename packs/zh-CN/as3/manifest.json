@@ -2,7 +2,7 @@
   "generatedAt": "2026-06-09T23:01:09.203Z",
   "sourceGroup": "as3",
   "canonicalKeys": [],
-  "assetsPatched": 263,
+  "assetsPatched": 266,
   "externalTextAssets": [
     {
       "assetId": "as3-island-names:curated-zh-cn",
@@ -1012,17 +1012,17 @@
         "game.scenes.timmy.mainStreet.MainStreet",
         "game.scenes.deepDive1.ship.Ship",
         "game.scenes.ftue.mainLand.MainLand",
-        "game.scenes.survival4.mainHall.MainHall"
+        "game.scenes.survival4.mainHall.MainHall",
+        "game.scenes.arab1.bazaar.Bazaar"
       ]
     }
   ],
   "pendingSwfAssets": [],
   "runtimeZip": {
-    "status": "ready",
+    "status": "skipped",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-    "replacementCount": 1297,
-    "swfRuntimeOverrides": "safe_subset"
+    "replacementCount": 0
   },
   "archivedReality2Resources": {
     "generatedAt": "2026-06-17T21:38:52.538Z",

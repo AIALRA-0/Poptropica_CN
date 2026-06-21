@@ -19,6 +19,7 @@ const TIMMY_CLASS = "game.scenes.timmy.mainStreet.MainStreet";
 const MISSION_SHIP_CLASS = "game.scenes.deepDive1.ship.Ship";
 const FTUE_MAINLAND_CLASS = "game.scenes.ftue.mainLand.MainLand";
 const SURVIVAL4_MAINHALL_CLASS = "game.scenes.survival4.mainHall.MainHall";
+const ARAB1_BAZAAR_CLASS = "game.scenes.arab1.bazaar.Bazaar";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -1648,6 +1649,271 @@ function patchSurvival4MainHall(content) {
   return next;
 }
 
+function patchArab1Bazaar(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import game.components.scene.SceneInteraction;", "   import game.data.TimedEvent;");
+  next = addImport(next, "   import game.data.TimedEvent;", "   import game.data.scene.characterDialog.DialogData;");
+  next = addImport(next, "   import game.util.PlatformUtils;", "   import game.util.ProxyUtils;");
+  next = addImport(next, "   import game.util.ProxyUtils;", "   import flash.utils.getDefinitionByName;");
+
+  const afterLoadMethod = `      private function flashpointQaSayArab1DialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         if(super.groupContainer != null && super.groupContainer.root != null && super.groupContainer.root.loaderInfo != null)
+         {
+            npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+            dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
+         }
+         if(npcId == null || npcId == "")
+         {
+            if(shellApi.checkEvent("qa_dialog_arab1_npc1_default") || shellApi.checkEvent("qa_dialog_arab1_npc1"))
+            {
+               npcId = "npc1";
+               dialogId = "default";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_npc2_default") || shellApi.checkEvent("qa_dialog_arab1_npc2"))
+            {
+               npcId = "npc2";
+               dialogId = "default";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_npc3_default") || shellApi.checkEvent("qa_dialog_arab1_npc3"))
+            {
+               npcId = "npc3";
+               dialogId = "default";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_npc4_default") || shellApi.checkEvent("qa_dialog_arab1_npc4"))
+            {
+               npcId = "npc4";
+               dialogId = "default";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_trader1_comment") || shellApi.checkEvent("qa_dialog_arab1_trader1"))
+            {
+               npcId = "trader1";
+               dialogId = "comment";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_trader2_comment") || shellApi.checkEvent("qa_dialog_arab1_trader2"))
+            {
+               npcId = "trader2";
+               dialogId = "comment";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_trader3_comment") || shellApi.checkEvent("qa_dialog_arab1_trader3"))
+            {
+               npcId = "trader3";
+               dialogId = "comment";
+            }
+            else if(shellApi.checkEvent("qa_dialog_arab1_player_need_spy_glass") || shellApi.checkEvent("qa_dialog_arab1_player"))
+            {
+               npcId = "player";
+               dialogId = "need_spy_glass";
+            }
+         }
+         if(npcId != "npc1" && npcId != "npc2" && npcId != "npc3" && npcId != "npc4" && npcId != "trader1" && npcId != "trader2" && npcId != "trader3" && npcId != "player")
+         {
+            return;
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSayArab1Dialog,npcId,dialogId)));
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSayArab1Dialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         if(param1 == "player")
+         {
+            target = player;
+         }
+         else
+         {
+            target = getEntityById(param1);
+         }
+         if(param2 == "default")
+         {
+            param2 = "";
+         }
+         if(param2 == null || param2 == "")
+         {
+            if(param1 == "trader1" || param1 == "trader2" || param1 == "trader3")
+            {
+               param2 = "comment";
+            }
+            else if(param1 == "player")
+            {
+               param2 = "need_spy_glass";
+            }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
+               }
+               else
+               {
+                  CharUtils.sayDialog(target);
+               }
+            }
+            else
+            {
+               CharUtils.sayDialog(target);
+            }
+         }
+      }
+`;
+
+  const autoSceneAfterLoadMethod = `      private function flashpointQaAutoArab1SceneAfterLoad() : void
+      {
+         var delayMs:Number = NaN;
+         var delaySeconds:Number = 4;
+         var targetScene:String = null;
+         if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
+         {
+            return;
+         }
+         targetScene = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene") as String;
+         if(targetScene == null || targetScene == "")
+         {
+            if(shellApi.checkEvent("qa_auto_scene_arab1_desert"))
+            {
+               targetScene = "game.scenes.arab1.desert.Desert";
+            }
+            else if(shellApi.checkEvent("qa_auto_scene_arab1_palaceExterior"))
+            {
+               targetScene = "game.scenes.arab1.palaceExterior.PalaceExterior";
+            }
+         }
+         if(targetScene == null || targetScene == "" || targetScene == "game.scenes.arab1.bazaar.Bazaar")
+         {
+            return;
+         }
+         if(targetScene.indexOf("game.scenes.arab1.") != 0)
+         {
+            return;
+         }
+         delayMs = Number(ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoSceneDelayMs"));
+         if(!isNaN(delayMs) && delayMs > 0)
+         {
+            if(delayMs > 15000)
+            {
+               delayMs = 15000;
+            }
+            delaySeconds = Math.max(0.5,delayMs / 1000);
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(delaySeconds,1,Command.create(this.flashpointQaLoadArab1Scene,targetScene)));
+      }
+`;
+
+  const autoSceneLoadMethod = `      private function flashpointQaLoadArab1Scene(param1:String) : void
+      {
+         var sceneClass:Class = null;
+         if(param1 == null || param1 == "" || param1.indexOf("game.scenes.arab1.") != 0)
+         {
+            return;
+         }
+         sceneClass = getDefinitionByName(param1) as Class;
+         if(sceneClass != null)
+         {
+            this.shellApi.loadScene(sceneClass,120,1440,"right");
+         }
+      }
+`;
+
+  const loadedCallMarker = "         setUpIntro();\n";
+  const sayDialogCall = "         this.flashpointQaSayArab1DialogAfterLoad();\n";
+  const autoSceneCall = "         this.flashpointQaAutoArab1SceneAfterLoad();\n";
+  const loadedSayDialogBlock = `${loadedCallMarker}${sayDialogCall}`;
+  const loadedCallBlock = `${loadedCallMarker}${sayDialogCall}${autoSceneCall}`;
+  if (!next.includes(loadedCallBlock)) {
+    if (!next.includes(loadedCallMarker)) {
+      throw new Error("Unable to locate Arabian Bazaar loaded marker.");
+    }
+    if (next.includes(loadedSayDialogBlock)) {
+      next = next.replace(loadedSayDialogBlock, loadedCallBlock);
+    } else {
+      next = next.replace(loadedCallMarker, loadedCallBlock);
+    }
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      private function setUpInteractions() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Arabian Bazaar setUpInteractions marker.");
+    }
+    const resizeMethod = `
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayArab1DialogAfterLoad();
+         this.flashpointQaAutoArab1SceneAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  } else {
+    const resizeSayOnlyBlock = `      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayArab1DialogAfterLoad();
+      }
+`;
+    const resizeAutoSceneBlock = `      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayArab1DialogAfterLoad();
+         this.flashpointQaAutoArab1SceneAfterLoad();
+      }
+`;
+    if (!next.includes(resizeAutoSceneBlock)) {
+      if (!next.includes(resizeSayOnlyBlock)) {
+        throw new Error("Unable to locate Arabian Bazaar resize block for QA auto scene call.");
+      }
+      next = next.replace(resizeSayOnlyBlock, resizeAutoSceneBlock);
+    }
+  }
+
+  if (!next.includes("private function flashpointQaSayArab1DialogAfterLoad")) {
+    const marker = "\n      private function setUpInteractions() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Arabian Bazaar methods marker.");
+    }
+    const methods = `\n      \n${afterLoadMethod}      \n${sayDialogMethod}      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}`;
+    next = next.replace(marker, `${methods}${marker}`);
+  } else {
+    next = replaceAs3Function(next, "      private function flashpointQaSayArab1DialogAfterLoad() : void", afterLoadMethod);
+    if (next.includes('      private function flashpointQaSayArab1Dialog(param1:String, param2:String = "") : void')) {
+      next = replaceAs3Function(next, '      private function flashpointQaSayArab1Dialog(param1:String, param2:String = "") : void', sayDialogMethod);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaSayArab1Dialog(param1:String) : void", sayDialogMethod);
+    }
+    if (!next.includes("private function flashpointQaAutoArab1SceneAfterLoad")) {
+      const marker = "\n      private function setUpInteractions() : void";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate Arabian Bazaar setUpInteractions marker for QA auto scene methods.");
+      }
+      next = next.replace(marker, `\n      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaAutoArab1SceneAfterLoad() : void", autoSceneAfterLoadMethod);
+      next = replaceAs3Function(next, "      private function flashpointQaLoadArab1Scene(param1:String) : void", autoSceneLoadMethod);
+    }
+  }
+
+  if (!next.includes('npcId != "npc1" && npcId != "npc2" && npcId != "npc3" && npcId != "npc4" && npcId != "trader1" && npcId != "trader2" && npcId != "trader3" && npcId != "player"') || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSayArab1Dialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.sayById(param2)") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId")') || !next.includes('shellApi.checkEvent("qa_dialog_arab1_trader2_comment")') || !next.includes("this.flashpointQaSayArab1DialogAfterLoad();") || !next.includes("this.flashpointQaAutoArab1SceneAfterLoad();") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene")') || !next.includes('shellApi.checkEvent("qa_auto_scene_arab1_desert")') || !next.includes("getDefinitionByName(param1) as Class") || !next.includes('param1.indexOf("game.scenes.arab1.") != 0')) {
+    throw new Error("Arabian Bazaar QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -1764,6 +2030,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Survival4 MainHall class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    ARAB1_BAZAAR_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Arabian Bazaar class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -1809,6 +2084,10 @@ function main() {
   if (!survival4MainHallScriptPath) {
     throw new Error("Exported Survival4 MainHall.as was not found.");
   }
+  const arab1BazaarScriptPath = findScript(scriptRoot, "game/scenes/arab1/bazaar/Bazaar.as");
+  if (!arab1BazaarScriptPath) {
+    throw new Error("Exported Arabian Bazaar.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -1820,6 +2099,7 @@ function main() {
   writeText(missionShipScriptPath, patchMissionAtlantisShip(fs.readFileSync(missionShipScriptPath, "utf8")));
   writeText(ftueMainLandScriptPath, patchFtueMainLand(fs.readFileSync(ftueMainLandScriptPath, "utf8")));
   writeText(survival4MainHallScriptPath, patchSurvival4MainHall(fs.readFileSync(survival4MainHallScriptPath, "utf8")));
+  writeText(arab1BazaarScriptPath, patchArab1Bazaar(fs.readFileSync(arab1BazaarScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -1901,14 +2181,22 @@ function main() {
     FTUE_MAINLAND_CLASS,
     ftueMainLandScriptPath
   ], "replace Monkey Wrench MainLand class");
-  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const arab1BazaarSwf = path.join(workDir, "Shell-monster-qa-dialog-arab1-bazaar.swf");
   runFfdec(ffdecCli, [
     "-replace",
     ftueSwf,
-    outputSwf,
+    arab1BazaarSwf,
     SURVIVAL4_MAINHALL_CLASS,
     survival4MainHallScriptPath
   ], "replace Survival4 MainHall class");
+  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  runFfdec(ffdecCli, [
+    "-replace",
+    arab1BazaarSwf,
+    outputSwf,
+    ARAB1_BAZAAR_CLASS,
+    arab1BazaarScriptPath
+  ], "replace Arabian Bazaar class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -1930,7 +2218,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS, ARAB1_BAZAAR_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -1967,9 +2255,11 @@ function main() {
       ftueMainLandClassName: FTUE_MAINLAND_CLASS,
       ftueMainLandScriptPath,
       survival4MainHallClassName: SURVIVAL4_MAINHALL_CLASS,
-      survival4MainHallScriptPath
+      survival4MainHallScriptPath,
+      arab1BazaarClassName: ARAB1_BAZAAR_CLASS,
+      arab1BazaarScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, and Survival native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, Survival, and Arabian Nights native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);
