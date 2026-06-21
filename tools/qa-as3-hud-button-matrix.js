@@ -5,14 +5,14 @@ const { ensureQaDir } = require("./lib/qa");
 const { writeJson } = require("./lib/fs-utils");
 
 const DEFAULT_BUTTONS = [
-  { id: "settings", rightInset: 686, minChangedPixelRatio: 0.01 },
+  { id: "settings", rightInset: 686, minChangedPixelRatio: 0.01, expectedPattern: "设置|声音|音效|音乐|对话速度|画质" },
   { id: "audio", rightInset: 606, minChangedPixelRatio: 0.0001 },
   { id: "home", rightInset: 526, minChangedPixelRatio: 0.01 },
   { id: "realms", rightInset: 446, minChangedPixelRatio: 0.01 },
-  { id: "store", rightInset: 366, minChangedPixelRatio: 0.01 },
-  { id: "map", rightInset: 286, minChangedPixelRatio: 0.01 },
+  { id: "store", rightInset: 366, minChangedPixelRatio: 0.01, expectedPattern: "进入商店|确定要进入商店|确定|商店" },
+  { id: "map", rightInset: 286, minChangedPixelRatio: 0.01, expectedPattern: "地图|确定要前往地图|怪物嘉年华|开始|重新开始" },
   { id: "costumizer", rightInset: 206, minChangedPixelRatio: 0.01 },
-  { id: "inventory", rightInset: 126, minChangedPixelRatio: 0.01 }
+  { id: "inventory", rightInset: 126, minChangedPixelRatio: 0.01, expectedPattern: "背包|背包里还没有物品|去岛上探索|怪物嘉年华岛" }
 ];
 
 function flagEnabled(value) {
@@ -39,7 +39,8 @@ function parseButtonSpec(value) {
       id,
       index: base?.index ?? null,
       rightInset: inset === undefined ? base.rightInset : Number(inset),
-      minChangedPixelRatio: minRatio === undefined ? (base?.minChangedPixelRatio ?? 0.01) : Number(minRatio)
+      minChangedPixelRatio: minRatio === undefined ? (base?.minChangedPixelRatio ?? 0.01) : Number(minRatio),
+      expectedPattern: base?.expectedPattern || ""
     };
   });
 }
@@ -73,6 +74,9 @@ function runHudSmokeForButton(args, button) {
     `--min-secondary-click-changed-pixel-ratio=${button.minChangedPixelRatio}`,
     `--secondary-click-wait-ms=${String(args.secondaryClickWaitMs || args["secondary-click-wait-ms"] || 5000)}`
   ];
+  if (button.expectedPattern) {
+    childArgs.push(`--secondary-click-expected-pattern=${button.expectedPattern}`);
+  }
   if (flagEnabled(args.forbidVisibleEnglish || args["forbid-visible-english"])) {
     childArgs.push("--forbid-visible-english=1");
   }
@@ -95,26 +99,49 @@ function runHudSmokeForButton(args, button) {
   });
 
   const childReport = result.stdout ? extractJson(result.stdout) : null;
-  const first = childReport?.reports?.[0] || null;
-  const secondary = first?.menuClick?.secondary || {};
+  const islandReports = Array.isArray(childReport?.reports) ? childReport.reports : [];
+  const islandSummaries = islandReports.map((entry) => {
+    const secondary = entry?.menuClick?.secondary || {};
+    return {
+      canonicalKey: entry?.canonicalKey || null,
+      ok: Boolean(entry?.ok && secondary?.check?.ok),
+      failedChecks: entry?.failedChecks || [],
+      observedChangedPixelRatio: secondary?.check?.observedChangedPixelRatio ?? null,
+      text: secondary?.check?.text || "",
+      screenshotPath: entry?.artifacts?.secondaryScreenshotPath || null,
+      clickPath: entry?.artifacts?.secondaryClickPath || null,
+      point: secondary?.check?.point || secondary?.click?.point || null
+    };
+  });
+  const failedIslands = islandSummaries
+    .filter((entry) => !entry.ok)
+    .map((entry) => entry.canonicalKey)
+    .filter(Boolean);
+  const first = islandReports[0] || null;
+  const firstSecondary = first?.menuClick?.secondary || {};
   return {
     id: button.id,
     index: button.index,
     rightInset: button.rightInset,
     minChangedPixelRatio: button.minChangedPixelRatio,
-    ok: result.status === 0 && Boolean(childReport?.ok) && Boolean(secondary?.check?.ok),
+    ok: result.status === 0 && Boolean(childReport?.ok) && failedIslands.length === 0,
     childStatus: result.status,
     timedOut: Boolean(result.error && /timed out/iu.test(String(result.error.message || result.error))),
     stderr: String(result.stderr || "").slice(0, 2000),
     reportPath: childReport?.reportPath || null,
     artifactDir: childReport?.artifactDir || null,
     failedKeys: childReport?.failedKeys || [],
+    failedIslands,
     failedChecks: first?.failedChecks || [],
-    observedChangedPixelRatio: secondary?.check?.observedChangedPixelRatio ?? null,
-    text: secondary?.check?.text || "",
+    observedChangedPixelRatio: firstSecondary?.check?.observedChangedPixelRatio ?? null,
+    text: firstSecondary?.check?.text || "",
     screenshotPath: first?.artifacts?.secondaryScreenshotPath || null,
     clickPath: first?.artifacts?.secondaryClickPath || null,
-    rawReportPath: childReport?.reportPath || null
+    rawReportPath: childReport?.reportPath || null,
+    islandCount: islandSummaries.length,
+    islandsPassed: islandSummaries.filter((entry) => entry.ok).length,
+    islandsFailed: failedIslands.length,
+    islandSummaries
   };
 }
 

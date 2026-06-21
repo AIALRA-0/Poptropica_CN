@@ -182,16 +182,21 @@ function containsDialogueChinese(text) {
 
 function configureVisibleQa(args, size) {
   const targetMonitor = String(args.monitor || args.targetMonitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const allowForegroundCapture = flagEnabled(args.allowForegroundCapture || args["allow-foreground-capture"]);
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }
-  process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  if (allowForegroundCapture) {
+    delete process.env.POPTROPICA_QA_NO_FOREGROUND;
+  } else {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
   process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
   process.env.POPTROPICA_WINDOW_WIDTH = String(size.width);
   process.env.POPTROPICA_WINDOW_HEIGHT = String(size.height);
   return {
     targetMonitor: targetMonitor || null,
-    noForegroundCapture: true,
+    noForegroundCapture: !allowForegroundCapture,
     postMessageClicks: true,
     initialSize: size
   };

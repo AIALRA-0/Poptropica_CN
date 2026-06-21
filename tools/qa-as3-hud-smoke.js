@@ -373,10 +373,29 @@ function clickPointForRightInset(capture, menuLine, rightInset, args) {
   };
 }
 
-function adaptiveHudTargetX(width, buttonCount, buttonIndex) {
-  const newHudX = Number(width || 0) - 50;
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function adaptiveHudTargetX(width, buttonCount, buttonIndex, menuLine = null) {
+  const safeWidth = Number(width || 0);
+  const menuCenterX = Number(menuLine?.box?.centerX || (safeWidth - 68));
+  const safeIndex = Math.max(0, Math.min(Math.max(1, Number(buttonCount || 8)) - 1, Number(buttonIndex || 0)));
+  const expandedHudCenters = [
+    58,
+    158,
+    272,
+    menuCenterX - 540,
+    menuCenterX - 430,
+    menuCenterX - 312,
+    menuCenterX - 202,
+    menuCenterX - 90
+  ];
+  if (Number(buttonCount || 8) === 8 && Number.isFinite(expandedHudCenters[safeIndex])) {
+    return clamp(expandedHudCenters[safeIndex], 28, Math.max(28, safeWidth - 28));
+  }
+  const newHudX = safeWidth - 50;
   const safeCount = Math.max(1, Number(buttonCount || 8));
-  const safeIndex = Math.max(0, Math.min(safeCount - 1, Number(buttonIndex || 0)));
   const leftPad = Math.max(18, Math.min(50, newHudX - 18));
   let spacing = (newHudX - leftPad) / safeCount;
   if (!Number.isFinite(spacing) || spacing <= 0) {
@@ -401,7 +420,7 @@ function clickPointForHudButtonIndex(capture, menuLine, args) {
   const offsets = chromeOffsetsFromCapture(capture, args);
   const buttonCount = Number(args.secondaryButtonCount || args["secondary-button-count"] || 8);
   const buttonIndex = Number(rawIndex);
-  const screenshotX = Math.round(adaptiveHudTargetX(width, buttonCount, buttonIndex));
+  const screenshotX = Math.round(adaptiveHudTargetX(width, buttonCount, buttonIndex, menuLine));
   const screenshotY = Math.round(menuLine?.box?.centerY || Number(args.menuFallbackTopCenter || args["menu-fallback-top-center"] || 86));
   return {
     x: screenshotX + Math.round(offsets.x),

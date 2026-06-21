@@ -183,6 +183,7 @@ function resolveLaunchTarget({ config, args, autoSceneDelayMs, loadingHoldMs }) 
 
 function configureQaDefaults(args, size) {
   const monitor = String(arg(args, "monitor", "monitor", process.env.POPTROPICA_QA_MONITOR || "G32QC") || "").trim();
+  const postMessageF11 = flagEnabled(arg(args, "postMessageF11", "post-message-f11", ""));
   if (monitor) {
     process.env.POPTROPICA_QA_MONITOR = monitor;
   }
@@ -196,6 +197,7 @@ function configureQaDefaults(args, size) {
     monitor: monitor || null,
     noForegroundCapture: true,
     postMessageKeys: true,
+    postMessageF11,
     muteRuntime: true,
     size
   };
@@ -282,9 +284,13 @@ function visualGuardArgs({ screenshotPath, outputPath }) {
   ];
 }
 
-function keyWindow({ runtime, windowInfo, key, outputPath }) {
+function keyWindow({ runtime, windowInfo, key, outputPath, postMessage = false }) {
   const previousKeyboardEvents = process.env.POPTROPICA_QA_KEYBOARD_EVENTS;
-  process.env.POPTROPICA_QA_KEYBOARD_EVENTS = "1";
+  if (postMessage) {
+    delete process.env.POPTROPICA_QA_KEYBOARD_EVENTS;
+  } else {
+    process.env.POPTROPICA_QA_KEYBOARD_EVENTS = "1";
+  }
   try {
     const commandArgs = [
       "key-window",
@@ -304,6 +310,9 @@ function keyWindow({ runtime, windowInfo, key, outputPath }) {
     const cmdlineContains = runtimeCmdlineContains(runtime);
     if (cmdlineContains) {
       commandArgs.push("--cmdline-contains", cmdlineContains);
+    }
+    if (postMessage) {
+      commandArgs.push("--post-message");
     }
     return runPythonQa(commandArgs, { timeoutMs: 30000 });
   } finally {
@@ -720,7 +729,7 @@ async function main() {
     const beforeF11 = captureAndAnalyze({ runtime, windowInfo, stem: beforeStem, runDir, qaErrors, skipAnalysis: true });
 
     const f11KeyPath = path.join(runDir, "f11-key.json");
-    const f11Key = windowOnly ? null : keyWindow({ runtime, windowInfo, key: "VK_F11", outputPath: f11KeyPath });
+    const f11Key = windowOnly ? null : keyWindow({ runtime, windowInfo, key: "VK_F11", outputPath: f11KeyPath, postMessage: qaDefaults.postMessageF11 });
     let transitionRuntime = runtime;
     let transitionWindowInfo = windowInfo;
     let relaunchAdoption = {

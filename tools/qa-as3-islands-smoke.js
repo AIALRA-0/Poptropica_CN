@@ -186,6 +186,35 @@ function safeFileSegment(value) {
     .slice(0, 80);
 }
 
+const NAVIGATION_ONLY_CHINESE_LABELS = [
+  "进入",
+  "出口",
+  "离开",
+  "返回",
+  "退出",
+  "向左走",
+  "向右走",
+  "向上走",
+  "向下走",
+  "公共房间",
+  "旅行"
+];
+const OCR_ARTIFACT_SINGLE_CHARS = new Set(["米", "康", "卡"]);
+
+function containsSubstantialChinese(text) {
+  const chineseRuns = (String(text || "").match(/[\u3400-\u9fff\uf900-\ufaff]+/gu) || [])
+    .filter((run) => !(run.length === 1 && OCR_ARTIFACT_SINGLE_CHARS.has(run)));
+  const compact = chineseRuns.join("");
+  if (compact.length < 4) {
+    return false;
+  }
+  let residual = compact;
+  for (const label of NAVIGATION_ONLY_CHINESE_LABELS) {
+    residual = residual.split(label).join("");
+  }
+  return /[\u3400-\u9fff\uf900-\ufaff]{4,}/u.test(residual);
+}
+
 function isProcessAlive(pid) {
   const numericPid = Number(pid || 0);
   if (!numericPid || numericPid === process.pid) {
@@ -1602,6 +1631,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   fs.writeFileSync(logSegmentPath, logSegment, "utf8");
   const logSummary = summarizeLogSegment(logSegment);
   const sceneEvidence = buildSceneEvidence(entry, logSegment, args);
+  const requiredChineseSeen = containsSubstantialChinese(ocr?.text || "");
   const failedChecks = [];
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
@@ -1638,6 +1668,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");
+  }
+  if (flagEnabled(args.requireChinese) && !requiredChineseSeen) {
+    failedChecks.push("chinese_text_not_seen");
   }
   if (!interaction.skipped && !interaction.ok) {
     failedChecks.push("interaction_click_failed");
@@ -1685,6 +1718,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
     ocr: {
       skipped: Boolean(ocr?.skipped),
       containsChinese: Boolean(ocr?.containsChinese),
+      containsSubstantialChinese: requiredChineseSeen,
       text: String(ocr?.text || "").slice(0, 500),
       lineCount: ocr?.lineCount || 0
     },

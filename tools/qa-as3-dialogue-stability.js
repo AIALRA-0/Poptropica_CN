@@ -133,6 +133,9 @@ async function main() {
   const launchUrl = buildAs3DirectSceneUrl(scene, {
     seedIsland: args.seedIsland || args["seed-island"] || "timmy",
     seedEvents: args.seedEvents || args["seed-events"] || "intro_complete",
+    startX: args.startX || args["start-x"],
+    startY: args.startY || args["start-y"],
+    startDirection: args.startDirection || args["start-direction"],
     qaDialogNpc: npc,
     qaDialogId: dialogId
   });

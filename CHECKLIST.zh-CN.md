@@ -252,27 +252,43 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | 静态美术字规则 | 通过 | `MENU`、`Reality TV/WILD SAFARI`、`DANGER/STAFF ONLY`、地图 Logo/Motel 图保留英文；未添加中文文字层覆盖 |
 | 当前剩余 | 非封版 blocker | 未证明整岛从头到尾通关；更深剧情和更多场景自然遍历后续按全岛深测补，不阻塞本轮进入下一个岛 |
 
+## 当前 Monster Carnival 状态
+
+| 验收项 | 状态 | 当前证据 |
+|---|---|---|
+| Shell/入口可启动 | 通过 | `node tools\patch-as3-monster-qa-dialog.js` 已重建 AS3 `Shell.swf` 和 runtime zip；补丁报告 `runtime-data/qa/as3/as3-monster-qa-dialog-patch.json`，`replacementCount=1280` |
+| 地图打开/介绍中文 | 通过 | 新增 `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/carnival/island/page.xml`；严格中文 smoke `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782009180820.json` 通过；截图 `runtime-data/qa/as3/islands-smoke/run-1782009180820/01-monster-carnival-map.png` 显示 `怪物嘉年华岛`、中文介绍、`开始/重新开始` |
+| 窗口缩放/最大化稳定 | 通过 | P0 报告 `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782010036636.json` 通过；截图 `run-1782010036636/01-monster-carnival-initial.png`、`...resized.png`、`...maximized-retry-1.png`；角色可见，MENU 在右上，无蓝底/角色消失/非游戏 UI 污染 |
+| F11/fullscreen 与 loading 居中 | 通过 | `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782010574985.json` 通过；使用 `--post-message-f11 1`，`noForegroundCapture=true`；截图 `run-f11-loading-1782010574985/f11-loading-sequence/f11-loading-500.png`；5 个 loading 样本居中，`f11.fullscreenLike=true` |
+| HUD/菜单/背包/商店/地图/设置按钮居中 | 通过本轮样本 | 设置 `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782011109661.json`；商店确认 `1782011226733`；地图确认 `1782011358737`；背包 `1782011471208`。人工复核对应 `run-*/01-monster-carnival-secondary.png`：中文按钮和面板文案居中、不重叠 |
+| 3 个真实中文对话 | 通过 | Father `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782008820508.json`，Man `1782008910900`，Junior `1782009003168`；均为原生 `Dialog.sayById()`，3/3 中文样本，expectedCount=1 |
+| 对话不重复/不抽搐 | 通过 | 三个稳定性报告均 `stableText=true`、`visualStable=true`、`duplicateExpectedSampleCount=0`；截图 `runtime-data/qa/as3/dialogue-stability/run-1782008820508/sequence/dialogue-0.png` 等已人工检查为单个原生气泡稳定显示 |
+| 静态美术字规则 | 通过 | `MENU` 图标、`Lazy Sundae`、`Apothecary`、`CARNIVAL IS HERE`、地图 logo/海报/招牌等静态图保持英文；未使用中文文本层硬盖 |
+| 废弃证据 | 已标记 | `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782009633264.json` 捕到 Codex/Edge 前台 UI，不能用；`as3-f11-loading-transition-1782010283651.json` 走真实键盘 F11 导致前台 Edge/插件崩溃，不能用。后续 F11 只用 PostMessage 路径 |
+| 当前剩余 | 非封版 blocker | 未证明整岛从头到尾通关；自然剧情和所有房间全遍历后续深测补，不阻塞进入下一个岛 |
+
 ## 当前下一步
 
 1. Poptropicon 保留 1 个 blocker：con1 自然往返切换需要真实侧屏鼠标 pass 或更可靠的后台输入 harness；不能用 direct-room smoke 冒充自然通行完成。
 2. Timmy Failure 当前 build 封版基线已通过：入口弹层关闭、resize/maximize/F11 稳定、窗口模式 loading、F11/fullscreen loading、地图介绍、背包、商店确认框、设置面板、3 段真实 NPC/剧情对话和“不重复、不抽搐”序列均有截图证据；下一步只补更多场景进入/自然剧情覆盖。
 3. Reality TV Wild Safari 当前 build 封版基线已通过：入口、resize/maximize/F11、窗口和 fullscreen loading、地图介绍、HUD/背包/确认框、中文对话、对话稳定性均有截图证据；下一轮不再在 Reality 上空转。
-4. 下一岛进入 Monster Carnival，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
-5. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
+4. Monster Carnival 当前 build 封版基线已通过：地图介绍、窗口缩放/最大化、F11/loading、HUD/背包/确认框、3 段真实中文对话、对话稳定性和静态美术规则均有截图证据；下一轮不再在 Monster 上空转。
+5. 下一岛进入 Mission Atlantis，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
+6. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
 
 ## 逐岛执行顺序
 
 原则：一个岛达到“窗口/F11/loading、主要场景切换、NPC/剧情对话、菜单/地图/背包 UI、原生箭头标签、静态美术字不硬盖、音频静音、截图记录”这一套通过标准后，才进入下一个岛。
 
-当前执行：`04. monster-carnival`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure` 和 `03. reality-tv-wild-safari` 当前 build 封版基线通过。
+当前执行：`05. mission-atlantis`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari` 和 `04. monster-carnival` 当前 build 封版基线通过。
 
 | 顺序 | 岛屿 | 引擎 | 当前状态 |
 |---|---|---|---|
 | 01 | poptropicon | AS3 | 可后台验证项已收口；自然后台切场 blocker 保留 |
 | 02 | timmy-failure | AS3 | 当前 build 封版基线通过；`1781999359459` 覆盖入口弹层关闭、resize/maximize/F11 稳定、post-resize 中文对话、非游戏 UI 防误判；仍需更多场景进入/自然剧情覆盖 |
 | 03 | reality-tv-wild-safari | AS3 | 当前 build 封版基线通过；`1782003638919` 覆盖 resize/maximize/F11、post-resize 中文对话和稳定画面；`1782001447409`/`1782001638633` 覆盖窗口与 fullscreen loading；`1782003060696` 地图介绍中文；`1782004103358` 对话稳定性通过 |
-| 04 | monster-carnival | AS3 | 当前下一岛，待开始本轮封版 |
-| 05 | mission-atlantis | AS3 | 待开始 |
+| 04 | monster-carnival | AS3 | 当前 build 封版基线通过；`1782010036636` 覆盖 resize/maximize 和中文对话；`1782010574985` 覆盖 PostMessage F11/fullscreen loading；`1782008820508`/`1782008910900`/`1782009003168` 覆盖 3 个真实 NPC 中文稳定对话；HUD smoke `1782011109661`、`1782011226733`、`1782011358737`、`1782011471208` 通过 |
+| 05 | mission-atlantis | AS3 | 当前下一岛，待开始本轮封版 |
 | 06 | monkey-wrench | AS3 | 待开始 |
 | 07 | survival | AS3 | 待开始 |
 | 08 | arabian-nights | AS3 | 待开始 |
@@ -323,6 +339,6 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 - F11 真全屏已有 Reality TV/Poptropicon/Timmy 代表样本通过；AS2 Mystery Train 主街已有 F11 尺寸门槛和人工稳定截图通过，但还不是 AS2 全岛覆盖。
 - 加载条中心已有 AS3 1186x760、1450x900 窗口模式、AS3 Poptropicon F11 场景切换、Timmy 窗口/F11 loading、Reality TV 窗口/F11 loading、以及 AS2 Mystery Train 窗口模式通过证据；尚未覆盖全部 AS2 F11/fullscreen loading、更多 AS3 场景和更多窗口尺寸。
 - 跨岛 NPC 对话中文仍未全闭环；AS3 Timmy、Reality TV、Poptropicon、Monster 有可靠截图；AS2 Mystery Train `EdisonCabin` 和 Spy `SpyMain` 已有原生中文气泡截图，但 AS2 全岛/全剧情对话仍未覆盖。
-- Monster Carnival 有真实中文对话截图，且 QA-only 原生 Dialog trigger 已闭合同轮 resize/maximize/F11 代表证据；自然剧情路径、普通 NPC 热区和全流程仍未全审。
-- 按钮居中已有 Poptropicon、Timmy、Reality TV 的背包/地图/商店确认框/设置面板首批证据；全岛屿/全部面板仍未系统审计。
+- Monster Carnival 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区和全流程仍未全审。
+- 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival 的背包/地图/商店确认框/设置面板首批证据；全岛屿/全部面板仍未系统审计。
 - AS3 原生箭头/导航/native label 当前扫描范围已完成；AS2 native label 和静态资产替换清单未完成。

@@ -86,47 +86,61 @@ function patchMainStreet(content) {
   next = next.replace("         this.zhLayoutParkingEdgeZones();\n", "");
   next = addImport(next, "   import engine.components.Display;", "   import engine.util.Command;");
   next = addImport(next, "   import game.creators.ui.ButtonCreator;", "   import game.data.TimedEvent;");
+  next = addImport(next, "   import game.data.TimedEvent;", "   import game.data.scene.characterDialog.DialogData;");
   next = addImport(next, "   import game.util.MotionUtils;", "   import game.util.ProxyUtils;");
 
   const afterLoadMethod = `      private function flashpointQaSayDialogAfterLoad() : void
       {
          var npcId:String = null;
+         var dialogId:String = null;
          if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
          {
             return;
          }
          npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+         dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
          if(npcId == null || npcId == "" || !/^(man|father|junior|edgar)$/.test(npcId))
          {
             return;
          }
-         this.flashpointQaSayDialog(npcId);
-         SceneUtil.addTimedEvent(this,new TimedEvent(1,45,Command.create(this.flashpointQaSayDialog,npcId)));
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSayDialog,npcId,dialogId)));
       }
 `;
 
-  const sayDialogMethod = `      private function flashpointQaSayDialog(param1:String) : void
+  const sayDialogMethod = `      private function flashpointQaSayDialog(param1:String, param2:String = "") : void
       {
          var target:Entity = null;
          var dialog:Dialog = null;
-         var dialogId:String = null;
+         var dialogData:* = null;
          switch(param1)
          {
             case "man":
-               target = _man;
-               dialogId = "qaMan";
+               target = _man != null ? _man : getEntityById("man");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "qaMan";
+               }
                break;
             case "father":
-               target = _father;
-               dialogId = "qaFather";
+               target = _father != null ? _father : getEntityById("father");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "qaFather";
+               }
                break;
             case "junior":
-               target = _junior;
-               dialogId = "qaJunior";
+               target = _junior != null ? _junior : getEntityById("junior");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "qaJunior";
+               }
                break;
             case "edgar":
-               target = _edgar;
-               dialogId = "waitingCarnival";
+               target = _edgar != null ? _edgar : getEntityById("edgar");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "waitingCarnival";
+               }
          }
          if(target != null)
          {
@@ -134,9 +148,15 @@ function patchMainStreet(content) {
             if(dialog != null)
             {
                dialog.allowOverwrite = true;
-               if(dialogId != null && dialog.getDialog(dialogId) != null)
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
                {
-                  dialog.sayById(dialogId);
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
                }
                else
                {
@@ -184,11 +204,16 @@ function patchMainStreet(content) {
     next = next.replace(marker, `${methods}${marker}`);
   } else {
     next = replaceAs3Function(next, "      private function flashpointQaSayDialogAfterLoad() : void", afterLoadMethod);
-    next = replaceAs3Function(next, "      private function flashpointQaSayDialog(param1:String, param2:int = 1) : void", sayDialogMethod);
-    next = replaceAs3Function(next, "      private function flashpointQaSayDialog(param1:String) : void", sayDialogMethod);
+    if (next.includes('      private function flashpointQaSayDialog(param1:String, param2:String = "") : void')) {
+      next = replaceAs3Function(next, '      private function flashpointQaSayDialog(param1:String, param2:String = "") : void', sayDialogMethod);
+    } else if (next.includes("      private function flashpointQaSayDialog(param1:String, param2:int = 1) : void")) {
+      next = replaceAs3Function(next, "      private function flashpointQaSayDialog(param1:String, param2:int = 1) : void", sayDialogMethod);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaSayDialog(param1:String) : void", sayDialogMethod);
+    }
   }
 
-  if (!next.includes("flashpointQaDialogNpc") || !next.includes("dialog.sayById(dialogId)") || !next.includes("new TimedEvent(1,45") || !next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+  if (!next.includes("flashpointQaDialogNpc") || !next.includes("flashpointQaDialogId") || !next.includes("dialog.sayById(param2)") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSayDialog,npcId,dialogId))") || !next.includes("override public function resize(param1:Number, param2:Number) : void")) {
     throw new Error("MainStreet QA dialog patch did not apply cleanly.");
   }
   return next;

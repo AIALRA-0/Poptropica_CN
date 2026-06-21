@@ -3629,3 +3629,59 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `04. monster-carnival`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-20 Monster Carnival Current-Build Sealed Baseline Pass
+
+- Continued island 04 (`monster-carnival`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Reworked the Monster QA native dialogue hook:
+  - `tools/patch-as3-monster-qa-dialog.js` now uses `flashpointQaDialogNpc` plus `flashpointQaDialogId`.
+  - The Monster hook calls native `Dialog.sayById()` after one delayed `TimedEvent(2,1,...)`; it no longer refreshes the bubble repeatedly.
+  - QA-triggered dialogue sets `DialogData.timeOverride=60` and `forceOnScreen=true`, so screenshots can capture a stable native bubble without duplicate stacked text.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and `runtime-data/patched-zips/as3-runtime.zip`; latest patch report is `runtime-data/qa/as3/as3-monster-qa-dialog-patch.json`, `replacementCount=1280`.
+- Added Monster map metadata:
+  - New source: `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/carnival/island/page.xml`.
+  - Passing strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782009180820.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782009180820/01-monster-carnival-map.png`.
+  - OCR/visual review shows `怪物嘉年华岛`, Chinese description, `开始/重新开始`; static Monster logo art remains English.
+- Final Monster window/resize/maximize regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782010036636.json`.
+  - Result: `ok=true`, `failedChecks=[]`, no non-game UI capture.
+  - Screenshots reviewed:
+    - `runtime-data/qa/as3/p0-playability/run-1782010036636/01-monster-carnival-initial.png`
+    - `runtime-data/qa/as3/p0-playability/run-1782010036636/01-monster-carnival-resized.png`
+    - `runtime-data/qa/as3/p0-playability/run-1782010036636/01-monster-carnival-maximized-retry-1.png`
+  - Manual review: character stays visible, HUD/menu stays top-right, no blue void, no character disappearance.
+- F11/fullscreen loading-center evidence passed with no foreground keyboard takeover:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782010574985.json`.
+  - Command used `--post-message-f11 1`, with `noForegroundCapture=true`.
+  - Representative screenshot: `runtime-data/qa/as3/p0-playability/run-f11-loading-1782010574985/f11-loading-sequence/f11-loading-500.png`.
+  - Result: `ok=true`, 5 loading samples detected and centered, `f11.fullscreenLike=true`.
+  - Discarded old evidence:
+    - `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782009633264.json` captured Codex/Edge foreground UI and is invalid.
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782010283651.json` used foreground keyboard F11 and hit an Edge/Flash crash path, so it is invalid.
+- Three real native Chinese dialogue stability samples passed:
+  - Father: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782008820508.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782008820508/sequence/dialogue-0.png`, expected text `小朱尼尔最爱吃冰淇淋了`.
+  - Man: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782008910900.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782008910900/sequence/dialogue-0.png`, expected text `这么多年了`.
+  - Junior: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782009003168.json`, screenshot `runtime-data/qa/as3/dialogue-stability/run-1782009003168/sequence/dialogue-0.png`, expected text `想吃自己买去`.
+  - All three had 3/3 Chinese samples, expected count 1, no duplicate expected sample count, `stableText=true`, and `visualStable=true`.
+- HUD/map/button evidence passed:
+  - Settings: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782011109661.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782011109661/01-monster-carnival-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782011226733.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782011226733/01-monster-carnival-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782011358737.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782011358737/01-monster-carnival-secondary.png`.
+  - Backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782011471208.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782011471208/01-monster-carnival-secondary.png`.
+  - Manual review: Chinese labels/buttons are centered and do not overlap.
+- Static-art policy remained intact:
+  - `MENU`, `Lazy Sundae`, `Apothecary`, `CARNIVAL IS HERE`, the Monster map logo, posters, and shop/sign art remain English/static.
+  - No Chinese TextField overlay was added to static art.
+- Current Monster conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full story completion proof; deeper story traversal, all-scene coverage, and natural-route NPC interaction remain future full-island deep QA.
+- Next island:
+  - Move current execution to `05. mission-atlantis`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
