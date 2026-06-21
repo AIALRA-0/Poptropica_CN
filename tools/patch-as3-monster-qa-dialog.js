@@ -21,6 +21,7 @@ const FTUE_MAINLAND_CLASS = "game.scenes.ftue.mainLand.MainLand";
 const SURVIVAL4_MAINHALL_CLASS = "game.scenes.survival4.mainHall.MainHall";
 const ARAB1_BAZAAR_CLASS = "game.scenes.arab1.bazaar.Bazaar";
 const PRISON_HILL_CLASS = "game.scenes.prison.hill.Hill";
+const GHD_NEON_WIENER_CLASS = "game.scenes.ghd.neonWiener.NeonWiener";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -2151,6 +2152,383 @@ function patchPrisonHill(content) {
   return next;
 }
 
+function patchGhdNeonWiener(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import flash.display.MovieClip;", "   import flash.external.ExternalInterface;");
+  next = addImport(next, "   import flash.geom.Point;", "   import flash.utils.getDefinitionByName;");
+  next = addImport(next, "   import game.util.CharUtils;", "   import game.util.Command;");
+  next = addImport(next, "   import game.util.PerformanceUtils;", "   import game.util.ProxyUtils;");
+  const fieldMarker = "      private var _humphreeFacingLeft:Boolean = false;\n";
+  if (!next.includes("private var _flashpointQaGhdNeonDialogQueued:Boolean")) {
+    if (!next.includes(fieldMarker)) {
+      throw new Error("Unable to locate GHD NeonWiener field marker.");
+    }
+    next = next.replace(fieldMarker, `${fieldMarker}      private var _flashpointQaGhdNeonDialogQueued:Boolean = false;\n      private var _flashpointQaGhdNeonDialogSpoken:Boolean = false;\n      private var _flashpointQaGhdNeonDialogAttempts:int = 0;\n      private var _flashpointQaGhdAutoSceneQueued:Boolean = false;\n`);
+  }
+  if (!next.includes("private var _flashpointQaGhdNeonDialogSpoken:Boolean")) {
+    next = next.replace("      private var _flashpointQaGhdNeonDialogQueued:Boolean = false;\n", "      private var _flashpointQaGhdNeonDialogQueued:Boolean = false;\n      private var _flashpointQaGhdNeonDialogSpoken:Boolean = false;\n      private var _flashpointQaGhdNeonDialogAttempts:int = 0;\n");
+  }
+
+  const paramMethod = `      private function flashpointQaGhdParam(param1:String) : String
+      {
+         var value:Object = null;
+         var source:String = null;
+         var queryIndex:int = 0;
+         var pairs:Array = null;
+         var entry:String = null;
+         var equalsIndex:int = 0;
+         if(super.groupContainer != null && super.groupContainer.root != null && super.groupContainer.root.loaderInfo != null)
+         {
+            value = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,param1);
+            if(value != null && value != "" && value != "undefined")
+            {
+               return String(value);
+            }
+            if(super.groupContainer.root.loaderInfo.parameters != null && super.groupContainer.root.loaderInfo.parameters[param1] != null)
+            {
+               value = super.groupContainer.root.loaderInfo.parameters[param1];
+               if(value != null && value != "" && value != "undefined")
+               {
+                  return String(value);
+               }
+            }
+            source = super.groupContainer.root.loaderInfo.url || "";
+            queryIndex = source.indexOf("?");
+            if(queryIndex >= 0)
+            {
+               pairs = source.substr(queryIndex + 1).split("&");
+               for each(entry in pairs)
+               {
+                  equalsIndex = entry.indexOf("=");
+                  if(equalsIndex > 0 && entry.substr(0,equalsIndex) == param1)
+                  {
+                     return unescape(entry.substr(equalsIndex + 1));
+                  }
+               }
+            }
+         }
+         if(ExternalInterface.available)
+         {
+            value = ExternalInterface.call("flashpointQaLocationHref");
+            if(value != null && value != "" && value != "undefined")
+            {
+               source = String(value);
+               queryIndex = source.indexOf("?");
+               if(queryIndex >= 0)
+               {
+                  pairs = source.substr(queryIndex + 1).split("&");
+                  for each(entry in pairs)
+                  {
+                     equalsIndex = entry.indexOf("=");
+                     if(equalsIndex > 0 && entry.substr(0,equalsIndex) == param1)
+                     {
+                        return unescape(entry.substr(equalsIndex + 1));
+                     }
+                  }
+               }
+            }
+         }
+         return "";
+      }
+`;
+
+  const afterLoadMethod = `      private function flashpointQaSayGhdNeonDialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         var seedEvents:String = null;
+         if(this._flashpointQaGhdNeonDialogQueued)
+         {
+            return;
+         }
+         npcId = this.flashpointQaGhdParam("flashpointQaDialogNpc");
+         dialogId = this.flashpointQaGhdParam("flashpointQaDialogId");
+         seedEvents = this.flashpointQaGhdParam("flashpointSeedEvents");
+         if(npcId == null || npcId == "")
+         {
+            if(seedEvents != null && seedEvents.indexOf("qa_dialog_ghd_neon_cosmoe_you_did_it") >= 0 || this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_cosmoe_you_did_it") || shellApi.checkEvent("qa_dialog_ghd_neon_cosmoe_you_did_it","ghd") || shellApi.checkEvent("qa_dialog_ghd_neon_cosmoe","ghd"))
+            {
+               npcId = "cosmoe";
+               dialogId = "you_did_it";
+            }
+            else if(seedEvents != null && seedEvents.indexOf("qa_dialog_ghd_neon_fred_help_find_them") >= 0 || this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_fred_help_find_them") || shellApi.checkEvent("qa_dialog_ghd_neon_fred_help_find_them","ghd") || shellApi.checkEvent("qa_dialog_ghd_neon_fred","ghd"))
+            {
+               npcId = "fred";
+               dialogId = "help_find_them";
+            }
+            else if(seedEvents != null && seedEvents.indexOf("qa_dialog_ghd_neon_humphree_warp_drive_busted") >= 0 || this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_humphree_warp_drive_busted") || shellApi.checkEvent("qa_dialog_ghd_neon_humphree_warp_drive_busted","ghd") || shellApi.checkEvent("qa_dialog_ghd_neon_humphree","ghd"))
+            {
+               npcId = "humphree";
+               dialogId = "warp_drive_busted";
+            }
+            else if(seedEvents != null && seedEvents.indexOf("qa_dialog_ghd_neon_dagger_worm_hole") >= 0 || this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_dagger_worm_hole") || shellApi.checkEvent("qa_dialog_ghd_neon_dagger_worm_hole","ghd") || shellApi.checkEvent("qa_dialog_ghd_neon_dagger","ghd"))
+            {
+               npcId = "dagger";
+               dialogId = "worm_hole";
+            }
+            else if(seedEvents != null && seedEvents.indexOf("qa_dialog_ghd_neon_player_worm_hole") >= 0 || this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_player_worm_hole") || shellApi.checkEvent("qa_dialog_ghd_neon_player_worm_hole","ghd") || shellApi.checkEvent("qa_dialog_ghd_neon_player","ghd"))
+            {
+               npcId = "player";
+               dialogId = "worm_hole";
+            }
+         }
+         if(npcId != "player" && npcId != "cosmoe" && npcId != "fred" && npcId != "humphree" && npcId != "dagger")
+         {
+            return;
+         }
+         this._flashpointQaGhdNeonDialogQueued = true;
+         this._flashpointQaGhdNeonDialogAttempts = 0;
+         SceneUtil.addTimedEvent(this,new TimedEvent(1,12,Command.create(this.flashpointQaSayGhdNeonDialog,npcId,dialogId)));
+      }
+`;
+
+  const profileEventMethod = `      private function flashpointQaGhdProfileHasEvent(param1:String) : Boolean
+      {
+         var events:* = null;
+         if(shellApi == null || shellApi.currentProfile == null || shellApi.currentProfile.events == null)
+         {
+            return false;
+         }
+         events = shellApi.currentProfile.events["ghd"];
+         return events != null && events.indexOf(param1) >= 0;
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSayGhdNeonDialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         if(this._flashpointQaGhdNeonDialogSpoken)
+         {
+            return;
+         }
+         this._flashpointQaGhdNeonDialogAttempts++;
+         if(param1 == "player")
+         {
+            target = player;
+         }
+         else if(param1 == "cosmoe")
+         {
+            target = _cosmoe;
+         }
+         else if(param1 == "fred")
+         {
+            target = _fred;
+         }
+         else if(param1 == "humphree")
+         {
+            target = _humphree;
+         }
+         else if(param1 == "dagger")
+         {
+            target = _dagger;
+         }
+         else
+         {
+            target = getEntityById(param1);
+         }
+         if(param2 == "default")
+         {
+            param2 = "";
+         }
+         if(param2 == null || param2 == "")
+         {
+            if(param1 == "cosmoe")
+            {
+               param2 = "you_did_it";
+            }
+            else if(param1 == "fred")
+            {
+               param2 = "help_find_them";
+            }
+            else if(param1 == "humphree")
+            {
+               param2 = "warp_drive_busted";
+            }
+            else if(param1 == "dagger")
+            {
+               param2 = "worm_hole";
+            }
+            else
+            {
+               param2 = "worm_hole";
+            }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.setCurrentById(param2);
+                  CharUtils.sayDialog(target);
+                  this._flashpointQaGhdNeonDialogSpoken = true;
+               }
+               else if(this._flashpointQaGhdNeonDialogAttempts >= 12)
+               {
+                  CharUtils.sayDialog(target);
+                  this._flashpointQaGhdNeonDialogSpoken = true;
+               }
+            }
+            else if(this._flashpointQaGhdNeonDialogAttempts >= 12)
+            {
+               CharUtils.sayDialog(target);
+               this._flashpointQaGhdNeonDialogSpoken = true;
+            }
+         }
+      }
+`;
+
+  const autoSceneAfterLoadMethod = `      private function flashpointQaAutoGhdSceneAfterLoad() : void
+      {
+         var delayMs:Number = NaN;
+         var delaySeconds:Number = 4;
+         var targetScene:String = null;
+         if(this._flashpointQaGhdAutoSceneQueued)
+         {
+            return;
+         }
+         targetScene = this.flashpointQaGhdParam("flashpointQaAutoScene");
+         delayMs = Number(this.flashpointQaGhdParam("flashpointQaAutoSceneDelayMs"));
+         if(targetScene == null || targetScene == "")
+         {
+            if(shellApi.checkEvent("qa_auto_scene_ghd_barren1"))
+            {
+               targetScene = "game.scenes.ghd.barren1.Barren1";
+            }
+            else if(shellApi.checkEvent("qa_auto_scene_ghd_spacePort"))
+            {
+               targetScene = "game.scenes.ghd.spacePort.SpacePort";
+            }
+         }
+         if(targetScene == null || targetScene == "" || targetScene == "game.scenes.ghd.neonWiener.NeonWiener")
+         {
+            return;
+         }
+         if(targetScene.indexOf("game.scenes.ghd.") != 0)
+         {
+            return;
+         }
+         if(!isNaN(delayMs) && delayMs > 0)
+         {
+            if(delayMs > 15000)
+            {
+               delayMs = 15000;
+            }
+            delaySeconds = Math.max(0.5,delayMs / 1000);
+         }
+         this._flashpointQaGhdAutoSceneQueued = true;
+         SceneUtil.addTimedEvent(this,new TimedEvent(delaySeconds,1,Command.create(this.flashpointQaLoadGhdScene,targetScene)));
+      }
+`;
+
+  const autoSceneLoadMethod = `      private function flashpointQaLoadGhdScene(param1:String) : void
+      {
+         var sceneClass:Class = null;
+         if(param1 == null || param1 == "" || param1.indexOf("game.scenes.ghd.") != 0)
+         {
+            return;
+         }
+         sceneClass = getDefinitionByName(param1) as Class;
+         if(sceneClass != null)
+         {
+            this.shellApi.loadScene(sceneClass,1400,900,"right");
+         }
+      }
+`;
+
+  const loadedMarker = '         _sceneSound = AudioUtils.getAudio(this,"sceneSound");\n';
+  const superLoadedMarker = "         super.loaded();\n";
+  const sayDialogCall = "         this.flashpointQaSayGhdNeonDialogAfterLoad();\n";
+  const autoSceneCall = "         this.flashpointQaAutoGhdSceneAfterLoad();\n";
+  const loadedSayDialogBlock = `${loadedMarker}${sayDialogCall}`;
+  const loadedCallBlock = `${loadedMarker}${sayDialogCall}${autoSceneCall}`;
+  const preSuperCallBlock = `${sayDialogCall}${autoSceneCall}${superLoadedMarker}`;
+  if (next.includes(preSuperCallBlock)) {
+    next = next.replace(preSuperCallBlock, superLoadedMarker);
+  }
+  if (!next.includes(loadedCallBlock)) {
+    if (!next.includes(loadedMarker)) {
+      throw new Error("Unable to locate GHD NeonWiener scene sound marker.");
+    }
+    if (next.includes(loadedSayDialogBlock)) {
+      next = next.replace(loadedSayDialogBlock, loadedCallBlock);
+    } else {
+      next = next.replace(loadedMarker, loadedCallBlock);
+    }
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      override protected function eventTriggers";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate GHD NeonWiener eventTriggers marker.");
+    }
+    const resizeMethod = `
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSayGhdNeonDialogAfterLoad();
+         this.flashpointQaAutoGhdSceneAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  }
+
+  if (!next.includes("private function flashpointQaSayGhdNeonDialogAfterLoad")) {
+    const marker = "\n      override protected function eventTriggers";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate GHD NeonWiener methods marker.");
+    }
+    const methods = `\n      \n${paramMethod}      \n${afterLoadMethod}      \n${profileEventMethod}      \n${sayDialogMethod}      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}`;
+    next = next.replace(marker, `${methods}${marker}`);
+  } else {
+    if (!next.includes("private function flashpointQaGhdParam")) {
+      const marker = "\n      private function flashpointQaSayGhdNeonDialogAfterLoad() : void";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate GHD NeonWiener QA param insertion marker.");
+      }
+      next = next.replace(marker, `\n      \n${paramMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaGhdParam(param1:String) : String", paramMethod);
+    }
+    next = replaceAs3Function(next, "      private function flashpointQaSayGhdNeonDialogAfterLoad() : void", afterLoadMethod);
+    if (!next.includes("private function flashpointQaGhdProfileHasEvent")) {
+      const marker = "\n      private function flashpointQaSayGhdNeonDialog";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate GHD NeonWiener profile event insertion marker.");
+      }
+      next = next.replace(marker, `\n      \n${profileEventMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaGhdProfileHasEvent(param1:String) : Boolean", profileEventMethod);
+    }
+    next = replaceAs3Function(next, '      private function flashpointQaSayGhdNeonDialog(param1:String, param2:String = "") : void', sayDialogMethod);
+    if (!next.includes("private function flashpointQaAutoGhdSceneAfterLoad")) {
+      const marker = "\n      override protected function eventTriggers";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate GHD NeonWiener eventTriggers marker for QA auto scene methods.");
+      }
+      next = next.replace(marker, `\n      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaAutoGhdSceneAfterLoad() : void", autoSceneAfterLoadMethod);
+      next = replaceAs3Function(next, "      private function flashpointQaLoadGhdScene(param1:String) : void", autoSceneLoadMethod);
+    }
+  }
+
+  if (!next.includes("private var _flashpointQaGhdNeonDialogQueued:Boolean = false") || !next.includes("private var _flashpointQaGhdNeonDialogSpoken:Boolean = false") || !next.includes("private var _flashpointQaGhdNeonDialogAttempts:int = 0") || !next.includes("private var _flashpointQaGhdAutoSceneQueued:Boolean = false") || !next.includes("private function flashpointQaGhdParam(param1:String) : String") || !next.includes("private function flashpointQaGhdProfileHasEvent(param1:String) : Boolean") || !next.includes('shellApi.currentProfile.events["ghd"]') || !next.includes("super.groupContainer.root.loaderInfo.parameters[param1]") || !next.includes('ExternalInterface.call("flashpointQaLocationHref")') || !next.includes("return unescape(entry.substr(equalsIndex + 1))") || !next.includes("if(this._flashpointQaGhdNeonDialogQueued)") || !next.includes("if(this._flashpointQaGhdAutoSceneQueued)") || !next.includes('npcId != "player" && npcId != "cosmoe" && npcId != "fred" && npcId != "humphree" && npcId != "dagger"') || !next.includes("new TimedEvent(1,12,Command.create(this.flashpointQaSayGhdNeonDialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.setCurrentById(param2)") || !next.includes("CharUtils.sayDialog(target)") || !next.includes('this.flashpointQaGhdParam("flashpointQaDialogId")') || !next.includes('this.flashpointQaGhdParam("flashpointSeedEvents")') || !next.includes('this.flashpointQaGhdProfileHasEvent("qa_dialog_ghd_neon_player_worm_hole")') || !next.includes('shellApi.checkEvent("qa_dialog_ghd_neon_fred_help_find_them","ghd")') || !next.includes("this._flashpointQaGhdNeonDialogSpoken = true") || !next.includes("this.flashpointQaSayGhdNeonDialogAfterLoad();") || !next.includes("this.flashpointQaAutoGhdSceneAfterLoad();") || !next.includes('this.flashpointQaGhdParam("flashpointQaAutoScene")') || !next.includes('shellApi.checkEvent("qa_auto_scene_ghd_barren1")') || !next.includes("getDefinitionByName(param1) as Class") || !next.includes('param1.indexOf("game.scenes.ghd.") != 0')) {
+    throw new Error("GHD NeonWiener QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -2285,6 +2663,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Prison Hill class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    GHD_NEON_WIENER_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Galactic Hot Dogs Neon Wiener class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -2338,6 +2725,10 @@ function main() {
   if (!prisonHillScriptPath) {
     throw new Error("Exported Prison Hill.as was not found.");
   }
+  const ghdNeonWienerScriptPath = findScript(scriptRoot, "game/scenes/ghd/neonWiener/NeonWiener.as");
+  if (!ghdNeonWienerScriptPath) {
+    throw new Error("Exported Galactic Hot Dogs NeonWiener.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -2351,6 +2742,7 @@ function main() {
   writeText(survival4MainHallScriptPath, patchSurvival4MainHall(fs.readFileSync(survival4MainHallScriptPath, "utf8")));
   writeText(arab1BazaarScriptPath, patchArab1Bazaar(fs.readFileSync(arab1BazaarScriptPath, "utf8")));
   writeText(prisonHillScriptPath, patchPrisonHill(fs.readFileSync(prisonHillScriptPath, "utf8")));
+  writeText(ghdNeonWienerScriptPath, patchGhdNeonWiener(fs.readFileSync(ghdNeonWienerScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -2449,13 +2841,21 @@ function main() {
     arab1BazaarScriptPath
   ], "replace Arabian Bazaar class");
   const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const ghdNeonWienerSwf = path.join(workDir, "Shell-monster-qa-dialog-ghd-neon-wiener.swf");
   runFfdec(ffdecCli, [
     "-replace",
     prisonHillSwf,
-    outputSwf,
+    ghdNeonWienerSwf,
     PRISON_HILL_CLASS,
     prisonHillScriptPath
   ], "replace Prison Hill class");
+  runFfdec(ffdecCli, [
+    "-replace",
+    ghdNeonWienerSwf,
+    outputSwf,
+    GHD_NEON_WIENER_CLASS,
+    ghdNeonWienerScriptPath
+  ], "replace Galactic Hot Dogs Neon Wiener class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -2477,7 +2877,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS, ARAB1_BAZAAR_CLASS, PRISON_HILL_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS, ARAB1_BAZAAR_CLASS, PRISON_HILL_CLASS, GHD_NEON_WIENER_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -2518,9 +2918,11 @@ function main() {
       arab1BazaarClassName: ARAB1_BAZAAR_CLASS,
       arab1BazaarScriptPath,
       prisonHillClassName: PRISON_HILL_CLASS,
-      prisonHillScriptPath
+      prisonHillScriptPath,
+      ghdNeonWienerClassName: GHD_NEON_WIENER_CLASS,
+      ghdNeonWienerScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, Survival, Arabian Nights, and Escape from Pelican Rock native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, Survival, Arabian Nights, Escape from Pelican Rock, and Galactic Hot Dogs native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);

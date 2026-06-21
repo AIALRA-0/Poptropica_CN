@@ -218,6 +218,7 @@ function containsDialogueChinese(text) {
 function configureVisibleQa(args, size) {
   const targetMonitor = String(args.monitor || args.targetMonitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
   const allowForegroundCapture = flagEnabled(args.allowForegroundCapture || args["allow-foreground-capture"]);
+  const postMessageF11 = flagEnabled(args.postMessageF11 || args["post-message-f11"]);
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }
@@ -233,6 +234,7 @@ function configureVisibleQa(args, size) {
     targetMonitor: targetMonitor || null,
     noForegroundCapture: !allowForegroundCapture,
     postMessageClicks: true,
+    postMessageF11,
     initialSize: size
   };
 }
@@ -768,29 +770,46 @@ function dialogueFromCapture(capture, label = "existing-dialogue") {
   };
 }
 
-function keyWindow({ runtime, windowInfo, key, outputPath }) {
+function keyWindow({ runtime, windowInfo, key, outputPath, postMessage = false }) {
+  const previousKeyboardEvents = process.env.POPTROPICA_QA_KEYBOARD_EVENTS;
+  if (postMessage) {
+    delete process.env.POPTROPICA_QA_KEYBOARD_EVENTS;
+  } else {
+    process.env.POPTROPICA_QA_KEYBOARD_EVENTS = "1";
+  }
   const pid = windowPid(windowInfo, runtime);
-  const args = [
-    "key-window",
-    "--handle",
-    String(windowInfo.match.handle),
-    "--process-names",
-    runtime.processNames.join(","),
-    "--title-contains",
-    "poptropica",
-    "--key",
-    key,
-    "--output",
-    outputPath
-  ];
-  if (pid) {
-    args.push("--pid", String(pid));
+  try {
+    const args = [
+      "key-window",
+      "--handle",
+      String(windowInfo.match.handle),
+      "--process-names",
+      runtime.processNames.join(","),
+      "--title-contains",
+      "poptropica",
+      "--key",
+      key,
+      "--output",
+      outputPath
+    ];
+    if (pid) {
+      args.push("--pid", String(pid));
+    }
+    const cmdlineContains = runtimeCmdlineContains(runtime);
+    if (cmdlineContains) {
+      args.push("--cmdline-contains", cmdlineContains);
+    }
+    if (postMessage) {
+      args.push("--post-message");
+    }
+    return runPythonQa(args, { timeoutMs: 30000 });
+  } finally {
+    if (previousKeyboardEvents === undefined) {
+      delete process.env.POPTROPICA_QA_KEYBOARD_EVENTS;
+    } else {
+      process.env.POPTROPICA_QA_KEYBOARD_EVENTS = previousKeyboardEvents;
+    }
   }
-  const cmdlineContains = runtimeCmdlineContains(runtime);
-  if (cmdlineContains) {
-    args.push("--cmdline-contains", cmdlineContains);
-  }
-  return runPythonQa(args, { timeoutMs: 30000 });
 }
 
 function centeredBoxEvidence({ image, boxes, source, text = "", extra = {} }) {
@@ -1273,7 +1292,7 @@ async function runEntry({ config, entry, index, total, runDir, args, initialSize
     if (f11BeforeInitial) {
       const keyPath = path.join(runDir, `${stem}-pre-initial-f11-key.json`);
       preInitialF11 = {
-        key: keyWindow({ runtime, windowInfo: initialWindow, key: "VK_F11", outputPath: keyPath }),
+        key: keyWindow({ runtime, windowInfo: initialWindow, key: "VK_F11", outputPath: keyPath, postMessage: visibleQaDefaults.postMessageF11 }),
         keyPath
       };
       await sleep(Number(args.preInitialF11SettleMs || args["pre-initial-f11-settle-ms"] || 1500));
@@ -1579,7 +1598,7 @@ async function runEntry({ config, entry, index, total, runDir, args, initialSize
         }
         const keyPath = path.join(runDir, `${stem}-f11-key.json`);
         f11 = {
-          key: keyWindow({ runtime, windowInfo: f11KeyWindow, key: "VK_F11", outputPath: keyPath }),
+          key: keyWindow({ runtime, windowInfo: f11KeyWindow, key: "VK_F11", outputPath: keyPath, postMessage: visibleQaDefaults.postMessageF11 }),
           keyPath,
           restoreWindowedBeforeKey: f11RestoreWindow
             ? {
@@ -1611,7 +1630,7 @@ async function runEntry({ config, entry, index, total, runDir, args, initialSize
         const restoreKeyPath = path.join(runDir, `${stem}-f11-restore-key.json`);
         f11.restoreKeyPath = restoreKeyPath;
         try {
-          f11.restore = keyWindow({ runtime, windowInfo: f11Window, key: "VK_F11", outputPath: restoreKeyPath });
+          f11.restore = keyWindow({ runtime, windowInfo: f11Window, key: "VK_F11", outputPath: restoreKeyPath, postMessage: visibleQaDefaults.postMessageF11 });
         } catch (restoreError) {
           f11.restore = {
             ok: false,

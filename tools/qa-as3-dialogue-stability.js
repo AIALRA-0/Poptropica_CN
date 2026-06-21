@@ -18,6 +18,11 @@ const {
 const CHILD_CLASS = "Gecko";
 const ARAB1_BAZAAR_SCENE = "game.scenes.arab1.bazaar.Bazaar";
 const PRISON_HILL_SCENE = "game.scenes.prison.hill.Hill";
+const GHD_NEON_WIENER_SCENE = "game.scenes.ghd.neonWiener.NeonWiener";
+const GHD_BARREN2_SCENE = "game.scenes.ghd.barren2.Barren2";
+const GHD_MUSHROOM2_SCENE = "game.scenes.ghd.mushroom2.Mushroom2";
+const GHD_PREHISTORIC2_SCENE = "game.scenes.ghd.prehistoric2.Prehistoric2";
+const GHD_GHOST_SHIP_SCENE = "game.scenes.ghd.ghostShip.GhostShip";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,7 +43,15 @@ function qaSeedPart(value, fallback) {
 
 function qaDialogSeedEventsForScene(scene, npc, dialogId) {
   const sceneName = String(scene || "");
-  if (sceneName !== ARAB1_BAZAAR_SCENE && sceneName !== PRISON_HILL_SCENE) {
+  if (
+    sceneName !== ARAB1_BAZAAR_SCENE &&
+    sceneName !== PRISON_HILL_SCENE &&
+    sceneName !== GHD_NEON_WIENER_SCENE &&
+    sceneName !== GHD_BARREN2_SCENE &&
+    sceneName !== GHD_MUSHROOM2_SCENE &&
+    sceneName !== GHD_PREHISTORIC2_SCENE &&
+    sceneName !== GHD_GHOST_SHIP_SCENE
+  ) {
     return [];
   }
   const npcPart = qaSeedPart(npc, "");
@@ -48,6 +61,21 @@ function qaDialogSeedEventsForScene(scene, npc, dialogId) {
   const dialogPart = qaSeedPart(dialogId, "default");
   if (sceneName === ARAB1_BAZAAR_SCENE) {
     return [`qa_dialog_arab1_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === GHD_NEON_WIENER_SCENE) {
+    return [`qa_dialog_ghd_neon_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === GHD_BARREN2_SCENE) {
+    return [`qa_dialog_ghd_barren2_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === GHD_MUSHROOM2_SCENE) {
+    return [`qa_dialog_ghd_mushroom2_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === GHD_PREHISTORIC2_SCENE) {
+    return ["worm_hole_appeared", `qa_dialog_ghd_prehistoric2_${npcPart}_${dialogPart}`];
+  }
+  if (sceneName === GHD_GHOST_SHIP_SCENE) {
+    return [`qa_dialog_ghd_ghostship_${npcPart}_${dialogPart}`];
   }
   return [`qa_dialog_prison_hill_${npcPart}_${dialogPart}`];
 }

@@ -4010,3 +4010,75 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `10. galactic-hot-dogs`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Galactic Hot Dogs Current-Build Sealed Baseline Pass
+
+- Continued island 10 (`galactic-hot-dogs` / `ghd`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External route sanity check:
+  - Poptropica Help Blog and Poptropica Wiki both describe GHD as Space Port -> Neon Wiener -> rescue Princess Dagger/Humphree/Cosmoe -> Ghost Ship/Map-O-Sphere flow, matching the local `ghd` scene family and the proof scenes selected here.
+  - Sources used only for route/NPC sanity check: `https://poptropi.ca/island-help/ghd/`, `https://poptropica.fandom.com/wiki/Galactic_Hot_Dogs_Island`.
+- Runtime support added:
+  - Added `tools/patch-as3-ghd-rescue-dialog-proof.js`.
+  - The patch adds QA-only native Dialog proof paths for `game.scenes.ghd.barren2.Barren2`, `game.scenes.ghd.mushroom2.Mushroom2`, `game.scenes.ghd.prehistoric2.Prehistoric2`, and `game.scenes.ghd.ghostShip.GhostShip`.
+  - It also fixes the GhostShip decompile/recompile issue by replacing `NaN` default range parameters with numeric sentinels.
+  - Patch report: `runtime-data/qa/as3/as3-ghd-rescue-dialog-proof-patch.json`.
+  - Updated `tools/qa-as3-dialogue-stability.js` to seed GHD QA dialog events for NeonWiener, Barren2, Mushroom2, Prehistoric2, and GhostShip.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and synced `runtime-data/patched-zips/as3-runtime.zip` with `tools/update-as3-runtime-shell-only.js`.
+  - Latest report: `runtime-data/qa/as3/as3-runtime-shell-only-update.json`; Shell sha256 `e1162f3364d4ceeb6bb832e864e096e8d6c3e13e34fd34bca4d270e5a01f62db`, runtime zip sha256 `0e4455828be338c19a387d86fb25c9bc1a45462cae100d9ad3b7fe46e5e365ca`.
+- Map intro and HUD/button evidence:
+  - Map intro passed before the final dialogue patch: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782066719474.json`, screenshot `runtime-data/qa/as3/islands-smoke/run-1782066719474/01-galactic-hot-dogs-map.png`.
+  - Visual review: Chinese title/description/buttons are centered; static Galactic Hot Dogs logo stays English/art.
+  - Menu/backpack passed: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782066981168.json`.
+  - Settings passed: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782067146347.json`.
+  - Store confirmation passed: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782067304910.json`.
+  - Map confirmation passed: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782067473480.json`.
+  - Manual review: Chinese panel labels/buttons are centered and do not overlap; static `MENU` icon art remains English/original.
+- Three native Chinese dialogue stability samples passed:
+  - Dagger `trapped`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782071166211.json`, expected `我被困在这个脏兮兮的山洞里了`.
+  - Dagger `escaped`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782071563072.json`, expected `自由了`.
+  - GhostShip captain `rage`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782071930552.json`, expected `这里没有宝藏`.
+  - Representative screenshots inspected:
+    - `runtime-data/qa/as3/dialogue-stability/run-1782071166211/sequence/dialogue-1600.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782071563072/sequence/dialogue-1600.png`.
+    - `runtime-data/qa/as3/dialogue-stability/run-1782071930552/sequence/dialogue-1600.png`.
+  - All three use the native Dialog path, show Chinese, have 6/6 stable samples, `stableText=true`, `visualStable=true`, and `duplicateExpectedSampleCount=0`.
+  - Failed calibration not counted:
+    - Humphree `free`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782071267279.json` displayed a clipped top-left bubble and OCR only saw partial text.
+    - Cosmoe `baby`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782071367644.json` captured a gray/invalid scene.
+    - Earlier NeonWiener QA attempts `1782069757681` and `1782069860234` did not display an accepted bubble.
+- Scene-entry regression passed after the new Shell:
+  - Barren2: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782072079682.json`.
+  - Mushroom2: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782072160180.json`.
+  - Prehistoric2: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782072235409.json`.
+  - GhostShip: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782072314003.json`.
+  - All four returned `ok=true`, `audioActive=0`, scene evidence present, and visual guard passed.
+  - The earlier full GHD scene sweep `runtime-data/qa/as3/ghd-scene-sweep-1782066621955-with-retry.json` passed 18/18 scenes.
+- Window/resize/maximize/F11 visual regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782072751029.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `f11Stable=true`, `nonGameUiCapture=false`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782072751029/01-galactic-hot-dogs-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782072751029/01-galactic-hot-dogs-maximized-retry-1.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782072751029/01-galactic-hot-dogs-f11.png`.
+  - Manual review: character remains visible, MENU stays top-right, scene is constrained, no blue void or main-screen capture.
+  - The earlier generic P0 `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782072449108.json` is not counted because its generic click did not trigger a Chinese dialogue; its visual/window checks were still useful context.
+- Loading-center status:
+  - Existing true fullscreen evidence remains `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782068407206.json`, with centered loading in true fullscreen.
+  - After the new Shell, `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782073027690.json` observed 11 loading frames and all were centered, but no-foreground PostMessage F11 did not produce fullscreen-sized capture, so it is recorded as centered-loading evidence plus an automation limitation.
+  - `runtime-data/qa/as3/p0-playability/as3-window-loading-transition-1782073196736.json` did not observe a transition/loading frame and is not counted as a pass.
+- Static-art policy remained intact:
+  - `MENU`, scene signs, posters, arrows, map logo, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Current GHD conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: map, HUD, major scene entry, window/resize/F11 visual stability, 3 native Chinese dialogue samples, no dialogue repeat/twitch, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Natural route progression, Humphree/Cosmoe clean dialogue proof, the full ship rescue chain, and a new true fullscreen loading rerun without no-foreground F11 limitation remain future deep QA.
+- Next island:
+  - Move current execution to `11. virus-hunter`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
