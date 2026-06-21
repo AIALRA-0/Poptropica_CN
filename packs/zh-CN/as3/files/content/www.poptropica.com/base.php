@@ -7,10 +7,22 @@ function getParam(string $name, string $default) : string {
     return isset($reqObj[$name]) ? urlencode($reqObj[$name]) : $default;
 }
 
+function getRawParam(string $name, string $default) : string {
+    global $reqObj;
+    return isset($reqObj[$name]) ? (string)$reqObj[$name] : $default;
+}
+
 // Use the original parameter names in case Flash's `getURL()` function is used to access this page.
-$scene = getParam('room', 'Home');
-$island = getParam('island', 'Home');
-$path = getParam('startup_path', 'gameplay');
+$requestedRoom = getRawParam('room', 'Home');
+$requestedIsland = getRawParam('island', 'Home');
+$requestedStartupPath = getRawParam('startup_path', 'gameplay');
+$scene = urlencode($requestedRoom);
+$island = urlencode($requestedIsland);
+$path = urlencode($requestedStartupPath);
+$qaLoadingHoldMs = getParam('flashpointQaLoadingHoldMs', '');
+if(!preg_match('/^[0-9]{1,5}$/', $qaLoadingHoldMs)) {
+    $qaLoadingHoldMs = '';
+}
 
 const SCENE_AS3 = 'GlobalAS3Embassy',
       SCENE_AS3_START = 'FlashpointStart', // Not a real scene.
@@ -83,6 +95,9 @@ $flashVars;
     }
 
     $flashVars = "desc=$scene&amp;island=$island&amp;startup_path=$path&amp;state=$gameState";
+    if($qaLoadingHoldMs !== '') {
+        $flashVars .= "&amp;flashpointQaLoadingHoldMs=$qaLoadingHoldMs";
+    }
 
 ?><!doctype html>
 <html lang="en">
@@ -95,22 +110,23 @@ $flashVars;
                 width: 100%;
                 height: 100%;
                 overflow: hidden !important;
-                background-color: #139ffd;
+                background-color: #59645d;
             }
             body { position: relative; }
             embed {
-                background-color: #0099ff;
+                background-color: #59645d;
                 outline-width: 0;
                 position: absolute;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
+                left: 50%;
+                top: 50%;
+                width: <?php echo $width; ?>px;
+                height: <?php echo $height; ?>px;
+                transform: translate(-50%, -50%);
             }
         </style>
     </head>
     <body>
-        <embed bgcolor="139ffd" src="
+        <embed bgcolor="59645d" src="
 		<?php
 		if($pageState === STATE_SCENE) {echo 'framework.swf';}
 		elseif($pageState === STATE_AS3) {echo 'flashpoint/memStatus.swf';}
@@ -120,9 +136,9 @@ $flashVars;
 		?>"
 		width="100%" height="100%" flashvars="<?php echo $flashVars; ?>" scale="noscale" wmode="direct">
         <form method="POST">
-            <input type="hidden" name="room">
-            <input type="hidden" name="island">
-            <input type="hidden" name="startup_path">
+            <input type="hidden" name="room" value="<?php echo htmlspecialchars($requestedRoom, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="island" value="<?php echo htmlspecialchars($requestedIsland, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="startup_path" value="<?php echo htmlspecialchars($requestedStartupPath, ENT_QUOTES, 'UTF-8'); ?>">
         </form>
         <script>
 
@@ -148,6 +164,42 @@ function POSTToBase(...args) {
     }
 }
 
+const FLASHPOINT_GAME_WIDTH = <?php echo json_encode((int)$width); ?>;
+const FLASHPOINT_GAME_HEIGHT = <?php echo json_encode((int)$height); ?>;
+let flashpointViewportTimer = 0;
+
+function flashpointApplyEmbedViewport() {
+    const embed = document.querySelector("embed");
+    if(!embed)
+        return;
+
+    const baseWidth = Math.max(1, Number(FLASHPOINT_GAME_WIDTH) || 1136);
+    const baseHeight = Math.max(1, Number(FLASHPOINT_GAME_HEIGHT) || 673);
+    const viewportWidth = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 1);
+    const viewportHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 1);
+    const scale = Math.min(viewportWidth / baseWidth, viewportHeight / baseHeight);
+    const width = Math.max(1, Math.round(baseWidth * scale));
+    const height = Math.max(1, Math.round(baseHeight * scale));
+
+    embed.style.left = Math.round((viewportWidth - width) * 0.5) + "px";
+    embed.style.top = Math.round((viewportHeight - height) * 0.5) + "px";
+    embed.style.width = width + "px";
+    embed.style.height = height + "px";
+    embed.style.transform = "none";
+}
+
+function flashpointScheduleEmbedViewport() {
+    window.clearTimeout(flashpointViewportTimer);
+    flashpointApplyEmbedViewport();
+    flashpointViewportTimer = window.setTimeout(flashpointApplyEmbedViewport, 120);
+}
+
+window.addEventListener("resize", flashpointScheduleEmbedViewport);
+window.addEventListener("orientationchange", flashpointScheduleEmbedViewport);
+[ 0, 50, 150, 350, 800, 1500, 3000, 6000 ].forEach(function(delayMs) {
+    window.setTimeout(flashpointApplyEmbedViewport, delayMs);
+});
+
 <?php if($pageState === STATE_AS3) { ?>
 
 function loadAS3Embassy() {
@@ -164,6 +216,7 @@ function loadAS3Embassy() {
 
     parent.removeChild(origEmbed);
     parent.insertBefore(embed, sibling);
+    flashpointApplyEmbedViewport();
 }
 
 <?php } else { ?>

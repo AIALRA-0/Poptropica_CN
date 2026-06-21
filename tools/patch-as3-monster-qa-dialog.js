@@ -18,6 +18,7 @@ const POPTOPICON_ADMIXED_CLASS = "game.scenes.con1.adMixed.AdMixed";
 const TIMMY_CLASS = "game.scenes.timmy.mainStreet.MainStreet";
 const MISSION_SHIP_CLASS = "game.scenes.deepDive1.ship.Ship";
 const FTUE_MAINLAND_CLASS = "game.scenes.ftue.mainLand.MainLand";
+const SURVIVAL4_MAINHALL_CLASS = "game.scenes.survival4.mainHall.MainHall";
 const PATCH_ASSET_ID = "as3-shell:monster-carnival-qa-native-dialog";
 
 function runFfdec(ffdecCli, args, label) {
@@ -1316,6 +1317,10 @@ function patchMissionAtlantisShip(content) {
 
 function patchFtueMainLand(content) {
   let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = next.replace(
+    "         var _loc5_:* = §§findproperty(fruitsCollected);\n         var _loc6_:Number = Number(_loc5_.fruitsCollected) + 1;\n         _loc5_.fruitsCollected = _loc6_;\n",
+    "         ++fruitsCollected;\n"
+  );
   next = addImport(next, "   import game.util.PlatformUtils;", "   import game.util.ProxyUtils;");
 
   const afterLoadMethod = `      private function flashpointQaSayFtueDialogAfterLoad() : void
@@ -1447,6 +1452,202 @@ function patchFtueMainLand(content) {
   return next;
 }
 
+function patchSurvival4MainHall(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  next = addImport(next, "   import engine.creators.InteractionCreator;", "   import engine.util.Command;");
+  next = addImport(next, "   import game.util.MotionUtils;", "   import game.util.ProxyUtils;");
+  next = addImport(next, "   import game.util.ProxyUtils;", "   import flash.utils.getDefinitionByName;");
+
+  const afterLoadMethod = `      private function flashpointQaSaySurvival4DialogAfterLoad() : void
+      {
+         var npcId:String = null;
+         var dialogId:String = null;
+         if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
+         {
+            return;
+         }
+         npcId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogNpc") as String;
+         dialogId = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId") as String;
+         if(npcId != "vanBuren" && npcId != "winston" && npcId != "player" && npcId != "security" && npcId != "securityInteraction")
+         {
+            return;
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(2,1,Command.create(this.flashpointQaSaySurvival4Dialog,npcId,dialogId)));
+      }
+`;
+
+  const sayDialogMethod = `      private function flashpointQaSaySurvival4Dialog(param1:String, param2:String = "") : void
+      {
+         var target:Entity = null;
+         var dialog:Dialog = null;
+         var dialogData:* = null;
+         switch(param1)
+         {
+            case "vanBuren":
+               target = getEntityById("vanBuren");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "lucky";
+               }
+               break;
+            case "winston":
+               target = getEntityById("winston");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "dinner";
+               }
+               break;
+            case "player":
+               target = player;
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "get_on_with_it";
+               }
+               break;
+            case "security":
+            case "securityInteraction":
+               target = getEntityById("securityInteraction");
+               if(param2 == null || param2 == "")
+               {
+                  param2 = "keycode";
+               }
+         }
+         if(target != null)
+         {
+            dialog = target.get(Dialog) as Dialog;
+            if(dialog != null)
+            {
+               dialog.allowOverwrite = true;
+               dialogData = param2 != null && param2 != "" ? dialog.getDialog(param2) : null;
+               if(dialogData != null)
+               {
+                  if(dialogData is DialogData)
+                  {
+                     DialogData(dialogData).timeOverride = 60;
+                     DialogData(dialogData).forceOnScreen = true;
+                  }
+                  dialog.sayById(param2);
+               }
+               else
+               {
+                  CharUtils.sayDialog(target);
+               }
+            }
+            else
+            {
+               CharUtils.sayDialog(target);
+            }
+         }
+      }
+`;
+
+  const autoSceneAfterLoadMethod = `      private function flashpointQaAutoSurvival4SceneAfterLoad() : void
+      {
+         var delayMs:Number = NaN;
+         var delaySeconds:Number = 4;
+         var targetScene:String = null;
+         if(super.groupContainer == null || super.groupContainer.root == null || super.groupContainer.root.loaderInfo == null)
+         {
+            return;
+         }
+         targetScene = ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene") as String;
+         if(targetScene == null || targetScene == "" || targetScene == "game.scenes.survival4.mainHall.MainHall")
+         {
+            return;
+         }
+         if(targetScene.indexOf("game.scenes.survival4.") != 0)
+         {
+            return;
+         }
+         delayMs = Number(ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoSceneDelayMs"));
+         if(!isNaN(delayMs) && delayMs > 0)
+         {
+            if(delayMs > 15000)
+            {
+               delayMs = 15000;
+            }
+            delaySeconds = Math.max(0.5,delayMs / 1000);
+         }
+         SceneUtil.addTimedEvent(this,new TimedEvent(delaySeconds,1,Command.create(this.flashpointQaLoadSurvival4Scene,targetScene)));
+      }
+`;
+
+  const autoSceneLoadMethod = `      private function flashpointQaLoadSurvival4Scene(param1:String) : void
+      {
+         var sceneClass:Class = null;
+         if(param1 == null || param1 == "" || param1.indexOf("game.scenes.survival4.") != 0)
+         {
+            return;
+         }
+         sceneClass = getDefinitionByName(param1) as Class;
+         if(sceneClass != null)
+         {
+            this.shellApi.loadScene(sceneClass,100,980,"right");
+         }
+      }
+`;
+
+  if (!next.includes("this.flashpointQaSaySurvival4DialogAfterLoad();")) {
+    const marker = "         securityPanel.remove(SceneInteraction);\n            ToolTipCreator.removeFromEntity(securityPanel);\n         }\n      }\n";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Survival4 MainHall loaded end marker.");
+    }
+    next = next.replace(marker, `         securityPanel.remove(SceneInteraction);\n            ToolTipCreator.removeFromEntity(securityPanel);\n         }\n         this.flashpointQaSaySurvival4DialogAfterLoad();\n         this.flashpointQaAutoSurvival4SceneAfterLoad();\n      }\n`);
+  } else if (!next.includes("this.flashpointQaAutoSurvival4SceneAfterLoad();")) {
+    next = next.replace(
+      "         this.flashpointQaSaySurvival4DialogAfterLoad();\n",
+      "         this.flashpointQaSaySurvival4DialogAfterLoad();\n         this.flashpointQaAutoSurvival4SceneAfterLoad();\n"
+    );
+  }
+
+  if (!next.includes("override public function resize(param1:Number, param2:Number) : void")) {
+    const marker = "\n      private function optimizeAssets() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Survival4 MainHall optimizeAssets marker.");
+    }
+    const resizeMethod = `
+      override public function resize(param1:Number, param2:Number) : void
+      {
+         super.resize(param1,param2);
+         this.flashpointQaSaySurvival4DialogAfterLoad();
+         this.flashpointQaAutoSurvival4SceneAfterLoad();
+      }
+`;
+    next = next.replace(marker, `${resizeMethod}${marker}`);
+  } else if (!next.includes("         this.flashpointQaAutoSurvival4SceneAfterLoad();")) {
+    next = next.replace(
+      "         this.flashpointQaSaySurvival4DialogAfterLoad();\n",
+      "         this.flashpointQaSaySurvival4DialogAfterLoad();\n         this.flashpointQaAutoSurvival4SceneAfterLoad();\n"
+    );
+  }
+
+  if (!next.includes("private function flashpointQaSaySurvival4DialogAfterLoad")) {
+    const marker = "\n      private function optimizeAssets() : void";
+    if (!next.includes(marker)) {
+      throw new Error("Unable to locate Survival4 MainHall optimizeAssets marker for QA dialog methods.");
+    }
+    next = next.replace(marker, `\n      \n${afterLoadMethod}      \n${sayDialogMethod}      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}${marker}`);
+  } else {
+    next = replaceAs3Function(next, "      private function flashpointQaSaySurvival4DialogAfterLoad() : void", afterLoadMethod);
+    next = replaceAs3Function(next, '      private function flashpointQaSaySurvival4Dialog(param1:String, param2:String = "") : void', sayDialogMethod);
+    if (!next.includes("private function flashpointQaAutoSurvival4SceneAfterLoad")) {
+      const marker = "\n      private function optimizeAssets() : void";
+      if (!next.includes(marker)) {
+        throw new Error("Unable to locate Survival4 MainHall optimizeAssets marker for QA auto scene methods.");
+      }
+      next = next.replace(marker, `\n      \n${autoSceneAfterLoadMethod}      \n${autoSceneLoadMethod}${marker}`);
+    } else {
+      next = replaceAs3Function(next, "      private function flashpointQaAutoSurvival4SceneAfterLoad() : void", autoSceneAfterLoadMethod);
+      next = replaceAs3Function(next, "      private function flashpointQaLoadSurvival4Scene(param1:String) : void", autoSceneLoadMethod);
+    }
+  }
+
+  if (!next.includes('npcId != "vanBuren" && npcId != "winston" && npcId != "player" && npcId != "security" && npcId != "securityInteraction"') || !next.includes("new TimedEvent(2,1,Command.create(this.flashpointQaSaySurvival4Dialog,npcId,dialogId))") || !next.includes("DialogData(dialogData).timeOverride = 60") || !next.includes("dialog.sayById(param2)") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaDialogId")') || !next.includes("this.flashpointQaSaySurvival4DialogAfterLoad();") || !next.includes("this.flashpointQaAutoSurvival4SceneAfterLoad();") || !next.includes('ProxyUtils.getQueryStringData(super.groupContainer.root.loaderInfo,"flashpointQaAutoScene")') || !next.includes("getDefinitionByName(param1) as Class") || !next.includes('param1.indexOf("game.scenes.survival4.") != 0')) {
+    throw new Error("Survival4 MainHall QA dialog patch did not apply cleanly.");
+  }
+  return next;
+}
+
 function main() {
   const config = loadConfig();
   const ffdecCli = config.tools?.ffdecCli;
@@ -1554,6 +1755,15 @@ function main() {
     scriptRoot,
     packShell
   ], "export Monkey Wrench MainLand class");
+  runFfdec(ffdecCli, [
+    "-cli",
+    "-selectclass",
+    SURVIVAL4_MAINHALL_CLASS,
+    "-export",
+    "script",
+    scriptRoot,
+    packShell
+  ], "export Survival4 MainHall class");
 
   const scriptPath = findScript(scriptRoot, "game/scenes/carnival/mainStreet/MainStreet.as");
   if (!scriptPath) {
@@ -1595,6 +1805,10 @@ function main() {
   if (!ftueMainLandScriptPath) {
     throw new Error("Exported Monkey Wrench MainLand.as was not found.");
   }
+  const survival4MainHallScriptPath = findScript(scriptRoot, "game/scenes/survival4/mainHall/MainHall.as");
+  if (!survival4MainHallScriptPath) {
+    throw new Error("Exported Survival4 MainHall.as was not found.");
+  }
   writeText(scriptPath, patchMainStreet(fs.readFileSync(scriptPath, "utf8")));
   writeText(wordBalloonScriptPath, patchWordBalloonCreator(fs.readFileSync(wordBalloonScriptPath, "utf8")));
   writeText(poptropiconScriptPath, patchPoptropiconParking(fs.readFileSync(poptropiconScriptPath, "utf8")));
@@ -1605,6 +1819,7 @@ function main() {
   writeText(timmyScriptPath, patchTimmyMainStreet(fs.readFileSync(timmyScriptPath, "utf8")));
   writeText(missionShipScriptPath, patchMissionAtlantisShip(fs.readFileSync(missionShipScriptPath, "utf8")));
   writeText(ftueMainLandScriptPath, patchFtueMainLand(fs.readFileSync(ftueMainLandScriptPath, "utf8")));
+  writeText(survival4MainHallScriptPath, patchSurvival4MainHall(fs.readFileSync(survival4MainHallScriptPath, "utf8")));
 
   const mainStreetSwf = path.join(workDir, "Shell-monster-qa-dialog-mainStreet.swf");
   runFfdec(ffdecCli, [
@@ -1678,14 +1893,22 @@ function main() {
     MISSION_SHIP_CLASS,
     missionShipScriptPath
   ], "replace Mission Atlantis Ship class");
-  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  const ftueSwf = path.join(workDir, "Shell-monster-qa-dialog-ftue.swf");
   runFfdec(ffdecCli, [
     "-replace",
     missionShipSwf,
-    outputSwf,
+    ftueSwf,
     FTUE_MAINLAND_CLASS,
     ftueMainLandScriptPath
   ], "replace Monkey Wrench MainLand class");
+  const outputSwf = path.join(workDir, "Shell-monster-qa-dialog.swf");
+  runFfdec(ffdecCli, [
+    "-replace",
+    ftueSwf,
+    outputSwf,
+    SURVIVAL4_MAINHALL_CLASS,
+    survival4MainHallScriptPath
+  ], "replace Survival4 MainHall class");
   fs.copyFileSync(outputSwf, packShell);
 
   const manifestPath = path.join(paths.as3PackDir, "manifest.json");
@@ -1707,7 +1930,7 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell,
-    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS]
+    classes: [PATCH_CLASS, WORDBALLOON_CLASS, POPTOPICON_CLASS, POPTOPICON_SHARED_CLASS, POPTOPICON_CENTER_CLASS, POPTOPICON_ADSTREET3_CLASS, POPTOPICON_ADMIXED_CLASS, TIMMY_CLASS, MISSION_SHIP_CLASS, FTUE_MAINLAND_CLASS, SURVIVAL4_MAINHALL_CLASS]
   });
 
   const runtimeZip = buildRuntimeZipForSourceGroup({
@@ -1742,9 +1965,11 @@ function main() {
       missionShipClassName: MISSION_SHIP_CLASS,
       missionShipScriptPath,
       ftueMainLandClassName: FTUE_MAINLAND_CLASS,
-      ftueMainLandScriptPath
+      ftueMainLandScriptPath,
+      survival4MainHallClassName: SURVIVAL4_MAINHALL_CLASS,
+      survival4MainHallScriptPath
     },
-    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, and Monkey Wrench native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
+    patch: "QA-only Monster Carnival, Poptropicon, Timmy, Mission Atlantis, Monkey Wrench, and Survival native NPC dialog triggers plus scoped Poptropicon con1 sample-island motion bounds, Poptropicon ad-transition room bounds coverage, and native Poptropicon intro popup translation"
   };
   const reportPath = path.join(paths.qaDir, "as3", "as3-monster-qa-dialog-patch.json");
   writeJson(reportPath, report);

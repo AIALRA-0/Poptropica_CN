@@ -3808,3 +3808,71 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `07. survival`.
   - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Survival Current-Build Sealed Baseline Pass
+
+- Continued island 07 (`survival`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+  - Long-running mute watcher PID this session: `134248`.
+- Added Survival map/island metadata:
+  - `survival1/island/page.xml` through `survival5/island/page.xml`.
+  - `survivalEpisodic/episode1/page.xml` through `episode5/page.xml`.
+  - Passing strict Chinese map smoke: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782023762400.json`.
+  - Screenshot: `runtime-data/qa/as3/islands-smoke/run-1782023762400/01-survival-map.png`.
+  - OCR/visual review shows `第1集：坠机迫降`, Chinese description, `重新开始/开始`; static Survival logo art remains English.
+- Extended Survival4 runtime QA support:
+  - `tools/patch-as3-monster-qa-dialog.js` supports `game.scenes.survival4.mainHall.MainHall` QA dialog and `flashpointQaAutoScene` transition to other Survival4 classes.
+  - `tools/lib/as3-direct-wrapper.js`, generated `flashpoint/as3-direct.php`, and `tools/qa-as3-p0-playability.js` now allow a full AS3 class in `flashpointQaAutoScene` instead of only `center`.
+  - Rebuilt `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` and `runtime-data/patched-zips/as3-runtime.zip`; latest patch report `runtime-data/qa/as3/as3-monster-qa-dialog-patch.json`, replacementCount `1297`.
+- Final Survival window/resize/maximize regression passed:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782024946797.json`.
+  - Result: `ok=true`, `failedChecks=[]`, `sceneStable=true`, `visualStable=true`, `dialogueChinese=true`, `postViewportDialogueChinese=true`, `postResizeDialogueChinese=true`, `nonGameUiCapture=false`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-1782024946797/01-survival-resized.png`.
+    - `runtime-data/qa/as3/p0-playability/run-1782024946797/01-survival-maximized.png`.
+  - Manual review: character visible, HUD/menu top-right, scene constrained with no blue void, Chinese dialogue stable.
+- F11/fullscreen loading-center evidence passed with no foreground keyboard takeover:
+  - Report: `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782027006669.json`.
+  - Command used `--post-message-f11 1`, `--qa-auto-scene game.scenes.survival4.grounds.Grounds`, target monitor `G32QC`.
+  - Result: `ok=true`, `f11.fullscreenLike=true`, `loading.observed=true`, `centerOk=true`, 13 loading samples detected and centered.
+  - Representative screenshots:
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782027006669/f11-before-transition.png`.
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782027006669/f11-loading-sequence/f11-loading-0.png`.
+    - `runtime-data/qa/as3/p0-playability/run-f11-loading-1782027006669/f11-loading-sequence/f11-loading-8000.png`.
+  - Discarded F11/loading attempts:
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782025153784.json` captured a gray/invalid frame.
+    - `runtime-data/qa/as3/p0-playability/as3-f11-loading-transition-1782026819879.json` was sampled before embed adoption because of an embed delay.
+- Three native Chinese剧情 dialogue stability samples passed:
+  - Player `get_on_with_it`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782027406622.json`, expected `我得去战利品室，这样才能离开这里。`.
+  - Player `must_escape`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782027601502.json`, expected `这门纹丝不动。一定有办法解除安全锁。`.
+  - Player `nom_noms`: `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782027689650.json`, expected `范布伦要我去宴会厅……吃点东西应该没关系吧。`.
+  - All accepted samples use the native Dialog data path, have 5/5 stable Chinese frames, no duplicate expected text, and `visualStable=true`.
+  - Failed calibration not counted:
+    - Winston `dinner` `runtime-data/qa/as3/dialogue-stability/as3-dialogue-stability-1782027284860.json` did not display a bubble in the MainHall QA hook path.
+    - `securityInteraction/keycode` `1782027499679` did not display a bubble.
+    - Van Buren `lucky` `1782028804754` did not display a bubble.
+  - These are recorded as QA hook/natural-route coverage gaps, not as visible English regressions.
+- HUD/map/button evidence passed:
+  - Menu expand and backpack: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782027860270.json`.
+    - Menu screenshot: `runtime-data/qa/as3/hud-smoke/run-1782027860270/01-survival-post-click.png`.
+    - Backpack screenshot: `runtime-data/qa/as3/hud-smoke/run-1782027860270/01-survival-inventory.png`.
+    - Backpack OCR shows `生存岛`, `背包里还没有物品。`, and `去岛上探索，看看能找到什么！`.
+  - Settings panel: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782028291170.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782028291170/01-survival-secondary.png`.
+  - Store confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782028443657.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782028443657/01-survival-secondary.png`.
+  - Map confirmation: `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782028603276.json`, screenshot `runtime-data/qa/as3/hud-smoke/run-1782028603276/01-survival-secondary.png`.
+  - Manual review: Chinese labels/buttons are centered and do not overlap; `MENU` icon and expanded static HUD icons remain original art/English.
+- Static-art policy remained intact:
+  - `MENU`, Survival map logo, scene signs, arrows, posters, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, or art-lettering.
+- Current Survival conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist.
+  - Not a full five-episode story completion proof; more scenes, natural NPC interactions, and end-to-end story traversal remain future full-island deep QA.
+- Next island:
+  - Move current execution to `08. arabian-nights`.
+  - Use the same sequence: map intro, window/resize/max/F11, window/F11 loading, HUD/backpack/store/settings/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.

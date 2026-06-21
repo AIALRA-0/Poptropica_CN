@@ -5,6 +5,7 @@ const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { acquireQaLock, ensureQaDir, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { buildAs3DirectSceneUrl } = require("./lib/as3-direct-wrapper");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
 const {
@@ -447,7 +448,7 @@ function findStackedOcrWords(lines, firstWord, secondWord) {
 function findStartOcrTarget(ocr) {
   const lines = (ocr?.lines || []).filter((line) => line?.box);
   const exactCandidates = [
-    { label: "start", phrase: "START", pattern: /\bSTART\b/iu },
+    { label: "start", phrase: "START", pattern: /\b(?:START|CTART)\b/iu },
     { label: "new-player", phrase: "NEWPLAYER", pattern: /\bNEW\s*PLAYER\b/iu },
     { label: "returning-player", phrase: "RETURNINGPLAYER", pattern: /\bRETURNING\s*PLAYER\b/iu }
   ];
@@ -456,7 +457,13 @@ function findStartOcrTarget(ocr) {
     const exactLine = lines
       .filter((line) => {
         const text = String(line.text || "");
-        return candidate.pattern.test(text) || normalizeOcrText(text).includes(candidate.phrase);
+        if (!candidate.pattern.test(text) && !normalizeOcrText(text).includes(candidate.phrase)) {
+          return false;
+        }
+        if (candidate.label === "start") {
+          return normalizeOcrText(text).length <= 12;
+        }
+        return true;
       })
       .sort((left, right) => Number(right.score || 0) - Number(left.score || 0))[0];
     if (exactLine) {
@@ -1147,7 +1154,7 @@ function launchUrlForEntry(entry, args) {
   const mode = String(args.resizeReloadMode || args["resize-reload-mode"] || "").trim();
   const hasQaDialogNpc = /^[A-Za-z][A-Za-z0-9_]{0,63}$/u.test(qaDialogNpc);
   const hasQaDialogId = /^[A-Za-z0-9_ -]{1,64}$/u.test(qaDialogId);
-  const hasQaAutoScene = /^(center)$/u.test(qaAutoScene);
+  const hasQaAutoScene = /^[A-Za-z0-9_.$]+$/u.test(qaAutoScene);
   const hasQaAutoSceneDelay = qaAutoSceneDelayMs !== undefined && qaAutoSceneDelayMs !== null && qaAutoSceneDelayMs !== "";
   if (!mode && !hasQaSeedOverride && !hasQaLoadingHold && !hasQaDialogNpc && !hasQaDialogId && !hasQaAutoScene && !hasQaAutoSceneDelay) {
     return entry.launchUrl;
@@ -1909,7 +1916,21 @@ async function main() {
     await ensureFlashpointServices(config);
     await mountSourceZip(config, "as3");
     const manifest = generateLaunchManifest(config, { write: false });
-    const entries = selectedEntries(manifest, args);
+    let entries = selectedEntries(manifest, args);
+    const overrideSceneArg = args.overrideScene || args["override-scene"] || args.directScene || args["direct-scene"];
+    if (overrideSceneArg) {
+      if (entries.length !== 1) {
+        throw new Error("--overrideScene requires exactly one selected AS3 P0 island.");
+      }
+      const overrideScene = String(overrideSceneArg);
+      const sceneParts = overrideScene.split(".");
+      entries = [{
+        ...entries[0],
+        as3TargetScene: overrideScene,
+        roomParam: sceneParts.length >= 2 ? sceneParts[sceneParts.length - 2] : entries[0].roomParam,
+        launchUrl: buildAs3DirectSceneUrl(overrideScene)
+      }];
+    }
     if (!entries.length) {
       throw new Error("No AS3 direct-scene entries matched the P0 playability filter.");
     }

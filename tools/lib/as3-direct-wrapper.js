@@ -81,7 +81,7 @@ function normalizeQaDialogId(value) {
 
 function normalizeQaAutoScene(value) {
   const text = String(value || "").trim();
-  return /^(center)$/u.test(text) ? text : "";
+  return /^[A-Za-z0-9_.$]+$/u.test(text) ? text : "";
 }
 
 function normalizeQaAutoSceneDelayMs(value) {
@@ -217,7 +217,7 @@ if(!preg_match('/^[0-9]{1,5}$/', $qaLoadingHoldMs)) {
       $qaDialogId = '';
   }
   $qaAutoScene = flashpoint_as3_param('flashpointQaAutoScene', flashpoint_as3_param('qaAutoScene', ''));
-  if(!preg_match('/^(center)$/', $qaAutoScene)) {
+  if(!preg_match('/^[A-Za-z0-9_.$]+$/', $qaAutoScene)) {
       $qaAutoScene = '';
   }
   $qaAutoSceneDelayMs = flashpoint_as3_param('flashpointQaAutoSceneDelayMs', flashpoint_as3_param('qaAutoSceneDelayMs', ''));
