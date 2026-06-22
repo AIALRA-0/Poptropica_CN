@@ -1011,7 +1011,7 @@ function applyAs3BasePageLayoutPatch(content) {
             }
         </style>`);
   return patchedStyle
-    .replace(/<embed\s+src=/iu, `<embed bgcolor="139ffd" src=`)
+    .replace(/<embed\s+src=/iu, `<embed bgcolor="111827" src=`)
     .replace(
       /width="<\?php echo \$width; \?>" height="<\?php echo \$height; \?>"/u,
       `width="100%" height="100%"`
@@ -1849,6 +1849,17 @@ const AS2_SUPER_POWER_SCENE_DIALOGUE_REPLACEMENTS = [
     ["COMMON ROOM", "公共休息室"]
   ];
 
+const AS2_NATIVE_NAVIGATION_LABEL_REPLACEMENTS = [
+  ["GO LEFT", "向左"],
+  ["GO RIGHT", "向右"],
+  ["GO UP", "向上"],
+  ["GO DOWN", "向下"],
+  ["ENTER", "进入"],
+  ["EXIT", "退出"],
+  ["TRAVEL", "旅行"],
+  ["COMMON ROOM", "公共房间"]
+];
+
 function exportSwfScriptsForPatch({ ffdecCli, inputSwf, outputDir, selectClasses = null }) {
   removeDirContents(outputDir);
   ensureDirSync(outputDir);
@@ -2253,6 +2264,24 @@ if(_root != undefined && _root._currentframe == 1)
   return { ok: true, changed };
 }
 
+function applyAs2NativeNavigationLabelScriptPatch({ sourceScriptRoot, translatedScriptRoot }) {
+  const scriptEntries = collectSwfScriptFiles(sourceScriptRoot);
+  let changed = false;
+  for (const entry of scriptEntries) {
+    const targetFile = path.join(translatedScriptRoot, entry.exportPath.replace(/\//gu, path.sep));
+    const originalContent = fs.readFileSync(entry.filePath, "utf8");
+    const baseContent = fileExists(targetFile) ? fs.readFileSync(targetFile, "utf8") : originalContent;
+    const patchedContent = applyLiteralStringReplacements(baseContent, AS2_NATIVE_NAVIGATION_LABEL_REPLACEMENTS);
+    if (patchedContent === normalizeScriptContent(baseContent)) {
+      continue;
+    }
+    ensureDirSync(path.dirname(targetFile));
+    writeText(targetFile, patchedContent);
+    changed = true;
+  }
+  return { ok: true, changed };
+}
+
 function applyAs2GameplayShowSayScriptPatch(content) {
   let nextContent = normalizeScriptContent(content);
   if (!nextContent.includes("function decodeZhSayText(")) {
@@ -2366,6 +2395,43 @@ function showSay(target, sayText, id)
    positionChat(say,target);`,
     "gameplay showSay text assignment patch"
   );
+  if (!nextContent.includes("__zhLastSayText")) {
+    nextContent = replaceRequiredSnippet(
+      nextContent,
+      `function showSay(target, sayText, id)
+{
+   if(!target || !sayText)
+   {
+      return undefined;
+   }
+   hideSay(target);`,
+      `function showSay(target, sayText, id)
+{
+   var zhNow;
+   var zhSayTextKey;
+   var zhActiveBubble;
+   if(!target || !sayText)
+   {
+      return undefined;
+   }
+   zhNow = getTimer();
+   zhSayTextKey = decodeZhSayText(sayText);
+   zhActiveBubble = target.sayDepth != undefined && this["say" + target.sayDepth] != undefined;
+   if(target.__zhLastSayText == zhSayTextKey && (zhActiveBubble || target.__zhLastSayClosedAt != undefined && zhNow - target.__zhLastSayClosedAt < 1500 || target.__zhLastShowSayAt != undefined && zhNow - target.__zhLastShowSayAt < 900))
+   {
+      if(_root != undefined)
+      {
+         _root.__zhSuppressedDuplicateSayCount = Number(_root.__zhSuppressedDuplicateSayCount) + 1;
+      }
+      return undefined;
+   }
+   target.__zhLastSayText = zhSayTextKey;
+   target.__zhActiveSayText = zhSayTextKey;
+   target.__zhLastShowSayAt = zhNow;
+   hideSay(target);`,
+      "gameplay duplicate showSay throttle"
+    );
+  }
   nextContent = replaceRequiredSnippet(
     nextContent,
     "   if(camera.scene.char.targetPlayer.isAd)\n   {",
@@ -2431,9 +2497,10 @@ function showSay(target, sayText, id)
       "gameplay showSound JS audio bridge"
     );
   }
-  nextContent = replaceRequiredSnippet(
-    nextContent,
-    `function hideSay(target)
+  if (!nextContent.includes("__zhLastSayClosedAt")) {
+    nextContent = replaceRequiredSnippet(
+      nextContent,
+      `function hideSay(target)
 {
    this["say" + target.sayDepth].onEnterFrame = shrinkSay;
    target.talking = false;
@@ -2442,21 +2509,24 @@ function showSay(target, sayText, id)
    target.engaged = false;
    target.targeted = false;
 }`,
-    `function hideSay(target)
+      `function hideSay(target)
 {
    if(target == undefined || target.sayDepth == undefined || this["say" + target.sayDepth] == undefined)
    {
       return undefined;
    }
    this["say" + target.sayDepth].onEnterFrame = shrinkSay;
+   target.__zhLastSayClosedAt = getTimer();
+   target.__zhActiveSayText = "";
    target.talking = false;
    target.avatar.head.mouth.gotoAndStop(target.avatar.mouthFrame);
    target.avatar.head.eyes.pupils.gotoAndStop(1);
    target.engaged = false;
    target.targeted = false;
 }`,
-    "gameplay hideSay guard patch"
-  );
+      "gameplay hideSay guard patch"
+    );
+  }
 
   nextContent = replaceRequiredSnippet(
     nextContent,
@@ -2506,6 +2576,26 @@ function zhShowPopupBackdrop()
    _loc3_.lineTo(0,0);
    _loc3_.endFill();
    _loc3_._visible = true;
+}
+function zhRaisePopupLayers()
+{
+   var _loc1_ = 1030000;
+   if(_root != undefined && _root.__zhPopupBackdrop != undefined)
+   {
+      _root.__zhPopupBackdrop.swapDepths(_loc1_);
+   }
+   if(popupBack != undefined)
+   {
+      popupBack.swapDepths(_loc1_ + 1);
+   }
+   if(popupClip != undefined)
+   {
+      popupClip.swapDepths(_loc1_ + 2);
+   }
+   if(popupClose != undefined)
+   {
+      popupClose.swapDepths(_loc1_ + 3);
+   }
 }
 function zhHidePopupBackdrop()
 {
@@ -2561,28 +2651,43 @@ function zhEnsureDirectMapButton()
       return undefined;
    }
    var zhMapButton = _root.__zhDirectMapButton;
-   var zhMapTextFormat;
+   var zhMapBounds;
+   var zhMapWidth;
+   var zhMapHeight;
    if(zhMapButton == undefined)
    {
       zhMapButton = _root.createEmptyMovieClip("__zhDirectMapButton",1040000);
    }
    zhMapButton.swapDepths(1040000);
    zhMapButton.clear();
-   zhMapButton._x = 785;
-   zhMapButton._y = 70;
+   zhMapBounds = _root.__zhGameplayMapBounds;
+   if(zhMapBounds != undefined)
+   {
+      zhMapButton._x = zhMapBounds.left;
+      zhMapButton._y = zhMapBounds.top;
+      zhMapWidth = Math.max(32,zhMapBounds.right - zhMapBounds.left);
+      zhMapHeight = Math.max(32,zhMapBounds.bottom - zhMapBounds.top);
+   }
+   else
+   {
+      zhMapButton._x = 785;
+      zhMapButton._y = 70;
+      zhMapWidth = 95;
+      zhMapHeight = 90;
+   }
    zhMapButton._visible = true;
    zhMapButton.enabled = true;
    zhMapButton.useHandCursor = true;
    zhMapButton.beginFill(0,1);
    zhMapButton.moveTo(0,0);
-   zhMapButton.lineTo(95,0);
-   zhMapButton.lineTo(95,90);
-   zhMapButton.lineTo(0,90);
+   zhMapButton.lineTo(zhMapWidth,0);
+   zhMapButton.lineTo(zhMapWidth,zhMapHeight);
+   zhMapButton.lineTo(0,zhMapHeight);
    zhMapButton.lineTo(0,0);
    zhMapButton.endFill();
    zhMapButton._alpha = 1;
    _root.__zhDirectOpenMap = zhOpenDirectMap;
-   _root.__zhMapButtonBounds = {left:zhMapButton._x,top:zhMapButton._y,right:zhMapButton._x + 95,bottom:zhMapButton._y + 90};
+   _root.__zhMapButtonBounds = {left:zhMapButton._x,top:zhMapButton._y,right:zhMapButton._x + zhMapWidth,bottom:zhMapButton._y + zhMapHeight};
    if(Mouse != undefined && _root.__zhMapMouseListener == undefined)
    {
       _root.__zhMapMouseListener = new Object();
@@ -2662,6 +2767,137 @@ function zhSuppressSavingGame()
       navBar.savingGame._visible = false;
       navBar.savingGame._alpha = 0;
    }
+   if(navBar != undefined && navBar.btnSave != undefined)
+   {
+      navBar.btnSave._visible = false;
+      navBar.btnSave._alpha = 0;
+      navBar.btnSave.enabled = false;
+      navBar.btnSave._x = -4000;
+      navBar.btnSave._y = -4000;
+      if(navBar.btnSave.saveText != undefined)
+      {
+         navBar.btnSave.saveText._visible = false;
+      }
+   }
+}
+function zhHideLegacyPauseChrome()
+{
+   var _loc1_;
+   var _loc2_;
+   _loc1_ = ["btnSave","savingGame","pauseBtn","btnPause","pauseButton","pause_mc","pauseIcon","pause","saveStatus","saveIcon","save_mc"];
+   _loc2_ = 0;
+   while(_loc2_ < _loc1_.length)
+   {
+      zhHideNamedPauseChrome(navBar,_loc1_[_loc2_]);
+      zhHideNamedPauseChrome(_root,_loc1_[_loc2_]);
+      zhHideNamedPauseChrome(_level0,_loc1_[_loc2_]);
+      _loc2_ = _loc2_ + 1;
+   }
+   zhSuppressSavingGame();
+}
+function zhHideNamedPauseChrome(parentClip, childName)
+{
+   var _loc1_;
+   if(parentClip != undefined && childName != undefined && parentClip[childName] != undefined)
+   {
+      _loc1_ = parentClip[childName];
+      if(_loc1_ != undefined)
+      {
+         _loc1_._visible = false;
+         _loc1_._alpha = 0;
+         _loc1_.enabled = false;
+         _loc1_._x = -4000;
+         _loc1_._y = -4000;
+      }
+   }
+}
+function zhIsQaHideHudEnabled()
+{
+   var _loc1_;
+   if(_root != undefined && _root.flashpointQaHideHud != undefined)
+   {
+      _loc1_ = _root.flashpointQaHideHud;
+   }
+   if((_loc1_ == undefined || _loc1_ == "") && _level0 != undefined && _level0.flashpointQaHideHud != undefined)
+   {
+      _loc1_ = _level0.flashpointQaHideHud;
+   }
+   if((_loc1_ == undefined || _loc1_ == "") && flashpointQaHideHud != undefined)
+   {
+      _loc1_ = flashpointQaHideHud;
+   }
+   _loc1_ = String(_loc1_).toLowerCase();
+   return _loc1_ == "1" || _loc1_ == "true" || _loc1_ == "yes" || _loc1_ == "y";
+}
+function zhQaAs2DialogMode()
+{
+   var _loc1_;
+   if(_global != undefined && _global.flashpointQaAs2Dialog != undefined)
+   {
+      _loc1_ = _global.flashpointQaAs2Dialog;
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _root != undefined && _root.flashpointQaAs2Dialog != undefined)
+   {
+      _loc1_ = _root.flashpointQaAs2Dialog;
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _level0 != undefined && _level0.flashpointQaAs2Dialog != undefined)
+   {
+      _loc1_ = _level0.flashpointQaAs2Dialog;
+   }
+   if(_loc1_ == undefined || String(_loc1_) == "undefined")
+   {
+      _loc1_ = "";
+   }
+   return String(_loc1_);
+}
+function zhMaybeStartShowSayThrottleProof()
+{
+   if(zhQaAs2DialogMode() != "as2-show-say-throttle" || _root == undefined || _root.__zhQaShowSayThrottleStarted == true)
+   {
+      return undefined;
+   }
+   _root.__zhQaShowSayThrottleStarted = true;
+   _root.__zhQaShowSayThrottleTicks = 0;
+   _root.__zhQaShowSayThrottleDone = false;
+   _root.__zhQaShowSayThrottleTick = function()
+   {
+      var _loc2_;
+      var _loc3_;
+      var _loc4_;
+      var _loc5_;
+      this.__zhQaShowSayThrottleTicks = Number(this.__zhQaShowSayThrottleTicks) + 1;
+      if(this.__zhQaShowSayThrottleTicks < 16)
+      {
+         return undefined;
+      }
+      _loc2_ = this.camera != undefined && this.camera.scene != undefined ? this.camera.scene.char : undefined;
+      if(this.__zhQaShowSayThrottleDone != true && _loc2_ != undefined && _loc2_.avatar != undefined && this.showSay != undefined && this.sayDepth != undefined)
+      {
+         this.__zhQaShowSayThrottleDone = true;
+         this.__zhSuppressedDuplicateSayCount = 0;
+         _loc3_ = "重复对话测试";
+         this.showSay(_loc2_,_loc3_);
+         this.showSay(_loc2_,_loc3_);
+         this.showSay(_loc2_,_loc3_);
+         this.showSay(_loc2_,_loc3_);
+         this.showSay(_loc2_,_loc3_);
+         _loc4_ = _loc2_.sayDepth != undefined && this["say" + _loc2_.sayDepth] != undefined;
+         if(_loc4_)
+         {
+            this["say" + _loc2_.sayDepth].wait = 7000;
+            this["say" + _loc2_.sayDepth]._visible = true;
+            this["say" + _loc2_.sayDepth]._alpha = 100;
+         }
+         _loc5_ = Number(this.__zhSuppressedDuplicateSayCount);
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaShowSayThrottle&suppressed=" + _loc5_ + "&bubble=" + _loc4_ + "&ticks=" + this.__zhQaShowSayThrottleTicks,0);
+      }
+      if(this.__zhQaShowSayThrottleDone == true || this.__zhQaShowSayThrottleTicks > 80)
+      {
+         clearInterval(this.__zhQaShowSayThrottleInterval);
+         this.__zhQaShowSayThrottleInterval = undefined;
+      }
+   };
+   _root.__zhQaShowSayThrottleInterval = setInterval(_root,"__zhQaShowSayThrottleTick",250);
 }
 function layoutFramelessGameplayNav(forceLayout)
 {
@@ -2685,8 +2921,36 @@ function layoutFramelessGameplayNav(forceLayout)
    var _loc19_;
    var _loc20_;
    _loc20_ = _root != undefined && _root.island != undefined ? String(_root.island) : island;
-   if(_loc20_ != "Super" || navBar == undefined)
+   if(navBar == undefined)
    {
+      return undefined;
+   }
+   if(zhIsQaHideHudEnabled())
+   {
+      _loc2_ = [navBar.btnInventory,navBar.btnWardrobe,navBar.btnMap,navBar.btnSuperPower];
+      _loc7_ = 0;
+      while(_loc7_ < _loc2_.length)
+      {
+         _loc8_ = _loc2_[_loc7_];
+         if(_loc8_ != undefined)
+         {
+            _loc8_._visible = false;
+            _loc8_._alpha = 0;
+            _loc8_.enabled = false;
+            _loc8_._x = -4000;
+            _loc8_._y = -4000;
+         }
+         _loc7_ = _loc7_ + 1;
+      }
+      if(_root != undefined && _root.__zhDirectMapButton != undefined)
+      {
+         _root.__zhDirectMapButton.clear();
+         _root.__zhDirectMapButton._visible = false;
+         _root.__zhDirectMapButton.enabled = false;
+         _root.__zhDirectMapButton._x = -4000;
+         _root.__zhDirectMapButton._y = -4000;
+      }
+      zhHideLegacyPauseChrome();
       return undefined;
    }
     if(navBar.area != undefined)
@@ -2801,10 +3065,10 @@ function layoutFramelessGameplayNav(forceLayout)
    navBar.__zhNavLayoutReady = true;
     navBar._x = 0;
     navBar._y = 0;
-    _loc10_ = 1010;
-    _loc11_ = 110;
-    _loc12_ = _root != undefined && _root.__zhFrameworkTopNavCenterY != undefined ? Number(_root.__zhFrameworkTopNavCenterY) : 122;
-    _loc13_ = 8;
+    _loc10_ = 640;
+    _loc11_ = 14;
+    _loc12_ = 14;
+    _loc13_ = 10;
    _loc14_ = 0;
    _loc18_ = 0;
    _loc7_ = 0;
@@ -2827,14 +3091,7 @@ function layoutFramelessGameplayNav(forceLayout)
       return undefined;
    }
     _loc14_ += _loc13_ * Math.max(0,_loc18_ - 1);
-    if(_root != undefined && _root.__zhFrameworkTopNavLeft != undefined)
-    {
-       _loc17_ = Number(_root.__zhFrameworkTopNavLeft) - _loc11_ - _loc14_;
-    }
-    else
-    {
-       _loc17_ = 516;
-    }
+    _loc17_ = _loc10_ - _loc11_ - _loc14_;
     if(_loc17_ < 6)
     {
        _loc17_ = 6;
@@ -2843,12 +3100,6 @@ function layoutFramelessGameplayNav(forceLayout)
     _root.__zhGameplayTopNavRight = _loc17_ + _loc14_;
     _root.__zhGameplayTopNavTop = _loc12_;
     _root.__zhGameplayTopNavCenterY = _loc12_;
-   var _loc21_ = {
-      btnInventory:360,
-      btnWardrobe:416,
-      btnMap:472,
-      btnSuperPower:528
-   };
    _loc7_ = 0;
    while(_loc7_ < _loc2_.length)
    {
@@ -2858,21 +3109,44 @@ function layoutFramelessGameplayNav(forceLayout)
          _loc16_ = navBar.__zhGameplayLayout[_loc8_._name];
          if(_loc8_._visible && _loc16_ != undefined)
          {
-             if(_loc21_[_loc8_._name] != undefined)
+             _loc8_._x = Math.round(_loc17_ + _loc16_.offsetX);
+             _loc8_._y = Math.round(_loc12_ - _loc16_.top);
+             if(_loc8_ == navBar.btnMap)
              {
-                _loc8_._x = Math.round(Number(_loc21_[_loc8_._name]) + _loc16_.offsetX);
+                _root.__zhGameplayMapBounds = {left:_loc17_,top:_loc12_,right:_loc17_ + _loc16_.width,bottom:_loc12_ + _loc16_.height};
              }
-             else
-             {
-                _loc8_._x = Math.round(_loc17_ + _loc16_.offsetX);
-             }
-             _loc8_._y = Math.round(_loc12_ - (_loc16_.top + _loc16_.height / 2));
              _loc17_ += _loc16_.width + _loc13_;
          }
       }
       _loc7_ = _loc7_ + 1;
    }
+   if(navBar.btnInventory != undefined)
+   {
+      navBar.btnInventory._x = 652;
+      navBar.btnInventory._y = -12;
+      navBar.btnInventory._visible = true;
+      navBar.btnInventory._alpha = 100;
+      navBar.btnInventory.enabled = true;
+   }
+   if(navBar.btnWardrobe != undefined)
+   {
+      navBar.btnWardrobe._x = 708;
+      navBar.btnWardrobe._y = -12;
+      navBar.btnWardrobe._visible = true;
+      navBar.btnWardrobe._alpha = 100;
+      navBar.btnWardrobe.enabled = true;
+   }
+   if(navBar.btnMap != undefined)
+   {
+      navBar.btnMap._x = 764;
+      navBar.btnMap._y = -12;
+      navBar.btnMap._visible = true;
+      navBar.btnMap._alpha = 100;
+      navBar.btnMap.enabled = true;
+      _root.__zhGameplayMapBounds = {left:744,top:-30,right:820,bottom:58};
+   }
    zhEnsureDirectMapButton();
+   zhHideLegacyPauseChrome();
 }
 function turnOffWardrobe()
 {`,
@@ -2891,6 +3165,10 @@ if(_root != undefined && zhSuppressSavingGame != undefined)
 {
    zhSuppressSavingGame();
 }
+if(_root != undefined && zhHideLegacyPauseChrome != undefined)
+{
+   zhHideLegacyPauseChrome();
+}
 if(_root != undefined && zhScheduleAutoMap != undefined)
 {
    zhScheduleAutoMap();
@@ -2899,11 +3177,48 @@ if(_root != undefined && zhInstallExternalMapBridge != undefined)
 {
    zhInstallExternalMapBridge();
 }
-if(_root != undefined && _root.island == "Super")
+if(_root != undefined && zhMaybeStartShowSayThrottleProof != undefined)
+{
+   zhMaybeStartShowSayThrottleProof();
+}
+if(_root != undefined)
 {
    layoutFramelessGameplayNav(true);
+   if(_root.__zhGameplayNavRelayoutInterval == undefined)
+   {
+      _root.__zhGameplayNavRelayoutTicks = 0;
+      _root.__zhGameplayNavRelayoutTick = function()
+      {
+         _root.__zhGameplayNavRelayoutTicks = Number(_root.__zhGameplayNavRelayoutTicks) + 1;
+         if(layoutFramelessGameplayNav != undefined)
+         {
+            layoutFramelessGameplayNav(true);
+         }
+         if(_root.__zhGameplayNavRelayoutTicks > 40)
+         {
+            clearInterval(_root.__zhGameplayNavRelayoutInterval);
+            _root.__zhGameplayNavRelayoutInterval = undefined;
+         }
+      };
+      _root.__zhGameplayNavRelayoutInterval = setInterval(_root,"__zhGameplayNavRelayoutTick",250);
+   }
 }`,
     "gameplay frameless gameplay nav init"
+  );
+
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `btnPause._x = 14;
+btnPause._y = 14;
+btnPause.onRollOver = _root.useArrow;`,
+    `btnPause._x = 14;
+btnPause._y = 14;
+if(_root != undefined && zhHideLegacyPauseChrome != undefined)
+{
+   zhHideLegacyPauseChrome();
+}
+btnPause.onRollOver = _root.useArrow;`,
+    "gameplay hide legacy pause button after attach"
   );
 
   nextContent = replaceRequiredSnippet(
@@ -2927,10 +3242,11 @@ if(_root != undefined && _root.island == "Super")
     `   popupClose._visible = false;
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/inventory.swf");`,
-    `   popupClose._visible = false;
+   `   popupClose._visible = false;
    zhShowPopupBackdrop();
    createEmptyMovieClip("popupClip",popupDepth);
-   popupClip.loadMovie("popups/inventory.swf");`,
+   popupClip.loadMovie("popups/inventory.swf");
+   zhRaisePopupLayers();`,
     "gameplay inventory popup backdrop"
   );
 
@@ -2955,14 +3271,15 @@ function popup(popupName, showBack, btnCloseOnTop, hideBtnClose)`,
    }
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/" + popupName);`,
-    `   if(hideBtnClose)
+   `   if(hideBtnClose)
    {
       popupBack.btnClose._visible = false;
       popupClose._visible = false;
    }
    zhShowPopupBackdrop();
    createEmptyMovieClip("popupClip",popupDepth);
-   popupClip.loadMovie("popups/" + popupName);`,
+   popupClip.loadMovie("popups/" + popupName);
+   zhRaisePopupLayers();`,
     "gameplay popup backdrop"
   );
 
@@ -3001,9 +3318,13 @@ function applyAs2GameplayFrame5NavPatch(content) {
    {
       zhInstallExternalMapBridge();
    }
-   if(_root != undefined && _root.island == "Super" && layoutFramelessGameplayNav != undefined)
+   if(_root != undefined && layoutFramelessGameplayNav != undefined)
    {
       layoutFramelessGameplayNav(true);
+   }
+   if(_root != undefined && zhHideLegacyPauseChrome != undefined)
+   {
+      zhHideLegacyPauseChrome();
    }`,
     "gameplay frame_5 super nav relayout"
   );
@@ -3040,38 +3361,47 @@ function zhFindNearbyInteractiveChar(sceneRef, clickX, clickY)
          {
             return _loc2_;
          }
-         if(_loc2_.coordinates != undefined)
-         {
-            _loc3_ = Math.abs(_loc2_.coordinates.x - _root._xmouse);
-            _loc4_ = Math.abs(_loc2_.coordinates.y - _root._ymouse);
-            _loc5_ = _loc3_ + _loc4_;
-            if(_loc3_ <= 140 && _loc4_ <= 220 && _loc5_ < _loc8_)
-            {
-               _loc8_ = _loc5_;
-               _loc7_ = _loc2_;
-            }
-         }
-         _loc3_ = Math.abs(_loc2_._x - clickX);
-         _loc4_ = Math.abs(_loc2_._y - clickY);
-         _loc5_ = _loc3_ + _loc4_;
-         _loc6_ = Math.abs(_loc2_._x - _loc10_) + Math.abs(_loc2_._y - _loc11_);
-         if(_loc6_ < _loc5_)
-         {
-            _loc3_ = Math.abs(_loc2_._x - _loc10_);
-            _loc4_ = Math.abs(_loc2_._y - _loc11_);
-            _loc5_ = _loc6_;
-         }
-         if(_loc3_ <= 240 && _loc4_ <= 320)
-         {
-            if(_loc5_ < _loc8_)
-            {
-               _loc8_ = _loc5_;
-               _loc7_ = _loc2_;
-            }
-         }
       }
    }
    return _loc7_;
+}
+function zhCanTriggerNativeDialogue(targetPlayer)
+{
+   var _loc1_ = getTimer();
+   if(targetPlayer == undefined || camera == undefined || camera.scene == undefined || camera.scene.char == undefined)
+   {
+      return false;
+   }
+   if(_root.__zhDialogueGateUntil != undefined && _loc1_ < _root.__zhDialogueGateUntil)
+   {
+      return false;
+   }
+   if(targetPlayer.__zhLastDialogueAt != undefined && _loc1_ - targetPlayer.__zhLastDialogueAt < 1600)
+   {
+      return false;
+   }
+   if(targetPlayer.talking == true || camera.scene.char.talking == true)
+   {
+      return false;
+   }
+   if(targetPlayer.sayDepth != undefined && _root["say" + targetPlayer.sayDepth] != undefined)
+   {
+      return false;
+   }
+   if(camera.scene.char.sayDepth != undefined && _root["say" + camera.scene.char.sayDepth] != undefined)
+   {
+      return false;
+   }
+   return true;
+}
+function zhMarkNativeDialogueTriggered(targetPlayer)
+{
+   var _loc1_ = getTimer();
+   _root.__zhDialogueGateUntil = _loc1_ + 1200;
+   if(targetPlayer != undefined)
+   {
+      targetPlayer.__zhLastDialogueAt = _loc1_;
+   }
 }
 function zhTriggerNativeDialogue(targetPlayer)
 {
@@ -3079,8 +3409,13 @@ function zhTriggerNativeDialogue(targetPlayer)
    {
       return false;
    }
+   if(!zhCanTriggerNativeDialogue(targetPlayer))
+   {
+      return false;
+   }
    if(targetPlayer.interaction == "phrase" && targetPlayer.talkyText != undefined)
    {
+      zhMarkNativeDialogueTriggered(targetPlayer);
       camera.scene.char.mouseFollow = false;
       camera.scene.char.targetPlayer = targetPlayer;
       targetPlayer.engaged = true;
@@ -3094,6 +3429,7 @@ function zhTriggerNativeDialogue(targetPlayer)
    }
    if(targetPlayer.interaction == "chat")
    {
+      zhMarkNativeDialogueTriggered(targetPlayer);
       camera.scene.char.mouseFollow = false;
       camera.scene.char.targetPlayer = targetPlayer;
       targetPlayer.engaged = true;
@@ -3214,10 +3550,6 @@ camera.scene.bg.onPress = function()
 {
    pointer.directional._alpha = 50;
    pointer.target._alpha = 50;
-   if(zhTriggerNearbyNativeDialogueFromMouse())
-   {
-      return undefined;
-   }
    camera.scene.char.mouseFollow = false;
 };`,
     "gameplay frame_9 nearby npc mouseup fallback"
@@ -3256,9 +3588,9 @@ function applyAs2FrameworkTopRightNavPatch(content) {
          }
       }
       var _loc3_ = [this._nav_mc.gameplayBtn,this._nav_mc.dailypopBtn,this._nav_mc.statsBtn,this._nav_mc.friendshubBtn,this._nav_mc.homeBtn];
-      var _loc4_ = 1000;
-      var _loc5_ = 12;
-      var _loc6_ = 122;
+      var _loc4_ = 1180;
+      var _loc5_ = 14;
+      var _loc6_ = 55;
       var _loc7_ = 10;
       var _loc9_ = 0;
       var _loc10_;
@@ -3339,11 +3671,15 @@ function applyAs2FrameworkTopRightNavPatch(content) {
       {
          _root.layoutFramelessGameplayNav(true);
       }
+      if(_root != undefined && _root.zhHideLegacyPauseChrome != undefined)
+      {
+         _root.zhHideLegacyPauseChrome();
+      }
    }
    function applyGameplayViewportChrome(pSectionName)
    {
       var _loc2_ = pSectionName == "gameplay";
-      var _loc3_ = _loc2_ || _root != undefined && _root.island == "Super";
+      var _loc3_ = _loc2_;
       if(this._bg_mc != undefined)
       {
          this._bg_mc._visible = !_loc2_;
@@ -3351,6 +3687,12 @@ function applyAs2FrameworkTopRightNavPatch(content) {
       if(this._adWrapperView != undefined && this._adWrapperView.content_mc != undefined)
       {
          this._adWrapperView.content_mc._visible = !_loc3_;
+      }
+      if(this._nav_mc != undefined)
+      {
+         this._nav_mc._visible = !_loc2_;
+         this._nav_mc._alpha = _loc2_ ? 0 : 100;
+         this._nav_mc.enabled = !_loc2_;
       }
    }
    function update(pObs, pInfoObj)
@@ -3519,13 +3861,13 @@ function flashpoint_collect_audio_overrides() {
 <!doctype html>`
     );
   }
-  const primaryEmbedPattern = /<embed id="game" scale="noscale" wmode="(?:direct|gpu|window|opaque)"(?: allowScriptAccess="always")? menu="false" bgcolor="139ffd" hidden>/u;
+  const primaryEmbedPattern = /<embed id="game" scale="noscale" wmode="(?:direct|gpu|window|opaque)"(?: allowScriptAccess="always")? menu="false" bgcolor="[0-9a-fA-F]{6}" hidden>/u;
   if (!primaryEmbedPattern.test(nextContent)) {
     throw new Error("Unable to locate base.php primary embed wmode");
   }
   nextContent = nextContent.replace(
     primaryEmbedPattern,
-    `<div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="139ffd" hidden></div>
+    `<div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="111827" hidden></div>
         <div id="flashpointMapHotspot" hidden aria-hidden="true"></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>`
   );
@@ -3538,11 +3880,14 @@ function flashpoint_collect_audio_overrides() {
     overflow: hidden;
 }
 
-body, embed { background-color: #139ffd; }
+body { background-color: #111827; }
+
+embed { background-color: #111827; }
 
 #gameViewport {
     position: absolute;
     overflow: hidden;
+    background: #111827;
 }
 
 #flashpointMapHotspot {
@@ -3578,7 +3923,7 @@ embed {
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
-      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1010, height: 580 };`,
+      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };`,
     "base page viewport host constants"
   );
   nextContent = replaceRequiredSnippet(
@@ -3679,13 +4024,13 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.max(window.innerWidth / crop.width, window.innerHeight / crop.height));
+        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
         viewportWidth = crop.width;
         viewportHeight = crop.height;
-        offsetLeft = Math.min(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
-        offsetTop = Math.min(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
+        offsetLeft = Math.max(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
+        offsetTop = Math.max(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
@@ -3833,8 +4178,7 @@ function updateSceneAudio(island, scene, gameState) {
               candidates = [
                   islandKey + "/" + sceneKey,
                   islandKey + "/default",
-                  "_global/" + sceneKey,
-                  "_global/default"
+                  "_global/" + sceneKey
               ];
 
         for(let index = 0; index < candidates.length; index++) {
@@ -3887,6 +4231,8 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
         flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
     if(inputParams.flashpointQaLoadingHoldMs !== undefined)
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
+    if(inputParams.flashpointQaHideHud !== undefined)
+        flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
 
     if(getCharLazyLoadStatus()) {`,
     "base page QA map flashvar passthrough"
@@ -5971,6 +6317,21 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
           translatedScriptRoot
         })
         : [];
+      if (sourceGroup === "as2" && ffdecMeta.scriptExport?.ok && sourceScriptRoot && fileExists(sourceScriptRoot)) {
+        try {
+          applyAs2NativeNavigationLabelScriptPatch({
+            sourceScriptRoot,
+            translatedScriptRoot
+          });
+        } catch (error) {
+          manifest.pendingSwfAssets.push({
+            assetId,
+            assetPath: sample.asset_path,
+            reason: error instanceof Error ? error.message : String(error)
+          });
+          continue;
+        }
+      }
       if (sourceGroup === "as2" && AS2_SUPER_POWER_SCENE_SWF_PATTERN.test(sample.asset_path) && ffdecMeta.scriptExport?.ok && sourceScriptRoot && fileExists(sourceScriptRoot)) {
         try {
           applyAs2SuperPowerSceneValidationPatch({
@@ -5994,7 +6355,7 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
 
       const outputSwf = path.join(outputDir, "swf", sample.asset_path);
       ensureDirSync(path.dirname(outputSwf));
-      const tempTextOutput = translatedFiles.length > 0 && translatedScriptFiles.length > 0
+      const tempTextOutput = translatedFiles.length > 0 && finalTranslatedScriptFiles.length > 0
         ? path.join(paths.tempDir, `swf-text-pass-${Date.now()}-${Math.random().toString(16).slice(2)}.swf`)
         : outputSwf;
       let result = { ok: true };

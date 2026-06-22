@@ -15,7 +15,7 @@ import win32api
 import win32con
 import win32gui
 import win32process
-from PIL import Image, ImageGrab
+from PIL import Image, ImageDraw, ImageGrab
 from pywinauto import mouse
 
 
@@ -1951,6 +1951,249 @@ def command_analyze_visual_guard(args):
     to_json(payload)
 
 
+def _connected_components(mask, min_pixels=1):
+    height, width = mask.shape
+    seen = np.zeros(mask.shape, dtype=bool)
+    components = []
+    for y in range(height):
+        for x in range(width):
+            if not mask[y, x] or seen[y, x]:
+                continue
+            stack = [(x, y)]
+            seen[y, x] = True
+            xs = []
+            ys = []
+            count = 0
+            while stack:
+                cx, cy = stack.pop()
+                xs.append(cx)
+                ys.append(cy)
+                count += 1
+                for ny in range(cy - 1, cy + 2):
+                    for nx in range(cx - 1, cx + 2):
+                        if (
+                            nx < 0 or nx >= width or
+                            ny < 0 or ny >= height or
+                            seen[ny, nx] or
+                            not mask[ny, nx]
+                        ):
+                            continue
+                        seen[ny, nx] = True
+                        stack.append((nx, ny))
+            if count >= min_pixels:
+                left = int(min(xs))
+                right = int(max(xs)) + 1
+                top = int(min(ys))
+                bottom = int(max(ys)) + 1
+                components.append({
+                    "pixels": int(count),
+                    "left": left,
+                    "top": top,
+                    "right": right,
+                    "bottom": bottom,
+                    "width": int(right - left),
+                    "height": int(bottom - top),
+                    "centerX": int(round((left + right) / 2.0)),
+                    "centerY": int(round((top + bottom) / 2.0)),
+                })
+    return components
+
+
+def command_analyze_hud_diff(args):
+    image = Image.open(args.input).convert("RGB")
+    baseline = Image.open(args.baseline).convert("RGB")
+    if image.size != baseline.size:
+        raise ValueError(f"HUD diff images must have the same size: {image.size} != {baseline.size}")
+
+    width, height = image.size
+    stage_rect = None
+    if args.stage_json:
+        stage_payload = json.loads(Path(args.stage_json).read_text(encoding="utf-8"))
+        stage_rect = stage_payload.get("stageRect") or None
+    if not stage_rect:
+        stage_rect = {
+            "left": 0,
+            "top": 0,
+            "right": width,
+            "bottom": height,
+            "width": width,
+            "height": height,
+        }
+
+    stage_left = int(stage_rect.get("left", 0))
+    stage_top = int(stage_rect.get("top", 0))
+    stage_right = int(stage_rect.get("right", width))
+    stage_bottom = int(stage_rect.get("bottom", height))
+    stage_width = max(1, int(stage_rect.get("width", stage_right - stage_left)))
+    stage_height = max(1, int(stage_rect.get("height", stage_bottom - stage_top)))
+
+    top_bottom = min(stage_bottom, stage_top + int(round(stage_height * float(args.top_ratio))))
+    right_left = max(stage_left, stage_right - int(round(stage_width * float(args.right_ratio))))
+    diff_threshold = int(args.diff_threshold)
+
+    rgb = np.array(image).astype(np.int16)
+    base = np.array(baseline).astype(np.int16)
+    diff = np.max(np.abs(rgb - base), axis=2)
+    top_mask = np.zeros((height, width), dtype=bool)
+    top_mask[stage_top:top_bottom, stage_left:stage_right] = diff[stage_top:top_bottom, stage_left:stage_right] >= diff_threshold
+
+    all_components = _connected_components(top_mask, min_pixels=int(args.min_component_pixels))
+    all_components.sort(key=lambda comp: (comp["left"], comp["top"]))
+    hud_components = [
+        comp for comp in all_components
+        if (
+            comp["left"] >= right_left and
+            comp["width"] >= int(args.min_icon_width) and
+            comp["height"] >= int(args.min_icon_height)
+        )
+    ]
+    unexpected_components = [
+        comp for comp in all_components
+        if comp["right"] < right_left and comp["pixels"] >= int(args.min_unexpected_pixels)
+    ]
+
+    hud_box = None
+    right_margin = None
+    top_margin = None
+    row_spread = None
+    gaps = []
+    if hud_components:
+        left = min(comp["left"] for comp in hud_components)
+        right = max(comp["right"] for comp in hud_components)
+        top = min(comp["top"] for comp in hud_components)
+        bottom = max(comp["bottom"] for comp in hud_components)
+        hud_box = {
+            "left": int(left),
+            "top": int(top),
+            "right": int(right),
+            "bottom": int(bottom),
+            "width": int(right - left),
+            "height": int(bottom - top),
+            "centerX": int(round((left + right) / 2.0)),
+            "centerY": int(round((top + bottom) / 2.0)),
+        }
+        right_margin = int(stage_right - right)
+        top_margin = int(top - stage_top)
+        row_spread = int(max(comp["centerY"] for comp in hud_components) - min(comp["centerY"] for comp in hud_components))
+        ordered = sorted(hud_components, key=lambda comp: comp["left"])
+        for index in range(1, len(ordered)):
+            gaps.append(int(ordered[index]["left"] - ordered[index - 1]["right"]))
+    hud_width_ratio = None
+    if hud_box and stage_width > 0:
+        hud_width_ratio = float(hud_box["width"]) / float(stage_width)
+
+    checks = [
+        {
+            "name": "hud_component_count",
+            "ok": len(hud_components) >= int(args.min_hud_components),
+            "observed": len(hud_components),
+            "min": int(args.min_hud_components),
+        },
+        {
+            "name": "hud_right_margin",
+            "ok": right_margin is not None and right_margin >= int(args.min_right_margin) and right_margin <= int(args.max_right_margin),
+            "observed": right_margin,
+            "min": int(args.min_right_margin),
+            "max": int(args.max_right_margin),
+        },
+        {
+            "name": "hud_top_margin",
+            "ok": top_margin is not None and top_margin >= int(args.min_top_margin) and top_margin <= int(args.max_top_margin),
+            "observed": top_margin,
+            "min": int(args.min_top_margin),
+            "max": int(args.max_top_margin),
+        },
+        {
+            "name": "hud_row_spread",
+            "ok": row_spread is not None and row_spread <= int(args.max_row_spread),
+            "observed": row_spread,
+            "max": int(args.max_row_spread),
+        },
+        {
+            "name": "hud_width_ratio",
+            "ok": hud_width_ratio is not None and hud_width_ratio <= float(args.max_hud_width_ratio),
+            "observed": hud_width_ratio,
+            "max": float(args.max_hud_width_ratio),
+        },
+        {
+            "name": "hud_icon_gaps",
+            "ok": all(gap >= int(args.min_icon_gap) and gap <= int(args.max_icon_gap) for gap in gaps) if gaps else len(hud_components) < 2,
+            "observed": gaps,
+            "min": int(args.min_icon_gap),
+            "max": int(args.max_icon_gap),
+        },
+        {
+            "name": "unexpected_top_diff_components",
+            "ok": len(unexpected_components) <= int(args.max_unexpected_components),
+            "observed": len(unexpected_components),
+            "max": int(args.max_unexpected_components),
+        },
+    ]
+
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "baseline": args.baseline,
+        "imageSize": {
+            "width": width,
+            "height": height,
+        },
+        "stageRect": {
+            "left": int(stage_left),
+            "top": int(stage_top),
+            "right": int(stage_right),
+            "bottom": int(stage_bottom),
+            "width": int(stage_width),
+            "height": int(stage_height),
+        },
+        "analysisRegion": {
+            "topBand": {
+                "left": int(stage_left),
+                "top": int(stage_top),
+                "right": int(stage_right),
+                "bottom": int(top_bottom),
+            },
+            "rightHudMinLeft": int(right_left),
+        },
+        "hudBox": hud_box,
+        "hudComponents": hud_components,
+        "unexpectedComponents": unexpected_components,
+        "metrics": {
+            "rightMargin": right_margin,
+            "topMargin": top_margin,
+            "rowSpread": row_spread,
+            "gaps": gaps,
+            "hudWidthRatio": hud_width_ratio,
+        },
+        "thresholds": {
+            "diffThreshold": diff_threshold,
+            "topRatio": float(args.top_ratio),
+            "rightRatio": float(args.right_ratio),
+        },
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((stage_left, stage_top, stage_right, stage_bottom), outline=(255, 255, 0), width=3)
+        draw.rectangle((right_left, stage_top, stage_right, top_bottom), outline=(0, 255, 255), width=3)
+        if hud_box:
+            draw.rectangle((hud_box["left"], hud_box["top"], hud_box["right"], hud_box["bottom"]), outline=(0, 255, 0), width=4)
+        for comp in hud_components:
+            draw.rectangle((comp["left"], comp["top"], comp["right"], comp["bottom"]), outline=(255, 128, 0), width=2)
+        for comp in unexpected_components:
+            draw.rectangle((comp["left"], comp["top"], comp["right"], comp["bottom"]), outline=(255, 0, 0), width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"]:
+        sys.exit(2)
+
+
 def command_crop_image(args):
     image = Image.open(args.input)
     width, height = image.size
@@ -2547,6 +2790,31 @@ def main():
     visual_guard_parser.add_argument("--min-sampled-unique-colors", type=int, default=8)
     visual_guard_parser.add_argument("--max-dominant-color-pct", type=float, default=98.0)
     visual_guard_parser.set_defaults(func=command_analyze_visual_guard)
+
+    hud_diff_parser = subparsers.add_parser("analyze-hud-diff")
+    hud_diff_parser.add_argument("--input", required=True)
+    hud_diff_parser.add_argument("--baseline", required=True)
+    hud_diff_parser.add_argument("--stage-json")
+    hud_diff_parser.add_argument("--output")
+    hud_diff_parser.add_argument("--diff-threshold", type=int, default=25)
+    hud_diff_parser.add_argument("--top-ratio", type=float, default=0.18)
+    hud_diff_parser.add_argument("--right-ratio", type=float, default=0.32)
+    hud_diff_parser.add_argument("--min-component-pixels", type=int, default=20)
+    hud_diff_parser.add_argument("--min-unexpected-pixels", type=int, default=20)
+    hud_diff_parser.add_argument("--min-hud-components", type=int, default=3)
+    hud_diff_parser.add_argument("--min-icon-width", type=int, default=24)
+    hud_diff_parser.add_argument("--min-icon-height", type=int, default=24)
+    hud_diff_parser.add_argument("--min-right-margin", type=int, default=8)
+    hud_diff_parser.add_argument("--max-right-margin", type=int, default=96)
+    hud_diff_parser.add_argument("--min-top-margin", type=int, default=-4)
+    hud_diff_parser.add_argument("--max-top-margin", type=int, default=36)
+    hud_diff_parser.add_argument("--max-row-spread", type=int, default=10)
+    hud_diff_parser.add_argument("--max-hud-width-ratio", type=float, default=0.24)
+    hud_diff_parser.add_argument("--min-icon-gap", type=int, default=10)
+    hud_diff_parser.add_argument("--max-icon-gap", type=int, default=56)
+    hud_diff_parser.add_argument("--max-unexpected-components", type=int, default=0)
+    hud_diff_parser.add_argument("--annotated-output")
+    hud_diff_parser.set_defaults(func=command_analyze_hud_diff)
 
     crop_parser = subparsers.add_parser("crop-image")
     crop_parser.add_argument("--input", required=True)

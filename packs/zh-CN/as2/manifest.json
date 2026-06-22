@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T03:43:00.658Z",
+  "generatedAt": "2026-06-22T19:24:12.715Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 110,
+  "assetsPatched": 114,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -151,6 +151,161 @@
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\supernews.swf"
     },
     {
+      "assetId": "3169f813fea1a7e5973fe640c6c9bca39bf2bca6",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneCarrotMain.swf"
+    },
+    {
+      "assetId": "e093a41c8afed4b3d83c81a2d0bbae519477f533",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneDiner.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneDiner.swf"
+    },
+    {
+      "assetId": "0f763c482a21467cbb50bc773395116e00d8978a",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFactory.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFactory.swf"
+    },
+    {
+      "assetId": "c7ee9918a3221cef6aed39d411daa6c4161ef40d",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarm.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarm.swf"
+    },
+    {
+      "assetId": "1caff4d243055d5932194c2df7d50f0a7aceb8e5",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarmHouse.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarmHouse.swf"
+    },
+    {
+      "assetId": "fb5670d7fcbb12aa154d18edf99bad0e066f1723",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneLoading.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneLoading.swf"
+    },
+    {
+      "assetId": "438b484cf5227b4e616b53f38637ae4b352c4e70",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneProcessing.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneProcessing.swf"
+    },
+    {
+      "assetId": "2d193e635b1ba8537eedc6f5e65ebe5bf18f191a",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneRobot.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneRobot.swf"
+    },
+    {
+      "assetId": "9fa465d27c17f1264959351b705ff8b864c89c65",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneSurplus.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneSurplus.swf"
+    },
+    {
+      "assetId": "fc54500d99e36266510ae66f613c62512b9edbe3",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneBalance.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneBalance.swf"
+    },
+    {
+      "assetId": "91f0a400a3595f20992cde30b2c596b209b47d55",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity.swf"
+    },
+    {
+      "assetId": "cf17ccd7d7075f601aeb9d92a1b13e3d685d738a",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity2.swf"
+    },
+    {
+      "assetId": "67aa3e8f80650681d86eab0254ef69006e86f9ae",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneJamestown.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneJamestown.swf"
+    },
+    {
+      "assetId": "cbea6e2d38aee0bcfd0d969316590a92ff9f9204",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneMuseum.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneMuseum.swf"
+    },
+    {
+      "assetId": "6bb4015abd70fb9c6e1279814e6cd5503ef96268",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/scenePit.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\scenePit.swf"
+    },
+    {
+      "assetId": "7e318049a4c4b8103fa736fed3b52d60d19af6dd",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneBooga.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneBooga.swf"
+    },
+    {
+      "assetId": "e13dc7784a69a15fb6462ea38e9068b7b31c87dc",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneCastaway.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneCastaway.swf"
+    },
+    {
+      "assetId": "804e74aabad7802a4acd3bcbb7755b259b29169c",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMainstreet.swf"
+    },
+    {
+      "assetId": "1eed19b21150c1e054582fa21e5e32cc7b7d076c",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMedicine.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMedicine.swf"
+    },
+    {
+      "assetId": "4c9314339838298bb309d093b4044951f4f1a631",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMuseum2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMuseum2.swf"
+    },
+    {
+      "assetId": "aad16531ed56aabcf8ff931814711f040c8902f0",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneRuins.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneRuins.swf"
+    },
+    {
+      "assetId": "c7c1ce2a3e34c02d90f1c0be71ebec720f855964",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple1.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple1.swf"
+    },
+    {
+      "assetId": "2b72bd93166c7920b222b51aa27aebfe730e5673",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple2.swf"
+    },
+    {
+      "assetId": "8e0f71095bb6c62804414911caa977f843d5e841",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTownhall.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTownhall.swf"
+    },
+    {
+      "assetId": "307b8fa40bf4e6fa4dc51588873db049d21072f6",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneAttic.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneAttic.swf"
+    },
+    {
+      "assetId": "fc7e9ac193e7c1a930dca321c0b9d38ede295e26",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneDocks.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneDocks.swf"
+    },
+    {
+      "assetId": "fa6cdd9da5ab980e434b80fe7849eee95c7a4360",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneDocksInterior.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneDocksInterior.swf"
+    },
+    {
+      "assetId": "5f21efedae4cd7a1a942c8d65c401aa791761d9a",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneHeadquarters.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneHeadquarters.swf"
+    },
+    {
+      "assetId": "c9d508adf551a20b4e1b901a33f860bea4caa449",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneSpyMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneSpyMain.swf"
+    },
+    {
+      "assetId": "5adcbc7a8ea9dd345249d26186d8d79e83add4c2",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneSpyTowers1.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneSpyTowers1.swf"
+    },
+    {
+      "assetId": "73c88a0b79b4edd1ff3045e2042307d23287fba3",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneSpyglass.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneSpyglass.swf"
+    },
+    {
       "assetId": "f12eef6f22512d6a325fdd630825c3c3ceddca9a",
       "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH34.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneAdGroundH34.swf"
@@ -214,268 +369,6 @@
       "assetId": "91a3f366af1b9d220254720535b1e18515c6e11d",
       "assetPath": "content/www.poptropica.com/scenes/islandSuper/sceneSuperMain.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSuperMain.swf"
-    },
-    {
-      "assetId": "f608106976e67c98b9a404d1698c6ac276bbcf8d",
-      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneTrainMain.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneTrainMain.swf"
-    },
-    {
-      "assetId": "as2-shared:inventory-popup",
-      "assetPath": "content/www.poptropica.com/popups/inventory.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\inventory.swf"
-    },
-    {
-      "assetId": "as2-shared:wardrobe-popup",
-      "assetPath": "content/www.poptropica.com/popups/wardrobe.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\wardrobe.swf"
-    },
-    {
-      "assetId": "as2-shared:travelmap-popup",
-      "assetPath": "content/www.poptropica.com/popups/travelmap.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\travelmap.swf"
-    },
-    {
-      "assetId": "as2-shared:map-popup",
-      "assetPath": "content/www.poptropica.com/popups/map.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\map.swf"
-    },
-    {
-      "assetId": "as2-shared:restart-island",
-      "assetPath": "content/www.poptropica.com/flashpoint/restartIsland.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\flashpoint\\restartIsland.swf"
-    },
-    {
-      "assetId": "super-power:framework",
-      "assetPath": "content/www.poptropica.com/framework.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf"
-    },
-    {
-      "assetId": "super-power:gameplay",
-      "assetPath": "content/www.poptropica.com/gameplay.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf"
-    },
-    {
-      "assetId": "super-power:char",
-      "assetPath": "content/www.poptropica.com/char.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\char.swf"
-    },
-    {
-      "assetId": "super-power:counter-balloon",
-      "assetPath": "content/www.poptropica.com/popups/counter/balloon.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\counter\\balloon.swf"
-    },
-    {
-      "assetId": "super-power:balloon",
-      "assetPath": "content/www.poptropica.com/popups/balloon.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\balloon.swf"
-    },
-    {
-      "assetId": "as2-train:edison-cabin-dialogue-zh",
-      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneEdisonCabin.swf",
-      "scripts": [
-        "scripts/DefineSprite_101/frame_1/DoAction.as"
-      ],
-      "translatedHardcodedStrings": 15,
-      "qaHookFlashVars": "flashpointQaAs2Dialog",
-      "notes": "Native AS2 talkyText/manualSay strings only; no static TextField overlay is added."
-    },
-    {
-      "assetId": "as2-shared:framework-qa-dialog-bridge",
-      "assetPath": "content/www.poptropica.com/framework.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
-      "scripts": [
-        "scripts/__Packages/com/poptropica/controllers/commands/StartUpCommand.as"
-      ],
-      "qaHookFlashVars": "flashpointQaAs2Dialog",
-      "notes": "For QA only: forwards flashpointQaAs2Dialog from framework.swf FlashVars into gameplay.swf query so locked AS2 scene roots can read it."
-    },
-    {
-      "assetId": "as2-shared:gameplay-qa-dialog-scene-bridge",
-      "assetPath": "content/www.poptropica.com/gameplay.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
-      "scripts": [
-        "scripts/frame_1/DoAction.as"
-      ],
-      "qaHookFlashVars": "flashpointQaAs2Dialog",
-      "notes": "For QA only: forwards flashpointQaAs2Dialog from gameplay.swf into scene SWF query so loaded AS2 scenes can read it from _url."
-    },
-    {
-      "assetId": "c9d508adf551a20b4e1b901a33f860bea4caa449",
-      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneSpyMain.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneSpyMain.swf"
-    },
-    {
-      "assetId": "as2-shared:framework-qa-loading-hold-bridge",
-      "assetPath": "content/www.poptropica.com/framework.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
-      "changed": true,
-      "replaceTarget": "\\__Packages\\com\\poptropica\\controllers\\commands\\StartUpCommand",
-      "notes": "QA only: holds framework startup loading when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified before gameplay starts."
-    },
-    {
-      "assetId": "as2-shared:gameplay-qa-loading-hold",
-      "assetPath": "content/www.poptropica.com/gameplay.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
-      "changed": false,
-      "replaceTarget": null,
-      "notes": "QA only: delays AS2 gameplay scene loader when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified."
-    },
-    {
-      "assetId": "fc54500d99e36266510ae66f613c62512b9edbe3",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneBalance.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneBalance.swf"
-    },
-    {
-      "assetId": "91f0a400a3595f20992cde30b2c596b209b47d55",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity.swf"
-    },
-    {
-      "assetId": "cf17ccd7d7075f601aeb9d92a1b13e3d685d738a",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity2.swf"
-    },
-    {
-      "assetId": "67aa3e8f80650681d86eab0254ef69006e86f9ae",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneJamestown.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneJamestown.swf"
-    },
-    {
-      "assetId": "cbea6e2d38aee0bcfd0d969316590a92ff9f9204",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneMuseum.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneMuseum.swf"
-    },
-    {
-      "assetId": "6bb4015abd70fb9c6e1279814e6cd5503ef96268",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/scenePit.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\scenePit.swf"
-    },
-    {
-      "assetId": "as2-shared:gameplay-save-status-suppression",
-      "assetPath": "content/www.poptropica.com/gameplay.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
-      "changed": true,
-      "replaceTargets": [
-        "\\frame_1\\DoAction",
-        "\\frame_5\\DoAction"
-      ],
-      "notes": "Hides the AS2 savingGame status movie clip globally so fullscreen/window resize does not expose a blue bottom band."
-    },
-    {
-      "assetId": "early-poptropica:city2-qa-dialog-proof",
-      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity2.swf",
-      "changed": true,
-      "replaceTarget": "\\DefineSprite_185\\frame_1\\DoAction",
-      "notes": "QA only: triggers three native Early City2 NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
-    },
-    {
-      "assetId": "7e318049a4c4b8103fa736fed3b52d60d19af6dd",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneBooga.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneBooga.swf"
-    },
-    {
-      "assetId": "e13dc7784a69a15fb6462ea38e9068b7b31c87dc",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneCastaway.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneCastaway.swf"
-    },
-    {
-      "assetId": "804e74aabad7802a4acd3bcbb7755b259b29169c",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMainstreet.swf"
-    },
-    {
-      "assetId": "1eed19b21150c1e054582fa21e5e32cc7b7d076c",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMedicine.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMedicine.swf"
-    },
-    {
-      "assetId": "4c9314339838298bb309d093b4044951f4f1a631",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMuseum2.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMuseum2.swf"
-    },
-    {
-      "assetId": "aad16531ed56aabcf8ff931814711f040c8902f0",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneRuins.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneRuins.swf"
-    },
-    {
-      "assetId": "c7c1ce2a3e34c02d90f1c0be71ebec720f855964",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple1.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple1.swf"
-    },
-    {
-      "assetId": "2b72bd93166c7920b222b51aa27aebfe730e5673",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple2.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple2.swf"
-    },
-    {
-      "assetId": "8e0f71095bb6c62804414911caa977f843d5e841",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTownhall.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTownhall.swf"
-    },
-    {
-      "assetId": "shark-tooth:mainstreet-qa-dialog-proof",
-      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMainstreet.swf",
-      "changed": true,
-      "replaceTarget": "\\DefineSprite_541\\frame_1\\DoAction",
-      "notes": "QA only: triggers native Shark Mainstreet NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
-    },
-    {
-      "assetId": "e093a41c8afed4b3d83c81a2d0bbae519477f533",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneDiner.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneDiner.swf"
-    },
-    {
-      "assetId": "0f763c482a21467cbb50bc773395116e00d8978a",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFactory.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFactory.swf"
-    },
-    {
-      "assetId": "c7ee9918a3221cef6aed39d411daa6c4161ef40d",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarm.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarm.swf"
-    },
-    {
-      "assetId": "1caff4d243055d5932194c2df7d50f0a7aceb8e5",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarmHouse.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarmHouse.swf"
-    },
-    {
-      "assetId": "fb5670d7fcbb12aa154d18edf99bad0e066f1723",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneLoading.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneLoading.swf"
-    },
-    {
-      "assetId": "438b484cf5227b4e616b53f38637ae4b352c4e70",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneProcessing.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneProcessing.swf"
-    },
-    {
-      "assetId": "2d193e635b1ba8537eedc6f5e65ebe5bf18f191a",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneRobot.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneRobot.swf"
-    },
-    {
-      "assetId": "9fa465d27c17f1264959351b705ff8b864c89c65",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneSurplus.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneSurplus.swf"
-    },
-    {
-      "assetId": "3169f813fea1a7e5973fe640c6c9bca39bf2bca6",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneCarrotMain.swf"
-    },
-    {
-      "assetId": "24-carrot:mainstreet-qa-dialog-proof",
-      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneCarrotMain.swf",
-      "changed": true,
-      "replaceTarget": "\\DefineSprite_332\\frame_1\\DoAction",
-      "notes": "QA only: triggers native Carrot Main Street NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     },
     {
       "assetId": "8ee2e561fc4fa68e5412eed4da979cc3c80fd4a6",
@@ -598,6 +491,132 @@
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneViking2.swf"
     },
     {
+      "assetId": "aa1fac6b39f0bd0b1d857e91180cfbfaf31825e5",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/assets/sharedContent.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\assets\\sharedContent.swf"
+    },
+    {
+      "assetId": "bf538093242bb76c625c9f9dbd6858fd9ce889c0",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneCoachCar.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneCoachCar.swf"
+    },
+    {
+      "assetId": "199c47a97d2e97c2f6ba860af86bc25be087ad47",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneCoalCar.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneCoalCar.swf"
+    },
+    {
+      "assetId": "9639a9ff1ef8e5b73a5d7f7a8de58626cc0e937e",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneDiningCar.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneDiningCar.swf"
+    },
+    {
+      "assetId": "5d123721601c6006b7bdf9a8c565cec04138059c",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneEdisonCabin.swf"
+    },
+    {
+      "assetId": "f5e47c29887150dd94c6832495b0f031bb10b6d0",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneFerrisWheel.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneFerrisWheel.swf"
+    },
+    {
+      "assetId": "93e6c27b2f5e5e27349a4c3f85e457d56fbd7a9d",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneHoudiniCabin.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneHoudiniCabin.swf"
+    },
+    {
+      "assetId": "1b63c563d1a5f5de987e906cc17a947adf158491",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneLuggageCar.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneLuggageCar.swf"
+    },
+    {
+      "assetId": "2d7aa254048ea12dc7cff44e9c4227cdd4e12d44",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/scenePresidentialCar.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\scenePresidentialCar.swf"
+    },
+    {
+      "assetId": "34c4fb80ddaf02fed511ee58af3523fc950dacd9",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneRooftops.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneRooftops.swf"
+    },
+    {
+      "assetId": "c0688e57f8b445b60ec406408776d006ae5a0838",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneTeslaCabin.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneTeslaCabin.swf"
+    },
+    {
+      "assetId": "f608106976e67c98b9a404d1698c6ac276bbcf8d",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneTrainMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneTrainMain.swf"
+    },
+    {
+      "assetId": "as2-shared:inventory-popup",
+      "assetPath": "content/www.poptropica.com/popups/inventory.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\inventory.swf"
+    },
+    {
+      "assetId": "as2-shared:wardrobe-popup",
+      "assetPath": "content/www.poptropica.com/popups/wardrobe.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\wardrobe.swf"
+    },
+    {
+      "assetId": "as2-shared:travelmap-popup",
+      "assetPath": "content/www.poptropica.com/popups/travelmap.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\travelmap.swf"
+    },
+    {
+      "assetId": "as2-shared:map-popup",
+      "assetPath": "content/www.poptropica.com/popups/map.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\map.swf"
+    },
+    {
+      "assetId": "as2-shared:restart-island",
+      "assetPath": "content/www.poptropica.com/flashpoint/restartIsland.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\flashpoint\\restartIsland.swf"
+    },
+    {
+      "assetId": "super-power:framework",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf"
+    },
+    {
+      "assetId": "super-power:gameplay",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf"
+    },
+    {
+      "assetId": "super-power:char",
+      "assetPath": "content/www.poptropica.com/char.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\char.swf"
+    },
+    {
+      "assetId": "super-power:counter-balloon",
+      "assetPath": "content/www.poptropica.com/popups/counter/balloon.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\counter\\balloon.swf"
+    },
+    {
+      "assetId": "super-power:balloon",
+      "assetPath": "content/www.poptropica.com/popups/balloon.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\balloon.swf"
+    },
+    {
+      "assetId": "as2-shared:framework-qa-loading-hold-bridge",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+      "changed": true,
+      "replaceTarget": "\\__Packages\\com\\poptropica\\controllers\\commands\\StartUpCommand",
+      "notes": "QA only: holds framework startup loading when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified before gameplay starts."
+    },
+    {
+      "assetId": "as2-shared:gameplay-qa-loading-hold",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "changed": true,
+      "replaceTarget": "\\frame_1\\DoAction",
+      "notes": "QA only: delays AS2 gameplay scene loader when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified."
+    },
+    {
       "assetId": "time-tangled:lab-qa-dialog-proof",
       "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLab.swf",
@@ -618,27 +637,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 94,
+    "replacementCount": 110,
     "swfRuntimeOverrides": "enabled"
-  },
-  "as2HardcodedDialoguePatches": {
-    "mysteryTrainEdisonCabin": {
-      "generatedAt": "2026-06-19T15:25:26.123Z",
-      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
-      "translatedHardcodedStrings": 15,
-      "qaHookFlashVars": "flashpointQaAs2Dialog",
-      "frameworkQaBridge": {
-        "assetPath": "content/www.poptropica.com/framework.swf",
-        "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
-        "changed": false,
-        "alreadyPatched": true
-      },
-      "gameplayQaBridge": {
-        "assetPath": "content/www.poptropica.com/gameplay.swf",
-        "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
-        "changed": false,
-        "alreadyPatched": true
-      }
-    }
   }
 }

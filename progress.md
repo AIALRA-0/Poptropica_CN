@@ -11,6 +11,29 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 # Progress
 
+## 2026-06-22 中期反馈封版重开 / Time Tangled wave 1
+
+- 按用户中期反馈停止推进新岛，当前不进入 Super Power；`Time Tangled` 旧封版结论重开。
+- 修复 AS2 QA 参数污染问题：不再把 `flashpointQaAs2Dialog` / `flashpointQaLoadingHoldMs` 追加到 `gameplay.swf?...`，改由 `framework.swf` 写入 `_global.flashpointQaAs2Dialog` 和 `_global.flashpointQaLoadingHoldMs`。原因是旧方式会导致带 QA 开关的验收路线在场景加载后跳到 `base.php/saveData` 黑页。
+- 已更新并重打 `tools/patch-as2-gameplay-loading-hold.js`、`tools/patch-as2-time-dialog-proof.js`、`framework.swf`、`gameplay.swf`、`sceneLab.swf`，并重建 `runtime-data/patched-zips/as2-runtime.zip`。
+- 验证 `framework` 当前不再出现 `gameplay.swf?`；`gameplay` loading hold 读取 `_global.flashpointQaLoadingHoldMs`；Time Lab 对话 hook 读取 `_global.flashpointQaAs2Dialog`。
+- G32QC/no-foreground/静音 loading 证据通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782150373279.json`，`loadingCenterPassed=1`，0/500/1000/1500/2500/4000ms 均 OCR 到 `Poptropica LOADING`，中心偏移约 x=2/y=21-22，`audioActive=0`，缺失请求 0。
+- G32QC/no-foreground/静音 Time Lab 中文对话证据通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782150448753.json`，OCR 样本为“请帮帮我们。故障搅乱了时间，未来岌岌可危。”，`audioActive=0`，缺失请求 0。
+- G32QC/no-foreground/静音 Time Tangled 普通综合回归通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782150563288.json`，地图点击、F11、scene evidence、缺失请求、静音均通过。
+- 同步更新 `CHECKLIST.zh-CN.md`：Time Tangled 当前状态改为重开中；wave 1 通过项和剩余 blocker 已列明。
+- 当前未关闭 blocker：全局淡暂停图标、AS2/AS3 HUD 挤压/重叠、自然靠近 NPC 重复触发/抢话、任务物品弹窗黑残留/越界、使用物品后页面歪斜、科普/外链白屏、更多 Time 年代场景自然路线、真实音频来源清单。
+
+## 2026-06-22 AS2 Time Tangled HUD 右上角量化修正
+
+- 用户指出“不重叠”不等于“右上角正确”，旧 HUD 判断口径作废；本轮只锁 AS2 Time Tangled 顶层 HUD，不推进新岛。
+- 定位结果：Time Tangled 当前可见三枚 HUD 图标来自 `gameplay.swf` 的 `navBar`，不是 `framework.swf` 顶栏。诊断报告 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782153444792.json` 临时隐藏 gameplay HUD 后三枚图标消失，证明层级。
+- 修复内容：`layoutFramelessGameplayNav()` 显式把背包/服装/地图锚定到 gameplay 可视区右上，并继续隐藏 `btnPause`/保存状态残影；`zhEnsureDirectMapButton()` 使用当前地图图标边界同步热区；`base.php` 和 `qa-as2-interaction-smoke.js` 新增 QA-only `flashpointQaHideHud=1` 参数，用于截图差分基线；`tools/qa-helper.py` 新增 `analyze-hud-diff`。
+- 已重打 `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay.swf` 并重建 `runtime-data/patched-zips/as2-runtime.zip`，本轮 AS2 zip `replacementCount=110`。
+- G32QC/no-foreground/静音正常 HUD 截图通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782154863479.json`；隐藏 HUD 基线通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782154908597.json`。
+- 新量化验收通过：`runtime-data/qa/as2/interaction-smoke/as2-hud-diff-1782154863479.json`，识别 3 个 HUD 图标，HUD 盒子 `left=1274 top=25 right=1498 bottom=80`，相对真实舞台右边距 44px、上边距 0px、行内垂直偏差 4px、间距 28px/22px，左上无异常差分。
+- 旧补充证据仍有效：`1782153970576` 证明右移后的地图热区仍可打开地图；`1782154039367` 证明 F11 后 HUD 仍在右上、角色可见；`1782154135577` 证明 loading 居中未回退。
+- 当前未关闭 blocker：地图/任务物品弹窗层级仍会露 HUD 或黑残留；AS3 HUD 还要按同一 A/B 或等价量化口径复核；自然靠近 NPC 重复触发/抢话还没修；更多 Time 年代场景、外链白屏、真实音频来源清单仍未闭环。
+
 ## 2026-06-09
 
 - Resumed the existing active goal in `E:\Poptropica\POPTROPICA_FLASH`.
@@ -4507,3 +4530,35 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `18. super-power`.
   - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.
+
+## 2026-06-22 AS2 HUD Golden Evidence And Dialogue Throttle Proof
+
+- Paused new-island progression again after user feedback that my previous "HUD is correct" judgement was too subjective.
+- Tightened the HUD evidence path:
+  - `tools/qa-helper.py analyze-hud-diff` now has stricter default thresholds for a real right-top HUD: right margin 8-96 px, top margin -4-36 px, row spread <= 10 px, icon gaps 10-56 px, and HUD width <= 24% of stage width.
+  - Added `--annotated-output` to generate a human-readable evidence image: yellow = actual stage, cyan = accepted upper-right region, green = HUD box, orange = individual detected HUD icons, red = unexpected top-band differences.
+  - Python syntax check passed: `python -m py_compile tools/qa-helper.py`.
+- Current-build AS2 Time Tangled HUD proof:
+  - Normal HUD run: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782155801119.json`.
+  - Hidden HUD baseline: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782155857042.json`.
+  - Strict diff: `runtime-data/qa/as2/interaction-smoke/as2-hud-diff-1782155801119-strict.json`.
+  - Annotated visual proof: `runtime-data/qa/as2/interaction-smoke/as2-hud-diff-1782155801119-annotated.png`.
+  - Metrics: 3 HUD icons, `hudBox left=1274 top=25 right=1498 bottom=80`, right margin 44 px, top margin 0 px, row spread 4 px, icon gaps 28/22 px, HUD width ratio 0.1498.
+  - Manual visual review: HUD is a single row in the actual stage upper-right, no left-top faint pause icon is visible in the proof screenshot.
+- Added AS2 global duplicate dialogue protection proof:
+  - `showSay()` now increments `_root.__zhSuppressedDuplicateSayCount` when the same target receives the same decoded text while a bubble is active, shortly after a bubble closes, or inside the short trigger debounce window.
+  - Added QA-only mode `flashpointQaAs2Dialog=as2-show-say-throttle`: gameplay waits until the scene is stable, calls `showSay()` five times with the same Chinese string, keeps the resulting bubble visible for capture, and writes a QA track log with the suppressed count.
+  - Synchronized the patch into `tools/lib/pack.js` so rebuilds keep the behavior.
+  - Rebuilt `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay.swf` and `runtime-data/patched-zips/as2-runtime.zip`.
+  - JS static check passed: `node --check tools/lib/pack.js`.
+- AS2 duplicate-dialogue proof passed:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782156865837.json`.
+  - Screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782156865837/01-time-tangled-initial.png`.
+  - OCR: `重复对话测试`.
+  - Server log proof: `QaShowSayThrottle&suppressed=4&bubble=true&ticks=16`, meaning 5 same-text calls produced one bubble and suppressed 4 duplicates.
+  - Runtime remained side-screen/no-foreground/G32QC targeted and muted; `audioActive=0`.
+- Important non-closure:
+  - This closes the global AS2 `showSay()` duplicate bubble path, not every natural NPC hot-zone. Time Tangled still needs natural NPC/era-route replay after popup/camera/arrow blockers.
+  - AS3 dialogue queue protection is still open.
+  - Time Lab scene-specific QA hook still fails to fire even though the patched scene SWF in the runtime zip contains the hook. Since the global gameplay proof now covers the repeated `showSay()` bug, defer sceneLab hook cleanup unless a later Time Lab-specific proof needs it.
+  - Remaining global blockers: AS3 HUD using the same visual standard, popup/item black residue and off-screen positioning, camera blue-edge leakage in more scenes, native arrow labels, external/click-to-white-screen links, and real audio source inventory.

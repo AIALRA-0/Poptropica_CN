@@ -75,7 +75,11 @@ function insertTimeLabQaDialogHook(content) {
       `flashpointQaTimeLabDialogModeCache = flashpointQaTimeLabDialogSceneUrl.indexOf("${QA_FLASHVARS_KEY}=time-lab") >= 0 ? "time-lab-help" : "";`,
       "function flashpointQaTimeLabDialogMode()",
       "{",
-      `   var _loc1_ = String(_root.${QA_FLASHVARS_KEY});`,
+      `   var _loc1_ = String(_global.${QA_FLASHVARS_KEY});`,
+      "   if(_loc1_ == \"\" || _loc1_ == \"undefined\")",
+      "   {",
+      `      _loc1_ = String(_root.${QA_FLASHVARS_KEY});`,
+      "   }",
       "   if(_loc1_ == \"\" || _loc1_ == \"undefined\")",
       "   {",
       `      _loc1_ = String(_level0.${QA_FLASHVARS_KEY});`,
@@ -265,12 +269,24 @@ function insertTimeLabQaDialogHook(content) {
       "      clearInterval(flashpointQaTimeLabDialogInterval);",
       "   }",
       "   flashpointQaTimeLabDialogWait = 0;",
-      "   flashpointQaTimeLabDialogInterval = setInterval(this,\"flashpointQaTimeLabDialogTick\",250);",
+      "   flashpointQaTimeLabDialogInterval = setInterval(flashpointQaTimeLabDialogTick,250);",
       "}",
       ""
     ].join("\n");
     next = `${hook}${next}`;
   }
+  next = next.replace(
+    'flashpointQaTimeLabDialogInterval = setInterval(this,"flashpointQaTimeLabDialogTick",250);',
+    "flashpointQaTimeLabDialogInterval = setInterval(flashpointQaTimeLabDialogTick,250);"
+  );
+
+  next = next.replace(
+    new RegExp(
+      `(function flashpointQaTimeLabDialogMode\\(\\)\\n\\{\\n\\s+var (_loc\\d+_) = String\\()_root\\.${QA_FLASHVARS_KEY.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")}\\);`,
+      "u"
+    ),
+    `$1_global.${QA_FLASHVARS_KEY});\n   if($2 == "" || $2 == "undefined")\n   {\n      $2 = String(_root.${QA_FLASHVARS_KEY});\n   }`
+  );
 
   const legacyHelpFallback = [
     "   if(_loc2_ != undefined && _loc2_.talkyText != undefined && _loc2_.talkyText != \"\")",
