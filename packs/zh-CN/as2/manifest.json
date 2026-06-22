@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T19:01:34.585Z",
+  "generatedAt": "2026-06-22T00:21:27.820Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 44,
+  "assetsPatched": 63,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -216,6 +216,11 @@
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSuper\\sceneSuperMain.swf"
     },
     {
+      "assetId": "f608106976e67c98b9a404d1698c6ac276bbcf8d",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneTrainMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneTrainMain.swf"
+    },
+    {
       "assetId": "as2-shared:inventory-popup",
       "assetPath": "content/www.poptropica.com/popups/inventory.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\inventory.swf"
@@ -264,6 +269,107 @@
       "assetId": "super-power:balloon",
       "assetPath": "content/www.poptropica.com/popups/balloon.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\balloon.swf"
+    },
+    {
+      "assetId": "as2-train:edison-cabin-dialogue-zh",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTrain\\sceneEdisonCabin.swf",
+      "scripts": [
+        "scripts/DefineSprite_101/frame_1/DoAction.as"
+      ],
+      "translatedHardcodedStrings": 15,
+      "qaHookFlashVars": "flashpointQaAs2Dialog",
+      "notes": "Native AS2 talkyText/manualSay strings only; no static TextField overlay is added."
+    },
+    {
+      "assetId": "as2-shared:framework-qa-dialog-bridge",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+      "scripts": [
+        "scripts/__Packages/com/poptropica/controllers/commands/StartUpCommand.as"
+      ],
+      "qaHookFlashVars": "flashpointQaAs2Dialog",
+      "notes": "For QA only: forwards flashpointQaAs2Dialog from framework.swf FlashVars into gameplay.swf query so locked AS2 scene roots can read it."
+    },
+    {
+      "assetId": "as2-shared:gameplay-qa-dialog-scene-bridge",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "scripts": [
+        "scripts/frame_1/DoAction.as"
+      ],
+      "qaHookFlashVars": "flashpointQaAs2Dialog",
+      "notes": "For QA only: forwards flashpointQaAs2Dialog from gameplay.swf into scene SWF query so loaded AS2 scenes can read it from _url."
+    },
+    {
+      "assetId": "c9d508adf551a20b4e1b901a33f860bea4caa449",
+      "assetPath": "content/www.poptropica.com/scenes/islandSpy/sceneSpyMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandSpy\\sceneSpyMain.swf"
+    },
+    {
+      "assetId": "as2-shared:framework-qa-loading-hold-bridge",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+      "changed": true,
+      "replaceTarget": "\\__Packages\\com\\poptropica\\controllers\\commands\\StartUpCommand",
+      "notes": "QA only: holds framework startup loading when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified before gameplay starts."
+    },
+    {
+      "assetId": "as2-shared:gameplay-qa-loading-hold",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "changed": false,
+      "replaceTarget": null,
+      "notes": "QA only: delays AS2 gameplay scene loader when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified."
+    },
+    {
+      "assetId": "fc54500d99e36266510ae66f613c62512b9edbe3",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneBalance.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneBalance.swf"
+    },
+    {
+      "assetId": "91f0a400a3595f20992cde30b2c596b209b47d55",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity.swf"
+    },
+    {
+      "assetId": "cf17ccd7d7075f601aeb9d92a1b13e3d685d738a",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity2.swf"
+    },
+    {
+      "assetId": "67aa3e8f80650681d86eab0254ef69006e86f9ae",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneJamestown.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneJamestown.swf"
+    },
+    {
+      "assetId": "cbea6e2d38aee0bcfd0d969316590a92ff9f9204",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneMuseum.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneMuseum.swf"
+    },
+    {
+      "assetId": "6bb4015abd70fb9c6e1279814e6cd5503ef96268",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/scenePit.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\scenePit.swf"
+    },
+    {
+      "assetId": "as2-shared:gameplay-save-status-suppression",
+      "assetPath": "content/www.poptropica.com/gameplay.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "changed": true,
+      "replaceTargets": [
+        "\\frame_1\\DoAction",
+        "\\frame_5\\DoAction"
+      ],
+      "notes": "Hides the AS2 savingGame status movie clip globally so fullscreen/window resize does not expose a blue bottom band."
+    },
+    {
+      "assetId": "early-poptropica:city2-qa-dialog-proof",
+      "assetPath": "content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandEarly\\sceneCity2.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_185\\frame_1\\DoAction",
+      "notes": "QA only: triggers three native Early City2 NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     }
   ],
   "pendingSwfAssets": [],
@@ -278,16 +384,27 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 48,
+    "replacementCount": 51,
     "swfRuntimeOverrides": "enabled"
   },
-  "staticTextOverlayPolicy": {
-    "generatedAt": "2026-06-18T00:26:40.757Z",
-    "status": "disabled",
-    "rule": "Do not translate scene signs or other static artwork with TextField overlays. Keep original art unless a real bitmap replacement pipeline is used.",
-    "strippedAssetPath": "content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
-    "strippedScripts": [
-      "scripts/DefineSprite_595/frame_1/DoAction.as"
-    ]
+  "as2HardcodedDialoguePatches": {
+    "mysteryTrainEdisonCabin": {
+      "generatedAt": "2026-06-19T15:25:26.123Z",
+      "assetPath": "content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
+      "translatedHardcodedStrings": 15,
+      "qaHookFlashVars": "flashpointQaAs2Dialog",
+      "frameworkQaBridge": {
+        "assetPath": "content/www.poptropica.com/framework.swf",
+        "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+        "changed": false,
+        "alreadyPatched": true
+      },
+      "gameplayQaBridge": {
+        "assetPath": "content/www.poptropica.com/gameplay.swf",
+        "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+        "changed": false,
+        "alreadyPatched": true
+      }
+    }
   }
 }

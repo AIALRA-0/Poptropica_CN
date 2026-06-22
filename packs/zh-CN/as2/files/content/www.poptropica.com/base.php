@@ -149,21 +149,89 @@ const gameViewport = document.getElementById("gameViewport"),
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
+      as2ResumeKey = "flashpointAs2ResumeLaunch",
+      qaAudioMuteKey = "flashpointQaMuteAudio",
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
-      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 44, width: 1010, height: 500 };
+      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1010, height: 580 };
+
+let currentInputParams = null;
 
 main();
 initMapHotspotBridge();
+initQaAs2DialogBridge();
 window.addEventListener("resize", () => applyCurrentViewport());
 
 function main() {
-    const params = getInput();
+    const params = resolveAs2LaunchInput(getInput());
+    currentInputParams = params;
+    rememberAs2Launch(params);
     flashpointLoad(params.island, params.room, params.startup_path);
 }
 
+function resolveAs2LaunchInput(params) {
+    if(!params || params.__flashpointExplicitScene || params.room !== SCENE_FP_START || params.island !== "Home")
+        return params;
+
+    const saved = readAs2ResumeLaunch();
+    if(!saved || Date.now() - Number(saved.savedAt || 0) > 120000 || Number(saved.restoreCount || 0) >= 4)
+        return params;
+
+    saved.restoreCount = Number(saved.restoreCount || 0) + 1;
+    writeAs2ResumeLaunch(saved);
+    return {
+        ...params,
+        room: saved.room || params.room,
+        island: saved.island || params.island,
+        startup_path: saved.startup_path || params.startup_path,
+        flashpointQaAs2Dialog: saved.flashpointQaAs2Dialog,
+        flashpointQaLoadingHoldMs: saved.flashpointQaLoadingHoldMs,
+        flashpoint_auto_open_map_after_ms: saved.flashpoint_auto_open_map_after_ms,
+        flashpointQaMuteAudio: saved.flashpointQaMuteAudio,
+        __flashpointExplicitScene: true,
+        __flashpointRestoredFromResume: true
+    };
+}
+
+function rememberAs2Launch(params) {
+    if(!params || params.__flashpointRestoredFromResume || !params.__flashpointExplicitScene)
+        return;
+    if(params.room === SCENE_FP_START && params.island === "Home")
+        return;
+
+    writeAs2ResumeLaunch({
+        room: params.room,
+        island: params.island,
+        startup_path: params.startup_path || PATH_DEFAULT,
+        flashpointQaAs2Dialog: params.flashpointQaAs2Dialog,
+        flashpointQaLoadingHoldMs: params.flashpointQaLoadingHoldMs,
+        flashpoint_auto_open_map_after_ms: params.flashpoint_auto_open_map_after_ms,
+        flashpointQaMuteAudio: params.flashpointQaMuteAudio,
+        savedAt: Date.now(),
+        restoreCount: 0
+    });
+}
+
+function readAs2ResumeLaunch() {
+    try {
+        return JSON.parse(sessionStorage.getItem(as2ResumeKey) || localStorage.getItem(as2ResumeKey) || "null");
+    } catch(err) {
+        return null;
+    }
+}
+
+function writeAs2ResumeLaunch(value) {
+    try {
+        const serialized = JSON.stringify(value);
+        sessionStorage.setItem(as2ResumeKey, serialized);
+        localStorage.setItem(as2ResumeKey, serialized);
+    } catch(err) { }
+}
+
 function resolveGameplayViewportCrop(island, scene, gameState) {
+    if(gameState === "return_user_standard")
+        return STANDARD_GAMEPLAY_VIEWPORT;
     return null;
 }
 
@@ -209,6 +277,28 @@ function requestFlashMapOpen() {
         }
     } catch(err) { }
     return false;
+}
+
+function initQaAs2DialogBridge() {
+    const params = currentInputParams || getInput();
+    if(typeof params.flashpointQaAs2Dialog !== "string" || params.flashpointQaAs2Dialog === "")
+        return;
+
+    let attempts = 0;
+    const pushValue = function() {
+        attempts++;
+        try {
+            if(game && typeof game.SetVariable === "function") {
+                game.SetVariable("flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
+                game.SetVariable("_root.flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
+                game.SetVariable("_level0.flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
+            }
+        } catch(err) { }
+
+        if(attempts < 80)
+            window.setTimeout(pushValue, 250);
+    };
+    window.setTimeout(pushValue, 250);
 }
 
 function applyMapHotspot(viewport, gameState) {
@@ -318,6 +408,37 @@ function resolveAs2SoundEffect(soundName) {
     return sceneAudioOverrides["_sounds/" + soundKey] || null;
 }
 
+function isEnabledFlag(value) {
+    return /^(1|true|yes|y|muted)$/i.test(String(value || ""));
+}
+
+function resolveQaAudioMuted(params) {
+    const input = params || currentInputParams || getInput(),
+          explicitValue = input.flashpointQaMuteAudio !== undefined ? input.flashpointQaMuteAudio : input.flashpoint_mute_audio;
+
+    if(explicitValue !== undefined) {
+        const muted = isEnabledFlag(explicitValue);
+        try {
+            sessionStorage.setItem(qaAudioMuteKey, muted ? "1" : "0");
+            localStorage.setItem(qaAudioMuteKey, muted ? "1" : "0");
+        } catch(err) { }
+        return muted;
+    }
+
+    try {
+        return isEnabledFlag(sessionStorage.getItem(qaAudioMuteKey) || localStorage.getItem(qaAudioMuteKey));
+    } catch(err) {
+        return false;
+    }
+}
+
+function applyQaAudioMute(audioElement, audibleVolume) {
+    const muted = resolveQaAudioMuted();
+    audioElement.muted = muted;
+    audioElement.volume = muted ? 0 : audibleVolume;
+    return muted;
+}
+
 function flashpointPlayAs2Sound(soundName) {
     const audioSrc = resolveAs2SoundEffect(soundName);
     if(!audioSrc)
@@ -328,8 +449,7 @@ function flashpointPlayAs2Sound(soundName) {
         soundAudio.preload = "auto";
         soundAudio.autoplay = true;
         soundAudio.loop = false;
-        soundAudio.muted = false;
-        soundAudio.volume = 0.55;
+        applyQaAudioMute(soundAudio, 0.55);
         as2SoundEffectPool.push(soundAudio);
         while(as2SoundEffectPool.length > AS2_SOUND_EFFECT_POOL_LIMIT) {
             const oldAudio = as2SoundEffectPool.shift();
@@ -384,8 +504,7 @@ function updateSceneAudio(island, scene, gameState) {
     if(sceneAudio.getAttribute("src") !== audioSrc) {
         sceneAudio.autoplay = true;
         sceneAudio.loop = true;
-        sceneAudio.muted = false;
-        sceneAudio.volume = 0.35;
+        applyQaAudioMute(sceneAudio, 0.35);
         sceneAudio.setAttribute("autoplay", "autoplay");
         sceneAudio.setAttribute("src", audioSrc);
         sceneAudio.src = audioSrc;
@@ -460,9 +579,19 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     flashVars.set("island", island);
     flashVars.set("startup_path", path);
     flashVars.set("state", gameState);
-    const inputParams = getInput();
+    const inputParams = currentInputParams || getInput();
     if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
+    if(inputParams.flashpointQaAs2Dialog !== undefined)
+        flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
+    if(inputParams.flashpointQaLoadingHoldMs !== undefined)
+        flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
+    const qaMovieParams = new URLSearchParams();
+    if(typeof inputParams.flashpointQaAs2Dialog === "string" && inputParams.flashpointQaAs2Dialog !== "")
+        qaMovieParams.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
+    if(inputParams.flashpointQaLoadingHoldMs !== undefined && String(inputParams.flashpointQaLoadingHoldMs) !== "")
+        qaMovieParams.set("flashpointQaLoadingHoldMs", String(inputParams.flashpointQaLoadingHoldMs));
+    const qaMovieQuery = qaMovieParams.toString() ? "?" + qaMovieParams.toString() : "";
 
     if(getCharLazyLoadStatus()) {
         flashVars.set("charLazyLoad", "1");
@@ -482,7 +611,7 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         if(pageState === STATE_SCENE)
             sceneChange(island, scene);
 
-        game.src = SWF_STATES[pageState];
+        game.src = SWF_STATES[pageState] + qaMovieQuery;
     }
 }
 
@@ -582,6 +711,10 @@ function getInput() {
     if(typeof obj !== "object" || obj === null || Array.isArray(obj))
         obj = { };
 
+    const explicitRoom = typeof obj.room === "string" && obj.room !== "",
+          explicitIsland = typeof obj.island === "string" && obj.island !== "",
+          explicitStartupPath = typeof obj.startup_path === "string" && obj.startup_path !== "";
+
     if(typeof obj.room !== "string")
         obj.room = SCENE_FP_START;
 
@@ -591,6 +724,7 @@ function getInput() {
     if(typeof obj.startup_path !== "string")
         obj.startup_path = PATH_DEFAULT;
 
+    obj.__flashpointExplicitScene = explicitRoom || explicitIsland || explicitStartupPath;
     return obj;
 }
 

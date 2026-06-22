@@ -4290,3 +4290,59 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `14. early-poptropica`.
   - Use the same sequence adapted for AS2: map intro, window/resize/F11, loading, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue stability/no-repeat sequence, static-art policy review, then sealed regression.
+
+## 2026-06-21 Early Poptropica Current-Build Sealed Baseline Pass
+
+- Continued island 14 (`early-poptropica`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_HTML_AUDIO=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Entry and translation fixes:
+  - Added `early-poptropica` AS2 launch override to start at `Early/City2`.
+  - Added `tools/seed-as2-early-translations.js`; it seeded 44 missing Early AS2 native `swf-script` translation rows.
+  - Patched six Early scene SWFs with `tools/patch-as2-script-translations.js`: `sceneBalance.swf`, `sceneCity.swf`, `sceneCity2.swf`, `sceneJamestown.swf`, `sceneMuseum.swf`, and `scenePit.swf`.
+  - Patch reports: `runtime-data/qa/as2/as2-script-translation-patch-sceneBalance.json`, `...sceneCity.json`, `...sceneCity2.json`, `...sceneJamestown.json`, `...sceneMuseum.json`, `...scenePit.json`.
+- Map intro:
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/early/island/page.xml`.
+  - Synchronized the XML entry into the AS3 runtime zip with `tools/update-as3-runtime-entries.js`.
+  - AS3 map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782088417951.json`.
+  - Screenshot inspected: `runtime-data/qa/as3/islands-smoke/run-1782088417951/01-poptropicon-map.png`.
+  - OCR contains `早期Poptropica岛`, the Chinese description, `重新开始`, and `开始`; `audioActive=0`.
+  - Visual review: title/description/buttons are Chinese and centered; static `EARLY POPTROPICA ISLAND` logo and the in-image welcome sign remain original English art.
+- AS2 F11/bottom-blue fix:
+  - Added `tools/patch-as2-gameplay-save-status.js`.
+  - Patched `tools/lib/pack.js` and `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` so AS2 gameplay uses the standard 1010x580 crop again and the saving/status strip is suppressed in gameplay.
+  - Rebuilt AS2 runtime zip after patching `gameplay.swf`.
+  - Strict F11 visual guard passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087918807.json`.
+  - Screenshot inspected: `runtime-data/qa/as2/interaction-smoke/run-1782087918807/01-early-poptropica-f11.png`.
+  - Manual review: character visible, MENU remains top-right, scene constrained, no bottom blue gameplay band.
+- Full Early AS2 acceptance smoke:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087997744.json`.
+  - Result: `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `failedKeys=[]`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as2/interaction-smoke/run-1782087997744/01-early-poptropica-f11.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782087997744/01-early-poptropica-map.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782087997744/01-early-poptropica-loading-sequence/01-early-poptropica-loading-500.png`.
+  - Manual review: AS2 map popup opens, startup loading is centered, character/HUD survive F11, and runtime stays muted.
+- Three native AS2 Chinese dialogue proof samples passed:
+  - Added `tools/patch-as2-early-dialog-proof.js`; the QA-only hook triggers real `talkyText` bubbles in `sceneCity2.swf` only when `flashpointQaAs2Dialog` is present.
+  - Welcome sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087705505.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782087705505/01-early-poptropica-initial.png`, text `欢迎来到 Poptropica！如果迷路了，就看看地图。`.
+  - Flag/water tower sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087765988.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782087765988/01-early-poptropica-initial.png`, text `那面旗怎么跑到水塔顶上去了？`.
+  - Old town sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087829923.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782087829923/01-early-poptropica-initial.png`, text `你去过旧城区吗？我听说他们需要帮忙。`.
+  - Manual review: all three are native AS2 dialogue bubbles, not static overlays; no repeated bubble flashing or character disappearance was seen in these samples.
+- Static-art policy remained intact:
+  - `MENU`, `EARLY POPTROPICA ISLAND`, welcome sign art, museum/shop/restroom/parking signs, posters, arrows, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Failed/partial evidence not counted:
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782086887688.json` failed only because the AS2 map popup itself has native blue background margins and the visual guard target color was too strict for a map popup. It is not counted as a gameplay blue-bottom failure.
+- Current Early Poptropica conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: AS2 entry, map open, AS3 map intro, centered loading, F11/no-blue gameplay layout, HUD/MENU stability, 3 native Chinese dialogue samples, no visible dialogue repeat/twitch in the samples, runtime mute, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Balance, City, Jamestown, Museum, Pit, underground/cloud routes, item chain, natural NPC hot zones, and the ending remain future full-island deep QA.
+- Next island:
+  - Move current execution to `15. shark-tooth`.
+  - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.

@@ -336,8 +336,19 @@ function safeParseContext(row) {
 }
 
 function getLastPathSegment(pathSegments = []) {
-  const normalized = [...pathSegments].reverse().find((segment) => segment && !/^\[\d+\]$/u.test(segment));
+  const normalized = [...pathSegments].reverse().find((segment) =>
+    segment &&
+    segment !== "#text" &&
+    !/^\[\d+\]$/u.test(segment)
+  );
   return normalized || null;
+}
+
+function isComplexXmlTextRow(row) {
+  const context = safeParseContext(row);
+  return context.kind === "xml-text" &&
+    Array.isArray(context.path) &&
+    context.path.includes("#text");
 }
 
 function isSafeXmlRow(assetPath, row) {
@@ -456,14 +467,16 @@ function applyXmlTranslations(content, assetPath, rows) {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "@_",
-    trimValues: false
+    trimValues: false,
+    allowBooleanAttributes: true
   });
   const builder = new XMLBuilder({
     ignoreAttributes: false,
     attributeNamePrefix: "@_",
     format: true,
     indentBy: "\t",
-    suppressEmptyNode: false
+    suppressEmptyNode: false,
+    suppressBooleanAttributes: false
   });
 
   let parsed;
@@ -633,10 +646,15 @@ function applyStructuredReplacements(content, assetType, assetPath, rows) {
     const htmlRows = safeRows.filter((row) => typeof row.source_text === "string" && /<(?:font|p|br)\b/iu.test(row.source_text));
     const attrRows = safeRows.filter((row) => safeParseContext(row).kind === "xml-attr");
     const textRows = safeRows.filter((row) => !htmlRows.includes(row) && safeParseContext(row).kind === "xml-text");
+    const complexTextRows = textRows.filter(isComplexXmlTextRow);
+    const simpleTextRows = textRows.filter((row) => !complexTextRows.includes(row));
 
     let nextContent = content;
-    if (textRows.length > 0) {
-      nextContent = applyLanguageXmlValueReplacements(nextContent, assetPath, textRows).content;
+    if (simpleTextRows.length > 0) {
+      nextContent = applyLanguageXmlValueReplacements(nextContent, assetPath, simpleTextRows).content;
+    }
+    if (complexTextRows.length > 0) {
+      nextContent = applyXmlTranslations(nextContent, assetPath, complexTextRows);
     }
     if (attrRows.length > 0) {
       nextContent = applyXmlTranslations(nextContent, assetPath, attrRows);
@@ -2630,6 +2648,15 @@ function zhInstallExternalMapBridge()
       }
    },100);
 }
+function zhSuppressSavingGame()
+{
+   if(navBar != undefined && navBar.savingGame != undefined)
+   {
+      navBar.savingGame.stop();
+      navBar.savingGame._visible = false;
+      navBar.savingGame._alpha = 0;
+   }
+}
 function layoutFramelessGameplayNav(forceLayout)
 {
    var _loc2_;
@@ -2728,12 +2755,7 @@ function layoutFramelessGameplayNav(forceLayout)
       navBar.wardrobeDim._alpha = 0;
       navBar.wardrobeDim.enabled = false;
    }
-   if(navBar.savingGame != undefined)
-   {
-      navBar.savingGame.stop();
-      navBar.savingGame._visible = false;
-      navBar.savingGame._alpha = 0;
-   }
+   zhSuppressSavingGame();
    if(navBar.__zhGameplayLayout == undefined)
    {
       navBar.__zhGameplayLayout = new Object();
@@ -2859,6 +2881,10 @@ if(_root != undefined && zhEnsureDirectMapButton != undefined)
 {
    zhEnsureDirectMapButton();
 }
+if(_root != undefined && zhSuppressSavingGame != undefined)
+{
+   zhSuppressSavingGame();
+}
 if(_root != undefined && zhScheduleAutoMap != undefined)
 {
    zhScheduleAutoMap();
@@ -2877,16 +2903,17 @@ if(_root != undefined && _root.island == "Super")
   nextContent = replaceRequiredSnippet(
     nextContent,
     "      navBar.savingGame.play();",
-    `      if(_root == undefined || _root.island != "Super")
+    `      if(zhSuppressSavingGame != undefined)
       {
-         navBar.savingGame.play();
+         zhSuppressSavingGame();
       }
       else if(navBar.savingGame != undefined)
       {
          navBar.savingGame.stop();
          navBar.savingGame._visible = false;
+         navBar.savingGame._alpha = 0;
       }`,
-    "gameplay suppress saving text in frameless super"
+    "gameplay suppress saving status"
   );
 
   nextContent = replaceRequiredSnippet(
@@ -2996,16 +3023,40 @@ function zhFindNearbyInteractiveChar(sceneRef, clickX, clickY)
    var _loc6_;
    var _loc7_ = null;
    var _loc8_ = 999999;
+   var _loc10_ = clickX - sceneRef._x;
+   var _loc11_ = clickY - sceneRef._y;
    for(var _loc9_ in sceneRef)
    {
       _loc2_ = sceneRef[_loc9_];
-      if(_loc2_ != undefined && _loc2_ != sceneRef.char && _loc2_.interaction != undefined && _loc2_.interaction != "none" && _loc2_.avatar != undefined && _loc2_.isObject != true)
+      if(_loc2_ != undefined && _loc2_ != sceneRef.char && _loc2_.interaction != undefined && _loc2_.interaction != "none" && _loc2_.isObject != true)
       {
+         if(_loc2_._visible != false && _loc2_.hitTest != undefined && (_loc2_.hitTest(_root._xmouse,_root._ymouse,true) || _loc2_.hitTest(_root._xmouse,_root._ymouse,false)))
+         {
+            return _loc2_;
+         }
+         if(_loc2_.coordinates != undefined)
+         {
+            _loc3_ = Math.abs(_loc2_.coordinates.x - _root._xmouse);
+            _loc4_ = Math.abs(_loc2_.coordinates.y - _root._ymouse);
+            _loc5_ = _loc3_ + _loc4_;
+            if(_loc3_ <= 140 && _loc4_ <= 220 && _loc5_ < _loc8_)
+            {
+               _loc8_ = _loc5_;
+               _loc7_ = _loc2_;
+            }
+         }
          _loc3_ = Math.abs(_loc2_._x - clickX);
          _loc4_ = Math.abs(_loc2_._y - clickY);
-         if(_loc3_ <= 180 && _loc4_ <= 150)
+         _loc5_ = _loc3_ + _loc4_;
+         _loc6_ = Math.abs(_loc2_._x - _loc10_) + Math.abs(_loc2_._y - _loc11_);
+         if(_loc6_ < _loc5_)
          {
-            _loc5_ = _loc3_ + _loc4_;
+            _loc3_ = Math.abs(_loc2_._x - _loc10_);
+            _loc4_ = Math.abs(_loc2_._y - _loc11_);
+            _loc5_ = _loc6_;
+         }
+         if(_loc3_ <= 240 && _loc4_ <= 320)
+         {
             if(_loc5_ < _loc8_)
             {
                _loc8_ = _loc5_;
@@ -3015,6 +3066,53 @@ function zhFindNearbyInteractiveChar(sceneRef, clickX, clickY)
       }
    }
    return _loc7_;
+}
+function zhTriggerNativeDialogue(targetPlayer)
+{
+   if(targetPlayer == undefined || camera == undefined || camera.scene == undefined || camera.scene.char == undefined)
+   {
+      return false;
+   }
+   if(targetPlayer.interaction == "phrase" && targetPlayer.talkyText != undefined)
+   {
+      camera.scene.char.mouseFollow = false;
+      camera.scene.char.targetPlayer = targetPlayer;
+      targetPlayer.engaged = true;
+      targetPlayer.targeted = true;
+      hideChat();
+      hideSay(camera.scene.char);
+      hideSay(targetPlayer);
+      responding = true;
+      showSay(targetPlayer,targetPlayer.talkyText);
+      return true;
+   }
+   if(targetPlayer.interaction == "chat")
+   {
+      camera.scene.char.mouseFollow = false;
+      camera.scene.char.targetPlayer = targetPlayer;
+      targetPlayer.engaged = true;
+      targetPlayer.targeted = true;
+      hideSay(camera.scene.char);
+      hideSay(targetPlayer);
+      hideChat();
+      showChat(camera.scene.char);
+      loadChat(targetPlayer);
+      return true;
+   }
+   return false;
+}
+function zhTriggerNearbyNativeDialogueFromMouse()
+{
+   if(camera == undefined || camera.scene == undefined)
+   {
+      return false;
+   }
+   var _loc1_ = zhFindNearbyInteractiveChar(camera.scene,camera.scene._xmouse,camera.scene._ymouse);
+   if(_loc1_ == undefined)
+   {
+      return false;
+   }
+   return zhTriggerNativeDialogue(_loc1_);
 }
 camera.scene.bg.onPress = function()
 {
@@ -3035,6 +3133,43 @@ camera.scene.bg.onPress = function()
   );
   nextContent = replaceRequiredSnippet(
     nextContent,
+    `   if(camera.scene.common)
+   {
+      pointer.gotoAndStop("target");
+   }
+   else
+   {
+      pointer.gotoAndStop("directional");
+   }
+   if(camera.scene.common)
+   {`,
+    `   if(camera.scene.common)
+   {
+      pointer.gotoAndStop("target");
+   }
+   else
+   {
+      pointer.gotoAndStop("directional");
+   }
+   var _loc3_ = zhFindNearbyInteractiveChar(camera.scene,camera.scene._xmouse,camera.scene._ymouse);
+   if(_loc3_ != undefined)
+   {
+      if(zhTriggerNativeDialogue(_loc3_))
+      {
+         return undefined;
+      }
+      if(_loc3_.onPress != undefined)
+      {
+         _loc3_.onPress();
+         return undefined;
+      }
+   }
+   if(camera.scene.common)
+   {`,
+    "gameplay frame_9 nearby npc reroute before common check"
+  );
+  nextContent = replaceRequiredSnippet(
+    nextContent,
     `      else
       {
          camera.scene.char.clickTarget(camera.scene._xmouse,camera.scene._ymouse);
@@ -3042,10 +3177,17 @@ camera.scene.bg.onPress = function()
     `      else
       {
          var _loc1_ = zhFindNearbyInteractiveChar(camera.scene,camera.scene._xmouse,camera.scene._ymouse);
-         if(_loc1_ != undefined && _loc1_.onPress != undefined)
+         if(_loc1_ != undefined)
          {
-            _loc1_.onPress();
-            return undefined;
+            if(zhTriggerNativeDialogue(_loc1_))
+            {
+               return undefined;
+            }
+            if(_loc1_.onPress != undefined)
+            {
+               _loc1_.onPress();
+               return undefined;
+            }
          }
          else
          {
@@ -3053,6 +3195,26 @@ camera.scene.bg.onPress = function()
          }
       }`,
     "gameplay frame_9 nearby npc reroute"
+  );
+  nextContent = replaceRequiredSnippet(
+    nextContent,
+    `onMouseUp = function()
+{
+   pointer.directional._alpha = 50;
+   pointer.target._alpha = 50;
+   camera.scene.char.mouseFollow = false;
+};`,
+    `onMouseUp = function()
+{
+   pointer.directional._alpha = 50;
+   pointer.target._alpha = 50;
+   if(zhTriggerNearbyNativeDialogueFromMouse())
+   {
+      return undefined;
+   }
+   camera.scene.char.mouseFollow = false;
+};`,
+    "gameplay frame_9 nearby npc mouseup fallback"
   );
   return nextContent;
 }
@@ -3406,10 +3568,11 @@ embed {
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
+      qaAudioMuteKey = "flashpointQaMuteAudio",
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
-      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 44, width: 1010, height: 500 };`,
+      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1010, height: 580 };`,
     "base page viewport host constants"
   );
   nextContent = replaceRequiredSnippet(
@@ -3430,6 +3593,8 @@ function main() {
 }
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
+    if(gameState === "return_user_standard")
+        return STANDARD_GAMEPLAY_VIEWPORT;
     return null;
 }
 
@@ -3588,6 +3753,37 @@ function resolveAs2SoundEffect(soundName) {
     return sceneAudioOverrides["_sounds/" + soundKey] || null;
 }
 
+function isEnabledFlag(value) {
+    return /^(1|true|yes|y|muted)$/i.test(String(value || ""));
+}
+
+function resolveQaAudioMuted() {
+    const input = getInput(),
+          explicitValue = input.flashpointQaMuteAudio !== undefined ? input.flashpointQaMuteAudio : input.flashpoint_mute_audio;
+
+    if(explicitValue !== undefined) {
+        const muted = isEnabledFlag(explicitValue);
+        try {
+            sessionStorage.setItem(qaAudioMuteKey, muted ? "1" : "0");
+            localStorage.setItem(qaAudioMuteKey, muted ? "1" : "0");
+        } catch(err) { }
+        return muted;
+    }
+
+    try {
+        return isEnabledFlag(sessionStorage.getItem(qaAudioMuteKey) || localStorage.getItem(qaAudioMuteKey));
+    } catch(err) {
+        return false;
+    }
+}
+
+function applyQaAudioMute(audioElement, audibleVolume) {
+    const muted = resolveQaAudioMuted();
+    audioElement.muted = muted;
+    audioElement.volume = muted ? 0 : audibleVolume;
+    return muted;
+}
+
 function flashpointPlayAs2Sound(soundName) {
     const audioSrc = resolveAs2SoundEffect(soundName);
     if(!audioSrc)
@@ -3598,8 +3794,7 @@ function flashpointPlayAs2Sound(soundName) {
         soundAudio.preload = "auto";
         soundAudio.autoplay = true;
         soundAudio.loop = false;
-        soundAudio.muted = false;
-        soundAudio.volume = 0.55;
+        applyQaAudioMute(soundAudio, 0.55);
         as2SoundEffectPool.push(soundAudio);
         while(as2SoundEffectPool.length > AS2_SOUND_EFFECT_POOL_LIMIT) {
             const oldAudio = as2SoundEffectPool.shift();
@@ -3654,8 +3849,7 @@ function updateSceneAudio(island, scene, gameState) {
     if(sceneAudio.getAttribute("src") !== audioSrc) {
         sceneAudio.autoplay = true;
         sceneAudio.loop = true;
-        sceneAudio.muted = false;
-        sceneAudio.volume = 0.35;
+        applyQaAudioMute(sceneAudio, 0.35);
         sceneAudio.setAttribute("autoplay", "autoplay");
         sceneAudio.setAttribute("src", audioSrc);
         sceneAudio.src = audioSrc;
@@ -3683,6 +3877,10 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
     const inputParams = getInput();
     if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
+    if(inputParams.flashpointQaAs2Dialog !== undefined)
+        flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
+    if(inputParams.flashpointQaLoadingHoldMs !== undefined)
+        flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
 
     if(getCharLazyLoadStatus()) {`,
     "base page QA map flashvar passthrough"

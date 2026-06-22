@@ -1,6 +1,6 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-21 19:25 EDT
+更新时间：2026-06-21 20:35 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
@@ -8,9 +8,11 @@
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
 
-当前项目还不能声明成品完成，但 AS3 P0 代表样本继续前进，AS2 对话和 AS2 窗口/F11 代表样本也开始闭环。`1781865386476` 四岛回归覆盖 Monster Carnival、Poptropicon、Reality TV Wild Safari、Timmy Failure，4/4 通过 resize、maximize、F11 fullscreen、视觉稳定和 post-viewport 中文对话检查。新的 F11 场景切换专项 `1781873821483` 已在 G32QC 真全屏 2560x1439 下抓到 Poptropicon Parking -> Center 的真实加载 Logo/进度点，中心偏移约 x=-3/y=12 与 x=10/y=-50，均在阈值内。随后 `1781874030360` 复测 Poptropicon + Timmy，2/2 通过中文对话、resize、maximize、F11 稳定性。AS2 Mystery Train `EdisonCabin` 已通过 `1781882735773`：原生 Edison 气泡显示中文“等我把这里布置好...先去见见其他乘客吧”，OCR 含预期片段 `乘客`，场景证据、地图点击、视觉守卫通过，音频会话为 0。AS2 Spy `SpyMain` 已通过 `1781886126401`：运行时进入真实 SpyMain 场景，QA hook 只调用游戏原生 `manualSay` 气泡，OCR 捕获中文，scene evidence/visual guard/audio mute 通过；人工复核 `1781885938525` 可见“和 D 局长谈过后再来找我。”，`1781886012217` 可见“我有个关于斯派格拉斯博士的重要消息要告诉你。”，静态 `the hair club` 美术字保持英文。AS2 Mystery Train 主街 `1781882945247` 通过窗口模式 loading 居中和 F11 稳定场景截图，F11 客户区截图为 `2560x1306`，超过当前 80% 尺寸门槛；人工检查 HUD/角色/场景稳定。AS2 Early Poptropica / Spy / Super Power 批量样本 `1781883257875` 进一步证明三岛均能进场景、F11 后 HUD/角色/场景稳定、音频会话为 0；其中 Early 还捕获到居中 `Poptropica LOADING`，Spy/Super Power 因加载已进入场景而未捕获 loading 帧，记为证据缺口，不记为画面崩坏。AS2 F11 代表截图仍有底部蓝色保存栏/裁切带，后续作为全屏填充优化项。静态笔记本页、Menu 图标、店铺/博物馆/箭头图片文字均按规则保留英文，不再做中文覆盖。QA 误判口径已收紧：门牌 `进入/公共房间`、静态报纸/店铺英文、以及 F11 loading overlay 不再能伪造成“中文对话通过”或“稳定画面通过”。仍未闭环的是：更多岛屿实玩、Timmy 自然剧情全流程、Monster 普通 NPC/自然剧情热区、更多 UI 面板、AS2 更多岛屿/真全屏 loading、全岛屿深度实玩。
+当前项目还不能声明成品完成，但 AS3 P0 代表样本继续前进，AS2 对话和 AS2 窗口/F11 代表样本也开始闭环。`1781865386476` 四岛回归覆盖 Monster Carnival、Poptropicon、Reality TV Wild Safari、Timmy Failure，4/4 通过 resize、maximize、F11 fullscreen、视觉稳定和 post-viewport 中文对话检查。新的 F11 场景切换专项 `1781873821483` 已在 G32QC 真全屏 2560x1439 下抓到 Poptropicon Parking -> Center 的真实加载 Logo/进度点，中心偏移约 x=-3/y=12 与 x=10/y=-50，均在阈值内。随后 `1781874030360` 复测 Poptropicon + Timmy，2/2 通过中文对话、resize、maximize、F11 稳定性。AS2 Mystery Train `EdisonCabin` 已通过 `1781882735773`：原生 Edison 气泡显示中文“等我把这里布置好...先去见见其他乘客吧”，OCR 含预期片段 `乘客`，场景证据、地图点击、视觉守卫通过，音频会话为 0。AS2 Spy `SpyMain` 已通过 `1781886126401`：运行时进入真实 SpyMain 场景，QA hook 只调用游戏原生 `manualSay` 气泡，OCR 捕获中文，scene evidence/visual guard/audio mute 通过；人工复核 `1781885938525` 可见“和 D 局长谈过后再来找我。”，`1781886012217` 可见“我有个关于斯派格拉斯博士的重要消息要告诉你。”，静态 `the hair club` 美术字保持英文。AS2 Mystery Train 主街 `1781882945247` 通过窗口模式 loading 居中和 F11 稳定场景截图，F11 客户区截图为 `2560x1306`，超过当前 80% 尺寸门槛；人工检查 HUD/角色/场景稳定。AS2 Early Poptropica / Spy / Super Power 批量样本 `1781883257875` 进一步证明三岛均能进场景、F11 后 HUD/角色/场景稳定、音频会话为 0；其中 Early 还捕获到居中 `Poptropica LOADING`，Spy/Super Power 因加载已进入场景而未捕获 loading 帧，记为证据缺口，不记为画面崩坏。旧 AS2 F11 代表截图曾有底部蓝色保存栏/裁切带；Early 当前 build 已通过 `1782087918807` 和 `1782087997744` 证明底部蓝边修掉、角色可见、HUD 稳定，后续仍需把同一口径扩展验证到更多 AS2 岛。静态笔记本页、Menu 图标、店铺/博物馆/箭头图片文字均按规则保留英文，不再做中文覆盖。QA 误判口径已收紧：门牌 `进入/公共房间`、静态报纸/店铺英文、以及 F11 loading overlay 不再能伪造成“中文对话通过”或“稳定画面通过”。仍未闭环的是：更多岛屿实玩、Timmy 自然剧情全流程、Monster 普通 NPC/自然剧情热区、更多 UI 面板、AS2 更多岛屿/真全屏 loading、全岛屿深度实玩。
 
 当前迭代方式改为“先样板岛，再逐岛复制验收”。Poptropicon 被设为第一样板岛：它目前已经能在 G32QC 侧屏静音打开到 `con1/parking`，截图 `runtime-data/qa/manual-poptropicon-demo.png` 显示场景进入、右上角 UI 稳定、原生中文气泡正常；静态 `HOBO/MIGHTY/LEARN TO SPEAK FREMLON!` 等场景美术字保持英文。后续不再同时漫游多个问题域；先把 Poptropicon 补成“房间切换、resize/F11、loading、对话、UI、箭头”完整样板，再按同一 checklist 逐岛推进。
+
+2026-06-21 20:35 EDT：Early Poptropica 当前 build 封版基线通过，下一轮进入 Shark Tooth。已补 `early` 地图中文标题/介绍，并用 AS3 map smoke `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782088417951.json` 证明地图介绍弹窗显示 `早期 Poptropica 岛`、中文介绍、`重新开始/开始`；静态 `EARLY POPTROPICA ISLAND` logo 和截图内欢迎牌保持英文原图。已用 `tools/seed-as2-early-translations.js` 补齐 44 条 Early AS2 原生脚本文本，并 patch `Balance/City/City2/Jamestown/Museum/Pit` 六个场景 SWF。AS2 F11/底部蓝边修复通过 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087918807.json`，全量基线 `1782087997744` 证明地图请求、loading 居中、F11 稳定、视觉守卫和音频静音均通过。三段真实原生中文气泡通过 `1782087705505`、`1782087765988`、`1782087829923`，分别显示欢迎、旗帜、水塔/旧城区相关中文对话；QA hook 只在 `flashpointQaAs2Dialog` 参数存在时触发，不影响正常游玩。AS2 岛内旧地图弹窗也通过 `1782087997744` 证明可稳定打开；完整自然剧情通关和更多房间自然热区仍留到后续深测。
 
 2026-06-20 21:15 EDT：Reality TV Wild Safari 当前 build 封版基线通过。已通过 Shell class merge 恢复 `reality2` 可启动性，并重建 AS3 runtime；最终 P0 报告 `runtime-data/qa/as3/p0-playability/as3-p0-playability-1782003638919.json` 证明窗口模式、resize、maximize、F11、loading 观察、post-resize 中文对话和视觉稳定均通过，截图 `run-1782003638919/01-reality-tv-wild-safari-initial.png`、`...resized-dialogue-attempt-2.png`、`...maximized-retry-1.png`、`...f11.png` 已人工检查，角色不消失、菜单不漂移、不露蓝底。窗口 loading `as3-window-loading-transition-1782001447409.json` 和 F11/fullscreen loading `as3-f11-loading-transition-1782001638633.json` 通过，`run-f11-loading-1782001638633/f11-loading-sequence/f11-loading-500.png` 显示真全屏 loading 居中。地图介绍中文通过 `as3-island-smoke-1782003060696.json`，截图 `run-1782003060696/01-reality-tv-wild-safari-map.png` 显示 `真人秀：野外探险`、中文介绍、`重新开始/开始` 按钮。HUD/按钮通过 `as3-hud-smoke-1782001781173.json` 与 `as3-hud-button-matrix-1782002457747.json`；背包、确认框和设置/商店/地图入口按钮均按原生 UI 居中。对话稳定性通过 `as3-dialogue-stability-1782004103358.json`，3 张样本全中文，前两张同一句稳定，第三张正常进入下一句剧情；未发现重复气泡或抽搐。静态 `MENU`、`Reality TV/WILD SAFARI`、`DANGER/STAFF ONLY`、地图 Logo/Motel 图等美术字继续保留英文，不做中文叠层。
 
@@ -412,6 +414,22 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | 废弃证据 | 已标记 | `as3-f11-loading-transition-1782081899913.json` PostMessage F11 未进入 fullscreen-sized，不计通过；P0 `1782083512761` 泛用点击没点到 NPC，不计对话通过；P0 `1782083839170` 暴露缩放后旧窗口句柄点击失败，已修 QA 脚本并用 `1782084123056` 通过样本替代 |
 | 当前剩余 | 非封版 blocker | 未证明 Mystery of the Map 从头到尾自然通关；Viking beach/fortress/diningHall/throneRoom/river/waterfall/peak 等更多场景、道具链、自然热区和结局仍需后续全岛深测。本轮封版基线已可进入下一个岛 |
 
+## 当前 Early Poptropica 状态
+
+| 验收项 | 状态 | 当前证据 |
+|---|---|---|
+| AS2 入口/启动场景 | 通过 | `catalog/launch-overrides.json` 当前指向 `sceneFolder=Early`、`roomParam=City2`、`islandParam=Early`、`startupPath=gameplay`；基线回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087997744.json` 进入真实 Early City2 场景，`audioActive=0` |
+| 地图打开/介绍中文 | 通过 | AS3 地图介绍 smoke `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782088417951.json` 通过，截图 `runtime-data/qa/as3/islands-smoke/run-1782088417951/01-poptropicon-map.png` 显示 `早期 Poptropica 岛`、中文介绍、`重新开始/开始`；AS2 岛内旧地图弹窗通过 `1782087997744` 请求 `popups/map.swf` 与 `popups/maps/Early.swf`。静态 `EARLY POPTROPICA ISLAND` logo 和截图内欢迎牌保留英文原图 |
+| AS2 原生文本/对话补丁 | 通过本轮样本 | `tools/seed-as2-early-translations.js` 补 44 条 Early 原生 `swf-script` 文本；`tools/patch-as2-script-translations.js` 已 patch `sceneBalance.swf`、`sceneCity.swf`、`sceneCity2.swf`、`sceneJamestown.swf`、`sceneMuseum.swf`、`scenePit.swf`，报告位于 `runtime-data/qa/as2/as2-script-translation-patch-scene*.json` |
+| 窗口/F11/底部蓝边 | 通过 | 严格 F11 视觉守卫 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087918807.json` 通过；截图 `runtime-data/qa/as2/interaction-smoke/run-1782087918807/01-early-poptropica-f11.png` 人工检查角色可见、HUD 在右上、底部不再露蓝底。实现点：`base.php` 恢复 AS2 gameplay 1010x580 裁切，`gameplay.swf` 保存状态条全局隐藏 |
+| loading 居中 | 通过 | 全量 Early 基线 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087997744.json` 通过 `loadingCenterPassed=1`；截图 `runtime-data/qa/as2/interaction-smoke/run-1782087997744/01-early-poptropica-loading-sequence/01-early-poptropica-loading-500.png` 人工检查居中 |
+| HUD/菜单/地图 UI | 通过本轮样本 | `1782087997744` 证明右上 MENU 稳定、AS2 地图弹窗可打开；地图介绍截图 `1782088417951` 证明 `重新开始/开始` 中文按钮居中。静态 `MENU` 图标保留英文图形，不用中文文字层覆盖 |
+| 3 个真实中文 NPC/剧情对话 | 通过 | City2 欢迎：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782087705505.json`；旗帜/水塔：`1782087765988`；旧城区提示：`1782087829923`。三张 `initial.png` 均为 AS2 原生气泡中文，不是静态贴图覆盖 |
+| 对话不重复/不抽搐 | 通过本轮样本 | 三段 QA-only 触发均为单次原生 `talkyText` 气泡，截图人工检查没有重复气泡、文字抽搐或角色消失；后续自然 NPC 连点仍需扩样本 |
+| 静态美术字规则 | 通过 | `EARLY POPTROPICA ISLAND`、欢迎牌、博物馆/店铺/厕所/停车/海报/门牌/箭头等静态美术字保持英文或原图；未用中文 TextField 硬盖静态图标、招牌、海报或美术字 |
+| 废弃证据 | 已标记 | `as2-interaction-smoke-1782086887688.json` 用严苛蓝色边缘阈值检查 AS2 地图弹窗时失败，原因是地图弹窗原生蓝色背景大面积存在，不计为 gameplay 蓝底回归；真实 F11 无地图严格样本已由 `1782087918807` 替代 |
+| 当前剩余 | 非封版 blocker | 未证明 Early Poptropica 从头到尾自然通关；Balance/City/Jamestown/Museum/Pit 更多自然对话、道具链、地下/云端等房间和全剧情仍需后续全岛深测。本轮封版基线已可进入 Shark Tooth |
+
 ## 当前下一步
 
 1. Poptropicon 保留 1 个 blocker：con1 自然往返切换需要真实侧屏鼠标 pass 或更可靠的后台输入 harness；不能用 direct-room smoke 冒充自然通行完成。
@@ -427,14 +445,15 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 11. Virus Hunter 当前 build 封版基线已通过：地图介绍、resize/maximize/F11、true fullscreen loading、MainStreet/PdcLab 场景回归、HUD/背包/设置/商店确认/地图确认、3 条真实中文 NPC 对话稳定性和静态美术规则均有截图证据。
 12. Mocktropica 当前 build 封版基线已通过：地图介绍、resize/maximize/F11、启动 loading、MainStreet 场景回归、HUD/背包/商店确认/地图确认、3 条真实中文剧情对话稳定性和静态美术规则均有截图证据。
 13. Mystery of the Map 当前 build 封版基线已通过：入口已纠正为 `viking/jungle`，地图介绍、resize/maximize、启动与 true fullscreen loading、Jungle 场景回归、HUD/背包/商店确认/地图确认、3 条真实中文剧情对话稳定性和静态美术规则均有截图证据。
-14. 下一岛进入 Early Poptropica，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
-15. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
+14. Early Poptropica 当前 build 封版基线已通过：地图介绍、AS2 地图打开、F11/底部蓝边修复、loading 居中、3 段真实中文原生对话、HUD/MENU 稳定和静态美术规则均有截图证据。
+15. 下一岛进入 Shark Tooth，按同一封版 checklist 跑：地图/介绍、窗口与 F11、loading、至少 3 段真实中文对话、HUD UI、静态美术规则、稳定性序列。
+16. 建立静态箭头/标牌资产替换清单；静态图只登记或走 bitmap/image replacement，不叠中文。
 
 ## 逐岛执行顺序
 
 原则：一个岛达到“窗口/F11/loading、主要场景切换、NPC/剧情对话、菜单/地图/背包 UI、原生箭头标签、静态美术字不硬盖、音频静音、截图记录”这一套通过标准后，才进入下一个岛。
 
-当前执行：`14. early-poptropica`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench`、`07. survival`、`08. arabian-nights`、`09. escape-from-pelican-rock`、`10. galactic-hot-dogs`、`11. virus-hunter`、`12. mocktropica` 和 `13. mystery-of-the-map` 当前 build 封版基线通过。
+当前执行：`15. shark-tooth`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench`、`07. survival`、`08. arabian-nights`、`09. escape-from-pelican-rock`、`10. galactic-hot-dogs`、`11. virus-hunter`、`12. mocktropica`、`13. mystery-of-the-map` 和 `14. early-poptropica` 当前 build 封版基线通过。
 
 | 顺序 | 岛屿 | 引擎 | 当前状态 |
 |---|---|---|---|
@@ -451,7 +470,7 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | 11 | virus-hunter | AS3 | 当前 build 封版基线通过；`1782074363553` 覆盖 resize/maximize/F11 视觉稳定；`1782074683572` 覆盖 true fullscreen loading；`1782076303669`/`1782076399318`/`1782076596782` 覆盖 3 条真实中文 NPC 稳定对话；HUD smoke `1782074921756`、`1782075051207`、`1782075975053`、`1782075862106` 通过；MainStreet/PdcLab 回归 `1782076686386`、`1782076773714` 通过 |
 | 12 | mocktropica | AS3 | 当前 build 封版基线通过；`1782077973966` 覆盖 resize/maximize/F11 和启动 loading；`1782079082704`/`1782079544614`/`1782079643385` 覆盖 3 条真实中文剧情对话稳定性；HUD smoke `1782078344230`、`1782078529579`、`1782078703877` 通过；MainStreet 回归 `1782077488309` 通过 |
 | 13 | mystery-of-the-map | AS3 | 当前 build 封版基线通过；`1782084123056` 覆盖启动 loading、resize/maximize 与中文气泡稳定；`1782082091089` 覆盖 G32QC true fullscreen loading；`1782083205609`/`1782083306370`/`1782083410914` 覆盖 3 条真实中文剧情/NPC 稳定对话；HUD smoke `1782082400503`、`1782082615238`、`1782082841936` 通过；Jungle smoke `1782081438275` 通过 |
-| 14 | early-poptropica | AS2 | 待开始 |
+| 14 | early-poptropica | AS2 | 当前 build 封版基线通过；`1782087997744` 覆盖 AS2 地图打开、loading 居中、F11 稳定、视觉守卫和静音；`1782088417951` 覆盖 AS3 地图介绍中文；`1782087705505`/`1782087765988`/`1782087829923` 覆盖 3 条真实中文原生气泡；完整自然通关后续深测 |
 | 15 | shark-tooth | AS2 | 待开始 |
 | 16 | 24-carrot | AS2 | 待开始 |
 | 17 | time-tangled | AS2 | 待开始 |
@@ -490,9 +509,9 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 
 - 尚未证明所有 47 个岛从头到尾剧情通关。
 - 尚未逐房间遍历所有内部房间。
-- F11 真全屏已有 Reality TV/Poptropicon/Timmy/Mission Atlantis/Monkey Wrench/Survival/Arabian Nights/Escape from Pelican Rock/Virus Hunter/Mocktropica/Mystery of the Map 代表样本通过；Galactic Hot Dogs 视觉 F11 通过，但新 Shell 后 fullscreen-sized loading 复跑受 no-foreground 自动化限制，仍需补一轮；AS2 Mystery Train 主街已有 F11 尺寸门槛和人工稳定截图通过，但还不是 AS2 全岛覆盖。
-- 加载条中心已有 AS3 1186x760、1450x900 窗口模式、AS3 Poptropicon F11 场景切换、Timmy 窗口/F11 loading、Reality TV 窗口/F11 loading、Mission Atlantis F11 loading、Monkey Wrench F11 loading、Survival F11 loading、Arabian Nights 窗口/F11 loading、Escape from Pelican Rock 窗口/F11 loading、Virus Hunter true fullscreen loading、Mocktropica 启动 loading、Mystery of the Map 启动/true fullscreen loading、Galactic Hot Dogs 旧 true fullscreen loading 与新 Shell 后居中 loading 观察样本，以及 AS2 Mystery Train 窗口模式通过证据；尚未覆盖全部 AS2 F11/fullscreen loading、更多 AS3 场景和更多窗口尺寸。
-- 跨岛 NPC 对话中文仍未全闭环；AS3 Timmy、Reality TV、Poptropicon、Monster、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 有可靠截图；AS2 Mystery Train `EdisonCabin` 和 Spy `SpyMain` 已有原生中文气泡截图，但 AS2 全岛/全剧情对话仍未覆盖。
-- Monster Carnival、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica 和 Mystery of the Map 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区/更多深海/更多 FTUE/Survival/Arabian/Prison/GHD/Virus/Mocktropica/Viking 更多房间和全流程仍未全审。
-- 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival、Mission Atlantis、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 的背包/地图/商店确认框/设置面板首批证据；Monkey Wrench 已有设置/背包证据但 FTUE `mainLand` 不暴露商店/地图按钮；全岛屿/全部面板仍未系统审计。
+- F11 真全屏已有 Reality TV/Poptropicon/Timmy/Mission Atlantis/Monkey Wrench/Survival/Arabian Nights/Escape from Pelican Rock/Virus Hunter/Mocktropica/Mystery of the Map 代表样本通过；Galactic Hot Dogs 视觉 F11 通过，但新 Shell 后 fullscreen-sized loading 复跑受 no-foreground 自动化限制，仍需补一轮；AS2 Mystery Train 主街已有 F11 尺寸门槛和人工稳定截图通过，Early Poptropica 当前 build 已通过 F11/底部蓝边修复样本 `1782087918807`/`1782087997744`，但还不是 AS2 全岛覆盖。
+- 加载条中心已有 AS3 1186x760、1450x900 窗口模式、AS3 Poptropicon F11 场景切换、Timmy 窗口/F11 loading、Reality TV 窗口/F11 loading、Mission Atlantis F11 loading、Monkey Wrench F11 loading、Survival F11 loading、Arabian Nights 窗口/F11 loading、Escape from Pelican Rock 窗口/F11 loading、Virus Hunter true fullscreen loading、Mocktropica 启动 loading、Mystery of the Map 启动/true fullscreen loading、Galactic Hot Dogs 旧 true fullscreen loading 与新 Shell 后居中 loading 观察样本、AS2 Mystery Train 窗口模式证据，以及 Early Poptropica `1782087997744` AS2 loading 居中证据；尚未覆盖全部 AS2 F11/fullscreen loading、更多 AS3 场景和更多窗口尺寸。
+- 跨岛 NPC 对话中文仍未全闭环；AS3 Timmy、Reality TV、Poptropicon、Monster、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 有可靠截图；AS2 Mystery Train `EdisonCabin`、Spy `SpyMain` 和 Early City2 三段 `talkyText` 已有原生中文气泡截图，但 AS2 全岛/全剧情对话仍未覆盖。
+- Monster Carnival、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 和 Early Poptropica 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区/更多深海/更多 FTUE/Survival/Arabian/Prison/GHD/Virus/Mocktropica/Viking/Early 更多房间和全流程仍未全审。
+- 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival、Mission Atlantis、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 的背包/地图/商店确认框/设置面板首批证据；Monkey Wrench 已有设置/背包证据但 FTUE `mainLand` 不暴露商店/地图按钮；Early Poptropica 已有 AS3 地图弹窗 `重新开始/开始` 和 AS2 HUD/MENU 稳定样本；全岛屿/全部面板仍未系统审计。
 - AS3 原生箭头/导航/native label 当前扫描范围已完成；AS2 native label 和静态资产替换清单未完成。
