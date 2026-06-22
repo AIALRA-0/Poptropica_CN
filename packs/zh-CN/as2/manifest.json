@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T01:31:17.525Z",
+  "generatedAt": "2026-06-22T02:18:06.081Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 73,
+  "assetsPatched": 85,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -423,6 +423,59 @@
       "changed": true,
       "replaceTarget": "\\DefineSprite_541\\frame_1\\DoAction",
       "notes": "QA only: triggers native Shark Mainstreet NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
+    },
+    {
+      "assetId": "e093a41c8afed4b3d83c81a2d0bbae519477f533",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneDiner.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneDiner.swf"
+    },
+    {
+      "assetId": "0f763c482a21467cbb50bc773395116e00d8978a",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFactory.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFactory.swf"
+    },
+    {
+      "assetId": "c7ee9918a3221cef6aed39d411daa6c4161ef40d",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarm.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarm.swf"
+    },
+    {
+      "assetId": "1caff4d243055d5932194c2df7d50f0a7aceb8e5",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneFarmHouse.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneFarmHouse.swf"
+    },
+    {
+      "assetId": "fb5670d7fcbb12aa154d18edf99bad0e066f1723",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneLoading.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneLoading.swf"
+    },
+    {
+      "assetId": "438b484cf5227b4e616b53f38637ae4b352c4e70",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneProcessing.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneProcessing.swf"
+    },
+    {
+      "assetId": "2d193e635b1ba8537eedc6f5e65ebe5bf18f191a",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneRobot.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneRobot.swf"
+    },
+    {
+      "assetId": "9fa465d27c17f1264959351b705ff8b864c89c65",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneSurplus.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneSurplus.swf"
+    },
+    {
+      "assetId": "3169f813fea1a7e5973fe640c6c9bca39bf2bca6",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneCarrotMain.swf"
+    },
+    {
+      "assetId": "24-carrot:mainstreet-qa-dialog-proof",
+      "assetPath": "content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandCarrot\\sceneCarrotMain.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_332\\frame_1\\DoAction",
+      "notes": "QA only: triggers native Carrot Main Street NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     }
   ],
   "pendingSwfAssets": [],
@@ -437,7 +490,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 60,
+    "replacementCount": 69,
     "swfRuntimeOverrides": "enabled"
   },
   "as2HardcodedDialoguePatches": {

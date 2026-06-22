@@ -4404,3 +4404,54 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `16. 24-carrot`.
   - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.
+
+## 2026-06-21 24 Carrot Current-Build Sealed Baseline Pass
+
+- Continued island 16 (`24-carrot`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_HTML_AUDIO=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External route sanity check:
+  - Poptropica Help Blog and Poptropica Wiki describe 24 Carrot as the Main Street / Carrot Farm / Charlie shop / diner / factory / sewer and vent / processing room / Rabbot route, matching the local `Carrot` AS2 scene family.
+  - Sources used only for route/NPC sanity check: `https://poptropi.ca/island-help/24-carrot/`, `https://poptropica.fandom.com/wiki/24_Carrot_Island`.
+- Entry and text fixes:
+  - Verified `catalog/launch-overrides.json` launches `24-carrot` at `sceneFolder=Carrot`, `roomParam=CarrotMain`, `islandParam=Carrot`.
+  - Imported Carrot AS2 script rows from `scenes/islandCarrot`: 125 script candidates, 84 unique text strings.
+  - Added `tools/seed-as2-carrot-translations.js`; it filled the active missing Carrot native script rows, including milk bowl, Whiskers, Dr. Hare/Rabbot, station, and factory/escape lines.
+  - Patched nine Carrot scene SWFs with `tools/patch-as2-script-translations.js`: `sceneCarrotMain.swf`, `sceneDiner.swf`, `sceneFactory.swf`, `sceneFarm.swf`, `sceneFarmHouse.swf`, `sceneLoading.swf`, `sceneProcessing.swf`, `sceneRobot.swf`, and `sceneSurplus.swf`.
+- Map intro:
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/carrot/island/page.xml`.
+  - Synchronized the XML entry into the AS3 runtime zip with `tools/update-as3-runtime-entries.js`.
+  - AS3 map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782093999624.json`.
+  - Screenshot inspected: `runtime-data/qa/as3/islands-smoke/run-1782093999624/01-poptropicon-map.png`.
+  - Visual review: title `24 根胡萝卜岛`, Chinese description, and `重新开始/开始` buttons are visible and centered; static `24 CARROT ISLAND` logo and slide art remain original English/static art.
+- Full 24 Carrot AS2 acceptance smoke:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782095220343.json`.
+  - Result: `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `failedKeys=[]`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as2/interaction-smoke/run-1782095220343/01-24-carrot-initial.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782095220343/01-24-carrot-f11.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782095220343/01-24-carrot-map.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782095220343/01-24-carrot-loading-sequence/01-24-carrot-loading-500.png`.
+  - Manual review: startup loading is centered, character/HUD survive F11, AS2 map popup opens, gameplay scene does not expose the bottom blue band, and runtime stays muted.
+- Three native AS2 Chinese dialogue proof samples passed:
+  - Added `tools/patch-as2-carrot-dialog-proof.js`; the QA-only hook triggers Carrot Main Street NPC `talkyText/manualSay` bubbles only when `flashpointQaAs2Dialog` is present.
+  - The first attempt `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782094329354.json` failed because the hook armed before Carrot's `init()` populated late-state NPC `talkyText` and coordinates; this was fixed by keeping the hook QA-only, adding fallback text from the same translated Carrot Main Street script, and initializing missing coordinate fields before `manualSay`.
+  - Mayor/carrot line: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782094725769.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782094725769/01-24-carrot-initial.png`, text `胡萝卜不再消失了！`.
+  - Factory-closed worker line: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782094806248.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782094806248/01-24-carrot-initial.png`, text `自从工厂关门，我就一直找不到工作。`.
+  - Gas station line: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782094882172.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782094882172/01-24-carrot-initial.png`, text `抱歉，我们的汽油用完了。`.
+  - Manual review: all three are AS2 native dialogue bubbles, not static overlays; no repeated bubble flashing, text twitching, or character disappearance was seen in the final samples.
+- Static-art policy remained intact:
+  - `24 CARROT ISLAND`, `CARROT KING DINER`, `OPEN`, AS2 map title/logo, scene signs, posters, arrows, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Current 24 Carrot conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: AS2 entry, AS2 map open, AS3 map intro, centered loading, F11/no-blue gameplay layout, HUD/MENU stability, 3 native Chinese dialogue samples, no visible dialogue repeat/twitch in final samples, runtime mute, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Carrot Farm, Charlie shop, diner interior, factory, sewer, freezer, vent, processing room, robot/Rabbot route, item chain, more natural NPC hot zones, and ending remain future full-island deep QA.
+- Next island:
+  - Move current execution to `17. time-tangled`.
+  - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.
