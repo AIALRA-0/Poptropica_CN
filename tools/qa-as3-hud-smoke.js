@@ -601,6 +601,8 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
   const startClickPath = path.join(runDir, `${safeStem}-start-click.json`);
   const postClickWindowPath = path.join(runDir, `${safeStem}-post-click-window.json`);
   const postClickDiffPath = path.join(runDir, `${safeStem}-post-click-diff.json`);
+  const expandedHudRowPath = path.join(runDir, `${safeStem}-expanded-hud-row.json`);
+  const expandedHudRowAnnotatedPath = path.join(runDir, `${safeStem}-expanded-hud-row.png`);
   const inventoryClickPath = path.join(runDir, `${safeStem}-inventory-click.json`);
   const secondaryClickPath = path.join(runDir, `${safeStem}-secondary-click.json`);
   const secondaryClickDiffPath = path.join(runDir, `${safeStem}-secondary-click-diff.json`);
@@ -800,6 +802,7 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
     let click = null;
     let postClick = null;
     let postClickDiff = null;
+    let expandedHudRow = null;
     let inventoryClick = null;
     let inventory = null;
     let secondaryClick = null;
@@ -845,6 +848,28 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
         "--output",
         postClickDiffPath
       ], { timeoutMs: 30000 });
+      if (!flagEnabled(args.disableExpandedHudRowCheck || args["disable-expanded-hud-row-check"]) && resizedMenu?.box) {
+        expandedHudRow = runPythonQa([
+          "analyze-hud-row",
+          "--input",
+          postClick.screenshotPath,
+          "--menu-center-x",
+          String(resizedMenu.box.centerX),
+          "--menu-center-y",
+          String(resizedMenu.box.centerY),
+          "--output",
+          expandedHudRowPath,
+          "--annotated-output",
+          expandedHudRowAnnotatedPath,
+          "--min-edge-density",
+          String(args.expandedHudMinEdgeDensity || args["expanded-hud-min-edge-density"] || 0.025),
+          "--min-present-slots",
+          String(args.expandedHudMinPresentSlots || args["expanded-hud-min-present-slots"] || 7),
+          "--max-row-top",
+          String(args.expandedHudMaxRowTop || args["expanded-hud-max-row-top"] || 90),
+          "--no-fail-exit"
+        ], { timeoutMs: 30000 });
+      }
       const minChangedPixelRatio = Number(args.minMenuClickChangedPixelRatio || args["min-menu-click-changed-pixel-ratio"] || 0.05);
       clickResponsive = {
         ok: Number(postClickDiff?.changedPixelRatio || 0) >= minChangedPixelRatio,
@@ -987,11 +1012,25 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
       provedByInventory: Boolean(!inventoryCheck.skipped && inventoryCheck.ok),
       provedBySecondary: Boolean(!secondaryClickCheck.skipped && secondaryClickCheck.ok)
     };
+    const expandedHudRowCheck = !flagEnabled(args.disableExpandedHudRowCheck || args["disable-expanded-hud-row-check"])
+      ? {
+          ok: Boolean(expandedHudRow?.ok),
+          skipped: false,
+          outputPath: expandedHudRow ? expandedHudRowPath : null,
+          annotatedOutputPath: expandedHudRow ? expandedHudRowAnnotatedPath : null,
+          checks: expandedHudRow?.checks || [],
+          slots: expandedHudRow?.slots || []
+        }
+      : {
+          ok: true,
+          skipped: true
+        };
 
     const failedChecks = [
       ...(!initialPlacement.ok ? ["initial_menu_placement_failed"] : []),
       ...(!resizedPlacement.ok ? ["resized_menu_placement_failed"] : []),
       ...(!menuClickResponseOk ? ["menu_click_response_failed"] : []),
+      ...(!expandedHudRowCheck.ok ? ["expanded_hud_row_failed"] : []),
       ...(!inventoryCheck.ok ? ["inventory_chinese_check_failed"] : []),
       ...(!visibleEnglishCheck.ok ? ["visible_english_forbidden_failed"] : []),
       ...(!secondaryClickCheck.ok ? ["secondary_click_response_failed"] : [])
@@ -1021,6 +1060,8 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
         resizedStartClickPath: resizedStartClick ? resizedStartClickPath : null,
         postClickWindowPath: postClick ? postClickWindowPath : null,
         postClickDiffPath: postClickDiff ? postClickDiffPath : null,
+        expandedHudRowPath: expandedHudRow ? expandedHudRowPath : null,
+        expandedHudRowAnnotatedPath: expandedHudRow ? expandedHudRowAnnotatedPath : null,
         initialScreenshotPath: initial.screenshotPath,
         startedInitialScreenshotPath: startedInitial?.screenshotPath || null,
         resizedScreenshotPath: resized.screenshotPath,
@@ -1073,6 +1114,7 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
         responsive: menuClickResponsive,
         postClickOcr: postClick?.ocr || null,
         postClickDiff,
+        expandedHudRow: expandedHudRowCheck,
         inventory: {
           click: inventoryClick,
           check: inventoryCheck,

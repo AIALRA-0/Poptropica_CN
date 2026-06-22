@@ -2190,7 +2190,188 @@ def command_analyze_hud_diff(args):
         payload["annotatedOutput"] = str(annotated_path)
     write_json_if_needed(payload, args.output)
     to_json(payload)
-    if not payload["ok"]:
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
+def _slot_edge_metrics(region):
+    if region.size == 0:
+        return {
+            "edgeDensity": 0.0,
+            "darkDensity": 0.0,
+            "saturationDensity": 0.0,
+            "pixels": 0,
+        }
+    rgb = np.array(region).astype(np.int16)
+    gradient_x = np.zeros(rgb.shape[:2], dtype=np.int16)
+    gradient_y = np.zeros(rgb.shape[:2], dtype=np.int16)
+    gradient_x[:, 1:] = np.max(np.abs(rgb[:, 1:] - rgb[:, :-1]), axis=2)
+    gradient_y[1:, :] = np.max(np.abs(rgb[1:, :] - rgb[:-1, :]), axis=2)
+    gradient = np.maximum(gradient_x, gradient_y)
+    max_channel = rgb.max(axis=2)
+    min_channel = rgb.min(axis=2)
+    saturation = max_channel - min_channel
+    edge_mask = (gradient > 35) & (saturation > 20) & (max_channel > 45)
+    return {
+        "edgeDensity": float(edge_mask.sum()) / float(edge_mask.size),
+        "darkDensity": float((max_channel < 80).sum()) / float(edge_mask.size),
+        "saturationDensity": float((saturation > 45).sum()) / float(edge_mask.size),
+        "pixels": int(edge_mask.size),
+    }
+
+
+def command_analyze_hud_row(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    menu_center_x = float(args.menu_center_x)
+    menu_center_y = float(args.menu_center_y)
+    logical_width = max(1.0, float(args.logical_width))
+    scale = float(width) / logical_width
+    slot_spacing = float(args.slot_spacing) if args.slot_spacing else float(args.logical_slot_spacing) * scale
+    slot_half_size = int(round(float(args.logical_slot_size) * scale / 2.0))
+    slot_half_size = max(int(args.min_slot_half_size), min(int(args.max_slot_half_size), slot_half_size))
+    names = [
+        entry.strip()
+        for entry in str(args.slot_names).split(",")
+        if entry.strip()
+    ]
+    if not names:
+        names = ["settings", "audio", "home", "store", "map", "costumizer", "inventory", "menu"]
+    slot_count = len(names)
+    critical_names = {
+        entry.strip()
+        for entry in str(args.critical_slots).split(",")
+        if entry.strip()
+    }
+    slots = []
+    for index, name in enumerate(names):
+        slot_offset = slot_count - 1 - index
+        center_x = menu_center_x - slot_spacing * slot_offset
+        center_y = menu_center_y + float(args.row_y_offset)
+        left, top, right, bottom = _clamp_box(
+            int(round(center_x - slot_half_size)),
+            int(round(center_y - slot_half_size)),
+            int(round(center_x + slot_half_size)),
+            int(round(center_y + slot_half_size)),
+            width,
+            height,
+        )
+        metrics = _slot_edge_metrics(image.crop((left, top, right, bottom)))
+        present = (
+            metrics["pixels"] > 0 and
+            metrics["edgeDensity"] >= float(args.min_edge_density)
+        )
+        slots.append({
+            "index": int(index),
+            "name": name,
+            "centerX": float(round(center_x, 3)),
+            "centerY": float(round(center_y, 3)),
+            "box": {
+                "left": int(left),
+                "top": int(top),
+                "right": int(right),
+                "bottom": int(bottom),
+                "width": int(right - left),
+                "height": int(bottom - top),
+            },
+            "present": bool(present),
+            "metrics": {
+                "edgeDensity": float(round(metrics["edgeDensity"], 6)),
+                "darkDensity": float(round(metrics["darkDensity"], 6)),
+                "saturationDensity": float(round(metrics["saturationDensity"], 6)),
+                "pixels": int(metrics["pixels"]),
+            },
+        })
+    present_slots = [slot for slot in slots if slot["present"]]
+    critical_missing = [
+        slot["name"]
+        for slot in slots
+        if slot["name"] in critical_names and not slot["present"]
+    ]
+    row_left = min(slot["box"]["left"] for slot in slots) if slots else None
+    row_right = max(slot["box"]["right"] for slot in slots) if slots else None
+    row_top = min(slot["box"]["top"] for slot in slots) if slots else None
+    row_bottom = max(slot["box"]["bottom"] for slot in slots) if slots else None
+    right_inset = float(width - menu_center_x)
+    row_left_ratio = float(row_left) / float(width) if row_left is not None and width else None
+    checks = [
+        {
+            "name": "present_slot_count",
+            "ok": len(present_slots) >= int(args.min_present_slots),
+            "observed": len(present_slots),
+            "min": int(args.min_present_slots),
+        },
+        {
+            "name": "critical_slots_present",
+            "ok": not critical_missing,
+            "missing": critical_missing,
+            "criticalSlots": sorted(critical_names),
+        },
+        {
+            "name": "menu_right_anchor",
+            "ok": right_inset >= float(args.min_menu_right_inset) and right_inset <= float(args.max_menu_right_inset),
+            "observedRightInset": float(round(right_inset, 3)),
+            "min": float(args.min_menu_right_inset),
+            "max": float(args.max_menu_right_inset),
+        },
+        {
+            "name": "row_left_ratio",
+            "ok": row_left_ratio is not None and row_left_ratio >= float(args.min_row_left_ratio),
+            "observed": float(round(row_left_ratio, 6)) if row_left_ratio is not None else None,
+            "min": float(args.min_row_left_ratio),
+        },
+        {
+            "name": "row_top",
+            "ok": row_top is not None and row_top <= int(args.max_row_top),
+            "observed": int(row_top) if row_top is not None else None,
+            "max": int(args.max_row_top),
+        },
+    ]
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": int(width),
+            "height": int(height),
+        },
+        "anchor": {
+            "menuCenterX": float(round(menu_center_x, 3)),
+            "menuCenterY": float(round(menu_center_y, 3)),
+            "rightInset": float(round(right_inset, 3)),
+        },
+        "layout": {
+            "logicalWidth": float(logical_width),
+            "scale": float(round(scale, 6)),
+            "slotSpacing": float(round(slot_spacing, 3)),
+            "slotHalfSize": int(slot_half_size),
+            "rowBox": {
+                "left": int(row_left) if row_left is not None else None,
+                "top": int(row_top) if row_top is not None else None,
+                "right": int(row_right) if row_right is not None else None,
+                "bottom": int(row_bottom) if row_bottom is not None else None,
+            },
+            "rowLeftRatio": float(round(row_left_ratio, 6)) if row_left_ratio is not None else None,
+        },
+        "slots": slots,
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        if row_left is not None:
+            draw.rectangle((row_left, row_top, row_right, row_bottom), outline=(0, 255, 255), width=3)
+        for slot in slots:
+            box = slot["box"]
+            outline = (0, 255, 0) if slot["present"] else (255, 0, 0)
+            draw.rectangle((box["left"], box["top"], box["right"], box["bottom"]), outline=outline, width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
         sys.exit(2)
 
 
@@ -2815,6 +2996,30 @@ def main():
     hud_diff_parser.add_argument("--max-unexpected-components", type=int, default=0)
     hud_diff_parser.add_argument("--annotated-output")
     hud_diff_parser.set_defaults(func=command_analyze_hud_diff)
+
+    hud_row_parser = subparsers.add_parser("analyze-hud-row")
+    hud_row_parser.add_argument("--input", required=True)
+    hud_row_parser.add_argument("--output")
+    hud_row_parser.add_argument("--annotated-output")
+    hud_row_parser.add_argument("--menu-center-x", required=True, type=float)
+    hud_row_parser.add_argument("--menu-center-y", required=True, type=float)
+    hud_row_parser.add_argument("--logical-width", type=float, default=960.0)
+    hud_row_parser.add_argument("--logical-slot-spacing", type=float, default=86.0)
+    hud_row_parser.add_argument("--slot-spacing", type=float, default=0.0)
+    hud_row_parser.add_argument("--logical-slot-size", type=float, default=76.0)
+    hud_row_parser.add_argument("--min-slot-half-size", type=int, default=28)
+    hud_row_parser.add_argument("--max-slot-half-size", type=int, default=70)
+    hud_row_parser.add_argument("--row-y-offset", type=float, default=0.0)
+    hud_row_parser.add_argument("--slot-names", default="settings,audio,home,store,map,costumizer,inventory,menu")
+    hud_row_parser.add_argument("--critical-slots", default="settings,audio,home,menu")
+    hud_row_parser.add_argument("--min-edge-density", type=float, default=0.025)
+    hud_row_parser.add_argument("--min-present-slots", type=int, default=7)
+    hud_row_parser.add_argument("--min-menu-right-inset", type=float, default=8.0)
+    hud_row_parser.add_argument("--max-menu-right-inset", type=float, default=150.0)
+    hud_row_parser.add_argument("--min-row-left-ratio", type=float, default=0.22)
+    hud_row_parser.add_argument("--max-row-top", type=int, default=90)
+    hud_row_parser.add_argument("--no-fail-exit", action="store_true")
+    hud_row_parser.set_defaults(func=command_analyze_hud_row)
 
     crop_parser = subparsers.add_parser("crop-image")
     crop_parser.add_argument("--input", required=True)

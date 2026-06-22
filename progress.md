@@ -45,6 +45,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - 注意：Poptropicon post-click 像素 diff 里 `sameSize=false` 是截图客户区高度不一致导致，不能拿它当自动视觉通过证据；本轮证据以裁切截图人工复核为准。
 - 当前未关闭 blocker：还需要把 HUD 裁切口径做成自动 full-row detector；`tools/qa-as3-hud-smoke.js` 的旧 `adaptiveHudTargetX()` 仍偏“能点验证”，不能作为全 AS3 HUD 视觉封版依据；Time Tangled 重开验收、任务物品弹窗黑残留/越界、AS3 对话队列、相机蓝边、外链白屏、真实音频来源清单仍未闭环。
 
+## 2026-06-22 AS3 HUD 自动槽位检测器
+
+- 新增 `tools/qa-helper.py analyze-hud-row`：以 MENU OCR 中心为锚点，按当前 AS3 HUD 逻辑宽度推算 `settings/audio/home/store/map/costumizer/inventory/menu` 8 个槽位，逐槽计算边缘密度，输出 JSON 和带框 PNG。这个检查不是泛用视觉 AI，只针对“AS3 展开 HUD 是否一排右锚”这个 blocker。
+- `tools/qa-as3-hud-smoke.js` 已在 menu post-click 截图后自动调用 `analyze-hud-row`。如果检测失败，报告会出现 `expanded_hud_row_failed`，不再允许“按钮能点但视觉错位”被记为通过。
+- 当前通过样本：`runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782161407460.json`，`expandedHudRow.ok=true`，8/8 槽位通过；带框图 `runtime-data/qa/as3/hud-smoke/run-1782161407460/01-poptropicon-expanded-hud-row.png` 已人工复核。
+- 当前负样本：旧误判截图 `runtime-data/qa/as3/hud-smoke/run-1781972253353/01-poptropicon-post-click.png` 用同一检测器判定 `ok=false`，只有 5/8 槽位通过，缺 `settings/audio/home`，`row_top=132` 超过阈值；带框图 `runtime-data/qa/as3/hud-smoke/run-1781972253353/as3-hud-row-auto-negative.png` 明确标红三个空槽。
+- 最小验证命令已通过：`node --check tools/qa-as3-hud-smoke.js`，`python -m py_compile tools/qa-helper.py`，`python tools/qa-helper.py analyze-hud-row ... --no-fail-exit` 负样本输出 `ok=false` 且退出 0，真实 `npm run qa:as3-hud-smoke -- --islands=poptropicon ...` 通过。
+- 后续：把这个检查扩展到 Mystery/Poptropicon 外的 AS3 样本批量回归；继续 Time Tangled 任务物品弹窗/蓝边/AS3 对话队列等 blocker。
+
 ## 2026-06-09
 
 - Resumed the existing active goal in `E:\Poptropica\POPTROPICA_FLASH`.
