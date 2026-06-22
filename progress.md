@@ -4346,3 +4346,61 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `15. shark-tooth`.
   - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.
+
+## 2026-06-21 Shark Tooth Current-Build Sealed Baseline Pass
+
+- Continued island 15 (`shark-tooth`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/background:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_HTML_AUDIO=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_NO_FOREGROUND=1`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- External route sanity check:
+  - Poptropica Help Blog and Poptropica Wiki describe Shark Tooth as the Booga Bay / ancient ruins / temple / Medicine Man / calming potion / castaway rescue route, matching the local `Shark` AS2 scene family.
+  - Sources used only for route/NPC sanity check: `https://poptropi.ca/island-help/shark-tooth/`, `https://poptropica.fandom.com/wiki/Shark_Tooth_Island`.
+- Entry and text fixes:
+  - Verified `catalog/launch-overrides.json` launches `shark-tooth` at `sceneFolder=Shark`, `roomParam=Mainstreet`, `islandParam=Shark`.
+  - Added `tools/audit-as2-runtime-text.js` and `tools/import-as2-runtime-script-text.js` for AS2 script-text discovery/import.
+  - Imported Shark AS2 script rows from `scenes/islandShark`; audit found 74 candidates and the seed pass filled all active missing Shark native script translations.
+  - Added `tools/seed-as2-shark-translations.js`; it seeded 68/68 Shark native `swf-script` Chinese rows.
+  - Patched nine Shark scene SWFs with `tools/patch-as2-script-translations.js`: `sceneBooga.swf`, `sceneCastaway.swf`, `sceneMainstreet.swf`, `sceneMedicine.swf`, `sceneMuseum2.swf`, `sceneRuins.swf`, `sceneTemple1.swf`, `sceneTemple2.swf`, and `sceneTownhall.swf`.
+- Map intro:
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/shark/island/page.xml`.
+  - Synchronized the XML entry into the AS3 runtime zip with `tools/update-as3-runtime-entries.js`.
+  - AS3 map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782092458415.json`.
+  - Screenshot inspected: `runtime-data/qa/as3/islands-smoke/run-1782092458415/01-poptropicon-map.png`.
+  - Visual review: title/description/buttons are Chinese and centered; static `SHARK TOOTH ISLAND` logo and Medicine Man image text remain original English art.
+- Full Shark AS2 acceptance smoke:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782090320593.json`.
+  - Result: `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `failedKeys=[]`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as2/interaction-smoke/run-1782090320593/01-shark-tooth-f11.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782090320593/01-shark-tooth-map.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782090320593/01-shark-tooth-loading-sequence/01-shark-tooth-loading-500.png`.
+  - Manual review: AS2 map popup opens, startup loading is centered, character/HUD survive F11, scene does not expose the bottom blue gameplay band, and runtime stays muted.
+- Three native AS2 Chinese dialogue proof samples passed:
+  - Added `tools/patch-as2-shark-dialog-proof.js`; the QA-only hook triggers real Shark Mainstreet `talkyText/manualSay` bubbles only when `flashpointQaAs2Dialog` is present.
+  - Adjusted the proof hook to use the native `target.talkHeight` path so the Chinese bubble is fully visible instead of being cropped at the bottom.
+  - Final Shark fin sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782092019886.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782092019886/01-shark-tooth-initial.png`, text `没有酷炫鲨鱼鳍，你的装扮还不完整！`.
+  - Coconut sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782092069884.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782092069884/01-shark-tooth-initial.png`, text `尝尝我的气泡椰奶吧。免费请你喝！`.
+  - Afraid sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782092117113.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782092117113/01-shark-tooth-initial.png`, text `我得离开这座岛！那条巨鲨太吓人了！`.
+  - Manual review: all three are native AS2 dialogue bubbles, not static overlays; no repeated bubble flashing, text twitching, or character disappearance was seen in the final samples.
+- Audio/mute note:
+  - The final dialogue proof runs used `--skip-audio` after the baseline `1782090320593` already proved `audioActive=0`.
+  - A discarded intermediate run `1782091696121` showed the target `flashpointnavigator.exe` session was `muted=true` and `volume=0.0`, but loopback captured unrelated system audio while the user was working. This is recorded as a QA audio false positive, not game audio leakage.
+- Static-art policy remained intact:
+  - `MENU`, `WELCOME TO SHARK TOOTH`, `SHARK TOOTH ISLAND`, `RESTROOMS`, `PARKING LOT`, posters, arrows, map logo, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Failed/partial evidence not counted:
+  - `as2-interaction-smoke-1782090669748.json`, `1782090726409`, and `1782090782494` showed Chinese but the bubble was cropped at the bottom; superseded by `1782092019886`, `1782092069884`, and `1782092117113`.
+  - `as2-interaction-smoke-1782091487162.json` failed after a rejected attempt to wrap the bubble `onEnterFrame`; this was reverted in favor of native `talkHeight`.
+  - `as2-interaction-smoke-1782091696121.json` is not counted for audio because loopback was polluted by non-game system audio despite the Navigator session being muted.
+- Current Shark Tooth conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: AS2 entry, AS2 map open, AS3 map intro, centered loading, F11/no-blue gameplay layout, HUD/MENU stability, 3 native Chinese dialogue samples, no visible dialogue repeat/twitch in final samples, runtime mute, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Booga Bay, Ancient Ruins, Temple, Medicine Man, Castaway, potion/cannon/rescue, more natural NPC hot zones, and the ending remain future full-island deep QA.
+- Next island:
+  - Move current execution to `16. 24-carrot`.
+  - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.

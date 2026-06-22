@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T00:21:27.820Z",
+  "generatedAt": "2026-06-22T01:31:17.525Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 63,
+  "assetsPatched": 73,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -370,6 +370,59 @@
       "changed": true,
       "replaceTarget": "\\DefineSprite_185\\frame_1\\DoAction",
       "notes": "QA only: triggers three native Early City2 NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
+    },
+    {
+      "assetId": "7e318049a4c4b8103fa736fed3b52d60d19af6dd",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneBooga.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneBooga.swf"
+    },
+    {
+      "assetId": "e13dc7784a69a15fb6462ea38e9068b7b31c87dc",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneCastaway.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneCastaway.swf"
+    },
+    {
+      "assetId": "804e74aabad7802a4acd3bcbb7755b259b29169c",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMainstreet.swf"
+    },
+    {
+      "assetId": "1eed19b21150c1e054582fa21e5e32cc7b7d076c",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMedicine.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMedicine.swf"
+    },
+    {
+      "assetId": "4c9314339838298bb309d093b4044951f4f1a631",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMuseum2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMuseum2.swf"
+    },
+    {
+      "assetId": "aad16531ed56aabcf8ff931814711f040c8902f0",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneRuins.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneRuins.swf"
+    },
+    {
+      "assetId": "c7c1ce2a3e34c02d90f1c0be71ebec720f855964",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple1.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple1.swf"
+    },
+    {
+      "assetId": "2b72bd93166c7920b222b51aa27aebfe730e5673",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTemple2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTemple2.swf"
+    },
+    {
+      "assetId": "8e0f71095bb6c62804414911caa977f843d5e841",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneTownhall.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneTownhall.swf"
+    },
+    {
+      "assetId": "shark-tooth:mainstreet-qa-dialog-proof",
+      "assetPath": "content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandShark\\sceneMainstreet.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_541\\frame_1\\DoAction",
+      "notes": "QA only: triggers native Shark Mainstreet NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     }
   ],
   "pendingSwfAssets": [],
@@ -384,7 +437,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 51,
+    "replacementCount": 60,
     "swfRuntimeOverrides": "enabled"
   },
   "as2HardcodedDialoguePatches": {
