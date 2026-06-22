@@ -4455,3 +4455,55 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Next island:
   - Move current execution to `17. time-tangled`.
   - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.
+
+## 2026-06-22 Time Tangled Current-Build Sealed Baseline Pass
+
+- Continued island 17 (`time-tangled`) only; no global island matrix run.
+- Kept QA runtime muted and side-monitor/G32QC targeted:
+  - `POPTROPICA_QA_MUTE_RUNTIME=1`
+  - `POPTROPICA_QA_MUTE_HTML_AUDIO=1`
+  - `POPTROPICA_QA_MUTE_SECONDS=43200`
+  - `POPTROPICA_QA_MUTE_INTERVAL_MS=150`
+  - `POPTROPICA_QA_MONITOR=G32QC`
+  - `POPTROPICA_QA_POST_MESSAGE_CLICKS=1`
+- Entry/resource/text fixes:
+  - Verified the AS2 launch target is `sceneFolder=Time`, `roomParam=Present`, `islandParam=Time`.
+  - Restored `packs/zh-CN/as2/files/content/www.poptropica.com/scenes/islandTime/vendorCart.swf` from the repo blob so Time no longer logs a missing vendor cart request.
+  - Imported Time AS2 script rows from `scenes/islandTime`; final audit had `assetsWithUnindexedScriptDialogue=0`.
+  - Added `tools/seed-as2-time-translations.js`; it seeded the active missing Time native script rows.
+  - Patched 24 Time scene SWFs with `tools/patch-as2-script-translations.js`, covering Aztec, China, Desolation, Edison, Everest, France, Future, Graff, Greece, Lab, Lewis, Mali, Present, Renaissance, and Viking scenes.
+- Map intro and AS2 map popup:
+  - Added `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/time/island/page.xml`.
+  - AS3 map smoke passed: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782097615542.json`.
+  - Screenshot inspected: `runtime-data/qa/as3/islands-smoke/run-1782097615542/01-poptropicon-map.png`.
+  - Visual review: title `时空缠结岛`, Chinese description, and `重新开始/开始` buttons are visible and centered; static `TIME TANGLED ISLAND` logo and the Greek image lettering remain original English/static art.
+  - Added `tools/patch-as2-map-popup-text.js` and updated `tools/lib/pack.js` so the AS2 map popup uses native Chinese text for `重启/岛屿` and moves the reset button up to avoid bottom clipping.
+- QA helper fix:
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782099985795.json` had good logical checks but its F11 screenshot captured a desktop overlay, so it is rejected.
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782100294199.json` showed foreground capture could leave the Flash stage unfilled at 1600x900, so it is rejected.
+  - Updated `tools/qa-helper.py` so foreground capture also pulses the Navigator layout before screenshots while skipping physical resize for monitor-sized/F11 windows.
+  - Python syntax check passed: `python -m py_compile tools\qa-helper.py`.
+- Full Time AS2 acceptance smoke:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782100652713.json`.
+  - Result: `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `failedKeys=[]`.
+  - Reviewed screenshots:
+    - `runtime-data/qa/as2/interaction-smoke/run-1782100652713/01-time-tangled-initial.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782100652713/01-time-tangled-f11.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782100652713/01-time-tangled-map.png`.
+    - `runtime-data/qa/as2/interaction-smoke/run-1782100652713/01-time-tangled-loading-sequence/01-time-tangled-loading-500.png`.
+  - Manual review: startup loading is centered, character/HUD survive F11, AS2 map popup opens, gameplay scene does not expose the bottom blue band, and runtime stays muted.
+- Three native AS2 Chinese dialogue proof samples passed:
+  - Added `tools/patch-as2-time-dialog-proof.js`; the QA-only hook triggers real Time Lab `manualSay` bubbles only when `flashpointQaAs2Dialog` is present.
+  - Help sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782099797488.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782099797488/01-time-tangled-initial.png`, text `请帮帮我们。故障搅乱了时间，未来岌岌可危。`.
+  - Printout sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782099837988.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782099837988/01-time-tangled-initial.png`, text `这份打印资料会说明我们需要你做什么。`.
+  - Follow-up sample: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782099896495.json`, screenshot `runtime-data/qa/as2/interaction-smoke/run-1782099896495/01-time-tangled-initial.png`, text `那份打印件会解释一切。我们全靠你了。`.
+  - Manual review: all three are AS2 native dialogue bubbles, not static overlays; no repeated bubble flashing, text twitching, or character disappearance was seen in the final samples.
+- Static-art policy remained intact:
+  - `TIME TANGLED ISLAND`, the AS2 parchment map logo, Greek building image text, scene signs, posters, arrows, and other art-lettering remain English/static.
+  - No Chinese TextField overlay was added to static icons, signs, posters, arrows, or art-lettering.
+- Current Time Tangled conclusion:
+  - Current build sealed baseline is usable as a pass for the stepwise island checklist: AS2 entry, AS2 map open, AS3 map intro, centered loading, F11/no-blue gameplay layout, HUD/MENU stability, 3 native Chinese dialogue samples, no visible dialogue repeat/twitch in final samples, runtime mute, and static-art policy all have evidence.
+  - Not a full end-to-end story completion proof. Time machine travel, all era item chains, more natural NPC hot zones, and the ending remain future full-island deep QA.
+- Next island:
+  - Move current execution to `18. super-power`.
+  - Use the same AS2 sequence: map intro/opening, window/F11/no-blue layout, loading center, HUD/backpack/map UI, at least 3 real Chinese NPC/quest dialogue screenshots, dialogue no-repeat/no-twitch samples, static-art policy review, then sealed regression.

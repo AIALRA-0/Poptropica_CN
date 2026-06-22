@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T02:18:06.081Z",
+  "generatedAt": "2026-06-22T03:43:00.658Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 85,
+  "assetsPatched": 110,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -476,6 +476,134 @@
       "changed": true,
       "replaceTarget": "\\DefineSprite_332\\frame_1\\DoAction",
       "notes": "QA only: triggers native Carrot Main Street NPC talkyText bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
+    },
+    {
+      "assetId": "8ee2e561fc4fa68e5412eed4da979cc3c80fd4a6",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneAztec.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneAztec.swf"
+    },
+    {
+      "assetId": "cc5e6c900ee58cdb0394cb7681aadb5f57a87b43",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneChina.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneChina.swf"
+    },
+    {
+      "assetId": "92e4783b9e2d3f06b42c80e011fb1373aa4c2549",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneDesolation.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneDesolation.swf"
+    },
+    {
+      "assetId": "1bb1f22c382a63381855b01bf8c17b2263aa7a2a",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneEdison.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneEdison.swf"
+    },
+    {
+      "assetId": "84a545b178672333b97f98becf7817286b75a4f6",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneEdison2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneEdison2.swf"
+    },
+    {
+      "assetId": "5a5f6f3ebf651fffa658d97ad4c66a0c6f89333e",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneEverest2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneEverest2.swf"
+    },
+    {
+      "assetId": "18c8c2128a779987086d4612bd253b20c8ca072a",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneEverest3.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneEverest3.swf"
+    },
+    {
+      "assetId": "71c66447c98a7c9ea6e95fd03308483db246281c",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneFrance.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneFrance.swf"
+    },
+    {
+      "assetId": "b159a5d7615db2b84359270721abc82a2d69aa5d",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneFrance2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneFrance2.swf"
+    },
+    {
+      "assetId": "b87acf3194c31bca9bd29f97aaa3e22c1972bdba",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneFuture.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneFuture.swf"
+    },
+    {
+      "assetId": "b93af159fb8157b814ae4e1843f8e02b911420a0",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneFuture2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneFuture2.swf"
+    },
+    {
+      "assetId": "e86121f96d8cae8355386a18ed47f3be65dfa728",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneGraff.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneGraff.swf"
+    },
+    {
+      "assetId": "33ffab325fa07314c11fc88a7dd5cd123f0aeffa",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneGraff2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneGraff2.swf"
+    },
+    {
+      "assetId": "95e89e3a40f0a0a6219c659bf6cf549682077f5c",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneGreece.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneGreece.swf"
+    },
+    {
+      "assetId": "d1761a7404b118c43b6065f17f708c60551ab118",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneGreece2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneGreece2.swf"
+    },
+    {
+      "assetId": "d69e88a386ac7dcbabb0973d2ea387b81f58c0ff",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLab.swf"
+    },
+    {
+      "assetId": "6a5e06e9607b6ef2f17a14bb123d6c52ae5461ae",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLewis.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLewis.swf"
+    },
+    {
+      "assetId": "76e1db241a8606964c24748f993d3c4e75c8e0ba",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneMali.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneMali.swf"
+    },
+    {
+      "assetId": "b39cbf2bcd8b3fef995f555d926d4cbf4544173c",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneMali2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneMali2.swf"
+    },
+    {
+      "assetId": "6b7c42b9fb5d29ca199d59dad684f6e9da996902",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/scenePresent.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\scenePresent.swf"
+    },
+    {
+      "assetId": "9b79b45bbce5dd4d538a1926ae72c60590d2dc10",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneRenaissance.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneRenaissance.swf"
+    },
+    {
+      "assetId": "c2735619d0a1ac66e2ba771bb735eb9f7176e068",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneRenaissance2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneRenaissance2.swf"
+    },
+    {
+      "assetId": "bfc4a336886e064fc9627a330927ed6022174be2",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneViking.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneViking.swf"
+    },
+    {
+      "assetId": "3ccd13204d747103a01325aae9c75d7d48addcf2",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneViking2.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneViking2.swf"
+    },
+    {
+      "assetId": "time-tangled:lab-qa-dialog-proof",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLab.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_169\\frame_1\\DoAction",
+      "notes": "QA only: triggers native Time Tangled Pendulums Lab manualSay bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     }
   ],
   "pendingSwfAssets": [],
@@ -490,7 +618,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 69,
+    "replacementCount": 94,
     "swfRuntimeOverrides": "enabled"
   },
   "as2HardcodedDialoguePatches": {

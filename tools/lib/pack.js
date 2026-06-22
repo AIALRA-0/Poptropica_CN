@@ -114,8 +114,14 @@ const AS2_SHARED_MAP_TEXT_REPLACEMENTS = [
   ["cancel", "取消"],
   ["restart", "重置"],
   ["Restart Island?", "重启岛屿？"],
+  ["Restart [", "重启["],
+  ["]Island", "]岛屿"],
+  ["Sorry, but there [", "抱歉，这座岛["],
+  ["]is not a map for [", "]暂时没有["],
+  ["]this island.", "]地图。"],
   ["Sorry, but there [\ny 960\n]is not a map for [\nx 920\ny 1520\n]this island.", "抱歉，这座岛[\ny 960\n]暂时没有[\nx 920\ny 1520\n]地图。"],
   ["the PURPLE\nGIANT", "紫色\n巨人"],
+  ["the PURPLE\rGIANT", "紫色\n巨人"],
   ["Restart [\nx 220\ny 660\n]Island", "重启[\nx 220\ny 660\n]岛屿"]
 ];
 
@@ -4164,6 +4170,20 @@ function applyAs2MapPopupScriptPatch(content) {
     throw new Error("Unable to locate map popup Super restart override");
   }
   nextContent = nextPatchedContent;
+  if (!/flashpointMapButtonLayoutApplied/iu.test(nextContent)) {
+    nextContent = replaceRequiredSnippet(
+      nextContent,
+      `stop();
+_root.useArrow();`,
+      `stop();
+if(resetIslandButton != undefined && !resetIslandButton.flashpointMapButtonLayoutApplied)
+{
+   resetIslandButton.flashpointMapButtonLayoutApplied = true;
+   resetIslandButton._y -= 34;
+}
+_root.useArrow();`
+    );
+  }
   return nextContent;
 }
 

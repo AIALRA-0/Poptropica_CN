@@ -797,6 +797,77 @@ def bring_to_front(hwnd):
     time.sleep(0.4)
 
 
+def is_monitor_sized_window(hwnd):
+    try:
+        left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+        width = max(1, int(right - left))
+        height = max(1, int(bottom - top))
+        monitor = win32api.MonitorFromWindow(hwnd, getattr(win32con, "MONITOR_DEFAULTTONEAREST", 2))
+        info = win32api.GetMonitorInfo(monitor)
+        mon_left, mon_top, mon_right, mon_bottom = info.get("Monitor") or info.get("Work")
+        mon_width = max(1, int(mon_right - mon_left))
+        mon_height = max(1, int(mon_bottom - mon_top))
+        return (
+            width >= int(mon_width * 0.94)
+            and height >= int(mon_height * 0.88)
+            and int(left) <= int(mon_left) + 16
+            and int(top) <= int(mon_top) + 32
+        )
+    except Exception:
+        return False
+
+
+def pulse_runtime_window_layout(hwnd):
+    try:
+        if not win32gui.IsZoomed(hwnd) and not is_monitor_sized_window(hwnd):
+            left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+            width = max(1, int(right - left))
+            height = max(1, int(bottom - top))
+            resize_flags = win32con.SWP_NOACTIVATE | win32con.SWP_NOZORDER
+            win32gui.SetWindowPos(hwnd, 0, int(left), int(top), width + 1, height, resize_flags)
+            time.sleep(0.08)
+            win32gui.SetWindowPos(hwnd, 0, int(left), int(top), width, height, resize_flags)
+    except Exception:
+        pass
+    try:
+        sync_runtime_child_windows(hwnd)
+    except Exception:
+        pass
+    try:
+        client = win32gui.GetClientRect(hwnd)
+        client_width = max(1, int(client[2] - client[0]))
+        client_height = max(1, int(client[3] - client[1]))
+        size_param = (client_height << 16) | (client_width & 0xFFFF)
+        redraw_flags = (
+            getattr(win32con, "RDW_INVALIDATE", 0x0001)
+            | getattr(win32con, "RDW_ALLCHILDREN", 0x0080)
+            | getattr(win32con, "RDW_UPDATENOW", 0x0100)
+            | getattr(win32con, "RDW_FRAME", 0x0400)
+        )
+        targets = [hwnd]
+
+        def collect_child(child_hwnd, _extra):
+            targets.append(child_hwnd)
+            return True
+
+        try:
+            win32gui.EnumChildWindows(hwnd, collect_child, None)
+        except Exception:
+            pass
+        for target_hwnd in targets:
+            try:
+                win32gui.PostMessage(target_hwnd, win32con.WM_NCACTIVATE, 1, 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_ACTIVATE, getattr(win32con, "WA_ACTIVE", 1), 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_SETFOCUS, 0, 0)
+                win32gui.PostMessage(target_hwnd, win32con.WM_SIZE, win32con.SIZE_RESTORED, size_param)
+                win32gui.RedrawWindow(target_hwnd, None, None, redraw_flags)
+            except Exception:
+                pass
+    except Exception:
+        pass
+    time.sleep(0.25)
+
+
 def raise_window_no_activate(hwnd):
     if win32gui.IsIconic(hwnd):
         win32gui.ShowWindow(hwnd, win32con.SW_SHOWNOACTIVATE)
@@ -1287,6 +1358,7 @@ def command_capture_window(args):
             pass
     if not getattr(args, "no_foreground", False):
         bring_to_front(hwnd)
+        pulse_runtime_window_layout(hwnd)
     else:
         raise_window_no_activate(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
@@ -1391,6 +1463,7 @@ def command_capture_window_sequence(args):
             pass
     if not getattr(args, "no_foreground", False):
         bring_to_front(hwnd)
+        pulse_runtime_window_layout(hwnd)
     else:
         raise_window_no_activate(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
