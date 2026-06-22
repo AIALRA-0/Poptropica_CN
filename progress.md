@@ -4582,3 +4582,39 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - AS3 dialogue queue protection is still open.
   - Time Lab scene-specific QA hook still fails to fire even though the patched scene SWF in the runtime zip contains the hook. Since the global gameplay proof now covers the repeated `showSay()` bug, defer sceneLab hook cleanup unless a later Time Lab-specific proof needs it.
   - Remaining global blockers: AS3 HUD using the same visual standard, popup/item black residue and off-screen positioning, camera blue-edge leakage in more scenes, native arrow labels, external/click-to-white-screen links, and real audio source inventory.
+
+## 2026-06-22 AS2 Time Tangled Viewport Cache-Bust + HUD Anchor Gate
+
+- Paused again after the user pointed out my "right top HUD" judgement was not trustworthy enough.
+- Fixed a real AS2 viewport instability:
+  - `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` now sends `Cache-Control: no-store`, `Pragma: no-cache`, and `Expires: 0`.
+  - `tools/qa-as2-interaction-smoke.js` now adds a unique `flashpointQaCacheBust` param to each QA launch unless explicitly disabled.
+  - This addresses the observed flip-flop where Time Tangled sometimes loaded an older `base.php` layout and returned to the 1174x619 white-edge screenshot.
+- Reworked AS2 gameplay viewport:
+  - Outer `#gameViewport` fills the visible browser area with dark fallback.
+  - Inner `#gameScaleHost` clips the logical gameplay viewport before scaling.
+  - Flash stays `scale=noscale`; the wrapper scales the clipped gameplay area instead of stretching Flash and exposing the blue stage.
+  - Synced the same template change into `tools/lib/pack.js`.
+- Hardened AS2 QA gates:
+  - `--require-f11` now actually runs F11; previously it only failed if an optional F11 run existed.
+  - Added `--require-hud-anchor`, which launches a hidden-HUD baseline and runs `tools/qa-helper.py analyze-hud-diff` against the normal screenshot.
+  - The HUD gate measures against the detected Flash stage right/top, not the browser window or a subjective screenshot read.
+- Rebuilt AS2 runtime:
+  - Command: `node tools/rebuild-runtime-zip.js --source=as2`.
+  - Runtime zip: `runtime-data/patched-zips/as2-runtime.zip`.
+- Final G32QC/no-foreground/muted Time Tangled gate passed:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782163826135.json`.
+  - Summary: `ok=true`, `f11Passed=1`, `visualGuardPassed=1`, `hudAnchorPassed=1`, `mapClicksPassed=1`, `loadingCenterPassed=1`, `failedKeys=[]`.
+  - Initial screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782163826135/01-time-tangled-initial.png`.
+  - F11 screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782163826135/01-time-tangled-f11.png`.
+  - Map popup screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782163826135/01-time-tangled-map.png`.
+  - HUD annotated proof: `runtime-data/qa/as2/interaction-smoke/run-1782163826135/01-time-tangled-hud-anchor.png`.
+  - HUD metrics: right margin 43px, top margin 11px, row spread 3px, icon gaps 26px/20px.
+- Manual visual review:
+  - Initial window has no right white edge, no bottom blue gameplay band, and the player is visible.
+  - F11 has dark side letterbox only; no blue/white overflow, player and HUD remain visible.
+  - AS2 map popup opens and requests the map asset; static `TIME TANGLED ISLAND` parchment lettering remains original art per policy.
+  - HUD proof image shows the three collapsed AS2 HUD icons inside the actual stage upper-right region.
+- Non-closure:
+  - This closes the AS2 Time viewport/cache/HUD/F11/loading/map gate, not full Time Tangled story completion.
+  - Still open for Time and the global blocker list: item/file popups and black residue, natural time-device route, more natural NPC hot zones, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio inventory.

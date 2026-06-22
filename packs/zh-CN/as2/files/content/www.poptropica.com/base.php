@@ -1,4 +1,8 @@
 <?php
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 function flashpoint_audio_sanitize($value) {
     $clean = preg_replace('/[^A-Za-z0-9_-]+/', '_', (string)$value);
     $clean = trim($clean);
@@ -70,11 +74,20 @@ html, body {
     overflow: hidden;
 }
 
-body, embed { background-color: #139ffd; }
+body { background-color: #111827; }
+
+embed { background-color: #111827; }
 
 #gameViewport {
     position: absolute;
     overflow: hidden;
+    background: #111827;
+}
+
+#gameScaleHost {
+    position: absolute;
+    overflow: hidden;
+    transform-origin: top left;
 }
 
 #flashpointMapHotspot {
@@ -113,7 +126,7 @@ embed {
         </style>
     </head>
     <body>
-        <div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="139ffd" hidden></div>
+        <div id="gameViewport"><div id="gameScaleHost"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="111827" hidden></div></div>
         <div id="flashpointMapHotspot" hidden aria-hidden="true"></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>
         <div id="errorText" hidden>Multiplayer features are unavailable.</div>
@@ -143,90 +156,26 @@ const COOKIE_ADS = "ads",
 const PATH_DEFAULT = "gameplay";
 
 const gameViewport = document.getElementById("gameViewport"),
+      gameScaleHost = document.getElementById("gameScaleHost"),
       game = document.getElementById("game"),
       flashpointMapHotspot = document.getElementById("flashpointMapHotspot"),
       sceneAudio = document.getElementById("flashpointSceneAudio"),
       sceneAudioOverrides = <?php echo json_encode(flashpoint_collect_audio_overrides()); ?>,
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene",
-      as2ResumeKey = "flashpointAs2ResumeLaunch",
       qaAudioMuteKey = "flashpointQaMuteAudio",
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
-      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1010, height: 580 };
-
-let currentInputParams = null;
+      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };
 
 main();
 initMapHotspotBridge();
-initQaAs2DialogBridge();
 window.addEventListener("resize", () => applyCurrentViewport());
 
 function main() {
-    const params = resolveAs2LaunchInput(getInput());
-    currentInputParams = params;
-    rememberAs2Launch(params);
+    const params = getInput();
     flashpointLoad(params.island, params.room, params.startup_path);
-}
-
-function resolveAs2LaunchInput(params) {
-    if(!params || params.__flashpointExplicitScene || params.room !== SCENE_FP_START || params.island !== "Home")
-        return params;
-
-    const saved = readAs2ResumeLaunch();
-    if(!saved || Date.now() - Number(saved.savedAt || 0) > 120000 || Number(saved.restoreCount || 0) >= 4)
-        return params;
-
-    saved.restoreCount = Number(saved.restoreCount || 0) + 1;
-    writeAs2ResumeLaunch(saved);
-    return {
-        ...params,
-        room: saved.room || params.room,
-        island: saved.island || params.island,
-        startup_path: saved.startup_path || params.startup_path,
-        flashpointQaAs2Dialog: saved.flashpointQaAs2Dialog,
-        flashpointQaLoadingHoldMs: saved.flashpointQaLoadingHoldMs,
-        flashpoint_auto_open_map_after_ms: saved.flashpoint_auto_open_map_after_ms,
-        flashpointQaMuteAudio: saved.flashpointQaMuteAudio,
-        __flashpointExplicitScene: true,
-        __flashpointRestoredFromResume: true
-    };
-}
-
-function rememberAs2Launch(params) {
-    if(!params || params.__flashpointRestoredFromResume || !params.__flashpointExplicitScene)
-        return;
-    if(params.room === SCENE_FP_START && params.island === "Home")
-        return;
-
-    writeAs2ResumeLaunch({
-        room: params.room,
-        island: params.island,
-        startup_path: params.startup_path || PATH_DEFAULT,
-        flashpointQaAs2Dialog: params.flashpointQaAs2Dialog,
-        flashpointQaLoadingHoldMs: params.flashpointQaLoadingHoldMs,
-        flashpoint_auto_open_map_after_ms: params.flashpoint_auto_open_map_after_ms,
-        flashpointQaMuteAudio: params.flashpointQaMuteAudio,
-        savedAt: Date.now(),
-        restoreCount: 0
-    });
-}
-
-function readAs2ResumeLaunch() {
-    try {
-        return JSON.parse(sessionStorage.getItem(as2ResumeKey) || localStorage.getItem(as2ResumeKey) || "null");
-    } catch(err) {
-        return null;
-    }
-}
-
-function writeAs2ResumeLaunch(value) {
-    try {
-        const serialized = JSON.stringify(value);
-        sessionStorage.setItem(as2ResumeKey, serialized);
-        localStorage.setItem(as2ResumeKey, serialized);
-    } catch(err) { }
 }
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
@@ -279,28 +228,6 @@ function requestFlashMapOpen() {
     return false;
 }
 
-function initQaAs2DialogBridge() {
-    const params = currentInputParams || getInput();
-    if(typeof params.flashpointQaAs2Dialog !== "string" || params.flashpointQaAs2Dialog === "")
-        return;
-
-    let attempts = 0;
-    const pushValue = function() {
-        attempts++;
-        try {
-            if(game && typeof game.SetVariable === "function") {
-                game.SetVariable("flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
-                game.SetVariable("_root.flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
-                game.SetVariable("_level0.flashpointQaAs2Dialog", params.flashpointQaAs2Dialog);
-            }
-        } catch(err) { }
-
-        if(attempts < 80)
-            window.setTimeout(pushValue, 250);
-    };
-    window.setTimeout(pushValue, 250);
-}
-
 function applyMapHotspot(viewport, gameState) {
     if(!flashpointMapHotspot)
         return;
@@ -311,9 +238,11 @@ function applyMapHotspot(viewport, gameState) {
     }
 
     const scale = viewport.useViewportCrop ? viewport.viewportScale : 1;
+    const anchorLeft = viewport.useViewportCrop ? viewport.contentOffsetLeft : viewport.offsetLeft;
+    const anchorTop = viewport.useViewportCrop ? viewport.contentOffsetTop : viewport.offsetTop;
     flashpointMapHotspot.hidden = false;
-    flashpointMapHotspot.style.left = `${ viewport.offsetLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px`;
-    flashpointMapHotspot.style.top = `${ viewport.offsetTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px`;
+    flashpointMapHotspot.style.left = `${ anchorLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px`;
+    flashpointMapHotspot.style.top = `${ anchorTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px`;
     flashpointMapHotspot.style.width = `${ MAP_HOTSPOT.width * scale }px`;
     flashpointMapHotspot.style.height = `${ MAP_HOTSPOT.height * scale }px`;
 }
@@ -326,28 +255,31 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let viewportHeight = baseHeight;
     let offsetLeft = 0;
     let offsetTop = 0;
+    let contentOffsetLeft = 0;
+    let contentOffsetTop = 0;
     let viewportScale = 1;
     let cropLeft = 0;
     let cropTop = 0;
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.max(window.innerWidth / crop.width, window.innerHeight / crop.height));
+        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
-        viewportWidth = crop.width;
-        viewportHeight = crop.height;
-        offsetLeft = Math.min(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
-        offsetTop = Math.min(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
+        viewportWidth = Math.max(1, window.innerWidth);
+        viewportHeight = Math.max(1, window.innerHeight);
+        contentOffsetLeft = Math.max(0, Math.round((window.innerWidth - crop.width * viewportScale) / 2));
+        contentOffsetTop = Math.max(0, Math.round((window.innerHeight - crop.height * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
     }
 
-    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, viewportScale, cropLeft, cropTop, useViewportCrop };
+    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, contentOffsetLeft, contentOffsetTop, viewportScale, cropLeft, cropTop, useViewportCrop, cropWidth: crop.width, cropHeight: crop.height };
 }
 
 function applyGameViewport(viewport, gameState) {
+    game.setAttribute("scale", "noscale");
     game.width = viewport.displayWidth;
     game.height = viewport.displayHeight;
     game.setAttribute("width", String(viewport.displayWidth));
@@ -357,10 +289,14 @@ function applyGameViewport(viewport, gameState) {
     if(gameState === "return_user_standard") {
         gameViewport.style.width = `${ viewport.viewportWidth }px`;
         gameViewport.style.height = `${ viewport.viewportHeight }px`;
-        gameViewport.style.left = "0px";
-        gameViewport.style.top = "0px";
-        gameViewport.style.transformOrigin = "top left";
-        gameViewport.style.transform = `translate(${ viewport.offsetLeft }px, ${ viewport.offsetTop }px) scale(${ viewport.viewportScale })`;
+        gameViewport.style.left = `${ viewport.offsetLeft }px`;
+        gameViewport.style.top = `${ viewport.offsetTop }px`;
+        gameViewport.style.transform = "";
+        gameScaleHost.style.width = `${ viewport.cropWidth }px`;
+        gameScaleHost.style.height = `${ viewport.cropHeight }px`;
+        gameScaleHost.style.left = `${ viewport.contentOffsetLeft }px`;
+        gameScaleHost.style.top = `${ viewport.contentOffsetTop }px`;
+        gameScaleHost.style.transform = `scale(${ viewport.viewportScale })`;
         game.style.left = `-${ viewport.cropLeft }px`;
         game.style.top = `-${ viewport.cropTop }px`;
     } else {
@@ -368,8 +304,12 @@ function applyGameViewport(viewport, gameState) {
         gameViewport.style.height = `${ viewport.displayHeight }px`;
         gameViewport.style.left = `calc(50vw - ${ viewport.displayWidth }px / 2)`;
         gameViewport.style.top = `calc(50vh - ${ viewport.displayHeight }px / 2)`;
-        gameViewport.style.transformOrigin = "";
         gameViewport.style.transform = "";
+        gameScaleHost.style.width = `${ viewport.displayWidth }px`;
+        gameScaleHost.style.height = `${ viewport.displayHeight }px`;
+        gameScaleHost.style.left = "0px";
+        gameScaleHost.style.top = "0px";
+        gameScaleHost.style.transform = "";
         game.style.left = "0px";
         game.style.top = "0px";
     }
@@ -412,8 +352,8 @@ function isEnabledFlag(value) {
     return /^(1|true|yes|y|muted)$/i.test(String(value || ""));
 }
 
-function resolveQaAudioMuted(params) {
-    const input = params || currentInputParams || getInput(),
+function resolveQaAudioMuted() {
+    const input = getInput(),
           explicitValue = input.flashpointQaMuteAudio !== undefined ? input.flashpointQaMuteAudio : input.flashpoint_mute_audio;
 
     if(explicitValue !== undefined) {
@@ -482,8 +422,7 @@ function updateSceneAudio(island, scene, gameState) {
               candidates = [
                   islandKey + "/" + sceneKey,
                   islandKey + "/default",
-                  "_global/" + sceneKey,
-                  "_global/default"
+                  "_global/" + sceneKey
               ];
 
         for(let index = 0; index < candidates.length; index++) {
@@ -579,19 +518,15 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     flashVars.set("island", island);
     flashVars.set("startup_path", path);
     flashVars.set("state", gameState);
-    const inputParams = currentInputParams || getInput();
+    const inputParams = getInput();
     if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
     if(inputParams.flashpointQaAs2Dialog !== undefined)
         flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
     if(inputParams.flashpointQaLoadingHoldMs !== undefined)
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
-    const qaMovieParams = new URLSearchParams();
-    if(typeof inputParams.flashpointQaAs2Dialog === "string" && inputParams.flashpointQaAs2Dialog !== "")
-        qaMovieParams.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
-    if(inputParams.flashpointQaLoadingHoldMs !== undefined && String(inputParams.flashpointQaLoadingHoldMs) !== "")
-        qaMovieParams.set("flashpointQaLoadingHoldMs", String(inputParams.flashpointQaLoadingHoldMs));
-    const qaMovieQuery = qaMovieParams.toString() ? "?" + qaMovieParams.toString() : "";
+    if(inputParams.flashpointQaHideHud !== undefined)
+        flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
 
     if(getCharLazyLoadStatus()) {
         flashVars.set("charLazyLoad", "1");
@@ -611,7 +546,7 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         if(pageState === STATE_SCENE)
             sceneChange(island, scene);
 
-        game.src = SWF_STATES[pageState] + qaMovieQuery;
+        game.src = SWF_STATES[pageState];
     }
 }
 
@@ -711,10 +646,6 @@ function getInput() {
     if(typeof obj !== "object" || obj === null || Array.isArray(obj))
         obj = { };
 
-    const explicitRoom = typeof obj.room === "string" && obj.room !== "",
-          explicitIsland = typeof obj.island === "string" && obj.island !== "",
-          explicitStartupPath = typeof obj.startup_path === "string" && obj.startup_path !== "";
-
     if(typeof obj.room !== "string")
         obj.room = SCENE_FP_START;
 
@@ -724,7 +655,6 @@ function getInput() {
     if(typeof obj.startup_path !== "string")
         obj.startup_path = PATH_DEFAULT;
 
-    obj.__flashpointExplicitScene = explicitRoom || explicitIsland || explicitStartupPath;
     return obj;
 }
 

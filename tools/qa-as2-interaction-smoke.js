@@ -46,6 +46,10 @@ function splitCsv(value) {
     .filter(Boolean);
 }
 
+function containsCjkText(value) {
+  return /[\u3400-\u9fff].*[\u3400-\u9fff]/u.test(String(value || ""));
+}
+
 function applyVisibleQaDefaults(args) {
   const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
   if (targetMonitor) {
@@ -200,6 +204,9 @@ function resolveWindowGeometry(args = {}) {
 }
 
 function appendWindowGeometryArgs(commandArgs, args = {}) {
+  if (args.disableWindowGeometry) {
+    return commandArgs;
+  }
   const geometry = resolveWindowGeometry(args);
   if (geometry.width) {
     commandArgs.push("--window-width", String(geometry.width));
@@ -252,6 +259,26 @@ function buildCaptureArgs({ handle, runtime, screenshotPath, metadataPath, inclu
     captureArgs.push("--pid", String(runtime.pid));
   }
   return appendWindowGeometryArgs(captureArgs, args);
+}
+
+function buildKeyArgs({ runtime, runtimeWindow, key, outputPath, includePid = true, args = {} }) {
+  const keyArgs = [
+    "key-window",
+    "--handle",
+    String(runtimeWindow.match.handle),
+    "--process-names",
+    runtime.processNames.join(","),
+    "--title-contains",
+    "poptropica",
+    "--key",
+    key,
+    "--output",
+    outputPath
+  ];
+  if (includePid && runtime.pid) {
+    keyArgs.push("--pid", String(runtime.pid));
+  }
+  return appendWindowGeometryArgs(keyArgs, args);
 }
 
 function formatQaError(step, error) {
@@ -311,14 +338,102 @@ function shouldRequireVisualGuard(args) {
     Boolean(String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim());
 }
 
+function shouldRequireHudAnchor(args) {
+  return flagEnabled(args.requireHudAnchor || args["require-hud-anchor"]);
+}
+
+function resolveFlashpointQaAs2Dialog(args) {
+  return String(
+    args.flashpointQaAs2Dialog ||
+    args["flashpoint-qa-as2-dialog"] ||
+    args.as2QaDialog ||
+    args["as2-qa-dialog"] ||
+    ""
+  ).trim();
+}
+
+function resolveFlashpointQaLoadingHoldMs(args) {
+  return String(
+    args.flashpointQaLoadingHoldMs ||
+    args["flashpoint-qa-loading-hold-ms"] ||
+    args.qaLoadingHoldMs ||
+    args["qa-loading-hold-ms"] ||
+    ""
+  ).trim();
+}
+
+function resolveFlashpointQaHideHud(args) {
+  return String(
+    args.flashpointQaHideHud ||
+    args["flashpoint-qa-hide-hud"] ||
+    args.qaHideHud ||
+    args["qa-hide-hud"] ||
+    ""
+  ).trim();
+}
+
 function withLaunchQuery(url, args) {
+  const roomOverride = String(args.roomOverride || args["room-override"] || "").trim();
+  const islandOverride = String(args.islandOverride || args["island-override"] || "").trim();
   const autoOpenMapAfterMs = String(args.autoOpenMapAfterMs || args["auto-open-map-after-ms"] || "").trim();
-  if (!autoOpenMapAfterMs) {
+  const flashpointQaAs2Dialog = resolveFlashpointQaAs2Dialog(args);
+  const flashpointQaLoadingHoldMs = resolveFlashpointQaLoadingHoldMs(args);
+  const flashpointQaHideHud = resolveFlashpointQaHideHud(args);
+  const shouldCacheBust = !flagEnabled(args.disableQaCacheBust || args["disable-qa-cache-bust"]);
+  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaLoadingHoldMs && !flashpointQaHideHud) {
     return url;
   }
   const nextUrl = new URL(url);
-  nextUrl.searchParams.set("flashpoint_auto_open_map_after_ms", autoOpenMapAfterMs);
+  if (roomOverride) {
+    nextUrl.searchParams.set("room", roomOverride);
+  }
+  if (islandOverride) {
+    nextUrl.searchParams.set("island", islandOverride);
+  }
+  if (autoOpenMapAfterMs) {
+    nextUrl.searchParams.set("flashpoint_auto_open_map_after_ms", autoOpenMapAfterMs);
+  }
+  if (flashpointQaAs2Dialog) {
+    nextUrl.searchParams.set("flashpointQaAs2Dialog", flashpointQaAs2Dialog);
+  }
+  if (flashpointQaLoadingHoldMs) {
+    nextUrl.searchParams.set("flashpointQaLoadingHoldMs", flashpointQaLoadingHoldMs);
+  }
+  if (flashpointQaHideHud) {
+    nextUrl.searchParams.set("flashpointQaHideHud", flashpointQaHideHud);
+  }
+  if (shouldCacheBust) {
+    nextUrl.searchParams.set("flashpointQaCacheBust", `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  }
   return nextUrl.toString();
+}
+
+function summarizeAutoDialogueCapture(initial, args) {
+  const text = String(initial?.ocr?.text || "");
+  const containsChinese = containsCjkText(text);
+  const requireChinese = flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]);
+  const expectedText = String(args.dialogueExpectedText || args["dialogue-expected-text"] || "").trim();
+  const containsExpectedText = expectedText ? text.includes(expectedText) : true;
+  const stageStable = Boolean(initial?.stage?.stageRect);
+  return {
+    ok: stageStable && (!requireChinese || containsChinese) && containsExpectedText,
+    skipped: false,
+    trigger: "flashpointQaAs2Dialog",
+    requestedDialog: resolveFlashpointQaAs2Dialog(args),
+    containsChinese,
+    requireChinese,
+    expectedText: expectedText || null,
+    containsExpectedText,
+    textSample: text.slice(0, 1000),
+    artifacts: initial?.artifacts || {},
+    reason: stageStable
+      ? expectedText && !containsExpectedText
+        ? "dialogue_expected_text_not_seen"
+        : requireChinese && !containsChinese
+          ? "dialogue_chinese_not_seen"
+          : null
+      : "initial_stage_missing"
+  };
 }
 
 function captureWindowMatchesRuntime(capture, runtime) {
@@ -347,6 +462,33 @@ function stageRelativeToWindow(capture, stageRect, relativePoint) {
   };
 }
 
+function summarizeF11SizeCheck(captureResult, runtimeWindow, args) {
+  const imageSize = captureResult?.capture?.imageSize || captureResult?.imageSize || null;
+  const monitorRect = runtimeWindow?.placement?.monitor?.rect || runtimeWindow?.placement?.monitor?.workArea || null;
+  const ratioValue = Number(args.f11MinMonitorRatio || args["f11-min-monitor-ratio"] || 0.8);
+  const minRatio = Number.isFinite(ratioValue) && ratioValue > 0 ? ratioValue : 0.8;
+  const configuredMinWidth = Number(args.f11MinWidth || args["f11-min-width"] || 0);
+  const configuredMinHeight = Number(args.f11MinHeight || args["f11-min-height"] || 0);
+  const monitorWidth = Number(monitorRect?.width || 0);
+  const monitorHeight = Number(monitorRect?.height || 0);
+  const minWidth = Number.isFinite(configuredMinWidth) && configuredMinWidth > 0
+    ? Math.round(configuredMinWidth)
+    : Math.round((monitorWidth || 1920) * minRatio);
+  const minHeight = Number.isFinite(configuredMinHeight) && configuredMinHeight > 0
+    ? Math.round(configuredMinHeight)
+    : Math.round((monitorHeight || 1080) * minRatio);
+  const width = Number(imageSize?.width || 0);
+  const height = Number(imageSize?.height || 0);
+  return {
+    ok: width >= minWidth && height >= minHeight,
+    imageSize,
+    monitorRect,
+    minRatio,
+    minWidth,
+    minHeight
+  };
+}
+
 function selectEntries(manifest, args) {
   const filters = new Set(splitCsv(args.islands || args.island).map((value) => value.toLowerCase()));
   const defaultKeys = new Set(DEFAULT_REPRESENTATIVE_KEYS);
@@ -370,7 +512,7 @@ function selectEntries(manifest, args) {
   return Number.isFinite(limit) && limit > 0 ? entries.slice(0, limit) : entries;
 }
 
-function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErrors, args }) {
+function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErrors, args, useWindowGeometry = true }) {
   if (!runtimeWindow?.match?.handle) {
     return {
       runtimeWindow,
@@ -396,7 +538,7 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
       runtime,
       screenshotPath,
       metadataPath,
-      args
+      args: useWindowGeometry ? args : { ...args, disableWindowGeometry: true }
     }), {
       timeoutMs: 40000
     });
@@ -464,6 +606,460 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
       ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
     }
   };
+}
+
+async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qaErrors }) {
+  if (!shouldRequireHudAnchor(args)) {
+    return { skipped: true, ok: true };
+  }
+  if (!initial?.artifacts?.screenshotPath || !initial?.artifacts?.stagePath) {
+    return { skipped: false, ok: false, reason: "initial_artifacts_missing" };
+  }
+
+  const hiddenStem = `${stem}-hud-hidden`;
+  const windowPath = path.join(runDir, `${hiddenStem}-window.json`);
+  const analysisPath = path.join(runDir, `${stem}-hud-anchor.json`);
+  const annotatedPath = path.join(runDir, `${stem}-hud-anchor.png`);
+  const hiddenArgs = {
+    ...args,
+    qaHideHud: "1",
+    flashpointQaHideHud: "1",
+    skipVisualGuard: true,
+    skipOcr: true
+  };
+  const hiddenUrl = withLaunchQuery(entry.launchUrl, hiddenArgs);
+  const windowTimeoutMs = Number(args.hudBaselineWindowTimeoutMs || args["hud-baseline-window-timeout-ms"] || args.windowTimeoutMs || 45000);
+  const settleMs = Number(args.hudBaselineSettleMs || args["hud-baseline-settle-ms"] || args.settleMs || 9000);
+
+  try {
+    const launchHealth = await requestLaunchHealth(hiddenUrl, args);
+    const runtime = spawnManagedRuntime(config, "as2", hiddenUrl, {
+      detach: true,
+      playerKey: String(args.playerKey || "flashpointnavigator-as2"),
+      as2StartX: args.startX,
+      as2StartY: args.startY,
+      forceAs2CharState: flagEnabled(args.forceAs2CharState),
+      useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
+    });
+    const runtimeWindow = runPythonQa(buildWaitArgs({
+      runtime,
+      timeoutMs: windowTimeoutMs,
+      outputPath: windowPath,
+      args
+    }), {
+      timeoutMs: windowTimeoutMs + 5000
+    });
+    await sleep(settleMs);
+    const hidden = captureAndAnalyze({
+      runDir,
+      stem: hiddenStem,
+      suffix: "initial",
+      runtime,
+      runtimeWindow,
+      qaErrors,
+      args: hiddenArgs
+    });
+    const analysis = runPythonQa([
+      "analyze-hud-diff",
+      "--input",
+      initial.artifacts.screenshotPath,
+      "--baseline",
+      hidden.artifacts.screenshotPath,
+      "--stage-json",
+      initial.artifacts.stagePath,
+      "--output",
+      analysisPath,
+      "--annotated-output",
+      annotatedPath,
+      "--min-hud-components",
+      String(args.as2HudMinComponents || args["as2-hud-min-components"] || 3),
+      "--min-right-margin",
+      String(args.as2HudMinRightMargin || args["as2-hud-min-right-margin"] || 8),
+      "--max-right-margin",
+      String(args.as2HudMaxRightMargin || args["as2-hud-max-right-margin"] || 130),
+      "--min-top-margin",
+      String(args.as2HudMinTopMargin || args["as2-hud-min-top-margin"] || 0),
+      "--max-top-margin",
+      String(args.as2HudMaxTopMargin || args["as2-hud-max-top-margin"] || 80),
+      "--max-row-spread",
+      String(args.as2HudMaxRowSpread || args["as2-hud-max-row-spread"] || 35),
+      "--max-hud-width-ratio",
+      String(args.as2HudMaxWidthRatio || args["as2-hud-max-width-ratio"] || 0.34),
+      "--min-icon-gap",
+      String(args.as2HudMinIconGap || args["as2-hud-min-icon-gap"] || 6),
+      "--max-icon-gap",
+      String(args.as2HudMaxIconGap || args["as2-hud-max-icon-gap"] || 95)
+    ], {
+      timeoutMs: 30000
+    });
+    return {
+      skipped: false,
+      ok: Boolean(analysis?.ok),
+      launchHealth: summarizeLaunchHealth(launchHealth),
+      runtime: {
+        pid: runtime.pid || null,
+        processNames: runtime.processNames || []
+      },
+      runtimeWindow,
+      hidden: {
+        capture: hidden.capture,
+        stage: hidden.stage,
+        artifacts: hidden.artifacts
+      },
+      analysis,
+      artifacts: {
+        windowPath,
+        hiddenScreenshotPath: hidden.artifacts.screenshotPath || null,
+        hiddenStagePath: hidden.artifacts.stagePath || null,
+        analysisPath,
+        annotatedPath
+      }
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-hud-anchor`, error));
+    return {
+      skipped: false,
+      ok: false,
+      reason: "hud_anchor_failed",
+      artifacts: {
+        windowPath,
+        analysisPath,
+        annotatedPath
+      },
+      error: String(error.message || error)
+    };
+  }
+}
+
+function parseSampleMs(value) {
+  const text = String(value || "").trim();
+  if (!text) {
+    return [];
+  }
+  return text
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => Math.max(0, Math.round(Number(item))))
+    .filter((item) => Number.isFinite(item))
+    .sort((left, right) => left - right);
+}
+
+function analyzeLoadingScreenshot({ screenshotPath, runDir, stem, qaErrors, args }) {
+  const loadingVisualPath = path.join(runDir, `${stem}-loading-visual.json`);
+  const ocrPath = path.join(runDir, `${stem}-loading-ocr.json`);
+  let loadingVisual = null;
+  let ocr = null;
+  try {
+    loadingVisual = runPythonQa([
+      "analyze-loading-center",
+      "--input",
+      screenshotPath,
+      "--output",
+      loadingVisualPath
+    ], {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-analyze-loading-center`, error));
+  }
+  if (!flagEnabled(args.skipLoadingOcr || args["skip-loading-ocr"])) {
+    try {
+      ocr = runPythonQa([
+        "ocr-image",
+        "--input",
+        screenshotPath,
+        "--output",
+        ocrPath
+      ], {
+        timeoutMs: 120000
+      });
+    } catch (error) {
+      qaErrors.push(formatQaError(`${stem}-loading-ocr-image`, error));
+    }
+  }
+  return {
+    loadingVisualPath,
+    loadingVisual,
+    ocrPath: flagEnabled(args.skipLoadingOcr || args["skip-loading-ocr"]) ? null : ocrPath,
+    ocr
+  };
+}
+
+function captureLoadingSequence({ runDir, stem, runtime, runtimeWindow, qaErrors, args }) {
+  const sampleMs = parseSampleMs(args.loadingSampleMs || args["loading-sample-ms"]);
+  if (!sampleMs.length) {
+    return {
+      skipped: true,
+      observed: false,
+      centerOk: true,
+      detectedSamples: [],
+      samples: []
+    };
+  }
+  if (!runtimeWindow?.match?.handle) {
+    return {
+      skipped: false,
+      observed: false,
+      centerOk: false,
+      reason: "window_missing",
+      detectedSamples: [],
+      samples: []
+    };
+  }
+  const sequenceDir = path.join(runDir, `${stem}-loading-sequence`);
+  const metadataPath = path.join(runDir, `${stem}-loading-sequence.json`);
+  let sequence = null;
+  try {
+    const sequenceArgs = [
+      "capture-window-sequence",
+      "--handle",
+      String(runtimeWindow.match.handle),
+      "--process-names",
+      runtime.processNames.join(","),
+      "--title-contains",
+      "poptropica",
+      "--output-dir",
+      sequenceDir,
+      "--stem",
+      `${stem}-loading`,
+      "--sample-ms",
+      sampleMs.join(","),
+      "--metadata-output",
+      metadataPath,
+      "--client-only",
+      "--no-foreground"
+    ];
+    if (runtime.pid) {
+      sequenceArgs.push("--pid", String(runtime.pid));
+    }
+    sequence = runPythonQa(sequenceArgs, {
+      timeoutMs: Math.max(60000, Math.max(...sampleMs, 0) + 45000)
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-loading-sequence`, error));
+    return {
+      skipped: false,
+      observed: false,
+      centerOk: false,
+      metadataPath,
+      sequenceDir,
+      detectedSamples: [],
+      samples: []
+    };
+  }
+  const samples = (sequence?.samples || []).map((sample) => {
+    const analysis = analyzeLoadingScreenshot({
+      screenshotPath: sample.savedTo,
+      runDir,
+      stem: `${stem}-loading-${sample.delayMs}`,
+      qaErrors,
+      args
+    });
+    const loadingCenter = loadingCenterEvidence({
+      imageSize: sample.imageSize,
+      loadingVisual: analysis.loadingVisual,
+      ocr: analysis.ocr
+    });
+    return {
+      delayMs: sample.delayMs,
+      capturedAtMs: sample.capturedAtMs,
+      screenshotPath: sample.savedTo,
+      imageSize: sample.imageSize,
+      loadingVisualPath: analysis.loadingVisualPath,
+      ocrPath: analysis.ocrPath,
+      ocrText: String(analysis.ocr?.text || "").slice(0, 300),
+      loadingCenter
+    };
+  });
+  const detectedSamples = samples.filter((sample) => sample.loadingCenter?.detected);
+  const maxOffsetRatio = Number(args.maxLoadingOffsetRatio || args["max-loading-offset-ratio"] || 0.12);
+  const centerOk = detectedSamples.length > 0 && detectedSamples.every((sample) =>
+    Math.abs(Number(sample.loadingCenter.offset?.xRatio || 0)) <= maxOffsetRatio &&
+    Math.abs(Number(sample.loadingCenter.offset?.yRatio || 0)) <= maxOffsetRatio
+  );
+  return {
+    skipped: false,
+    observed: detectedSamples.length > 0,
+    centerOk,
+    metadataPath,
+    sequenceDir,
+    detectedSamples,
+    samples
+  };
+}
+
+async function pressF11BeforeLoading({ runDir, stem, runtime, runtimeWindow, qaErrors, args }) {
+  if (!flagEnabled(args.f11BeforeLoading || args["f11-before-loading"])) {
+    return { skipped: true, ok: true };
+  }
+  if (!runtimeWindow?.match?.handle) {
+    return { skipped: false, ok: false, reason: "window_missing" };
+  }
+  const keyPath = path.join(runDir, `${stem}-f11-before-loading-key.json`);
+  try {
+    const key = runPythonQa(buildKeyArgs({
+      runtime,
+      runtimeWindow,
+      key: "VK_F11",
+      outputPath: keyPath,
+      args: { ...args, disableWindowGeometry: true }
+    }), {
+      timeoutMs: 30000
+    });
+    await sleep(Number(args.f11BeforeLoadingSettleMs || args["f11-before-loading-settle-ms"] || 250));
+    return {
+      skipped: false,
+      ok: Boolean(key?.ok),
+      keyPath,
+      key
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-f11-before-loading`, error));
+    return {
+      skipped: false,
+      ok: false,
+      keyPath,
+      reason: "f11_before_loading_failed",
+      error: String(error.message || error)
+    };
+  }
+}
+
+function loadingCenterEvidence(sample) {
+  const visual = sample?.loadingVisual || null;
+  if (visual?.detected) {
+    return {
+      detected: true,
+      source: "visual-dark-logo",
+      box: visual.box || null,
+      imageSize: visual.imageSize || sample.imageSize || null,
+      offset: visual.offset || null,
+      darkPct: visual.darkPct,
+      featurePixels: visual.featurePixels
+    };
+  }
+  const image = sample?.imageSize || null;
+  const lines = sample?.ocr?.lines || [];
+  const text = String(sample?.ocr?.text || "");
+  if (!image || !lines.length || !/\b(?:POPTROPICA|LOADING|STARTING)\b/iu.test(text)) {
+    return { detected: false, reason: "not_loading_visual_or_ocr" };
+  }
+  const boxes = lines
+    .filter((line) => /\b(?:POPTROPICA|LOADING|STARTING)\b/iu.test(String(line.text || "")))
+    .map((line) => line.box)
+    .filter(Boolean);
+  if (!boxes.length) {
+    return { detected: false, reason: "not_loading_visual_or_ocr" };
+  }
+  const left = Math.min(...boxes.map((box) => Number(box.left)));
+  const right = Math.max(...boxes.map((box) => Number(box.right)));
+  const top = Math.min(...boxes.map((box) => Number(box.top)));
+  const bottom = Math.max(...boxes.map((box) => Number(box.bottom)));
+  const centerX = (left + right) / 2;
+  const centerY = (top + bottom) / 2;
+  const dx = centerX - Number(image.width || 0) / 2;
+  const dy = centerY - Number(image.height || 0) / 2;
+  return {
+    detected: true,
+    source: "ocr",
+    box: {
+      left: Math.round(left),
+      top: Math.round(top),
+      right: Math.round(right),
+      bottom: Math.round(bottom),
+      width: Math.round(right - left),
+      height: Math.round(bottom - top),
+      centerX: Math.round(centerX),
+      centerY: Math.round(centerY)
+    },
+    imageSize: image,
+    offset: {
+      x: Math.round(dx),
+      y: Math.round(dy),
+      xRatio: Number((dx / Math.max(1, Number(image.width || 1))).toFixed(4)),
+      yRatio: Number((dy / Math.max(1, Number(image.height || 1))).toFixed(4))
+    }
+  };
+}
+
+async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args }) {
+  if (!flagEnabled(args.tryF11 || args["try-f11"] || args.requireF11 || args["require-f11"])) {
+    return { skipped: true, ok: true };
+  }
+  if (!runtimeWindow?.match?.handle) {
+    return { skipped: false, ok: false, reason: "window_missing" };
+  }
+  const keyPath = path.join(runDir, `${stem}-f11-key.json`);
+  const restoreKeyPath = path.join(runDir, `${stem}-f11-restore-key.json`);
+  try {
+    const key = runPythonQa(buildKeyArgs({
+      runtime,
+      runtimeWindow,
+      key: "VK_F11",
+      outputPath: keyPath,
+      args: { ...args, disableWindowGeometry: true }
+    }), {
+      timeoutMs: 30000
+    });
+    await sleep(Number(args.f11SettleMs || args["f11-settle-ms"] || 3000));
+    const capture = captureAndAnalyze({
+      runDir,
+      stem,
+      suffix: "f11",
+      runtime,
+      runtimeWindow,
+      qaErrors,
+      args,
+      useWindowGeometry: false
+    });
+    const stageStable = Boolean(capture.stage?.stageRect);
+    const visualStable = !shouldRequireVisualGuard(args) || Boolean(capture.visualGuard?.ok);
+    const fullscreenSize = summarizeF11SizeCheck(capture.capture, runtimeWindow, args);
+    const restore = runPythonQa(buildKeyArgs({
+      runtime,
+      runtimeWindow,
+      key: "VK_F11",
+      outputPath: restoreKeyPath,
+      args: { ...args, disableWindowGeometry: true }
+    }), {
+      timeoutMs: 30000
+    });
+    await sleep(Number(args.f11RestoreSettleMs || args["f11-restore-settle-ms"] || 1200));
+    return {
+      skipped: false,
+      ok: stageStable && visualStable && fullscreenSize.ok,
+      keyPath,
+      restoreKeyPath,
+      keyOk: Boolean(key?.ok),
+      restoreOk: Boolean(restore?.ok),
+      fullscreenSize,
+      capture: {
+        screenshotPath: capture.artifacts.screenshotPath || null,
+        capturePath: capture.artifacts.metadataPath || null,
+        stagePath: capture.artifacts.stagePath || null,
+        visualGuardPath: capture.artifacts.visualGuardPath || null,
+        ocrPath: capture.artifacts.ocrPath || null,
+        imageSize: capture.capture?.imageSize || null,
+        stageRect: capture.stage?.stageRect || null,
+        stageCoverageRatio: capture.stage?.stageCoverageRatio ?? null,
+        visualGuard: capture.visualGuard,
+        ocrText: String(capture.ocr?.text || "").slice(0, 500)
+      },
+      stageStable,
+      visualStable
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-f11`, error));
+    return {
+      skipped: false,
+      ok: false,
+      keyPath,
+      restoreKeyPath,
+      reason: "f11_failed",
+      error: String(error.message || error)
+    };
+  }
 }
 
 function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
@@ -580,6 +1176,138 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
   }
 }
 
+function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
+  const stageRect = stage?.stageRect;
+  const clickPath = path.join(runDir, `${stem}-dialogue-click.json`);
+  const postWindowPath = path.join(runDir, `${stem}-dialogue-window.json`);
+  if (!runtimeWindow?.match?.handle || !capture || !stageRect) {
+    return {
+      ok: false,
+      skipped: false,
+      reason: "stage_or_window_missing"
+    };
+  }
+  const point = stageRelativeToWindow(capture, stageRect, {
+    x: Number(args.dialogueX || args["dialogue-x"] || 0.72),
+    y: Number(args.dialogueY || args["dialogue-y"] || 0.72)
+  });
+  const secondPoint = stageRelativeToWindow(capture, stageRect, {
+    x: Number(args.dialogueSecondX || args["dialogue-second-x"] || args.dialogueX || args["dialogue-x"] || 0.72),
+    y: Number(args.dialogueSecondY || args["dialogue-second-y"] || args.dialogueY || args["dialogue-y"] || 0.72)
+  });
+  try {
+    const buildClickArgs = (clickPoint, outputPath = clickPath) => {
+      const builtArgs = [
+        "click-window",
+        "--handle",
+        String(runtimeWindow.match.handle),
+        "--process-names",
+        runtime.processNames.join(","),
+        "--title-contains",
+        "poptropica",
+        "--x",
+        String(clickPoint.x),
+        "--y",
+        String(clickPoint.y),
+        "--output",
+        outputPath
+      ];
+      const hoverMs = Number(args.dialogueHoverMs || args["dialogue-hover-ms"] || 0);
+      const holdMs = Number(args.dialogueHoldMs || args["dialogue-hold-ms"] || 0);
+      if (Number.isFinite(hoverMs) && hoverMs > 0) {
+        builtArgs.push("--hover-ms", String(Math.round(hoverMs)));
+      }
+      if (Number.isFinite(holdMs) && holdMs > 0) {
+        builtArgs.push("--hold-ms", String(Math.round(holdMs)));
+      }
+      if (runtime.pid) {
+        builtArgs.push("--pid", String(runtime.pid));
+      }
+      appendWindowGeometryArgs(builtArgs, args);
+      if (flagEnabled(args.clickLargestChild || args["click-largest-child"]) || process.env.POPTROPICA_QA_CLICK_LARGEST_CHILD === "1") {
+        builtArgs.push("--largest-child");
+      }
+      const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "").trim();
+      if (clickChildClass) {
+        builtArgs.push("--child-class-contains", clickChildClass);
+      }
+      return builtArgs;
+    };
+    const clickArgs = buildClickArgs(point);
+    runPythonQa(clickArgs, {
+      timeoutMs: 20000
+    });
+    const secondClick = flagEnabled(args.dialogueSecondClick || args["dialogue-second-click"]);
+    const preSecondWaitMs = Math.max(0, Number(args.dialoguePreSecondWaitMs || args["dialogue-pre-second-wait-ms"] || 0));
+    if (secondClick) {
+      if (preSecondWaitMs > 0) {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, preSecondWaitMs);
+      }
+      runPythonQa(buildClickArgs(secondPoint, path.join(runDir, `${stem}-dialogue-second-click.json`)), {
+        timeoutMs: 20000
+      });
+    }
+    const waitMs = Math.max(0, Number(args.dialogueWaitMs || args["dialogue-wait-ms"] || 2500));
+    if (waitMs > 0) {
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
+    }
+    const postWindow = runPythonQa(buildWaitArgs({
+      runtime,
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+      outputPath: postWindowPath,
+      args
+    }), {
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+    });
+    const postCapture = captureAndAnalyze({
+      runDir,
+      stem,
+      suffix: "dialogue",
+      runtime,
+      runtimeWindow: postWindow,
+      qaErrors,
+      args
+    });
+    const text = String(postCapture.ocr?.text || "");
+    const containsChinese = containsCjkText(text);
+    const requireChinese = flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]);
+    const stageStable = Boolean(postCapture.stage?.stageRect);
+    return {
+      ok: stageStable && (!requireChinese || containsChinese),
+      skipped: false,
+      clickPoint: point,
+      secondClickPoint: secondClick ? secondPoint : null,
+      secondClick,
+      preSecondWaitMs,
+      clickPath,
+      windowPath: postWindowPath,
+      runtimeWindow: postWindow,
+      capture: postCapture.capture,
+      stage: postCapture.stage,
+      visualGuard: postCapture.visualGuard,
+      ocr: postCapture.ocr,
+      artifacts: postCapture.artifacts,
+      containsChinese,
+      ocrText: text.slice(0, 500),
+      stageStable,
+      reason: stageStable
+        ? requireChinese && !containsChinese
+          ? "dialogue_chinese_not_seen"
+          : null
+        : "post_click_stage_missing"
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      skipped: false,
+      clickPoint: point,
+      clickPath,
+      reason: "dialogue_click_or_recapture_failed",
+      error: String(error.message || error)
+    };
+  }
+}
+
 async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const stem = `${String(index + 1).padStart(2, "0")}-${safeFileSegment(entry.canonicalKey)}`;
   const windowPath = path.join(runDir, `${stem}-window.json`);
@@ -595,13 +1323,19 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
 
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
   const launchUrl = withLaunchQuery(entry.launchUrl, args);
+  const effectiveEntry = {
+    ...entry,
+    roomParam: String(args.roomOverride || args["room-override"] || entry.roomParam || "").trim(),
+    islandParam: String(args.islandOverride || args["island-override"] || entry.islandParam || "").trim()
+  };
   const launchHealth = await requestLaunchHealth(launchUrl, args);
   const runtime = spawnManagedRuntime(config, "as2", launchUrl, {
     detach: true,
     playerKey: String(args.playerKey || "flashpointnavigator-as2"),
     as2StartX: args.startX,
     as2StartY: args.startY,
-    forceAs2CharState: flagEnabled(args.forceAs2CharState)
+    forceAs2CharState: flagEnabled(args.forceAs2CharState),
+    useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
   });
 
   let runtimeWindow = null;
@@ -612,6 +1346,24 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   } catch (error) {
     qaErrors.push(formatQaError("wait-window", error));
   }
+
+  const preLoadingF11 = await pressF11BeforeLoading({
+    runDir,
+    stem,
+    runtime,
+    runtimeWindow,
+    qaErrors,
+    args
+  });
+
+  const loading = captureLoadingSequence({
+    runDir,
+    stem,
+    runtime,
+    runtimeWindow,
+    qaErrors,
+    args
+  });
 
   await sleep(settleMs);
   const initial = captureAndAnalyze({ runDir, stem, suffix: "initial", runtime, runtimeWindow, qaErrors, args });
@@ -633,6 +1385,30 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         timeoutMs: Number(args.audioTimeoutMs || 30000)
       });
 
+  const dialogue = resolveFlashpointQaAs2Dialog(args)
+    ? summarizeAutoDialogueCapture(initial, args)
+    : flagEnabled(args.dialogueClick || args["dialogue-click"])
+    ? clickDialogue({
+        runDir,
+        stem,
+        runtime,
+        runtimeWindow: initial.runtimeWindow || runtimeWindow,
+        capture: initial.capture,
+        stage: initial.stage,
+        args,
+        qaErrors
+      })
+    : { ok: true, skipped: true, containsChinese: false };
+
+  const f11 = await captureF11({
+    runDir,
+    stem,
+    runtime,
+    runtimeWindow: initial.runtimeWindow || runtimeWindow,
+    qaErrors,
+    args
+  });
+
   const map = flagEnabled(args.skipMapClick)
     ? { ok: true, skipped: true, mapRequestSeen: false }
     : clickMap({
@@ -649,7 +1425,16 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
   fs.writeFileSync(logPath, logSegment, "utf8");
   const logSummary = summarizeLogSegment(logSegment);
-  const sceneEvidence = buildAs2SceneEvidence(entry, logSegment, args);
+  const sceneEvidence = buildAs2SceneEvidence(effectiveEntry, logSegment, args);
+  const hudAnchor = await captureHudAnchor({
+    config,
+    runDir,
+    entry,
+    stem,
+    initial,
+    args,
+    qaErrors
+  });
   const failedChecks = [];
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
@@ -675,6 +1460,24 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");
   }
+  if (flagEnabled(args.requireLoading || args["require-loading"]) && !loading.observed) {
+    failedChecks.push("loading_sample_not_captured");
+  }
+  if (!loading.skipped && loading.observed && !loading.centerOk) {
+    failedChecks.push("loading_center_offset_failed");
+  }
+  if (!preLoadingF11.skipped && flagEnabled(args.requireF11BeforeLoading || args["require-f11-before-loading"]) && !preLoadingF11.ok) {
+    failedChecks.push("f11_before_loading_failed");
+  }
+  if (!dialogue.skipped && !dialogue.ok) {
+    failedChecks.push("dialogue_click_failed");
+  }
+  if (!dialogue.skipped && flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]) && !dialogue.containsChinese) {
+    failedChecks.push("dialogue_chinese_not_seen");
+  }
+  if (!f11.skipped && flagEnabled(args.requireF11 || args["require-f11"]) && !f11.ok) {
+    failedChecks.push("f11_fullscreen_size_or_visual_guard_failed");
+  }
   if (!map.skipped && !map.ok) {
     failedChecks.push("map_post_message_click_failed");
   }
@@ -683,6 +1486,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
   if (!map.skipped && shouldRequireVisualGuard(args) && !map.visualGuard?.ok) {
     failedChecks.push("map_visual_guard_failed");
+  }
+  if (!hudAnchor.skipped && shouldRequireHudAnchor(args) && !hudAnchor.ok) {
+    failedChecks.push("hud_anchor_failed");
   }
   for (const qaError of qaErrors) {
     failedChecks.push(`qa_${qaError.step.replace(/[^a-z0-9]+/giu, "_")}_failed`);
@@ -694,8 +1500,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     index: index + 1,
     total,
     canonicalKey: entry.canonicalKey,
-    islandParam: entry.islandParam,
-    roomParam: entry.roomParam,
+    islandParam: effectiveEntry.islandParam,
+    roomParam: effectiveEntry.roomParam,
     sceneFolder: entry.sceneFolder,
     launchUrl,
     launchHealth: summarizeLaunchHealth(launchHealth),
@@ -703,17 +1509,21 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     runtime: {
       playerKey: runtime.playerKey,
       pid: runtime.pid || null,
-      processNames: runtime.processNames
+      processNames: runtime.processNames,
+      flashState: runtime.flashState || null
     },
     artifacts: {
       windowPath,
       initialScreenshotPath: initial.artifacts.screenshotPath || null,
       initialStagePath: initial.artifacts.stagePath || null,
       initialVisualGuardPath: initial.artifacts.visualGuardPath || null,
+      hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
+      hudAnchorAnnotatedPath: hudAnchor.artifacts?.annotatedPath || null,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
       logSegmentPath: logPath
     },
     runtimeWindow,
+    preLoadingF11,
     initial: {
       capture: initial.capture,
       stage: initial.stage,
@@ -726,6 +1536,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
           }
         : null
     },
+    loading,
     audio: {
       skipped: Boolean(audio?.skipped),
       active: Boolean(audio?.audioLikelyActive),
@@ -733,7 +1544,10 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       peak: audio?.loopback?.peak ?? null,
       sessionCount: audio?.sessionCount ?? null
     },
+    dialogue,
+    f11,
     map,
+    hudAnchor,
     sceneEvidence,
     logSummary,
     qaErrors,
@@ -752,10 +1566,13 @@ function buildSummary(startedAt, reports) {
     audioActive: reports.filter((report) => report.audio?.active).length,
     mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
+    loadingCenterPassed: reports.filter((report) => report.loading && !report.loading.skipped && report.loading.observed && report.loading.centerOk).length,
+    f11Passed: reports.filter((report) => report.f11 && !report.f11.skipped && report.f11.ok).length,
     visualGuardPassed: reports.filter((report) =>
       report.initial?.visualGuard?.ok &&
       (report.map?.skipped || report.map?.visualGuard?.ok)
     ).length,
+    hudAnchorPassed: reports.filter((report) => report.hudAnchor && !report.hudAnchor.skipped && report.hudAnchor.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,
     failedKeys: reports.filter((report) => !report.ok).map((report) => report.canonicalKey)
   };
@@ -955,6 +1772,8 @@ function formatAggregateStdout(report) {
     audioActive: report.audioActive,
     mapClicksPassed: report.mapClicksPassed,
     sceneEvidencePassed: report.sceneEvidencePassed,
+    loadingCenterPassed: report.loadingCenterPassed,
+    f11Passed: report.f11Passed,
     visualGuardPassed: report.visualGuardPassed,
     withMissingLogRequests: report.withMissingLogRequests,
     failedKeys: report.failedKeys,
@@ -1026,7 +1845,9 @@ async function main() {
           error: String(error.stack || error)
         });
       } finally {
-        stopNavigatorProcesses();
+        if (!flagEnabled(args.preserveRuntime || args["preserve-runtime"])) {
+          stopNavigatorProcesses();
+        }
         await sleep(Number(args.betweenMs || 1000));
         writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
       }
@@ -1043,7 +1864,9 @@ async function main() {
       process.exitCode = 1;
     }
   } catch (error) {
-    stopNavigatorProcesses();
+    if (!flagEnabled(args.preserveRuntime || args["preserve-runtime"])) {
+      stopNavigatorProcesses();
+    }
     const summary = writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir: runDir, reports });
     printJson({
       ...summary,

@@ -3803,6 +3803,10 @@ function applyAs2BasePageMinimalPatch(content) {
     nextContent = nextContent.replace(
       "<!doctype html>",
       `<?php
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 function flashpoint_audio_sanitize($value) {
     $clean = preg_replace('/[^A-Za-z0-9_-]+/', '_', (string)$value);
     $clean = trim($clean);
@@ -3867,7 +3871,7 @@ function flashpoint_collect_audio_overrides() {
   }
   nextContent = nextContent.replace(
     primaryEmbedPattern,
-    `<div id="gameViewport"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="111827" hidden></div>
+    `<div id="gameViewport"><div id="gameScaleHost"><embed id="game" scale="noscale" wmode="opaque" allowScriptAccess="always" menu="false" bgcolor="111827" hidden></div></div>
         <div id="flashpointMapHotspot" hidden aria-hidden="true"></div>
         <audio id="flashpointSceneAudio" preload="auto" autoplay loop style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></audio>`
   );
@@ -3888,6 +3892,12 @@ embed { background-color: #111827; }
     position: absolute;
     overflow: hidden;
     background: #111827;
+}
+
+#gameScaleHost {
+    position: absolute;
+    overflow: hidden;
+    transform-origin: top left;
 }
 
 #flashpointMapHotspot {
@@ -3913,6 +3923,7 @@ embed {
       errorText = document.getElementById("errorText"),
       lsKey = "lastScene";`,
     `const gameViewport = document.getElementById("gameViewport"),
+      gameScaleHost = document.getElementById("gameScaleHost"),
       game = document.getElementById("game"),
       flashpointMapHotspot = document.getElementById("flashpointMapHotspot"),
       sceneAudio = document.getElementById("flashpointSceneAudio"),
@@ -4003,9 +4014,11 @@ function applyMapHotspot(viewport, gameState) {
     }
 
     const scale = viewport.useViewportCrop ? viewport.viewportScale : 1;
+    const anchorLeft = viewport.useViewportCrop ? viewport.contentOffsetLeft : viewport.offsetLeft;
+    const anchorTop = viewport.useViewportCrop ? viewport.contentOffsetTop : viewport.offsetTop;
     flashpointMapHotspot.hidden = false;
-    flashpointMapHotspot.style.left = \`\${ viewport.offsetLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px\`;
-    flashpointMapHotspot.style.top = \`\${ viewport.offsetTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px\`;
+    flashpointMapHotspot.style.left = \`\${ anchorLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px\`;
+    flashpointMapHotspot.style.top = \`\${ anchorTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px\`;
     flashpointMapHotspot.style.width = \`\${ MAP_HOTSPOT.width * scale }px\`;
     flashpointMapHotspot.style.height = \`\${ MAP_HOTSPOT.height * scale }px\`;
 }
@@ -4018,6 +4031,8 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let viewportHeight = baseHeight;
     let offsetLeft = 0;
     let offsetTop = 0;
+    let contentOffsetLeft = 0;
+    let contentOffsetTop = 0;
     let viewportScale = 1;
     let cropLeft = 0;
     let cropTop = 0;
@@ -4027,19 +4042,20 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
         viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
-        viewportWidth = crop.width;
-        viewportHeight = crop.height;
-        offsetLeft = Math.max(0, Math.round((window.innerWidth - viewportWidth * viewportScale) / 2));
-        offsetTop = Math.max(0, Math.round((window.innerHeight - viewportHeight * viewportScale) / 2));
+        viewportWidth = Math.max(1, window.innerWidth);
+        viewportHeight = Math.max(1, window.innerHeight);
+        contentOffsetLeft = Math.max(0, Math.round((window.innerWidth - crop.width * viewportScale) / 2));
+        contentOffsetTop = Math.max(0, Math.round((window.innerHeight - crop.height * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
     }
 
-    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, viewportScale, cropLeft, cropTop, useViewportCrop };
+    return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, contentOffsetLeft, contentOffsetTop, viewportScale, cropLeft, cropTop, useViewportCrop, cropWidth: crop.width, cropHeight: crop.height };
 }
 
 function applyGameViewport(viewport, gameState) {
+    game.setAttribute("scale", "noscale");
     game.width = viewport.displayWidth;
     game.height = viewport.displayHeight;
     game.setAttribute("width", String(viewport.displayWidth));
@@ -4049,10 +4065,14 @@ function applyGameViewport(viewport, gameState) {
     if(gameState === "return_user_standard") {
         gameViewport.style.width = \`\${ viewport.viewportWidth }px\`;
         gameViewport.style.height = \`\${ viewport.viewportHeight }px\`;
-        gameViewport.style.left = "0px";
-        gameViewport.style.top = "0px";
-        gameViewport.style.transformOrigin = "top left";
-        gameViewport.style.transform = \`translate(\${ viewport.offsetLeft }px, \${ viewport.offsetTop }px) scale(\${ viewport.viewportScale })\`;
+        gameViewport.style.left = \`\${ viewport.offsetLeft }px\`;
+        gameViewport.style.top = \`\${ viewport.offsetTop }px\`;
+        gameViewport.style.transform = "";
+        gameScaleHost.style.width = \`\${ viewport.cropWidth }px\`;
+        gameScaleHost.style.height = \`\${ viewport.cropHeight }px\`;
+        gameScaleHost.style.left = \`\${ viewport.contentOffsetLeft }px\`;
+        gameScaleHost.style.top = \`\${ viewport.contentOffsetTop }px\`;
+        gameScaleHost.style.transform = \`scale(\${ viewport.viewportScale })\`;
         game.style.left = \`-\${ viewport.cropLeft }px\`;
         game.style.top = \`-\${ viewport.cropTop }px\`;
     } else {
@@ -4060,8 +4080,12 @@ function applyGameViewport(viewport, gameState) {
         gameViewport.style.height = \`\${ viewport.displayHeight }px\`;
         gameViewport.style.left = \`calc(50vw - \${ viewport.displayWidth }px / 2)\`;
         gameViewport.style.top = \`calc(50vh - \${ viewport.displayHeight }px / 2)\`;
-        gameViewport.style.transformOrigin = "";
         gameViewport.style.transform = "";
+        gameScaleHost.style.width = \`\${ viewport.displayWidth }px\`;
+        gameScaleHost.style.height = \`\${ viewport.displayHeight }px\`;
+        gameScaleHost.style.left = "0px";
+        gameScaleHost.style.top = "0px";
+        gameScaleHost.style.transform = "";
         game.style.left = "0px";
         game.style.top = "0px";
     }
