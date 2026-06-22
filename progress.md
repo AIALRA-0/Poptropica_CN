@@ -34,6 +34,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - 旧补充证据仍有效：`1782153970576` 证明右移后的地图热区仍可打开地图；`1782154039367` 证明 F11 后 HUD 仍在右上、角色可见；`1782154135577` 证明 loading 居中未回退。
 - 当前未关闭 blocker：地图/任务物品弹窗层级仍会露 HUD 或黑残留；AS3 HUD 还要按同一 A/B 或等价量化口径复核；自然靠近 NPC 重复触发/抢话还没修；更多 Time 年代场景、外链白屏、真实音频来源清单仍未闭环。
 
+## 2026-06-22 AS3 HUD 视觉右锚收口
+
+- 用户指出我把“右上角”误判成“MENU 在右侧且能点”。本轮明确废弃该口径：AS3 HUD 必须以截图为准，展开后图标单行、右锚、固定间距、无左上散落和明显挤压。
+- 修复 `tools/patch-as3-shell-hud-labels.js`：`Hud.zhHudTopMargin()` 从旧的 100 改为 26；MENU 锚点改为 `Math.max(58, this.zhVisibleWidth() - 58)`；展开图标按 `settings/audio/home/store/map/costumizer/inventory/menu` 从右向左排列，其中 audio/home 额外微调以抵消 MovieClip 注册点偏移；静态 MENU 图标仍保留英文原图，不使用中文文字层覆盖。
+- 同时修补 patch 脚本幂等性：`as3-shell:hud-menu-text-overlay-removed` manifest 记录现在先过滤旧记录再写入，避免每次重打 Shell 都重复追加；当前 manifest 已从 8 条同名 HUD 记录清理为 1 条。
+- 已重打 `packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf` 并重建 `runtime-data/patched-zips/as3-runtime.zip`；patch 报告为 `runtime-data/qa/as3/as3-shell-hud-labels-patch.json`。
+- G32QC/no-foreground/静音 Poptropicon 样本通过：`runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782159939059.json`。人工复核截图 `runtime-data/qa/as3/hud-smoke/run-1782159939059/01-poptropicon-post-click.png` 与裁切 `runtime-data/qa/as3/hud-smoke/run-1782159939059/01-poptropicon-post-click-hud-crop.png`：展开 HUD 在右上单行排列，不再分裂到左上；`01-poptropicon-resized-hud-crop.png` 证明 collapsed MENU 在右上。
+- G32QC/no-foreground/静音 Mystery of the Map 样本通过：`runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782160130741.json`。人工复核 `runtime-data/qa/as3/hud-smoke/run-1782160130741/01-mystery-of-the-map-post-click-hud-crop.png` 与 `01-mystery-of-the-map-resized-hud-crop.png`：同一 AS3 Shell 路径下展开/收起 HUD 均按右上行排列。
+- 注意：Poptropicon post-click 像素 diff 里 `sameSize=false` 是截图客户区高度不一致导致，不能拿它当自动视觉通过证据；本轮证据以裁切截图人工复核为准。
+- 当前未关闭 blocker：还需要把 HUD 裁切口径做成自动 full-row detector；`tools/qa-as3-hud-smoke.js` 的旧 `adaptiveHudTargetX()` 仍偏“能点验证”，不能作为全 AS3 HUD 视觉封版依据；Time Tangled 重开验收、任务物品弹窗黑残留/越界、AS3 对话队列、相机蓝边、外链白屏、真实音频来源清单仍未闭环。
+
 ## 2026-06-09
 
 - Resumed the existing active goal in `E:\Poptropica\POPTROPICA_FLASH`.
