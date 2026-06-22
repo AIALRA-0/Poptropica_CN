@@ -4618,3 +4618,34 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Non-closure:
   - This closes the AS2 Time viewport/cache/HUD/F11/loading/map gate, not full Time Tangled story completion.
   - Still open for Time and the global blocker list: item/file popups and black residue, natural time-device route, more natural NPC hot zones, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio inventory.
+
+## 2026-06-22 AS2 Time Tangled F11 Recovery Reload Gate
+
+- Followed up on the user's correction that a "right top" HUD claim must be judged from screenshots, not from code coordinates alone.
+- Root causes fixed in this pass:
+  - The AS2 smoke helper applied `--window-size=1450x900` to helper capture/wait code, but not to the actual Flashpoint Navigator runtime launch. The real game could start at an older/default client size and then be moved/resized later, producing stale viewport math and white/blue edge artifacts.
+  - The hidden-HUD baseline used for diffing did not always launch with the same runtime geometry and could capture loading too early, which weakened the HUD proof.
+  - The default AS2 map click hit the scene travel arrow in the current wide layout instead of the right-top map icon.
+  - Exiting F11 could leave the AS2 scene in a broken camera/HUD/player state. This is now handled as a legal recovery reload of the current scene after viewport shrink/F11 changes.
+- Code changes:
+  - `tools/qa-as2-interaction-smoke.js` now launches AS2 runtime through `resolveCliWindowGeometry()` / `withWindowGeometryEnv()` so the requested runtime window size is applied before gameplay captures.
+  - Hidden-HUD baseline capture now uses the same runtime geometry and retries when OCR still sees loading.
+  - Default map click moved to the actual right-top map icon region for the current AS2 layout.
+  - After F11 restore, the smoke test captures a `post-f11` screenshot and uses that stabilized frame for the map click.
+  - `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` and `tools/lib/pack.js` now schedule a current-scene recovery reload after F11/viewport shrink, and remove `flashpointQaLoadingHoldMs` from that recovery URL.
+  - Rebuilt AS2 runtime zip with `node tools/rebuild-runtime-zip.js --source=as2`.
+- Verification:
+  - JS static checks passed for `tools/qa-as2-interaction-smoke.js` and `tools/lib/pack.js`.
+  - Full G32QC/no-foreground/muted AS2 Time Tangled gate passed:
+    - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782170505380.json`.
+    - Command scope: `--islands=time-tangled --qa-loading-hold-ms=3500 --require-scene-evidence=1 --require-loading=1 --require-f11=1 --require-map-request=1 --require-hud-anchor=1 --window-size=1450x900 --settle-ms=9000 --f11-restore-settle-ms=12000 --visual-guard-target-color=139ffd --visual-guard-max-target-edge-pct=5 --skip-audio=0`.
+    - Result: `ok=true`, `passed=1`, `failed=0`, `failedKeys=[]`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `hudAnchorPassed=1`.
+    - Audio proof: `runtime-data/qa/as2/interaction-smoke/run-1782170505380/01-time-tangled-audio.json` reports `audioLikelyActive=false`, `rms=0`, `peak=0`, and `respectSessionMute=true`.
+    - Server log proves recovery reloads without loading hold: `flashpointResizeReload=1782170585104` and `flashpointResizeReload=1782170604252`, followed by `/popups/map.swf` and `/popups/maps/Time.swf`.
+- Screenshot review:
+  - `runtime-data/qa/as2/interaction-smoke/run-1782170505380/01-time-tangled-post-f11.png`: player visible after F11 restore, HUD is a single row in the upper-right, no left-top faint pause icon, no blue/white edge.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782170505380/01-time-tangled-hud-anchor.png`: annotated HUD proof shows the three AS2 HUD icons inside the real stage upper-right region; metrics are right margin 43 px, top margin 11 px, row spread 3 px, icon gaps 26/20 px.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782170505380/01-time-tangled-map.png`: AS2 map popup opens, static `TIME TANGLED ISLAND` art remains English, and gameplay HUD is no longer sitting above the popup content. `CLOSE` remains English and is not closed by this pass.
+- Current conclusion:
+  - This closes the AS2 Time Tangled public F11/resize recovery + HUD visual gate more strongly than the previous `1782163826135` run.
+  - Time Tangled is still re-opened overall. Remaining blockers before calling the island sealed: native map/popup button localization such as `CLOSE`, item/file popup positioning and black residue, natural time-device route, natural NPC hot-zone no-repeat checks, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.

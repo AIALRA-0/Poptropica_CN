@@ -1361,6 +1361,7 @@ def command_capture_window(args):
         pulse_runtime_window_layout(hwnd)
     else:
         raise_window_no_activate(hwnd)
+        pulse_runtime_window_layout(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
     if not row and cmdline_contains:
         row = guess_runtime_window(process_names, title_contains, None, cmdline_contains)
@@ -1466,6 +1467,7 @@ def command_capture_window_sequence(args):
         pulse_runtime_window_layout(hwnd)
     else:
         raise_window_no_activate(hwnd)
+        pulse_runtime_window_layout(hwnd)
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
     if not row and cmdline_contains:
         row = guess_runtime_window(process_names, title_contains, None, cmdline_contains)

@@ -168,10 +168,16 @@ const gameViewport = document.getElementById("gameViewport"),
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };
+let viewportResizeReloadTimer = 0,
+    viewportResizeLastSize = null;
 
 main();
 initMapHotspotBridge();
-window.addEventListener("resize", () => applyCurrentViewport());
+window.addEventListener("resize", () => {
+    scheduleResizeRecoveryReload();
+    applyCurrentViewport();
+});
+window.addEventListener("keydown", handleViewportRecoveryKey, true);
 
 function main() {
     const params = getInput();
@@ -249,6 +255,7 @@ function applyMapHotspot(viewport, gameState) {
 
 function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     const crop = viewportCrop || { x: 0, y: 0, width: baseWidth, height: baseHeight };
+    const browserViewport = stableBrowserViewportSize();
     let displayWidth = baseWidth;
     let displayHeight = baseHeight;
     let viewportWidth = baseWidth;
@@ -263,13 +270,13 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     let useViewportCrop = false;
 
     if(gameState === "return_user_standard") {
-        viewportScale = Math.max(0.25, Math.min(window.innerWidth / crop.width, window.innerHeight / crop.height));
+        viewportScale = Math.max(0.25, Math.min(browserViewport.width / crop.width, browserViewport.height / crop.height));
         displayWidth = baseWidth;
         displayHeight = baseHeight;
-        viewportWidth = Math.max(1, window.innerWidth);
-        viewportHeight = Math.max(1, window.innerHeight);
-        contentOffsetLeft = Math.max(0, Math.round((window.innerWidth - crop.width * viewportScale) / 2));
-        contentOffsetTop = Math.max(0, Math.round((window.innerHeight - crop.height * viewportScale) / 2));
+        viewportWidth = Math.max(1, browserViewport.width);
+        viewportHeight = Math.max(1, browserViewport.height);
+        contentOffsetLeft = Math.max(0, Math.round((browserViewport.width - crop.width * viewportScale) / 2));
+        contentOffsetTop = Math.max(0, Math.round((browserViewport.height - crop.height * viewportScale) / 2));
         cropLeft = crop.x;
         cropTop = crop.y;
         useViewportCrop = true;
@@ -278,7 +285,71 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
     return { displayWidth, displayHeight, viewportWidth, viewportHeight, offsetLeft, offsetTop, contentOffsetLeft, contentOffsetTop, viewportScale, cropLeft, cropTop, useViewportCrop, cropWidth: crop.width, cropHeight: crop.height };
 }
 
+function stableBrowserViewportSize() {
+    const widthCandidates = [
+        window.innerWidth,
+        document.documentElement ? document.documentElement.clientWidth : 0,
+        document.body ? document.body.clientWidth : 0,
+        window.outerWidth ? window.outerWidth - 12 : 0
+    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
+    const heightCandidates = [
+        window.innerHeight,
+        document.documentElement ? document.documentElement.clientHeight : 0,
+        document.body ? document.body.clientHeight : 0,
+        window.outerHeight ? window.outerHeight - 140 : 0
+    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
+    return {
+        width: Math.max(1, Math.round(Math.max.apply(Math, widthCandidates.length ? widthCandidates : [ window.innerWidth || 1 ]))),
+        height: Math.max(1, Math.round(Math.max.apply(Math, heightCandidates.length ? heightCandidates : [ window.innerHeight || 1 ])))
+    };
+}
+
+function scheduleResizeRecoveryReload() {
+    const size = stableBrowserViewportSize();
+    const state = game.__zhViewportState;
+    if(!state || state.gameState !== "return_user_standard") {
+        viewportResizeLastSize = size;
+        return;
+    }
+    if(!viewportResizeLastSize) {
+        viewportResizeLastSize = size;
+        return;
+    }
+    const shrank = viewportResizeLastSize.width - size.width > 80 || viewportResizeLastSize.height - size.height > 80;
+    viewportResizeLastSize = size;
+    if(!shrank)
+        return;
+    if(viewportResizeReloadTimer)
+        clearTimeout(viewportResizeReloadTimer);
+    viewportResizeReloadTimer = setTimeout(reloadAfterViewportShrink, 900);
+}
+
+function reloadAfterViewportShrink() {
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("flashpointQaLoadingHoldMs");
+        url.searchParams.set("flashpointResizeReload", String(Date.now()));
+        window.location.replace(url.toString());
+    } catch(err) {
+        window.location.reload();
+    }
+}
+
+function handleViewportRecoveryKey(event) {
+    const key = String(event && event.key || "").toUpperCase();
+    const code = Number(event && (event.keyCode || event.which) || 0);
+    if(key !== "F11" && code !== 122)
+        return;
+    if(viewportResizeReloadTimer)
+        clearTimeout(viewportResizeReloadTimer);
+    viewportResizeReloadTimer = setTimeout(reloadAfterViewportShrink, 3000);
+}
+
 function applyGameViewport(viewport, gameState) {
+    document.documentElement.style.width = `${ viewport.viewportWidth }px`;
+    document.documentElement.style.height = `${ viewport.viewportHeight }px`;
+    document.body.style.width = `${ viewport.viewportWidth }px`;
+    document.body.style.height = `${ viewport.viewportHeight }px`;
     game.setAttribute("scale", "noscale");
     game.width = viewport.displayWidth;
     game.height = viewport.displayHeight;
@@ -314,6 +385,7 @@ function applyGameViewport(viewport, gameState) {
         game.style.top = "0px";
     }
     applyMapHotspot(viewport, gameState);
+    viewportResizeLastSize = stableBrowserViewportSize();
 }
 
 function applyCurrentViewport() {
@@ -329,12 +401,17 @@ function applyCurrentViewport() {
     applyGameViewport(viewport, game.__zhViewportState.gameState);
 }
 
+function refreshCurrentViewport() {
+    scheduleResizeRecoveryReload();
+    applyCurrentViewport();
+}
+
 function scheduleViewportRefreshes() {
     [ 50, 150, 350, 800, 1500, 3000, 6000, 9000, 12000, 16000, 22000, 30000, 45000 ].forEach(function(delayMs) {
-        setTimeout(applyCurrentViewport, delayMs);
+        setTimeout(refreshCurrentViewport, delayMs);
     });
     if(!scheduleViewportRefreshes.intervalId)
-        scheduleViewportRefreshes.intervalId = setInterval(applyCurrentViewport, 5000);
+        scheduleViewportRefreshes.intervalId = setInterval(refreshCurrentViewport, 2000);
 }
 
 function sanitizeAudioKeyPart(value) {

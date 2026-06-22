@@ -15,6 +15,10 @@ const {
   spawnManagedRuntime,
   stopNavigatorProcesses
 } = require("./lib/flashpoint-runtime");
+const {
+  resolveCliWindowGeometry,
+  withWindowGeometryEnv
+} = require("./lib/runtime-window-geometry");
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const AS2_INTERACTION_REPORT_RE = /^as2-interaction-smoke-\d+\.json$/u;
@@ -201,6 +205,18 @@ function resolveWindowGeometry(args = {}) {
     height: Number.isFinite(height) && height > 0 ? Math.round(height) : null,
     maximize: flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize)
   };
+}
+
+function spawnRuntimeWithWindowGeometry(config, launchUrl, args = {}) {
+  const geometry = resolveCliWindowGeometry(args, "as2");
+  return withWindowGeometryEnv(geometry, () => spawnManagedRuntime(config, "as2", launchUrl, {
+    detach: true,
+    playerKey: String(args.playerKey || "flashpointnavigator-as2"),
+    as2StartX: args.startX,
+    as2StartY: args.startY,
+    forceAs2CharState: flagEnabled(args.forceAs2CharState),
+    useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
+  }));
 }
 
 function appendWindowGeometryArgs(commandArgs, args = {}) {
@@ -625,7 +641,7 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
     qaHideHud: "1",
     flashpointQaHideHud: "1",
     skipVisualGuard: true,
-    skipOcr: true
+    skipOcr: false
   };
   const hiddenUrl = withLaunchQuery(entry.launchUrl, hiddenArgs);
   const windowTimeoutMs = Number(args.hudBaselineWindowTimeoutMs || args["hud-baseline-window-timeout-ms"] || args.windowTimeoutMs || 45000);
@@ -633,14 +649,7 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
 
   try {
     const launchHealth = await requestLaunchHealth(hiddenUrl, args);
-    const runtime = spawnManagedRuntime(config, "as2", hiddenUrl, {
-      detach: true,
-      playerKey: String(args.playerKey || "flashpointnavigator-as2"),
-      as2StartX: args.startX,
-      as2StartY: args.startY,
-      forceAs2CharState: flagEnabled(args.forceAs2CharState),
-      useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
-    });
+    const runtime = spawnRuntimeWithWindowGeometry(config, hiddenUrl, args);
     const runtimeWindow = runPythonQa(buildWaitArgs({
       runtime,
       timeoutMs: windowTimeoutMs,
@@ -649,16 +658,24 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
     }), {
       timeoutMs: windowTimeoutMs + 5000
     });
-    await sleep(settleMs);
-    const hidden = captureAndAnalyze({
-      runDir,
-      stem: hiddenStem,
-      suffix: "initial",
-      runtime,
-      runtimeWindow,
-      qaErrors,
-      args: hiddenArgs
-    });
+    let hidden = null;
+    const maxHiddenAttempts = Math.max(1, Number(args.hudBaselineAttempts || args["hud-baseline-attempts"] || 3));
+    for (let attempt = 0; attempt < maxHiddenAttempts; attempt += 1) {
+      await sleep(attempt === 0 ? settleMs : Number(args.hudBaselineRetrySettleMs || args["hud-baseline-retry-settle-ms"] || 3000));
+      hidden = captureAndAnalyze({
+        runDir,
+        stem: hiddenStem,
+        suffix: "initial",
+        runtime,
+        runtimeWindow,
+        qaErrors,
+        args: hiddenArgs
+      });
+      const hiddenText = String(hidden?.ocr?.text || "");
+      if (!/\b(LOADING|STARTING)\b/iu.test(hiddenText)) {
+        break;
+      }
+    }
     const analysis = runPythonQa([
       "analyze-hud-diff",
       "--input",
@@ -676,19 +693,19 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       "--min-right-margin",
       String(args.as2HudMinRightMargin || args["as2-hud-min-right-margin"] || 8),
       "--max-right-margin",
-      String(args.as2HudMaxRightMargin || args["as2-hud-max-right-margin"] || 130),
+      String(args.as2HudMaxRightMargin || args["as2-hud-max-right-margin"] || 96),
       "--min-top-margin",
       String(args.as2HudMinTopMargin || args["as2-hud-min-top-margin"] || 0),
       "--max-top-margin",
-      String(args.as2HudMaxTopMargin || args["as2-hud-max-top-margin"] || 80),
+      String(args.as2HudMaxTopMargin || args["as2-hud-max-top-margin"] || 36),
       "--max-row-spread",
-      String(args.as2HudMaxRowSpread || args["as2-hud-max-row-spread"] || 35),
+      String(args.as2HudMaxRowSpread || args["as2-hud-max-row-spread"] || 10),
       "--max-hud-width-ratio",
-      String(args.as2HudMaxWidthRatio || args["as2-hud-max-width-ratio"] || 0.34),
+      String(args.as2HudMaxWidthRatio || args["as2-hud-max-width-ratio"] || 0.24),
       "--min-icon-gap",
-      String(args.as2HudMinIconGap || args["as2-hud-min-icon-gap"] || 6),
+      String(args.as2HudMinIconGap || args["as2-hud-min-icon-gap"] || 10),
       "--max-icon-gap",
-      String(args.as2HudMaxIconGap || args["as2-hud-max-icon-gap"] || 95)
+      String(args.as2HudMaxIconGap || args["as2-hud-max-icon-gap"] || 56)
     ], {
       timeoutMs: 30000
     });
@@ -942,7 +959,7 @@ function loadingCenterEvidence(sample) {
   const image = sample?.imageSize || null;
   const lines = sample?.ocr?.lines || [];
   const text = String(sample?.ocr?.text || "");
-  if (!image || !lines.length || !/\b(?:POPTROPICA|LOADING|STARTING)\b/iu.test(text)) {
+  if (!image || !lines.length || !/\b(?:LOADING|STARTING)\b/iu.test(text)) {
     return { detected: false, reason: "not_loading_visual_or_ocr" };
   }
   const boxes = lines
@@ -1002,7 +1019,7 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
     }), {
       timeoutMs: 30000
     });
-    await sleep(Number(args.f11SettleMs || args["f11-settle-ms"] || 3000));
+    await sleep(Number(args.f11SettleMs || args["f11-settle-ms"] || 9000));
     const capture = captureAndAnalyze({
       runDir,
       stem,
@@ -1078,8 +1095,8 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
     };
   }
   const point = stageRelativeToWindow(capture, stageRect, {
-    x: Number(args.mapX || 0.805),
-    y: Number(args.mapY || 0.05)
+    x: Number(args.mapX || 0.945),
+    y: Number(args.mapY || 0.052)
   });
   try {
     const clickArgs = [
@@ -1329,14 +1346,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     islandParam: String(args.islandOverride || args["island-override"] || entry.islandParam || "").trim()
   };
   const launchHealth = await requestLaunchHealth(launchUrl, args);
-  const runtime = spawnManagedRuntime(config, "as2", launchUrl, {
-    detach: true,
-    playerKey: String(args.playerKey || "flashpointnavigator-as2"),
-    as2StartX: args.startX,
-    as2StartY: args.startY,
-    forceAs2CharState: flagEnabled(args.forceAs2CharState),
-    useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
-  });
+  const runtime = spawnRuntimeWithWindowGeometry(config, launchUrl, args);
 
   let runtimeWindow = null;
   try {
@@ -1379,6 +1389,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         String(args.audioSampleRate || 16000),
         "--peak-threshold",
         String(args.audioPeakThreshold || 0.0005),
+        "--respect-session-mute",
         "--output",
         audioPath
       ], {
@@ -1409,6 +1420,19 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     args
   });
 
+  const postF11ForMap = !f11.skipped
+    ? captureAndAnalyze({
+        runDir,
+        stem,
+        suffix: "post-f11",
+        runtime,
+        runtimeWindow: initial.runtimeWindow || runtimeWindow,
+        qaErrors,
+        args: { ...args, skipOcr: true }
+      })
+    : null;
+  const mapSource = postF11ForMap?.capture && postF11ForMap?.stage?.stageRect ? postF11ForMap : initial;
+
   const map = flagEnabled(args.skipMapClick)
     ? { ok: true, skipped: true, mapRequestSeen: false }
     : clickMap({
@@ -1416,8 +1440,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         stem,
         runtime,
         runtimeWindow: initial.runtimeWindow || runtimeWindow,
-        capture: initial.capture,
-        stage: initial.stage,
+        capture: mapSource.capture,
+        stage: mapSource.stage,
         args,
         qaErrors
       });
