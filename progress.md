@@ -4744,3 +4744,44 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - Time Tangled `malidocs` task-file close chain is closed.
   - Time Tangled remains reopened overall. Still open: natural time-machine route, more era scenes, blue-edge/camera checks beyond the sample, natural NPC no-repeat hot-zone checks, native arrow labels, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.
+
+## 2026-06-23 AS2 Native Navigation Label Audit Sealed
+
+- Focused on the user's `TRAVEL / ENTER / EXIT / GO LEFT / GO RIGHT` feedback without adding Chinese overlay text to static art.
+- Added `tools/audit-as2-native-navigation-labels.js`:
+  - Exports AS2 SWF scripts and text records with FFDec.
+  - Treats script `labelText = "..."` and exact exported text records as native labels.
+  - Does not treat OCR-only/static art lettering as something to hard-cover with Chinese text.
+- Time Tangled file-level audit passed:
+  - Report: `runtime-data/qa/as2/native-navigation-labels/time-tangled.json`.
+  - Scope: 24 Time Tangled AS2 scene SWFs.
+  - Result: `ok=true`, `blockerCount=0`, `failedExports=[]`.
+  - Proof includes `scenePresent.swf` with native script labels `旅行`, `进入`, and `公共房间`.
+- Full AS2 first audit found one real native text blocker:
+  - Report before fix: `runtime-data/qa/as2/native-navigation-labels/all-islands.json`.
+  - `sceneMuseum.swf` in Early Poptropica had one exact exported TextField `EXIT` at `79.txt`.
+  - This was a native text field, not a static painted sign, so it should be translated under the current policy.
+- Added `tools/patch-as2-native-navigation-text-fields.js` and patched the current pack:
+  - Target: `packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneMuseum.swf`.
+  - Replacement: `79.txt`, character id `79`, `EXIT -> 退出`, font id `78`.
+  - Patch report: `runtime-data/qa/as2/native-navigation-labels/text-field-patch.json`.
+  - Rebuilt AS2 runtime zip to `runtime-data/patched-zips/as2-runtime.zip`, replacement count `110`.
+- Synced the future rebuild path:
+  - `tools/lib/pack.js` now augments AS2 plain SWF text patching with exact native navigation text-field replacement.
+  - It only replaces whole text records equal to known navigation labels; longer strings such as passcode prompts are not touched.
+- Verification after fix:
+  - Static checks passed:
+    - `node --check tools/audit-as2-native-navigation-labels.js`
+    - `node --check tools/patch-as2-native-navigation-text-fields.js`
+    - `node --check tools/lib/pack.js`
+  - Full AS2 second audit passed:
+    - `runtime-data/qa/as2/native-navigation-labels/all-islands.json`
+    - `ok=true`, `swfCount=80`, `blockerCount=0`, `proofCount=75`, `failedExports=[]`.
+  - Early/Museum runtime smoke passed:
+    - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189287851.json`
+    - `ok=true`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `audioActive=0`, `failedKeys=[]`.
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782189287851/01-early-poptropica-initial.png`; the door label shows native `退出`, player is visible, HUD stays in the upper-right.
+- Current conclusion:
+  - AS2 native navigation labels are closed at the file-level gate for current 80 scene SWFs.
+  - This does not translate static art arrows/signs/posters. If an English label only exists as artwork and not as exported script/text, it remains English unless a real image-asset replacement is created later.
+  - Time Tangled remains reopened overall. Still open: natural time-machine route, more era scenes, camera blue-edge checks beyond representative samples, natural NPC no-repeat hot-zone checks, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.

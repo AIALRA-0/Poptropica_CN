@@ -1260,12 +1260,67 @@ function collectFontIdsByExportPath({ formattedExportRoot, exportPaths = [] }) {
   return byExportPath;
 }
 
+function mergeTranslatedSwfFiles(entries) {
+  const byExportPath = new Map();
+  for (const entry of entries) {
+    if (!entry?.exportPath || !entry?.filePath) {
+      continue;
+    }
+    byExportPath.set(entry.exportPath, entry);
+  }
+  return [...byExportPath.values()]
+    .sort((left, right) => left.exportPath.localeCompare(right.exportPath, "en"));
+}
+
+function buildAs2NativeNavigationTextFiles({ sourceTextRoot, translatedTextRoot, existingTranslatedFiles = [] }) {
+  if (!sourceTextRoot || !fileExists(sourceTextRoot)) {
+    return [];
+  }
+  const replacements = new Map(AS2_NATIVE_NAVIGATION_LABEL_REPLACEMENTS);
+  const existingByExportPath = new Map(existingTranslatedFiles.map((entry) => [entry.exportPath, entry]));
+  const changedFiles = [];
+
+  for (const sourceFile of listFilesRecursive(sourceTextRoot, { includeExtensions: new Set([".txt"]) })) {
+    const exportPath = path.relative(sourceTextRoot, sourceFile).replace(/\\/gu, "/");
+    const sourceContent = fs.readFileSync(sourceFile, "utf8");
+    const sourceLabel = String(sourceContent || "").replace(/\s+/gu, " ").trim();
+    const translatedLabel = replacements.get(sourceLabel);
+    if (!translatedLabel) {
+      continue;
+    }
+
+    const targetFile = path.join(translatedTextRoot, exportPath);
+    const targetContent = existingByExportPath.has(exportPath) && fileExists(targetFile)
+      ? fs.readFileSync(targetFile, "utf8")
+      : sourceContent;
+    const targetLabel = String(targetContent || "").replace(/\s+/gu, " ").trim();
+    if (targetLabel === translatedLabel) {
+      continue;
+    }
+
+    ensureDirSync(path.dirname(targetFile));
+    writeText(targetFile, normalizeSwfTextFileContent(translatedLabel));
+    changedFiles.push({
+      filePath: targetFile,
+      exportPath
+    });
+  }
+
+  return mergeTranslatedSwfFiles(changedFiles);
+}
+
 function buildPlainSwfTextPatch({ assetRows, sourceTextRoot, inputSwf, ffdecCli, translatedTextRoot }) {
-  const translatedFiles = buildTranslatedSwfFiles({
+  const translatedFiles = mergeTranslatedSwfFiles([
+    ...buildTranslatedSwfFiles({
     assetRows,
     sourceTextRoot,
     translatedTextRoot
-  });
+    }),
+    ...buildAs2NativeNavigationTextFiles({
+      sourceTextRoot,
+      translatedTextRoot
+    })
+  ]);
 
   if (translatedFiles.length === 0) {
     return {
