@@ -4856,3 +4856,58 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - Time Tangled loading center is reconfirmed after the new AS2 HUD fallback.
   - F11 remains open in the current user-working constraint: the safe background post-message path did not trigger fullscreen while another app had foreground focus.
+
+## 2026-06-23 Time Tangled malidocs Close Recheck After QA Coordinate Fix
+
+- Reopened the `malidocs.swf` close proof after a later run showed the old pass could still fail.
+- Root causes found:
+  - The AS2 framework loads `gameplay-zh.swf` for cache-busting, but `tools/patch-as2-gameplay-hud-popup.js` only guaranteed updates to `gameplay.swf`. The patch script now compares and syncs `gameplay-zh.swf` every run, and records `aliasSynced` in `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json`.
+  - The exported `gameplay-zh.swf` still had an old `zhOpenDirectMapBlockedByPopup` branch before the newer popup-close branch. The patch script now removes that stale direct-map short-circuit so popup-state map hits close the active popup instead of just blocking.
+  - `tools/qa-as2-interaction-smoke.js` was adding the Firefox chrome/client offset to popup-close clicks. `qa-helper.py click-window` already expects parent client coordinates, so the old code clicked about 110 px too low. Client screenshots now return a zero click offset.
+- Static verification:
+  - Rebuilt AS2 gameplay/runtime with `node tools\patch-as2-gameplay-hud-popup.js`.
+  - Exported `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay-zh.swf` to `runtime-data/tmp/inspect-gameplay-zh-after`.
+  - `rg` confirmed `zhOpenDirectMapBlockedByPopup` no longer exists in the exported `frame_1/DoAction.as`; `zhOpenDirectMap()` now routes popup-state hits through `PopupClosePressed&target=openDirectMapBlockedMap`.
+- Failed pre-fix evidence kept for context:
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782197886923.json` failed with `popup_close_button_still_visible`.
+  - Its click log showed the problem: detected button center was around screenshot `1123,104`, but click JSON used `relativeY=214`.
+  - Screenshot review showed the cursor on the lower board edge, not on the `关闭` button.
+- Final verification:
+  - Command: `node tools\qa-as2-interaction-smoke.js --islands=time-tangled --limit=1 --room-override=Mali --island-override=Time --settle-ms=10000 --window-timeout-ms=60000 --skip-audio=1 --skip-map-click=1 --skip-f11=1 --skip-loading=1 --allow-missing-requests=1 --qa-popup=malidocs.swf --popup-close-click=1 --require-popup-close=1 --popup-close-detect-timeout-ms=30000 --target-monitor=G32QC --window-size=1440x900`
+  - Passed report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782198212806.json`.
+  - Result: `ok=true`, `passed=1`, `failed=0`, `visualGuardPassed=1`, `sceneEvidencePassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Click proof: `runtime-data/qa/as2/interaction-smoke/run-1782198212806/01-time-tangled-popup-close-click.json` has `relativeX=1123`, `relativeY=104`, matching the detected button center.
+  - Log proof: `runtime-data/qa/as2/interaction-smoke/run-1782198212806/01-time-tangled-popup-close-server.log` records `PopupClosePressed&target=mapMouseListenerBlockedMap`; the full report has `mapRequestCount=0`, so no map popup opened during close.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782198212806/01-time-tangled-popup-close.png`; popup is gone, player is visible in Mali, and no `关闭` button residue remains.
+- Current conclusion:
+  - Time Tangled `malidocs` task-file close chain is closed again with corrected QA coordinates and actual `gameplay-zh.swf` proof.
+  - This does not seal Time Tangled overall. Still open under the current P0 plan: safe F11 true-fullscreen input without stealing the user's main focus, natural time-machine route, natural NPC no-repeat hot-zone checks, external white-screen links, AS3 dialogue queue protection, full island traversal, and real audio source inventory.
+
+## 2026-06-23 Time Tangled Map HUD Hitbox Recheck
+
+- Reopened the AS2 map click proof because a strict run could show the HUD visually anchored while the map icon still did not open the map.
+- Failed evidence:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782199199106.json`.
+  - Result: `hudAnchorPassed=1`, `visualGuardPassed=1`, but `mapClicksPassed=0` and `mapRequestCount=0`.
+  - Click proof: `run-1782199199106/01-time-tangled-map-click.json` clicked the visible map icon at client-relative `1349,63`.
+- Root cause:
+  - Added QA-only `MapMouseProbe` in `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js`.
+  - Probe evidence from `run-1782199199106/01-time-tangled-map-server.log`: Flash saw the click as `_root._xmouse=759`, `_root._ymouse=-90`, while the direct map bounds were `left=744,top=-38,right=820,bottom=50`.
+  - So x was correct, but y was above the internal hotzone. The visual icon was right; the hidden clickable area was vertically too small.
+- Code changes:
+  - `tools/lib/pack.js` and `tools/patch-as2-gameplay-hud-popup.js` now keep the visible HUD image in place but pad `__zhMapButtonBounds` vertically: `top = buttonY - 100`, `bottom = buttonY + height + 20`.
+  - `MapMouseProbe` is gated to QA launches with `flashpointQaCacheBust`, so ordinary local play does not add probe traffic.
+  - Rebuilt AS2 gameplay/runtime via `node tools\patch-as2-gameplay-hud-popup.js`; patch report `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json` has `aliasSynced=true`.
+- Final strict map verification:
+  - Command: `node tools\qa-as2-interaction-smoke.js --islands=time-tangled --limit=1 --room-override=Present --island-override=Time --settle-ms=10000 --window-timeout-ms=60000 --skip-audio=1 --skip-f11=1 --skip-loading=1 --allow-missing-requests=1 --require-hud-anchor=1 --require-map-request=1 --target-monitor=G32QC --window-size=1440x900`
+  - Passed report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782199659821.json`.
+  - Result: `ok=true`, `passed=1`, `failed=0`, `mapClicksPassed=1`, `hudAnchorPassed=1`, `visualGuardPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Log proof: `run-1782199659821/01-time-tangled-map-server.log` has `/popups/map.swf`, native `MapClicked`, and `MapMouseProbe&x=759&y=-90&l=744&t=-138&r=820&b=70`.
+  - Screenshot reviewed: `run-1782199659821/01-time-tangled-map.png`; map popup is open. Static `TIME TANGLED ISLAND` art remains English by policy. The native close button is Chinese.
+- Regression after the hitbox change:
+  - `malidocs.swf` close recheck passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782199768333.json`.
+  - Log proof: `PopupClosePressed&target=mapMouseListenerBlockedMap`.
+  - Screenshot reviewed: `run-1782199768333/01-time-tangled-popup-close.png`; task file popup is gone, player remains visible, and there is no close-button residue.
+- Current conclusion:
+  - AS2 Time Tangled right-top map icon now satisfies both visual anchoring and actual click-open evidence.
+  - Time Tangled is still not sealed. The popup-close screenshot still shows a left-side dark viewport edge, so camera/viewport boundary remains a blocker alongside safe F11, natural route, NPC no-repeat, external white-screen links, AS3 queue protection, full traversal, and real audio source inventory.

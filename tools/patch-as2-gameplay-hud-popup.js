@@ -16,6 +16,7 @@ const {
 } = require("./lib/fs-utils");
 
 const AS2_GAMEPLAY_PATH = "content/www.poptropica.com/gameplay.swf";
+const AS2_GAMEPLAY_ALIAS_PATH = "content/www.poptropica.com/gameplay-zh.swf";
 const PATCH_ASSET_ID = "as2-shared:gameplay-hud-popup-anchor";
 const CLOSE_TEXT_CHARACTER_ID = 40;
 const FONT_FILE_CANDIDATES = [
@@ -845,6 +846,33 @@ function patchFrameOne(content) {
       "blocked direct map closes popup"
     );
   }
+  const directMapPopupCloseGate = [
+    "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+    "   {",
+    "      if(zhTryClosePopupFromMouse(\"openDirectMap\"))",
+    "      {",
+    "         return undefined;",
+    "      }",
+    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=openDirectMapBlockedMap\",0);",
+    "      _root.closePopup();",
+    "      return undefined;",
+    "   }"
+  ].join("\n");
+  const staleDirectMapPopupGate = [
+    "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+    "   {",
+    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);",
+    "      return undefined;",
+    "   }",
+    directMapPopupCloseGate
+  ].join("\n");
+  while (next.includes(staleDirectMapPopupGate)) {
+    next = next.replace(staleDirectMapPopupGate, directMapPopupCloseGate);
+  }
+  next = next.replace(
+    /(\n\s+)([A-Za-z_$][\w$]*)\._x = 785;\1\2\._y = 70;\1([A-Za-z_$][\w$]*) = 95;\1([A-Za-z_$][\w$]*) = 90;/u,
+    "$1$2._x = 920;$1$2._y = -42;$1$3 = 90;$1$4 = 142;"
+  );
   if (!next.includes("zhEnsureDirectMapButtonBlockedByPopup")) {
     next = replaceRequired(
       next,
@@ -1010,6 +1038,39 @@ function patchFrameOne(content) {
         "         zhHideDirectMapButton();"
       ].join("\n"),
       "blocked direct map button closes popup"
+    );
+  }
+  if (!next.includes("MapMouseProbe")) {
+    const mapBoundsPattern = /\n(\s*)var ([A-Za-z_$][\w$]*) = _root\.__zhMapButtonBounds;/u;
+    const match = next.match(mapBoundsPattern);
+    if (!match) {
+      throw new Error("Unable to locate direct map mouse bounds probe insertion point.");
+    }
+    const indent = match[1];
+    const boundsVar = match[2];
+    next = next.replace(
+      mapBoundsPattern,
+      [
+        "",
+        `${indent}var ${boundsVar} = _root.__zhMapButtonBounds;`,
+        `${indent}if(${boundsVar} != undefined && _root._ymouse <= 180 && _root._xmouse >= 600 && (_root.flashpointQaCacheBust != undefined || _level0.flashpointQaCacheBust != undefined || flashpointQaCacheBust != undefined))`,
+        `${indent}{`,
+        `${indent}   loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseProbe&x=" + Math.round(_root._xmouse) + "&y=" + Math.round(_root._ymouse) + "&l=" + Math.round(${boundsVar}.left) + "&t=" + Math.round(${boundsVar}.top) + "&r=" + Math.round(${boundsVar}.right) + "&b=" + Math.round(${boundsVar}.bottom),0);`,
+        `${indent}}`
+      ].join("\n")
+    );
+  }
+  const paddedMapBoundsPattern = /_root\.__zhMapButtonBounds = \{left:[^,]+,top:[^,]+ - 100,right:[^,]+,bottom:[^}]+ \+ 20\};/u;
+  if (!paddedMapBoundsPattern.test(next)) {
+    const mapBoundsAssignmentPattern = /_root\.__zhMapButtonBounds = \{left:([A-Za-z_$][\w$]*\._x),top:([A-Za-z_$][\w$]*\._y),right:([A-Za-z_$][\w$]*\._x) \+ ([A-Za-z_$][\w$]*),bottom:([A-Za-z_$][\w$]*\._y) \+ ([A-Za-z_$][\w$]*)\};/u;
+    if (!mapBoundsAssignmentPattern.test(next)) {
+      throw new Error("Unable to locate direct map mouse bounds assignment.");
+    }
+    next = next.replace(
+      mapBoundsAssignmentPattern,
+      (_match, leftX, topY, rightX, widthVar, bottomY, heightVar) => {
+        return `_root.__zhMapButtonBounds = {left:${leftX},top:${topY} - 100,right:${rightX} + ${widthVar},bottom:${bottomY} + ${heightVar} + 20};`;
+      }
     );
   }
 
@@ -2031,7 +2092,7 @@ function patchFrameOne(content) {
       "         navBar.btnMap._visible = true;",
       "         navBar.btnMap._alpha = 100;",
       "         navBar.btnMap.enabled = true;",
-      "         _root.__zhGameplayMapBounds = {left:744,top:-38,right:820,bottom:50};",
+      "         _root.__zhGameplayMapBounds = {left:920,top:-42,right:1010,bottom:100};",
       "      }",
       "      if(navBar.btnSuperPower != undefined && (isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))",
       "      {",
@@ -2115,7 +2176,7 @@ function patchFrameOne(content) {
     "      navBar.btnMap._visible = true;",
     "      navBar.btnMap._alpha = 100;",
     "      navBar.btnMap.enabled = true;",
-      "      _root.__zhGameplayMapBounds = {left:744,top:-30,right:820,bottom:58};",
+      "      _root.__zhGameplayMapBounds = {left:920,top:-42,right:1010,bottom:100};",
       "   }"
   ].join("\n");
   if (next.includes(hardcodedBlock)) {
@@ -2191,6 +2252,7 @@ function main() {
   if (!fileExists(packSwf)) {
     throw new Error(`AS2 gameplay SWF not found: ${packSwf}`);
   }
+  const aliasSwf = path.join(paths.as2PackDir, "swf", ...AS2_GAMEPLAY_ALIAS_PATH.split("/"));
 
   const workDir = path.join(paths.tempDir, "as2-gameplay-hud-popup");
   removeDirContents(workDir);
@@ -2237,6 +2299,11 @@ function main() {
   if (changed) {
     fs.copyFileSync(inputSwf, packSwf);
   }
+  const aliasSynced = !fileExists(aliasSwf) || !fs.readFileSync(packSwf).equals(fs.readFileSync(aliasSwf));
+  if (aliasSynced) {
+    ensureDirSync(path.dirname(aliasSwf));
+    fs.copyFileSync(packSwf, aliasSwf);
+  }
 
   const manifestPath = path.join(paths.as2PackDir, "manifest.json");
   const manifest = fileExists(manifestPath) ? readJson(manifestPath, {}) : {};
@@ -2249,7 +2316,11 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS2_GAMEPLAY_PATH,
     outputPath: packSwf,
-    changed,
+    aliasAssetPath: AS2_GAMEPLAY_ALIAS_PATH,
+    aliasOutputPath: aliasSwf,
+    changed: changed || aliasSynced,
+    gameplayChanged: changed,
+    aliasSynced,
     replaceTargets: replacements.map((entry) => entry.replaceTarget),
     closeTextPatch,
     closeShapePatch,
@@ -2261,7 +2332,10 @@ function main() {
     generatedAt: new Date().toISOString(),
     assetPath: AS2_GAMEPLAY_PATH,
     outputSwf: packSwf,
-    changed,
+    aliasSwf,
+    changed: changed || aliasSynced,
+    gameplayChanged: changed,
+    aliasSynced,
     replacements,
     closeTextPatch,
     closeShapePatch,

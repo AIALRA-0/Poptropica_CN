@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T06:13:06.225Z",
+  "generatedAt": "2026-06-23T07:27:27.490Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -625,10 +625,22 @@
       "notes": "QA only: triggers native Time Tangled Pendulums Lab manualSay bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     },
     {
+      "assetId": "as2-shared:framework-top-nav-anchor",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+      "changed": false,
+      "replaceTargets": [],
+      "notes": "Anchors the AS2 framework top navigation row and loads gameplay-zh.swf during QA so Flash cannot reuse stale HUD code without query-string side effects."
+    },
+    {
       "assetId": "as2-shared:gameplay-hud-popup-anchor",
       "assetPath": "content/www.poptropica.com/gameplay.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "aliasAssetPath": "content/www.poptropica.com/gameplay-zh.swf",
+      "aliasOutputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay-zh.swf",
       "changed": true,
+      "gameplayChanged": true,
+      "aliasSynced": true,
       "replaceTargets": [
         "\\frame_1\\DoAction"
       ],
@@ -643,14 +655,6 @@
         "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
       "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
-    },
-    {
-      "assetId": "as2-shared:framework-top-nav-anchor",
-      "assetPath": "content/www.poptropica.com/framework.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
-      "changed": false,
-      "replaceTargets": [],
-      "notes": "Anchors the AS2 framework top navigation row and loads gameplay-zh.swf during QA so Flash cannot reuse stale HUD code without query-string side effects."
     }
   ],
   "pendingSwfAssets": [],

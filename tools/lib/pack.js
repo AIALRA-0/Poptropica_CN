@@ -3353,10 +3353,10 @@ function zhEnsureDirectMapButton()
    }
    else
    {
-      zhMapButton._x = 785;
-      zhMapButton._y = 70;
-      zhMapWidth = 95;
-      zhMapHeight = 90;
+      zhMapButton._x = 920;
+      zhMapButton._y = -42;
+      zhMapWidth = 90;
+      zhMapHeight = 142;
    }
    zhMapButton._visible = true;
    zhMapButton.enabled = true;
@@ -3370,7 +3370,7 @@ function zhEnsureDirectMapButton()
    zhMapButton.endFill();
    zhMapButton._alpha = 1;
    _root.__zhDirectOpenMap = zhOpenDirectMap;
-   _root.__zhMapButtonBounds = {left:zhMapButton._x,top:zhMapButton._y,right:zhMapButton._x + zhMapWidth,bottom:zhMapButton._y + zhMapHeight};
+   _root.__zhMapButtonBounds = {left:zhMapButton._x,top:zhMapButton._y - 100,right:zhMapButton._x + zhMapWidth,bottom:zhMapButton._y + zhMapHeight + 20};
    if(Mouse != undefined && _root.__zhMapMouseListener == undefined)
    {
       _root.__zhMapMouseListener = new Object();
@@ -3390,6 +3390,10 @@ function zhEnsureDirectMapButton()
             return undefined;
          }
          var zhMapBounds = _root.__zhMapButtonBounds;
+         if(zhMapBounds != undefined && _root._ymouse <= 180 && _root._xmouse >= 600 && (_root.flashpointQaCacheBust != undefined || _level0.flashpointQaCacheBust != undefined || flashpointQaCacheBust != undefined))
+         {
+            loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseProbe&x=" + Math.round(_root._xmouse) + "&y=" + Math.round(_root._ymouse) + "&l=" + Math.round(zhMapBounds.left) + "&t=" + Math.round(zhMapBounds.top) + "&r=" + Math.round(zhMapBounds.right) + "&b=" + Math.round(zhMapBounds.bottom),0);
+         }
          if(zhMapBounds != undefined && _root._xmouse >= zhMapBounds.left && _root._xmouse <= zhMapBounds.right && _root._ymouse >= zhMapBounds.top && _root._ymouse <= zhMapBounds.bottom)
          {
             if(_root.__zhDirectOpenMap != undefined)
@@ -3905,7 +3909,7 @@ function layoutFramelessGameplayNav(forceLayout)
          navBar.btnMap._visible = true;
          navBar.btnMap._alpha = 100;
          navBar.btnMap.enabled = true;
-         _root.__zhGameplayMapBounds = {left:744,top:-38,right:820,bottom:50};
+         _root.__zhGameplayMapBounds = {left:920,top:-42,right:1010,bottom:100};
       }
       if(navBar.btnSuperPower != undefined && (isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))
       {

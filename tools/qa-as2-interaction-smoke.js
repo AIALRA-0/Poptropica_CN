@@ -483,14 +483,9 @@ function captureWindowMatchesRuntime(capture, runtime) {
 function captureClickOffset(capture) {
   const mode = String(capture?.captureMode || "").toLowerCase();
   if (mode === "client") {
-    const captureBox = capture?.captureBox || {};
-    const windowRect = capture?.targetWindow?.rect || capture?.window?.rect || {};
-    const dx = Number(captureBox.left) - Number(windowRect.left);
-    const dy = Number(captureBox.top) - Number(windowRect.top);
-    return {
-      x: Number.isFinite(dx) ? Math.round(dx) : 0,
-      y: Number.isFinite(dy) ? Math.round(dy) : 0
-    };
+    // qa-helper click-window expects parent client coordinates. Client screenshots
+    // already use that origin, so adding the browser chrome offset clicks too low.
+    return { x: 0, y: 0 };
   }
   return { x: 0, y: 0 };
 }
