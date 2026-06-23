@@ -1169,7 +1169,7 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
     }), {
       timeoutMs: 30000
     });
-    await sleep(Number(args.f11RestoreSettleMs || args["f11-restore-settle-ms"] || 1200));
+    await sleep(Number(args.f11RestoreSettleMs || args["f11-restore-settle-ms"] || 6000));
     return {
       skipped: false,
       ok: stageStable && visualStable && playableCropStable && fullscreenSize.ok,

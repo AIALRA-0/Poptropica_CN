@@ -4,7 +4,13 @@ const { spawn, spawnSync } = require("node:child_process");
 const paths = require("./paths");
 const { ensureDirSync, writeJson } = require("./fs-utils");
 
-const WINDOW_MONITOR_COMMANDS = new Set(["wait-window", "click-window", "key-window"]);
+const WINDOW_MONITOR_COMMANDS = new Set([
+  "wait-window",
+  "capture-window",
+  "capture-window-sequence",
+  "click-window",
+  "key-window"
+]);
 
 function getPythonBinary() {
   return process.env.PYTHON || "python";

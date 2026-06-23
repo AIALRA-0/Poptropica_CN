@@ -328,7 +328,10 @@ def position_window_on_target_monitor(hwnd, target, width=None, height=None, max
     raise_window_no_activate(hwnd)
     if maximize:
         win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
-        time.sleep(0.25)
+        # Flashpoint Navigator can report a maximized Win32 rect before DWM has
+        # visually repainted the window. Wait long enough that screenshots are
+        # evidence of the maximized game, not the previous smaller window.
+        time.sleep(1.25)
         sync_runtime_child_windows(hwnd)
         raise_window_no_activate(hwnd)
 
@@ -753,7 +756,7 @@ def bring_to_front(hwnd):
             maximized = bool(win32gui.IsZoomed(hwnd))
         except Exception:
             maximized = False
-        if not maximized:
+        if not maximized and not is_monitor_sized_window(hwnd):
             win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
     try:
         win32gui.BringWindowToTop(hwnd)
@@ -1353,7 +1356,7 @@ def command_capture_window(args):
     elif args.maximize:
         try:
             win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
-            time.sleep(0.35)
+            time.sleep(1.25)
         except Exception:
             pass
     if not getattr(args, "no_foreground", False):
@@ -1459,7 +1462,7 @@ def command_capture_window_sequence(args):
     elif args.maximize:
         try:
             win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
-            time.sleep(0.35)
+            time.sleep(1.25)
         except Exception:
             pass
     if not getattr(args, "no_foreground", False):
@@ -2316,6 +2319,64 @@ def _connected_components(mask, min_pixels=1):
     return components
 
 
+def _trim_dark_letterbox_bounds(rgb, left, top, right, bottom, dark_threshold=40, min_dark_pct=0.96):
+    width = max(1, int(right - left))
+    height = max(1, int(bottom - top))
+    if width < 200 or height < 120:
+        return int(left), int(right), {
+            "leftTrim": 0,
+            "rightTrim": 0,
+            "reason": "too_small",
+        }
+
+    region = rgb[int(top):int(bottom), int(left):int(right), :]
+    if region.size == 0:
+        return int(left), int(right), {
+            "leftTrim": 0,
+            "rightTrim": 0,
+            "reason": "empty_region",
+        }
+
+    dark_by_col = (np.max(region, axis=2) <= int(dark_threshold)).mean(axis=0)
+    bright_by_col = (np.min(region, axis=2) >= 245).mean(axis=0)
+    left_trim = 0
+    for pct in dark_by_col:
+        if float(pct) >= float(min_dark_pct):
+            left_trim += 1
+            continue
+        if left_trim < 4 and float(bright_by_col[left_trim]) >= float(min_dark_pct):
+            left_trim += 1
+            continue
+        break
+
+    right_trim = 0
+    for index, pct in enumerate(dark_by_col[::-1]):
+        if float(pct) >= float(min_dark_pct):
+            right_trim += 1
+            continue
+        if right_trim < 4 and float(bright_by_col[::-1][index]) >= float(min_dark_pct):
+            right_trim += 1
+            continue
+        break
+
+    trimmed_left = int(left + left_trim)
+    trimmed_right = int(right - right_trim)
+    if (trimmed_right - trimmed_left) < int(width * 0.55):
+        return int(left), int(right), {
+            "leftTrim": int(left_trim),
+            "rightTrim": int(right_trim),
+            "reason": "trim_rejected_min_width",
+        }
+
+    return trimmed_left, trimmed_right, {
+        "leftTrim": int(left_trim),
+        "rightTrim": int(right_trim),
+        "darkThreshold": int(dark_threshold),
+        "minDarkPct": float(min_dark_pct),
+        "reason": "ok",
+    }
+
+
 def command_analyze_hud_diff(args):
     image = Image.open(args.input).convert("RGB")
     baseline = Image.open(args.baseline).convert("RGB")
@@ -2350,15 +2411,23 @@ def command_analyze_hud_diff(args):
         stage_width = width
         stage_rect_expanded_for_hud = True
 
-    top_bottom = min(stage_bottom, stage_top + int(round(stage_height * float(args.top_ratio))))
-    right_left = max(stage_left, stage_right - int(round(stage_width * float(args.right_ratio))))
     diff_threshold = int(args.diff_threshold)
 
     rgb = np.array(image).astype(np.int16)
     base = np.array(baseline).astype(np.int16)
+    content_left, content_right, letterbox_trim = _trim_dark_letterbox_bounds(
+        rgb,
+        stage_left,
+        stage_top,
+        stage_right,
+        stage_bottom,
+    )
+    content_width = max(1, int(content_right - content_left))
+    top_bottom = min(stage_bottom, stage_top + int(round(stage_height * float(args.top_ratio))))
+    right_left = max(content_left, content_right - int(round(content_width * float(args.right_ratio))))
     diff = np.max(np.abs(rgb - base), axis=2)
     top_mask = np.zeros((height, width), dtype=bool)
-    top_mask[stage_top:top_bottom, stage_left:stage_right] = diff[stage_top:top_bottom, stage_left:stage_right] >= diff_threshold
+    top_mask[stage_top:top_bottom, content_left:content_right] = diff[stage_top:top_bottom, content_left:content_right] >= diff_threshold
 
     all_components = _connected_components(top_mask, min_pixels=int(args.min_component_pixels))
     all_components.sort(key=lambda comp: (comp["left"], comp["top"]))
@@ -2395,7 +2464,7 @@ def command_analyze_hud_diff(args):
             "centerX": int(round((left + right) / 2.0)),
             "centerY": int(round((top + bottom) / 2.0)),
         }
-        right_margin = int(stage_right - right)
+        right_margin = int(content_right - right)
         top_margin = int(top - stage_top)
         row_spread = int(max(comp["centerY"] for comp in hud_components) - min(comp["centerY"] for comp in hud_components))
         ordered = sorted(hud_components, key=lambda comp: comp["left"])
@@ -2405,10 +2474,10 @@ def command_analyze_hud_diff(args):
     hud_center_y_ratio = None
     hud_left_ratio = None
     hud_right_margin_ratio = None
-    if hud_box and stage_width > 0:
-        hud_width_ratio = float(hud_box["width"]) / float(stage_width)
-        hud_left_ratio = float(hud_box["left"] - stage_left) / float(stage_width)
-        hud_right_margin_ratio = float(stage_right - hud_box["right"]) / float(stage_width)
+    if hud_box and content_width > 0:
+        hud_width_ratio = float(hud_box["width"]) / float(content_width)
+        hud_left_ratio = float(hud_box["left"] - content_left) / float(content_width)
+        hud_right_margin_ratio = float(content_right - hud_box["right"]) / float(content_width)
     if hud_box and stage_height > 0:
         hud_center_y_ratio = float(hud_box["centerY"] - stage_top) / float(stage_height)
 
@@ -2483,11 +2552,20 @@ def command_analyze_hud_diff(args):
             "width": int(stage_width),
             "height": int(stage_height),
         },
+        "contentRect": {
+            "left": int(content_left),
+            "top": int(stage_top),
+            "right": int(content_right),
+            "bottom": int(stage_bottom),
+            "width": int(content_width),
+            "height": int(stage_height),
+            "letterboxTrim": letterbox_trim,
+        },
         "analysisRegion": {
             "topBand": {
-                "left": int(stage_left),
+                "left": int(content_left),
                 "top": int(stage_top),
-                "right": int(stage_right),
+                "right": int(content_right),
                 "bottom": int(top_bottom),
             },
             "rightHudMinLeft": int(right_left),
@@ -2510,6 +2588,7 @@ def command_analyze_hud_diff(args):
             "topRatio": float(args.top_ratio),
             "rightRatio": float(args.right_ratio),
             "stageRectExpandedForHud": stage_rect_expanded_for_hud,
+            "darkLetterboxTrim": letterbox_trim,
         },
         "checks": checks,
     }
@@ -2517,7 +2596,8 @@ def command_analyze_hud_diff(args):
         annotated = image.convert("RGB")
         draw = ImageDraw.Draw(annotated)
         draw.rectangle((stage_left, stage_top, stage_right, stage_bottom), outline=(255, 255, 0), width=3)
-        draw.rectangle((right_left, stage_top, stage_right, top_bottom), outline=(0, 255, 255), width=3)
+        draw.rectangle((content_left, stage_top, content_right, stage_bottom), outline=(255, 0, 255), width=3)
+        draw.rectangle((right_left, stage_top, content_right, top_bottom), outline=(0, 255, 255), width=3)
         if hud_box:
             draw.rectangle((hud_box["left"], hud_box["top"], hud_box["right"], hud_box["bottom"]), outline=(0, 255, 0), width=4)
         for comp in hud_components:

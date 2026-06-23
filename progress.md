@@ -5029,3 +5029,35 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the Time Tangled AS2 map reset confirmation chain and the root/map popup click-layer bug.
   - This still does not seal Time Tangled. Remaining active blockers include safe true F11 fullscreen, natural time-machine traversal, natural NPC no-repeat checks, item popup use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, and real audio-source inventory.
+
+## 2026-06-23 AS2 Time Tangled Maximize/F11 Visual Evidence Fix
+
+- Stayed on the reopened global blocker/Time Tangled wave; did not advance to Super Power.
+- Root causes found in the previous maximize failures:
+  - `tools/lib/qa.js` injected `POPTROPICA_QA_MONITOR` into `wait-window`, `click-window`, and `key-window`, but not `capture-window` or `capture-window-sequence`. Result: `wait-window` maximized Flashpoint on G32QC, but the screenshot phase could fall back to stale/old geometry and capture Codex or a restored 1440x900 client.
+  - `tools/qa-helper.py bring_to_front()` trusted `IsZoomed()` too narrowly and could call `SW_RESTORE` on a monitor-sized window, undoing the maximize immediately before capture.
+  - Flashpoint Navigator can report the maximized Win32 rect before DWM visually repaints it, so the screenshot needed a longer settle.
+  - `analyze-hud-diff` measured AS2 HUD right margin against the full screenshot, including black letterbox. That made a correct content-area HUD look too far left.
+  - F11 restore waited only 1.2s; Flash often returns a transient black frame, causing false post-F11 failures.
+- Code changes:
+  - `tools/lib/qa.js`: monitor injection now covers `capture-window` and `capture-window-sequence`.
+  - `tools/qa-helper.py`: maximize settle is now 1.25s; `bring_to_front()` no longer restores monitor-sized windows; `analyze-hud-diff` trims near-uniform black letterbox plus a tiny white window border before computing content-area HUD right margin.
+  - `tools/qa-as2-interaction-smoke.js`: default `f11RestoreSettleMs` is now 6000ms.
+- Static checks passed:
+  - `python -m py_compile tools\qa-helper.py`
+  - `node --check tools\lib\qa.js`
+  - `node --check tools\qa-as2-interaction-smoke.js`
+- Runtime evidence, all G32QC and QA muted:
+  - Windowed Time Tangled Present passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782218866694.json`.
+  - Maximized trusted-capture Time Tangled Present passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782218776169.json`.
+  - F11 fullscreen + restore passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782218931728.json`.
+  - All three have `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, and `failedKeys=[]`.
+- Screenshot review:
+  - `runtime-data/qa/as2/interaction-smoke/run-1782218776169/01-time-tangled-initial.png`: maximized game-only screenshot, player visible, HUD on the content upper-right, black letterbox only, no `#139ffd` blue leak.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782218931728/01-time-tangled-f11.png`: true F11 screenshot, player visible, HUD stable, no blue leak.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782218931728/01-time-tangled-post-f11.png`: restore screenshot stable; player and HUD remain visible.
+- Important testing note:
+  - With the current Codex window occupying G32QC, pure no-foreground maximized screenshots still capture Codex background and are not trustworthy visual evidence. For maximize/F11 visual proof, use short side-monitor foreground activation (`--allow-foreground-capture=1`) without moving the mouse. Normal windowed smoke can still run no-foreground.
+- Current conclusion:
+  - This closes the Time Tangled representative windowed/maximized/F11 visual evidence gap.
+  - This does not seal Time Tangled. Remaining blockers: natural time-machine route, natural NPC no-repeat checks, item use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, and real audio source inventory.
