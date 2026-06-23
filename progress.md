@@ -4967,3 +4967,36 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - The specific Time Tangled/Mali HUD + direct map popup path is now supported by current code, screenshots, and a map-specific guard that matches the actual visual contract.
   - This does not seal Time Tangled. Remaining blockers include safe F11 true-fullscreen without stealing focus, natural time-machine route, at least 3 natural NPC dialogue checks with no-repeat behavior, task item/file popup use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, full traversal, and real audio source inventory.
+
+## 2026-06-23 Time Tangled Lab Dialogue and AS2 Throttle Recheck
+
+- Stayed on reopened Time Tangled; did not advance to Super Power.
+- Fixed a QA hook mismatch in `tools/patch-as2-time-dialog-proof.js`:
+  - The AS2 framework now passes QA dialogue mode through `_global.flashpointQaAs2Dialog`.
+  - `flashpointQaTimeLabDialogMode()` previously normalized URL fallback `time-lab` to `time-lab-help`, but did not normalize the `_global` path.
+  - Result before the fix: the scene loaded and HUD/crop checks passed, but no Time Lab dialogue bubble appeared.
+  - The patch now normalizes `_global` mode `time-lab` to `time-lab-help` and removes repeated duplicate help-fallback blocks from exported AS.
+- Static/build verification:
+  - `node --check tools\patch-as2-time-dialog-proof.js`
+  - `node tools\patch-as2-time-dialog-proof.js`
+  - Patch report: `runtime-data/qa/as2/as2-time-lab-dialog-proof-patch.json`.
+  - Exported AS in `runtime-data/tmp/as2-time-lab-dialog-proof/scripts/scripts/DefineSprite_169/frame_1/DoAction.as` now normalizes `time-lab` before checking the three Time Lab text modes.
+- Runtime verification, all G32QC/no-foreground/QA muted:
+  - Help mode passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782211802401.json`.
+    - OCR: `请帮帮我们。故障搅乱了时间，未来岌岌可危。`
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782211802401/01-time-tangled-initial.png`.
+    - Server log records `QaDialogShown&mode=time-lab-help&...&bubble=true`.
+  - Printout mode passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782212034229.json`.
+    - OCR: `这份打印资料会说明我们需要你做什么。`
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782212034229/01-time-tangled-initial.png`.
+  - Followup mode passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782212106889.json`.
+    - OCR: `那份打印件会解释一切。我们全靠你了。`
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782212106889/01-time-tangled-initial.png`.
+  - AS2 duplicate `showSay()` throttle proof passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782212191025.json`.
+    - OCR: `重复对话测试`.
+    - Server log records `QaShowSayThrottle&suppressed=4&bubble=true&ticks=16`, proving 5 rapid same-line triggers yielded one visible bubble and four suppressed duplicates.
+- Shared result for all four runs:
+  - `ok=true`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, `failedKeys=[]`.
+- Current conclusion:
+  - This closes the controlled Time Lab three-line native dialogue proof and the global AS2 same-line duplicate throttle proof.
+  - This still does not seal Time Tangled. Natural time-machine traversal, natural NPC hot-zone no-repeat, item popup use-after-layout, external-link white screens, true F11 fullscreen under user-working constraints, map description Chinese, and real audio-source inventory remain open.

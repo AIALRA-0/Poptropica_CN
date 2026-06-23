@@ -92,6 +92,10 @@ function insertTimeLabQaDialogHook(content) {
       "   {",
       "      _loc1_ = String(flashpointQaTimeLabDialogModeCache);",
       "   }",
+      "   if(_loc1_ == \"time-lab\")",
+      "   {",
+      "      _loc1_ = \"time-lab-help\";",
+      "   }",
       "   if(_loc1_ == \"\" || _loc1_ == \"undefined\")",
       "   {",
       "      var _loc2_ = String(_root._url) + \"&\" + String(_level0._url) + \"&\" + String(flashpointQaTimeLabDialogSceneUrl);",
@@ -309,6 +313,37 @@ function insertTimeLabQaDialogHook(content) {
   if (next.includes(legacyHelpFallback)) {
     next = next.replace(legacyHelpFallback, explicitHelpFallback);
   }
+
+  next = next.replace(
+    /   if\((_loc\d+_) == "" \|\| \1 == "undefined"\)\n   \{\n      \1 = String\(flashpointQaTimeLabDialogModeCache\);\n   \}\n(?!   if\(\1 == "time-lab"\)\n   \{\n      \1 = "time-lab-help";\n   \}\n)   if\(\1 == "" \|\| \1 == "undefined"\)/u,
+    [
+      '   if($1 == "" || $1 == "undefined")',
+      "   {",
+      "      $1 = String(flashpointQaTimeLabDialogModeCache);",
+      "   }",
+      '   if($1 == "time-lab")',
+      "   {",
+      '      $1 = "time-lab-help";',
+      "   }",
+      '   if($1 == "" || $1 == "undefined")'
+    ].join("\n")
+  );
+  next = next.replace(
+    /(   if\((_loc\d+_) == "" \|\| \2 == "undefined"\)\n   \{\n      \2 = String\(flashpointQaTimeLabDialogModeCache\);\n   \}\n)(?!   if\(\2 == "time-lab"\)\n   \{\n      \2 = "time-lab-help";\n   \}\n)/u,
+    [
+      "$1",
+      '   if($2 == "time-lab")',
+      "   {",
+      '      $2 = "time-lab-help";',
+      "   }",
+      ""
+    ].join("\n")
+  );
+
+  next = next.replace(
+    /(   if\((_loc\d+_) == "time-lab-help"\)\n   \{\n      return "请帮帮我们。故障搅乱了时间，未来岌岌可危。";\n   \}\n)(?:   if\(\2 == "time-lab-help"\)\n   \{\n      return "请帮帮我们。故障搅乱了时间，未来岌岌可危。";\n   \}\n)+/gu,
+    "$1"
+  );
 
   const armMarker = "   _root.nextFrame();";
   const armReplacement = [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T10:23:43.960Z",
+  "generatedAt": "2026-06-23T10:49:38.842Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -617,14 +617,6 @@
       "notes": "QA only: delays AS2 gameplay scene loader when flashpointQaLoadingHoldMs is present so real loading UI can be screenshot-verified."
     },
     {
-      "assetId": "time-tangled:lab-qa-dialog-proof",
-      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLab.swf",
-      "changed": true,
-      "replaceTarget": "\\DefineSprite_169\\frame_1\\DoAction",
-      "notes": "QA only: triggers native Time Tangled Pendulums Lab manualSay bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
-    },
-    {
       "assetId": "as2-shared:framework-top-nav-anchor",
       "assetPath": "content/www.poptropica.com/framework.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
@@ -655,6 +647,14 @@
         "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
       "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
+    },
+    {
+      "assetId": "time-tangled:lab-qa-dialog-proof",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\sceneLab.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_169\\frame_1\\DoAction",
+      "notes": "QA only: triggers native Time Tangled Pendulums Lab manualSay bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     }
   ],
   "pendingSwfAssets": [],
