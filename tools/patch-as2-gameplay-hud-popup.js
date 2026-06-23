@@ -194,8 +194,75 @@ function patchFrameOne(content) {
       "      _root.__zhDirectMapButton.clear();",
       "      _root.__zhDirectMapButton._visible = false;",
       "      _root.__zhDirectMapButton.enabled = false;",
+      "      _root.__zhDirectMapButton.onPress = undefined;",
+      "      _root.__zhDirectMapButton.onRelease = undefined;",
+      "      _root.__zhDirectMapButton.useHandCursor = false;",
       "      _root.__zhDirectMapButton._x = -4000;",
       "      _root.__zhDirectMapButton._y = -4000;",
+      "   }",
+      "   if(_root != undefined)",
+      "   {",
+      "      _root.__zhMapButtonBounds = undefined;",
+      "      _root.__zhDirectOpenMap = undefined;",
+      "   }",
+      "}",
+      "function zhDisableGameplayHudButton(buttonClip)",
+      "{",
+      "   if(buttonClip == undefined)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   if(buttonClip.__zhHudHandlersSaved != true)",
+      "   {",
+      "      buttonClip.__zhSavedOnPress = buttonClip.onPress;",
+      "      buttonClip.__zhSavedOnRelease = buttonClip.onRelease;",
+      "      buttonClip.__zhSavedOnRollOver = buttonClip.onRollOver;",
+      "      buttonClip.__zhSavedUseHandCursor = buttonClip.useHandCursor;",
+      "      buttonClip.__zhHudHandlersSaved = true;",
+      "   }",
+      "   buttonClip.onPress = undefined;",
+      "   buttonClip.onRelease = undefined;",
+      "   buttonClip.useHandCursor = false;",
+      "   buttonClip._visible = false;",
+      "   buttonClip._alpha = 0;",
+      "   buttonClip.enabled = false;",
+      "   buttonClip._x = -4000;",
+      "   buttonClip._y = -4000;",
+      "}",
+      "function zhRestoreGameplayHudButton(buttonClip)",
+      "{",
+      "   var _loc2_;",
+      "   if(buttonClip == undefined || buttonClip.__zhHudHandlersSaved != true)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   _loc2_ = buttonClip.__zhSavedUseHandCursor;",
+      "   buttonClip.onPress = buttonClip.__zhSavedOnPress;",
+      "   buttonClip.onRelease = buttonClip.__zhSavedOnRelease;",
+      "   buttonClip.onRollOver = buttonClip.__zhSavedOnRollOver;",
+      "   buttonClip.useHandCursor = _loc2_ == undefined ? true : _loc2_;",
+      "   delete buttonClip.__zhSavedOnPress;",
+      "   delete buttonClip.__zhSavedOnRelease;",
+      "   delete buttonClip.__zhSavedOnRollOver;",
+      "   delete buttonClip.__zhSavedUseHandCursor;",
+      "   buttonClip.__zhHudHandlersSaved = false;",
+      "}",
+      "function zhRestoreGameplayHudButtons()",
+      "{",
+      "   var _loc2_;",
+      "   var _loc3_;",
+      "   var _loc4_;",
+      "   if(navBar == undefined)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   _loc2_ = [navBar.btnInventory,navBar.btnWardrobe,navBar.btnMap,navBar.btnSuperPower];",
+      "   _loc3_ = 0;",
+      "   while(_loc3_ < _loc2_.length)",
+      "   {",
+      "      _loc4_ = _loc2_[_loc3_];",
+      "      zhRestoreGameplayHudButton(_loc4_);",
+      "      _loc3_ += 1;",
       "   }",
       "}",
       "function zhHideGameplayHudNow()",
@@ -212,6 +279,7 @@ function patchFrameOne(content) {
       "         _loc4_ = _loc2_[_loc3_];",
       "         if(_loc4_ != undefined)",
       "         {",
+      "            zhDisableGameplayHudButton(_loc4_);",
       "            _loc4_._visible = false;",
       "            _loc4_._alpha = 0;",
       "            _loc4_.enabled = false;",
@@ -288,6 +356,7 @@ function patchFrameOne(content) {
       "   }",
       "   else",
       "   {",
+      "      zhRestoreGameplayHudButtons();",
       "      if(navBar != undefined)",
       "      {",
       "         navBar._visible = true;",
@@ -389,6 +458,596 @@ function patchFrameOne(content) {
     ].join("\n");
     next = replaceRequired(next, "function zhShowPopupBackdrop()", `${helper}\nfunction zhShowPopupBackdrop()`, "popup viewport split helper insertion point");
   }
+
+  if (!next.includes("function zhInstallPopupCloseHandlers()")) {
+    const helper = [
+      "function zhInstallPopupCloseHandlers()",
+      "{",
+      "   if(popupClose != undefined)",
+      "   {",
+      "      popupClose.enabled = true;",
+      "      popupClose.useHandCursor = true;",
+      "      popupClose.onRollOver = _root.useArrow;",
+      "      popupClose.onRelease = function()",
+      "      {",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupClose\",0);",
+      "         _root.closePopup();",
+      "      };",
+      "      if(popupClose.btnClose != undefined)",
+      "      {",
+      "         popupClose.btnClose.enabled = true;",
+      "         popupClose.btnClose.useHandCursor = true;",
+      "         popupClose.btnClose.onRollOver = _root.useArrow;",
+      "         popupClose.btnClose.onRelease = function()",
+      "         {",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseBtn\",0);",
+      "            _root.closePopup();",
+      "         };",
+      "      }",
+      "   }",
+      "   if(popupBack != undefined && popupBack.btnClose != undefined)",
+      "   {",
+      "      popupBack.btnClose.enabled = true;",
+      "      popupBack.btnClose.useHandCursor = true;",
+      "      popupBack.btnClose.onRollOver = _root.useArrow;",
+      "      popupBack.btnClose.onRelease = function()",
+      "      {",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupBackBtn\",0);",
+      "         _root.closePopup();",
+      "      };",
+      "   }",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhShowPopupBackdrop(popupName)", `${helper}\nfunction zhShowPopupBackdrop(popupName)`, "popup close handler helper insertion point");
+  }
+  next = next.replace(
+    [
+      "      _root.__zhDirectMapButton._visible = false;",
+      "      _root.__zhDirectMapButton.enabled = false;",
+      "      _root.__zhDirectMapButton._x = -4000;"
+    ].join("\n"),
+    [
+      "      _root.__zhDirectMapButton._visible = false;",
+      "      _root.__zhDirectMapButton.enabled = false;",
+      "      _root.__zhDirectMapButton.onPress = undefined;",
+      "      _root.__zhDirectMapButton.onRelease = undefined;",
+      "      _root.__zhDirectMapButton.useHandCursor = false;",
+      "      _root.__zhDirectMapButton._x = -4000;"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "      _root.__zhDirectMapButton._x = -4000;",
+      "      _root.__zhDirectMapButton._y = -4000;",
+      "   }",
+      "}"
+    ].join("\n"),
+    [
+      "      _root.__zhDirectMapButton._x = -4000;",
+      "      _root.__zhDirectMapButton._y = -4000;",
+      "   }",
+      "   if(_root != undefined)",
+      "   {",
+      "      _root.__zhMapButtonBounds = undefined;",
+      "      _root.__zhDirectOpenMap = undefined;",
+      "   }",
+      "}"
+    ].join("\n")
+  );
+  if (!next.includes("function zhDisableGameplayHudButton(")) {
+    next = replaceRequired(
+      next,
+      "function zhHideGameplayHudNow()",
+      [
+        "function zhDisableGameplayHudButton(buttonClip)",
+        "{",
+        "   if(buttonClip == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   if(buttonClip.__zhHudHandlersSaved != true)",
+        "   {",
+        "      buttonClip.__zhSavedOnPress = buttonClip.onPress;",
+        "      buttonClip.__zhSavedOnRelease = buttonClip.onRelease;",
+        "      buttonClip.__zhSavedOnRollOver = buttonClip.onRollOver;",
+        "      buttonClip.__zhSavedUseHandCursor = buttonClip.useHandCursor;",
+        "      buttonClip.__zhHudHandlersSaved = true;",
+        "   }",
+        "   buttonClip.onPress = undefined;",
+        "   buttonClip.onRelease = undefined;",
+        "   buttonClip.useHandCursor = false;",
+        "   buttonClip._visible = false;",
+        "   buttonClip._alpha = 0;",
+        "   buttonClip.enabled = false;",
+        "   buttonClip._x = -4000;",
+        "   buttonClip._y = -4000;",
+        "}",
+        "function zhRestoreGameplayHudButton(buttonClip)",
+        "{",
+        "   var _loc2_;",
+        "   if(buttonClip == undefined || buttonClip.__zhHudHandlersSaved != true)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   _loc2_ = buttonClip.__zhSavedUseHandCursor;",
+        "   buttonClip.onPress = buttonClip.__zhSavedOnPress;",
+        "   buttonClip.onRelease = buttonClip.__zhSavedOnRelease;",
+        "   buttonClip.onRollOver = buttonClip.__zhSavedOnRollOver;",
+        "   buttonClip.useHandCursor = _loc2_ == undefined ? true : _loc2_;",
+        "   delete buttonClip.__zhSavedOnPress;",
+        "   delete buttonClip.__zhSavedOnRelease;",
+        "   delete buttonClip.__zhSavedOnRollOver;",
+        "   delete buttonClip.__zhSavedUseHandCursor;",
+        "   buttonClip.__zhHudHandlersSaved = false;",
+        "}",
+        "function zhRestoreGameplayHudButtons()",
+        "{",
+        "   var _loc2_;",
+        "   var _loc3_;",
+        "   var _loc4_;",
+        "   if(navBar == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   _loc2_ = [navBar.btnInventory,navBar.btnWardrobe,navBar.btnMap,navBar.btnSuperPower];",
+        "   _loc3_ = 0;",
+        "   while(_loc3_ < _loc2_.length)",
+        "   {",
+        "      _loc4_ = _loc2_[_loc3_];",
+        "      zhRestoreGameplayHudButton(_loc4_);",
+        "      _loc3_ += 1;",
+        "   }",
+        "}",
+        "function zhHideGameplayHudNow()"
+      ].join("\n"),
+      "gameplay HUD handler save/restore helpers"
+    );
+  }
+  if (!next.includes("zhDisableGameplayHudButton(_loc4_);")) {
+    next = replaceRequired(
+      next,
+      [
+        "         _loc4_ = _loc2_[_loc3_];",
+        "         if(_loc4_ != undefined)",
+        "         {",
+        "            _loc4_._visible = false;"
+      ].join("\n"),
+      [
+        "         _loc4_ = _loc2_[_loc3_];",
+        "         if(_loc4_ != undefined)",
+        "         {",
+        "            zhDisableGameplayHudButton(_loc4_);",
+        "            _loc4_._visible = false;"
+      ].join("\n"),
+      "disable gameplay HUD handlers while hidden"
+    );
+  }
+  if (!next.includes("zhRestoreGameplayHudButtons();\n      if(navBar != undefined)")) {
+    next = replaceRequired(
+      next,
+      [
+        "   else",
+        "   {",
+        "      if(navBar != undefined)"
+      ].join("\n"),
+      [
+        "   else",
+        "   {",
+        "      zhRestoreGameplayHudButtons();",
+        "      if(navBar != undefined)"
+      ].join("\n"),
+      "restore gameplay HUD handlers after popup"
+    );
+  }
+  if (!next.includes("function zhTryClosePopupFromMouse(")) {
+    next = replaceRequired(
+      next,
+      "function zhHidePopupCloseHit()",
+      [
+        "function zhTryClosePopupFromMouse(source)",
+        "{",
+        "   var _loc2_;",
+        "   var _loc3_ = 18;",
+        "   var _loc4_;",
+        "   var _loc5_;",
+        "   if(_root == undefined || popupClose == undefined || popupClose._visible != true)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc4_ = _root._xmouse;",
+        "   _loc5_ = _root._ymouse;",
+        "   if(popupClose.getBounds != undefined)",
+        "   {",
+        "      _loc2_ = popupClose.getBounds(_root);",
+        "      if(_loc2_ != undefined && _loc4_ >= Number(_loc2_.xMin) - _loc3_ && _loc4_ <= Number(_loc2_.xMax) + _loc3_ && _loc5_ >= Number(_loc2_.yMin) - _loc3_ && _loc5_ <= Number(_loc2_.yMax) + _loc3_)",
+        "      {",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source,0);",
+        "         _root.closePopup();",
+        "         return true;",
+        "      }",
+        "   }",
+        "   if(_loc4_ >= 720 && _loc4_ <= 930 && _loc5_ >= 18 && _loc5_ <= 110)",
+        "   {",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source + \"Fallback\",0);",
+        "      _root.closePopup();",
+        "      return true;",
+        "   }",
+        "   return false;",
+        "}",
+        "function zhHidePopupCloseHit()"
+      ].join("\n"),
+      "popup close global mouse helper"
+    );
+  }
+  if (!next.includes("zhOpenDirectMapBlockedByPopup")) {
+    next = next.replace(
+      [
+        "function zhOpenDirectMap()",
+        "{",
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }"
+      ].join("\n"),
+      [
+        "function zhOpenDirectMap()",
+        "{",
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "   {",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);",
+        "      return undefined;",
+        "   }"
+      ].join("\n")
+    );
+  }
+  if (!next.includes("zhTryClosePopupFromMouse(\"openDirectMap\")")) {
+    next = replaceRequired(
+      next,
+      [
+        "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "   {",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);",
+        "      return undefined;",
+        "   }"
+      ].join("\n"),
+      [
+        "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "   {",
+        "      if(zhTryClosePopupFromMouse(\"openDirectMap\"))",
+        "      {",
+        "         return undefined;",
+        "      }",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=openDirectMapBlockedMap\",0);",
+        "      _root.closePopup();",
+        "      return undefined;",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);",
+        "      return undefined;",
+        "   }"
+      ].join("\n"),
+      "direct map popup close mouse bridge"
+    );
+  }
+  if (!next.includes("openDirectMapBlockedMap")) {
+    next = replaceRequired(
+      next,
+      [
+        "      if(zhTryClosePopupFromMouse(\"openDirectMap\"))",
+        "      {",
+        "         return undefined;",
+        "      }",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);"
+      ].join("\n"),
+      [
+        "      if(zhTryClosePopupFromMouse(\"openDirectMap\"))",
+        "      {",
+        "         return undefined;",
+        "      }",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=openDirectMapBlockedMap\",0);",
+        "      _root.closePopup();",
+        "      return undefined;",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup\",0);"
+      ].join("\n"),
+      "blocked direct map closes popup"
+    );
+  }
+  if (!next.includes("zhEnsureDirectMapButtonBlockedByPopup")) {
+    next = replaceRequired(
+      next,
+      [
+        "function zhEnsureDirectMapButton()",
+        "{",
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }"
+      ].join("\n"),
+      [
+        "function zhEnsureDirectMapButton()",
+        "{",
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "   {",
+        "      zhHideDirectMapButton();",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhEnsureDirectMapButtonBlockedByPopup\",0);",
+        "      return undefined;",
+        "   }"
+      ].join("\n"),
+      "direct map ensure popup gate"
+    );
+  }
+  if (!next.includes("zhMapMouseListenerBlockedByPopup")) {
+    next = replaceRequired(
+      next,
+      [
+        "      _root.__zhMapMouseListener.onMouseDown = function()",
+        "      {",
+        "         var _loc2_ = _root.__zhMapButtonBounds;"
+      ].join("\n"),
+      [
+        "      _root.__zhMapMouseListener.onMouseDown = function()",
+        "      {",
+        "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "         {",
+        "            zhHideDirectMapButton();",
+        "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhMapMouseListenerBlockedByPopup\",0);",
+        "            return undefined;",
+        "         }",
+        "         var _loc2_ = _root.__zhMapButtonBounds;"
+      ].join("\n"),
+      "direct map mouse listener popup gate"
+    );
+  }
+  if (!next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
+    next = replaceRequired(
+      next,
+      [
+        "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "         {",
+        "            zhHideDirectMapButton();",
+        "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhMapMouseListenerBlockedByPopup\",0);",
+        "            return undefined;",
+        "         }"
+      ].join("\n"),
+      [
+        "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "         {",
+        "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+        "            {",
+        "               return undefined;",
+        "            }",
+        "            zhHideDirectMapButton();",
+        "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhMapMouseListenerBlockedByPopup\",0);",
+        "            return undefined;",
+        "         }"
+      ].join("\n"),
+      "map mouse listener popup close bridge"
+    );
+  }
+  if (!next.includes("mapMouseListenerBlockedMap")) {
+    next = replaceRequired(
+      next,
+      [
+        "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+        "            {",
+        "               return undefined;",
+        "            }",
+        "            zhHideDirectMapButton();"
+      ].join("\n"),
+      [
+        "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+        "            {",
+        "               return undefined;",
+        "            }",
+        "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=mapMouseListenerBlockedMap\",0);",
+        "            _root.closePopup();",
+        "            return undefined;",
+        "            zhHideDirectMapButton();"
+      ].join("\n"),
+      "blocked map mouse listener closes popup"
+    );
+  }
+  if (!next.includes("zhDirectMapButtonBlockedByPopup")) {
+    next = replaceRequired(
+      next,
+      "   _loc2_.onPress = _loc2_.onRelease = zhOpenDirectMap;",
+      [
+        "   _loc2_.onPress = _loc2_.onRelease = function()",
+        "   {",
+        "      if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "      {",
+        "         zhHideDirectMapButton();",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapButtonBlockedByPopup\",0);",
+        "         return undefined;",
+        "      }",
+        "      return zhOpenDirectMap();",
+        "   };"
+      ].join("\n"),
+      "direct map button popup gate"
+    );
+  }
+  if (!next.includes("zhTryClosePopupFromMouse(\"directMapButton\")")) {
+    next = replaceRequired(
+      next,
+      [
+        "      if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "      {",
+        "         zhHideDirectMapButton();",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapButtonBlockedByPopup\",0);",
+        "         return undefined;",
+        "      }"
+      ].join("\n"),
+      [
+        "      if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+        "      {",
+        "         if(zhTryClosePopupFromMouse(\"directMapButton\"))",
+        "         {",
+        "            return undefined;",
+        "         }",
+        "         zhHideDirectMapButton();",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapButtonBlockedByPopup\",0);",
+        "         return undefined;",
+        "      }"
+      ].join("\n"),
+      "direct map button popup close bridge"
+    );
+  }
+  if (!next.includes("directMapButtonBlockedMap")) {
+    next = replaceRequired(
+      next,
+      [
+        "         if(zhTryClosePopupFromMouse(\"directMapButton\"))",
+        "         {",
+        "            return undefined;",
+        "         }",
+        "         zhHideDirectMapButton();"
+      ].join("\n"),
+      [
+        "         if(zhTryClosePopupFromMouse(\"directMapButton\"))",
+        "         {",
+        "            return undefined;",
+        "         }",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=directMapButtonBlockedMap\",0);",
+        "         _root.closePopup();",
+        "         return undefined;",
+        "         zhHideDirectMapButton();"
+      ].join("\n"),
+      "blocked direct map button closes popup"
+    );
+  }
+
+  next = next.replace(
+    "      popupClose.onRelease = closePopup;",
+    [
+      "      popupClose.onRelease = function()",
+      "      {",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupClose\",0);",
+      "         _root.closePopup();",
+      "      };"
+    ].join("\n")
+  );
+  next = next.replace(
+    "         popupClose.btnClose.onRelease = closePopup;",
+    [
+      "         popupClose.btnClose.onRelease = function()",
+      "         {",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseBtn\",0);",
+      "            _root.closePopup();",
+      "         };"
+    ].join("\n")
+  );
+  next = next.replace(
+    "      popupBack.btnClose.onRelease = closePopup;",
+    [
+      "      popupBack.btnClose.onRelease = function()",
+      "      {",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupBackBtn\",0);",
+      "         _root.closePopup();",
+      "      };"
+    ].join("\n")
+  );
+  if (!next.includes("function zhHidePopupCloseHit()")) {
+    const helper = [
+      "function zhHidePopupCloseHit()",
+      "{",
+      "   if(_root != undefined && _root.__zhPopupCloseHit != undefined)",
+      "   {",
+      "      _root.__zhPopupCloseHit.clear();",
+      "      _root.__zhPopupCloseHit._visible = false;",
+      "      _root.__zhPopupCloseHit.enabled = false;",
+      "      _root.__zhPopupCloseHit._x = -4000;",
+      "      _root.__zhPopupCloseHit._y = -4000;",
+      "   }",
+      "}",
+      "function zhRefreshPopupCloseHit()",
+      "{",
+      "   var _loc2_;",
+      "   var _loc3_;",
+      "   var _loc4_ = 10;",
+      "   if(_root == undefined || popupClose == undefined || popupClose._visible != true || popupClose.getBounds == undefined)",
+      "   {",
+      "      zhHidePopupCloseHit();",
+      "      return undefined;",
+      "   }",
+      "   _loc2_ = popupClose.getBounds(_root);",
+      "   if(!(_loc2_.xMax > _loc2_.xMin) || !(_loc2_.yMax > _loc2_.yMin))",
+      "   {",
+      "      zhHidePopupCloseHit();",
+      "      return undefined;",
+      "   }",
+      "   _loc3_ = _root.__zhPopupCloseHit;",
+      "   if(_loc3_ == undefined)",
+      "   {",
+      "      _loc3_ = _root.createEmptyMovieClip(\"__zhPopupCloseHit\",1042000);",
+      "      _root.__zhPopupCloseHit = _loc3_;",
+      "   }",
+      "   _loc3_.swapDepths(1042000);",
+      "   _loc3_.clear();",
+      "   _loc3_._x = 0;",
+      "   _loc3_._y = 0;",
+      "   _loc3_._visible = true;",
+      "   _loc3_.enabled = true;",
+      "   _loc3_.useHandCursor = true;",
+      "   _loc3_.beginFill(0,1);",
+      "   _loc3_.moveTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
+      "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMin) - _loc4_);",
+      "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMax) + _loc4_);",
+      "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMax) + _loc4_);",
+      "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
+      "   _loc3_.moveTo(760,28);",
+      "   _loc3_.lineTo(900,28);",
+      "   _loc3_.lineTo(900,95);",
+      "   _loc3_.lineTo(760,95);",
+      "   _loc3_.lineTo(760,28);",
+      "   _loc3_.endFill();",
+      "   _loc3_._alpha = 1;",
+      "   _loc3_.onRollOver = _root.useArrow;",
+      "   _loc3_.onPress = function()",
+      "   {",
+      "   };",
+      "   _loc3_.onRelease = function()",
+      "   {",
+      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseHit\",0);",
+      "      _root.closePopup();",
+      "   };",
+      "}",
+      "function zhShowPopupBackdrop(popupName)"
+    ].join("\n");
+    next = replaceRequired(next, "function zhShowPopupBackdrop(popupName)", helper, "popup close hit helper insertion point");
+  }
+  next = next.replace(/__zhPopupCloseHit",1030004/gu, "__zhPopupCloseHit\",1042000");
+  next = next.replace(/swapDepths\(1030004\)/gu, "swapDepths(1042000)");
+  next = next.replace("   _loc3_._alpha = 0;", "   _loc3_._alpha = 1;");
+  if (!next.includes("   _loc3_.moveTo(760,28);")) {
+    next = replaceRequired(
+      next,
+      [
+        "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMax) + _loc4_);",
+        "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMax) + _loc4_);",
+        "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
+        "   _loc3_.endFill();"
+      ].join("\n"),
+      [
+        "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMax) + _loc4_);",
+        "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMax) + _loc4_);",
+        "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
+        "   _loc3_.moveTo(760,28);",
+        "   _loc3_.lineTo(900,28);",
+        "   _loc3_.lineTo(900,95);",
+        "   _loc3_.lineTo(760,95);",
+        "   _loc3_.lineTo(760,28);",
+        "   _loc3_.endFill();"
+      ].join("\n"),
+      "popup close fixed hit rect hook"
+    );
+  }
+
   if (!next.includes("function zhFitTightPopupClip()")) {
     const helper = [
       "function zhFitTightPopupClip()",
@@ -828,6 +1487,22 @@ function patchFrameOne(content) {
       "tight popup fit watchdog load hook"
     );
   }
+  if (!next.includes("zhInstallPopupCloseHandlers();\n   zhShowPopupBackdrop(popupName);")) {
+    next = replaceRequired(
+      next,
+      [
+        "   zhShowPopupBackdrop(popupName);",
+        "   createEmptyMovieClip(\"popupClip\",popupDepth);"
+      ].join("\n"),
+      [
+        "   zhInstallPopupCloseHandlers();",
+        "   zhShowPopupBackdrop(popupName);",
+        "   zhInstallPopupCloseHandlers();",
+        "   createEmptyMovieClip(\"popupClip\",popupDepth);"
+      ].join("\n"),
+      "popup close handler show hook"
+    );
+  }
   if (!next.includes("zhScheduleQaPopup();")) {
     next = replaceRequired(
       next,
@@ -1099,6 +1774,26 @@ function patchFrameOne(content) {
       ].join("\n"),
       "popup hide fit watchdog stop hook"
     );
+  }
+  if (!next.includes("zhHidePopupCloseHit();\n   zhStopTightPopupFitWatchdog();")) {
+    next = replaceRequired(
+      next,
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   zhStopTightPopupFitWatchdog();"
+      ].join("\n"),
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   zhHidePopupCloseHit();",
+        "   zhStopTightPopupFitWatchdog();"
+      ].join("\n"),
+      "popup close hit hide hook"
+    );
+  }
+  if (!next.includes("zhRaisePopupLayers();\n   zhRefreshPopupCloseHit();")) {
+    next = next.replace(/   zhRaisePopupLayers\(\);/gu, "   zhRaisePopupLayers();\n   zhRefreshPopupCloseHit();");
   }
 
   if (!next.includes("_root.__zhPopupHudHidden == true")) {

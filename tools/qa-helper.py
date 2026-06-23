@@ -1816,6 +1816,99 @@ def command_analyze_loading_center(args):
     to_json(payload)
 
 
+def command_analyze_popup_close_button(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    rgb = np.array(image).astype(np.int16)
+    top_limit = max(1, min(height, int(round(height * float(args.top_ratio)))))
+    left_limit = max(0, min(width - 1, int(round(width * float(args.left_ratio)))))
+    region = rgb[:top_limit, left_limit:width, :]
+    red = region[:, :, 0]
+    green = region[:, :, 1]
+    blue = region[:, :, 2]
+    close_mask_region = (
+        (blue >= int(args.min_blue)) &
+        (green >= int(args.min_green)) &
+        (red <= int(args.max_red)) &
+        (blue >= red + int(args.min_blue_red_delta)) &
+        (blue >= green - int(args.max_green_blue_delta))
+    )
+    mask = np.zeros((height, width), dtype=bool)
+    mask[:top_limit, left_limit:width] = close_mask_region
+    components = _connected_components(mask, min_pixels=int(args.min_pixels))
+    candidates = []
+    for comp in components:
+        aspect = float(comp["width"]) / float(max(1, comp["height"]))
+        if comp["width"] < int(args.min_width) or comp["width"] > int(args.max_width):
+            continue
+        if comp["height"] < int(args.min_height) or comp["height"] > int(args.max_height):
+            continue
+        if aspect < float(args.min_aspect) or aspect > float(args.max_aspect):
+            continue
+        candidates.append({
+            **comp,
+            "aspect": round(aspect, 4),
+        })
+    candidates.sort(key=lambda comp: (comp["pixels"], comp["centerX"], -comp["top"]), reverse=True)
+    button = candidates[0] if candidates else None
+    checks = [
+        {
+            "name": "close_button_candidate_found",
+            "ok": button is not None,
+            "candidateCount": len(candidates),
+        }
+    ]
+    payload = {
+        "ok": button is not None,
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": width,
+            "height": height,
+        },
+        "analysisRegion": {
+            "left": int(left_limit),
+            "top": 0,
+            "right": int(width),
+            "bottom": int(top_limit),
+            "width": int(width - left_limit),
+            "height": int(top_limit),
+        },
+        "button": button,
+        "candidates": candidates[:12],
+        "thresholds": {
+            "minBlue": int(args.min_blue),
+            "minGreen": int(args.min_green),
+            "maxRed": int(args.max_red),
+            "minPixels": int(args.min_pixels),
+            "minWidth": int(args.min_width),
+            "maxWidth": int(args.max_width),
+            "minHeight": int(args.min_height),
+            "maxHeight": int(args.max_height),
+            "minAspect": float(args.min_aspect),
+            "maxAspect": float(args.max_aspect),
+        },
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((left_limit, 0, width - 1, top_limit), outline=(255, 255, 0), width=3)
+        for candidate in candidates[:12]:
+            draw.rectangle((candidate["left"], candidate["top"], candidate["right"], candidate["bottom"]), outline=(255, 128, 0), width=2)
+        if button:
+            draw.rectangle((button["left"], button["top"], button["right"], button["bottom"]), outline=(0, 255, 0), width=4)
+            draw.ellipse((button["centerX"] - 5, button["centerY"] - 5, button["centerX"] + 5, button["centerY"] + 5), outline=(0, 255, 0), width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
 def _parse_hex_color(value):
     text = str(value or "").strip().lstrip("#")
     if not text:
@@ -2956,6 +3049,27 @@ def main():
     loading_center_parser.add_argument("--min-blue-red-delta", type=int, default=12)
     loading_center_parser.add_argument("--max-green-blue-delta", type=int, default=45)
     loading_center_parser.set_defaults(func=command_analyze_loading_center)
+
+    close_button_parser = subparsers.add_parser("analyze-popup-close-button")
+    close_button_parser.add_argument("--input", required=True)
+    close_button_parser.add_argument("--output")
+    close_button_parser.add_argument("--annotated-output")
+    close_button_parser.add_argument("--top-ratio", type=float, default=0.28)
+    close_button_parser.add_argument("--left-ratio", type=float, default=0.45)
+    close_button_parser.add_argument("--min-blue", type=int, default=100)
+    close_button_parser.add_argument("--min-green", type=int, default=55)
+    close_button_parser.add_argument("--max-red", type=int, default=95)
+    close_button_parser.add_argument("--min-blue-red-delta", type=int, default=35)
+    close_button_parser.add_argument("--max-green-blue-delta", type=int, default=80)
+    close_button_parser.add_argument("--min-pixels", type=int, default=180)
+    close_button_parser.add_argument("--min-width", type=int, default=38)
+    close_button_parser.add_argument("--max-width", type=int, default=150)
+    close_button_parser.add_argument("--min-height", type=int, default=12)
+    close_button_parser.add_argument("--max-height", type=int, default=42)
+    close_button_parser.add_argument("--min-aspect", type=float, default=1.8)
+    close_button_parser.add_argument("--max-aspect", type=float, default=8.0)
+    close_button_parser.add_argument("--no-fail-exit", action="store_true")
+    close_button_parser.set_defaults(func=command_analyze_popup_close_button)
 
     visual_guard_parser = subparsers.add_parser("analyze-visual-guard")
     visual_guard_parser.add_argument("--input", required=True)

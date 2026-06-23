@@ -482,9 +482,15 @@ function captureWindowMatchesRuntime(capture, runtime) {
 
 function captureClickOffset(capture) {
   const mode = String(capture?.captureMode || "").toLowerCase();
-  const className = String(capture?.window?.className || "").toLowerCase();
-  if (mode === "client" && className.includes("mozillawindowclass")) {
-    return { x: 0, y: 110 };
+  if (mode === "client") {
+    const captureBox = capture?.captureBox || {};
+    const windowRect = capture?.targetWindow?.rect || capture?.window?.rect || {};
+    const dx = Number(captureBox.left) - Number(windowRect.left);
+    const dy = Number(captureBox.top) - Number(windowRect.top);
+    return {
+      x: Number.isFinite(dx) ? Math.round(dx) : 0,
+      y: Number.isFinite(dy) ? Math.round(dy) : 0
+    };
   }
   return { x: 0, y: 0 };
 }
@@ -1235,6 +1241,52 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
   }
 }
 
+function explicitPopupClosePointProvided(args) {
+  return args.popupCloseX !== undefined ||
+    args["popup-close-x"] !== undefined ||
+    args.popupCloseY !== undefined ||
+    args["popup-close-y"] !== undefined;
+}
+
+function analyzePopupCloseButton({ runDir, stem, suffix, capture, args, qaErrors }) {
+  const screenshotPath = capture?.savedTo || capture?.screenshotPath || "";
+  if (!screenshotPath || !fs.existsSync(screenshotPath)) {
+    return {
+      ok: false,
+      skipped: false,
+      reason: "popup_close_screenshot_missing",
+      screenshotPath
+    };
+  }
+  const outputPath = path.join(runDir, `${stem}-${suffix}-close-button.json`);
+  const annotatedPath = path.join(runDir, `${stem}-${suffix}-close-button.png`);
+  try {
+    return runPythonQa([
+      "analyze-popup-close-button",
+      "--input",
+      screenshotPath,
+      "--output",
+      outputPath,
+      "--annotated-output",
+      annotatedPath,
+      "--no-fail-exit"
+    ], {
+      timeoutMs: Number(args.popupCloseDetectTimeoutMs || args["popup-close-detect-timeout-ms"] || 30000)
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`popup-close-button-${suffix}`, error));
+    return {
+      ok: false,
+      skipped: false,
+      reason: "popup_close_button_detection_failed",
+      screenshotPath,
+      outputPath,
+      annotatedPath,
+      error: String(error.message || error)
+    };
+  }
+}
+
 function clickPopupClose({ runDir, stem, runtime, runtimeWindow, capture, args, qaErrors }) {
   const clickPath = path.join(runDir, `${stem}-popup-close-click.json`);
   const postWindowPath = path.join(runDir, `${stem}-popup-close-window.json`);
@@ -1249,14 +1301,24 @@ function clickPopupClose({ runDir, stem, runtime, runtimeWindow, capture, args, 
   const imageWidth = Number(capture.imageSize?.width || capture.captureBox?.width || 0);
   const imageHeight = Number(capture.imageSize?.height || capture.captureBox?.height || 0);
   const clickOffset = captureClickOffset(capture);
-  const point = {
-    x: Math.round(clickOffset.x + Number(args.popupCloseX || args["popup-close-x"] || imageWidth * Number(args.popupCloseXRatio || args["popup-close-x-ratio"] || 0.785))),
-    y: Math.round(clickOffset.y + Number(args.popupCloseY || args["popup-close-y"] || imageHeight * Number(args.popupCloseYRatio || args["popup-close-y-ratio"] || 0.135))),
-    source: (args.popupCloseX !== undefined || args["popup-close-x"] !== undefined || args.popupCloseY !== undefined || args["popup-close-y"] !== undefined)
-      ? "explicit"
-      : "capture-ratio"
-  };
+  const hasExplicitPoint = explicitPopupClosePointProvided(args);
+  const preCloseButton = hasExplicitPoint
+    ? { ok: false, skipped: true, reason: "explicit_close_point" }
+    : analyzePopupCloseButton({ runDir, stem, suffix: "popup-open", capture, args, qaErrors });
+  const point = preCloseButton?.ok && preCloseButton.button
+    ? {
+        x: Math.round(clickOffset.x + Number(preCloseButton.button.centerX)),
+        y: Math.round(clickOffset.y + Number(preCloseButton.button.centerY)),
+        source: "detected-close-button",
+        detectedButton: preCloseButton.button
+      }
+    : {
+        x: Math.round(clickOffset.x + Number(args.popupCloseX || args["popup-close-x"] || imageWidth * Number(args.popupCloseXRatio || args["popup-close-x-ratio"] || 0.785))),
+        y: Math.round(clickOffset.y + Number(args.popupCloseY || args["popup-close-y"] || imageHeight * Number(args.popupCloseYRatio || args["popup-close-y-ratio"] || 0.135))),
+        source: hasExplicitPoint ? "explicit" : "capture-ratio-fallback"
+      };
   try {
+    const closeLogOffset = fs.existsSync(GAME_SERVER_LOG_PATH) ? fs.statSync(GAME_SERVER_LOG_PATH).size : 0;
     const clickCount = Math.max(1, Number.parseInt(String(args.popupCloseClicks || args["popup-close-clicks"] || 1), 10) || 1);
     const waitMs = Math.max(0, Number(args.popupCloseWaitMs || args["popup-close-wait-ms"] || 1800));
     const clickPaths = [];
@@ -1316,13 +1378,35 @@ function clickPopupClose({ runDir, stem, runtime, runtimeWindow, capture, args, 
       args: { ...args, skipOcr: true }
     });
     const stageStable = Boolean(postCapture.stage?.stageRect);
+    const closeLogSegment = readLogSegment(GAME_SERVER_LOG_PATH, closeLogOffset);
+    const closeLogPath = path.join(runDir, `${stem}-popup-close-server.log`);
+    fs.writeFileSync(closeLogPath, closeLogSegment, "utf8");
+    const closeLogSummary = summarizeLogSegment(closeLogSegment);
+    const postCloseButton = analyzePopupCloseButton({
+      runDir,
+      stem,
+      suffix: "popup-after-close",
+      capture: postCapture.capture,
+      args,
+      qaErrors
+    });
+    const closeButtonStillVisible = Boolean(postCloseButton?.ok && postCloseButton.button);
+    const mapOpenedDuringClose = Number(closeLogSummary.mapRequestCount || 0) > 0;
+    const allowMapRequest = flagEnabled(args.allowPopupCloseMapRequest || args["allow-popup-close-map-request"]);
+    const closedCleanly = stageStable && !closeButtonStillVisible && (allowMapRequest || !mapOpenedDuringClose);
     return {
-      ok: stageStable,
+      ok: closedCleanly,
       skipped: false,
       clickPoint: point,
       clickPath,
       clickPaths,
       clickCount,
+      preCloseButton,
+      postCloseButton,
+      closeButtonStillVisible,
+      mapOpenedDuringClose,
+      closeLogPath,
+      closeLogSummary,
       windowPath: postWindowPath,
       runtimeWindow: postWindow,
       capture: postCapture.capture,
@@ -1330,7 +1414,13 @@ function clickPopupClose({ runDir, stem, runtime, runtimeWindow, capture, args, 
       visualGuard: postCapture.visualGuard,
       artifacts: postCapture.artifacts,
       stageStable,
-      reason: stageStable ? null : "post_close_stage_missing"
+      reason: !stageStable
+        ? "post_close_stage_missing"
+        : closeButtonStillVisible
+        ? "popup_close_button_still_visible"
+        : mapOpenedDuringClose && !allowMapRequest
+        ? "popup_close_opened_map"
+        : null
     };
   } catch (error) {
     qaErrors.push(formatQaError("popup-close-click", error));

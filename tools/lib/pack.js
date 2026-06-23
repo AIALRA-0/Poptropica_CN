@@ -2565,8 +2565,75 @@ function zhHideDirectMapButton()
       _root.__zhDirectMapButton.clear();
       _root.__zhDirectMapButton._visible = false;
       _root.__zhDirectMapButton.enabled = false;
+      _root.__zhDirectMapButton.onPress = undefined;
+      _root.__zhDirectMapButton.onRelease = undefined;
+      _root.__zhDirectMapButton.useHandCursor = false;
       _root.__zhDirectMapButton._x = -4000;
       _root.__zhDirectMapButton._y = -4000;
+   }
+   if(_root != undefined)
+   {
+      _root.__zhMapButtonBounds = undefined;
+      _root.__zhDirectOpenMap = undefined;
+   }
+}
+function zhDisableGameplayHudButton(buttonClip)
+{
+   if(buttonClip == undefined)
+   {
+      return undefined;
+   }
+   if(buttonClip.__zhHudHandlersSaved != true)
+   {
+      buttonClip.__zhSavedOnPress = buttonClip.onPress;
+      buttonClip.__zhSavedOnRelease = buttonClip.onRelease;
+      buttonClip.__zhSavedOnRollOver = buttonClip.onRollOver;
+      buttonClip.__zhSavedUseHandCursor = buttonClip.useHandCursor;
+      buttonClip.__zhHudHandlersSaved = true;
+   }
+   buttonClip.onPress = undefined;
+   buttonClip.onRelease = undefined;
+   buttonClip.useHandCursor = false;
+   buttonClip._visible = false;
+   buttonClip._alpha = 0;
+   buttonClip.enabled = false;
+   buttonClip._x = -4000;
+   buttonClip._y = -4000;
+}
+function zhRestoreGameplayHudButton(buttonClip)
+{
+   var _loc1_;
+   if(buttonClip == undefined || buttonClip.__zhHudHandlersSaved != true)
+   {
+      return undefined;
+   }
+   _loc1_ = buttonClip.__zhSavedUseHandCursor;
+   buttonClip.onPress = buttonClip.__zhSavedOnPress;
+   buttonClip.onRelease = buttonClip.__zhSavedOnRelease;
+   buttonClip.onRollOver = buttonClip.__zhSavedOnRollOver;
+   buttonClip.useHandCursor = _loc1_ == undefined ? true : _loc1_;
+   delete buttonClip.__zhSavedOnPress;
+   delete buttonClip.__zhSavedOnRelease;
+   delete buttonClip.__zhSavedOnRollOver;
+   delete buttonClip.__zhSavedUseHandCursor;
+   buttonClip.__zhHudHandlersSaved = false;
+}
+function zhRestoreGameplayHudButtons()
+{
+   var _loc1_;
+   var _loc2_;
+   var _loc3_;
+   if(navBar == undefined)
+   {
+      return undefined;
+   }
+   _loc1_ = [navBar.btnInventory,navBar.btnWardrobe,navBar.btnMap,navBar.btnSuperPower];
+   _loc2_ = 0;
+   while(_loc2_ < _loc1_.length)
+   {
+      _loc3_ = _loc1_[_loc2_];
+      zhRestoreGameplayHudButton(_loc3_);
+      _loc2_ += 1;
    }
 }
 function zhHideGameplayHudNow()
@@ -2583,6 +2650,7 @@ function zhHideGameplayHudNow()
          _loc3_ = _loc1_[_loc2_];
          if(_loc3_ != undefined)
          {
+            zhDisableGameplayHudButton(_loc3_);
             _loc3_._visible = false;
             _loc3_._alpha = 0;
             _loc3_.enabled = false;
@@ -2659,6 +2727,7 @@ function zhSetPopupHudHidden(hidden)
    }
    else
    {
+      zhRestoreGameplayHudButtons();
       if(navBar != undefined)
       {
          navBar._visible = true;
@@ -2721,6 +2790,135 @@ function zhPopupUsesTightViewport(popupName)
       return false;
    }
    return true;
+}
+function zhInstallPopupCloseHandlers()
+{
+   if(popupClose != undefined)
+   {
+      popupClose.enabled = true;
+      popupClose.useHandCursor = true;
+      popupClose.onRollOver = _root.useArrow;
+      popupClose.onRelease = function()
+      {
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupClose",0);
+         _root.closePopup();
+      };
+      if(popupClose.btnClose != undefined)
+      {
+         popupClose.btnClose.enabled = true;
+         popupClose.btnClose.useHandCursor = true;
+         popupClose.btnClose.onRollOver = _root.useArrow;
+         popupClose.btnClose.onRelease = function()
+         {
+            loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseBtn",0);
+            _root.closePopup();
+         };
+      }
+   }
+   if(popupBack != undefined && popupBack.btnClose != undefined)
+   {
+      popupBack.btnClose.enabled = true;
+      popupBack.btnClose.useHandCursor = true;
+      popupBack.btnClose.onRollOver = _root.useArrow;
+      popupBack.btnClose.onRelease = function()
+      {
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupBackBtn",0);
+         _root.closePopup();
+      };
+   }
+}
+function zhHidePopupCloseHit()
+{
+   if(_root != undefined && _root.__zhPopupCloseHit != undefined)
+   {
+      _root.__zhPopupCloseHit.clear();
+      _root.__zhPopupCloseHit._visible = false;
+      _root.__zhPopupCloseHit.enabled = false;
+      _root.__zhPopupCloseHit._x = -4000;
+      _root.__zhPopupCloseHit._y = -4000;
+   }
+}
+function zhTryClosePopupFromMouse(source)
+{
+   var _loc1_;
+   var _loc2_ = 18;
+   var _loc3_;
+   var _loc4_;
+   if(_root == undefined || popupClose == undefined || popupClose._visible != true)
+   {
+      return false;
+   }
+   _loc3_ = _root._xmouse;
+   _loc4_ = _root._ymouse;
+   if(popupClose.getBounds != undefined)
+   {
+      _loc1_ = popupClose.getBounds(_root);
+      if(_loc1_ != undefined && _loc3_ >= Number(_loc1_.xMin) - _loc2_ && _loc3_ <= Number(_loc1_.xMax) + _loc2_ && _loc4_ >= Number(_loc1_.yMin) - _loc2_ && _loc4_ <= Number(_loc1_.yMax) + _loc2_)
+      {
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=" + source,0);
+         _root.closePopup();
+         return true;
+      }
+   }
+   if(_loc3_ >= 720 && _loc3_ <= 930 && _loc4_ >= 18 && _loc4_ <= 110)
+   {
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=" + source + "Fallback",0);
+      _root.closePopup();
+      return true;
+   }
+   return false;
+}
+function zhRefreshPopupCloseHit()
+{
+   var _loc1_;
+   var _loc2_;
+   var _loc3_ = 10;
+   if(_root == undefined || popupClose == undefined || popupClose._visible != true || popupClose.getBounds == undefined)
+   {
+      zhHidePopupCloseHit();
+      return undefined;
+   }
+   _loc1_ = popupClose.getBounds(_root);
+   if(!(_loc1_.xMax > _loc1_.xMin) || !(_loc1_.yMax > _loc1_.yMin))
+   {
+      zhHidePopupCloseHit();
+      return undefined;
+   }
+   _loc2_ = _root.__zhPopupCloseHit;
+   if(_loc2_ == undefined)
+   {
+      _loc2_ = _root.createEmptyMovieClip("__zhPopupCloseHit",1042000);
+      _root.__zhPopupCloseHit = _loc2_;
+   }
+   _loc2_.swapDepths(1042000);
+   _loc2_.clear();
+   _loc2_._x = 0;
+   _loc2_._y = 0;
+   _loc2_._visible = true;
+   _loc2_.enabled = true;
+   _loc2_.useHandCursor = true;
+   _loc2_.beginFill(0,1);
+   _loc2_.moveTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMin) - _loc3_);
+   _loc2_.lineTo(Number(_loc1_.xMax) + _loc3_,Number(_loc1_.yMin) - _loc3_);
+   _loc2_.lineTo(Number(_loc1_.xMax) + _loc3_,Number(_loc1_.yMax) + _loc3_);
+   _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMax) + _loc3_);
+   _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMin) - _loc3_);
+   _loc2_.moveTo(760,28);
+   _loc2_.lineTo(900,28);
+   _loc2_.lineTo(900,95);
+   _loc2_.lineTo(760,95);
+   _loc2_.lineTo(760,28);
+   _loc2_.endFill();
+   _loc2_._alpha = 1;
+   _loc2_.onRollOver = _root.useArrow;
+   _loc2_.onPress = function()
+   {
+   };
+   _loc2_.onRelease = function()
+   {
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseHit",0);
+      _root.closePopup();
+   };
 }
 function zhShowPopupBackdrop(popupName)
 {
@@ -2931,6 +3129,7 @@ function zhRaisePopupLayers()
 }
 function zhHidePopupBackdrop()
 {
+   zhHidePopupCloseHit();
    zhStopTightPopupFitWatchdog();
    zhNotifyPopupViewport(false);
    if(_root != undefined && _root.__zhPopupBackdrop != undefined)
@@ -2948,6 +3147,18 @@ function zhOpenDirectMap()
 {
    if(_root == undefined)
    {
+      return undefined;
+   }
+   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())
+   {
+      if(zhTryClosePopupFromMouse("openDirectMap"))
+      {
+         return undefined;
+      }
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=openDirectMapBlockedMap",0);
+      _root.closePopup();
+      return undefined;
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhOpenDirectMapBlockedByPopup",0);
       return undefined;
    }
    _root.__zhMapSuppressBgUntil = getTimer() + 1200;
@@ -2988,6 +3199,12 @@ function zhEnsureDirectMapButton()
 {
    if(_root == undefined)
    {
+      return undefined;
+   }
+   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())
+   {
+      zhHideDirectMapButton();
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhEnsureDirectMapButtonBlockedByPopup",0);
       return undefined;
    }
    var zhMapButton = _root.__zhDirectMapButton;
@@ -3033,6 +3250,19 @@ function zhEnsureDirectMapButton()
       _root.__zhMapMouseListener = new Object();
       _root.__zhMapMouseListener.onMouseDown = function()
       {
+         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())
+         {
+            if(zhTryClosePopupFromMouse("mapMouseListener"))
+            {
+               return undefined;
+            }
+            loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=mapMouseListenerBlockedMap",0);
+            _root.closePopup();
+            return undefined;
+            zhHideDirectMapButton();
+            loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhMapMouseListenerBlockedByPopup",0);
+            return undefined;
+         }
          var zhMapBounds = _root.__zhMapButtonBounds;
          if(zhMapBounds != undefined && _root._xmouse >= zhMapBounds.left && _root._xmouse <= zhMapBounds.right && _root._ymouse >= zhMapBounds.top && _root._ymouse <= zhMapBounds.bottom)
          {
@@ -3044,7 +3274,23 @@ function zhEnsureDirectMapButton()
       };
       Mouse.addListener(_root.__zhMapMouseListener);
    }
-   zhMapButton.onPress = zhMapButton.onRelease = zhOpenDirectMap;
+   zhMapButton.onPress = zhMapButton.onRelease = function()
+   {
+      if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())
+      {
+         if(zhTryClosePopupFromMouse("directMapButton"))
+         {
+            return undefined;
+         }
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=directMapButtonBlockedMap",0);
+         _root.closePopup();
+         return undefined;
+         zhHideDirectMapButton();
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapButtonBlockedByPopup",0);
+         return undefined;
+      }
+      return zhOpenDirectMap();
+   };
 }
 function zhScheduleAutoMap()
 {
@@ -3671,7 +3917,8 @@ btnPause.onRollOver = _root.useArrow;`,
    zhShowPopupBackdrop("inventory.swf");
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/inventory.swf");
-   zhRaisePopupLayers();`,
+   zhRaisePopupLayers();
+   zhRefreshPopupCloseHit();`,
     "gameplay inventory popup backdrop"
   );
 
@@ -3701,11 +3948,14 @@ function popup(popupName, showBack, btnCloseOnTop, hideBtnClose)`,
       popupBack.btnClose._visible = false;
       popupClose._visible = false;
    }
+   zhInstallPopupCloseHandlers();
    zhShowPopupBackdrop(popupName);
+   zhInstallPopupCloseHandlers();
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/" + popupName);
    zhStartTightPopupFitWatchdog(popupName);
-   zhRaisePopupLayers();`,
+   zhRaisePopupLayers();
+   zhRefreshPopupCloseHit();`,
     "gameplay popup backdrop"
   );
 
@@ -3886,6 +4136,12 @@ camera.scene.bg.onPress = function()
 {
    if(_root.__zhMapSuppressBgUntil != undefined && getTimer() < _root.__zhMapSuppressBgUntil)
    {
+      return undefined;
+   }
+   if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())
+   {
+      zhHideDirectMapButton();
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhBgMapBoundsBlockedByPopup",0);
       return undefined;
    }
    var zhMapBounds = _root.__zhMapButtonBounds;

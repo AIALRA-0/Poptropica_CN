@@ -4712,3 +4712,35 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Important non-closure:
   - `malidocs` close flow is still not sealed. After close, the game remains on a Time Machine/Time map popup layer instead of returning to normal gameplay; evidence: `runtime-data/qa/as2/interaction-smoke/run-1782182012427/01-time-tangled-popup-close.png`.
   - Do not mark Time Tangled sealed until the item popup close chain, natural time-device route, natural NPC hot-zone no-repeat checks, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory are handled.
+
+## 2026-06-23 AS2 Time Tangled malidocs Close Chain Sealed
+
+- Paused broad island progression and focused on the user-reported Time Tangled task-file popup blocker.
+- Root cause:
+  - The visible `malidocs.swf` close button was not the actual failed target.
+  - A hidden/right-top map hotzone and map mouse listener could receive the click first. It no longer opened `map.swf` after earlier guards, but it still blocked `popupClose`.
+  - Screenshot coordinates and Flash root coordinates did not match reliably enough for a coordinate-only fix.
+- Code changes:
+  - `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js` now disable and restore gameplay HUD button handlers while popups are open.
+  - Direct map button, map mouse listener, and `zhOpenDirectMap()` now treat popup-state hidden map hits as popup-close attempts and call `_root.closePopup()` instead of opening or blocking map.
+  - `__zhPopupCloseHit` was raised above the direct map hotzone.
+  - `tools/qa-helper.py` gained `analyze-popup-close-button` to locate the blue `关闭` button in screenshots.
+  - `tools/qa-as2-interaction-smoke.js` now auto-detects popup close button centers and converts client-capture coordinates to window-relative click coordinates from `captureBox - window.rect`, removing the need for hard-coded `--popup-close-y 188`.
+- Verification:
+  - Static checks passed:
+    - `node --check tools/patch-as2-gameplay-hud-popup.js`
+    - `node --check tools/lib/pack.js`
+    - `node --check tools/qa-as2-interaction-smoke.js`
+    - `python -m py_compile tools/qa-helper.py`
+  - Rebuilt AS2 gameplay/runtime via `node tools/patch-as2-gameplay-hud-popup.js`.
+  - Explicit close coordinate regression passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782187617261.json`.
+  - Auto-detected close regression passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782187745277.json`.
+  - Final result: `ok=true`, `passed=1`, `failed=0`, `popupClose.ok=true`, `closeButtonStillVisible=false`, `mapOpenedDuringClose=false`, `audioActive=0`.
+  - Close log proof: `PopupClosePressed&target=openDirectMapBlockedMap`, with no `map.swf` request during popup close.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782187745277/01-time-tangled-popup-close.png` returns to the Mali scene and has no close-button residue.
+- Added `HUD_VISUAL_CONTRACT.zh-CN.md`:
+  - Defines the right-top HUD standard using actual Flash stage geometry, not subjective code coordinates.
+  - Documents popup/task-item expectations and the evidence tools required for future passes.
+- Current conclusion:
+  - Time Tangled `malidocs` task-file close chain is closed.
+  - Time Tangled remains reopened overall. Still open: natural time-machine route, more era scenes, blue-edge/camera checks beyond the sample, natural NPC no-repeat hot-zone checks, native arrow labels, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.

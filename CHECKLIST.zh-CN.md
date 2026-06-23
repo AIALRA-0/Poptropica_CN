@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-22 22:50 EDT
+更新时间：2026-06-23 00:20 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 00:20 EDT：新增 `HUD_VISUAL_CONTRACT.zh-CN.md`，把“右上角 HUD 正确”改成以真实 Flash 舞台为基准的像素级契约；后续 HUD 不能再只凭代码坐标或能点击判断。AS2 Time Tangled `malidocs.swf` 任务文件关闭链已从 blocker 改为通过：修复隐藏地图热区抢关闭按钮的问题，popup 打开时任何隐藏地图入口触发都会关闭当前 popup，而不会跳到地图。最新 G32QC/no-foreground/静音自动回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782187745277.json` 通过，`popupClose.ok=true`，`closeButtonStillVisible=false`，`mapOpenedDuringClose=false`，关闭日志为 `PopupClosePressed&target=openDirectMapBlockedMap`；截图 `runtime-data/qa/as2/interaction-smoke/run-1782187745277/01-time-tangled-popup-close.png` 人工复核为回到 Mali 场景，无 `关闭` 按钮残留。该项只关闭任务文件关闭链，不代表 Time Tangled 全岛封版；左/右蓝边自然路线复核、时间装置物品链、自然 NPC no-repeat、外链白屏和真实音频仍未关闭。
 
 当前项目还不能声明成品完成，但 AS3 P0 代表样本继续前进，AS2 对话和 AS2 窗口/F11 代表样本也开始闭环。`1781865386476` 四岛回归覆盖 Monster Carnival、Poptropicon、Reality TV Wild Safari、Timmy Failure，4/4 通过 resize、maximize、F11 fullscreen、视觉稳定和 post-viewport 中文对话检查。新的 F11 场景切换专项 `1781873821483` 已在 G32QC 真全屏 2560x1439 下抓到 Poptropicon Parking -> Center 的真实加载 Logo/进度点，中心偏移约 x=-3/y=12 与 x=10/y=-50，均在阈值内。随后 `1781874030360` 复测 Poptropicon + Timmy，2/2 通过中文对话、resize、maximize、F11 稳定性。AS2 Mystery Train `EdisonCabin` 已通过 `1781882735773`：原生 Edison 气泡显示中文“等我把这里布置好...先去见见其他乘客吧”，OCR 含预期片段 `乘客`，场景证据、地图点击、视觉守卫通过，音频会话为 0。AS2 Spy `SpyMain` 已通过 `1781886126401`：运行时进入真实 SpyMain 场景，QA hook 只调用游戏原生 `manualSay` 气泡，OCR 捕获中文，scene evidence/visual guard/audio mute 通过；人工复核 `1781885938525` 可见“和 D 局长谈过后再来找我。”，`1781886012217` 可见“我有个关于斯派格拉斯博士的重要消息要告诉你。”，静态 `the hair club` 美术字保持英文。AS2 Mystery Train 主街 `1781882945247` 通过窗口模式 loading 居中和 F11 稳定场景截图，F11 客户区截图为 `2560x1306`，超过当前 80% 尺寸门槛；人工检查 HUD/角色/场景稳定。AS2 Early Poptropica / Spy / Super Power 批量样本 `1781883257875` 进一步证明三岛均能进场景、F11 后 HUD/角色/场景稳定、音频会话为 0；其中 Early 还捕获到居中 `Poptropica LOADING`，Spy/Super Power 因加载已进入场景而未捕获 loading 帧，记为证据缺口，不记为画面崩坏。旧 AS2 F11 代表截图曾有底部蓝色保存栏/裁切带；Early 当前 build 已通过 `1782087918807` 和 `1782087997744` 证明底部蓝边修掉、角色可见、HUD 稳定，后续仍需把同一口径扩展验证到更多 AS2 岛。静态笔记本页、Menu 图标、店铺/博物馆/箭头图片文字均按规则保留英文，不再做中文覆盖。QA 误判口径已收紧：门牌 `进入/公共房间`、静态报纸/店铺英文、以及 F11 loading overlay 不再能伪造成“中文对话通过”或“稳定画面通过”。仍未闭环的是：更多岛屿实玩、Timmy 自然剧情全流程、Monster 普通 NPC/自然剧情热区、更多 UI 面板、AS2 更多岛屿/真全屏 loading、全岛屿深度实玩。
 
@@ -550,7 +552,7 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 
 原则：一个岛达到“窗口/F11/loading、主要场景切换、NPC/剧情对话、菜单/地图/背包 UI、原生箭头标签、静态美术字不硬盖、音频静音、截图记录”这一套通过标准后，才进入下一个岛。
 
-当前执行：`18. super-power`；`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench`、`07. survival`、`08. arabian-nights`、`09. escape-from-pelican-rock`、`10. galactic-hot-dogs`、`11. virus-hunter`、`12. mocktropica`、`13. mystery-of-the-map`、`14. early-poptropica`、`15. shark-tooth`、`16. 24-carrot` 和 `17. time-tangled` 当前 build 封版基线通过。
+当前执行：`17. time-tangled` 重开验收；`18. super-power` 暂停进入。`01. poptropicon` 保留自然后台切场 blocker，不再在当前输入限制上空转；`02. timmy-failure`、`03. reality-tv-wild-safari`、`04. monster-carnival`、`05. mission-atlantis`、`06. monkey-wrench`、`07. survival`、`08. arabian-nights`、`09. escape-from-pelican-rock`、`10. galactic-hot-dogs`、`11. virus-hunter`、`12. mocktropica`、`13. mystery-of-the-map`、`14. early-poptropica`、`15. shark-tooth` 和 `16. 24-carrot` 当前 build 封版基线通过；`17. time-tangled` 仅部分 blocker 关闭，仍不得标记全岛封版。
 
 | 顺序 | 岛屿 | 引擎 | 当前状态 |
 |---|---|---|---|
