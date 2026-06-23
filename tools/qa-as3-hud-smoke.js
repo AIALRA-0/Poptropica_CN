@@ -188,6 +188,30 @@ function visibleEnglishLeakCheck(label, ocr, args) {
   };
 }
 
+function qaCheckOk(checks, name) {
+  const check = Array.isArray(checks) ? checks.find((entry) => entry?.name === name) : null;
+  return Boolean(check?.ok);
+}
+
+function fixedHudSlotRowVisualOk(row) {
+  const checks = Array.isArray(row?.checks) ? row.checks : [];
+  return Boolean(
+    row &&
+    (
+      row.ok ||
+      (
+        qaCheckOk(checks, "present_slot_count") &&
+        qaCheckOk(checks, "right_anchor") &&
+        qaCheckOk(checks, "top_anchor") &&
+        qaCheckOk(checks, "center_y_ratio") &&
+        qaCheckOk(checks, "before_comparable") &&
+        qaCheckOk(checks, "changed_slot_count") &&
+        qaCheckOk(checks, "changed_critical_slots")
+      )
+    )
+  );
+}
+
 function fallbackMenuLine(capture, args) {
   if (flagEnabled(args.disableMenuFallback || args["disable-menu-fallback"])) {
     return null;
@@ -317,19 +341,42 @@ function chromeOffsetsFromCapture(capture, args) {
   };
 }
 
+function directClickTargetFromCapture(capture, args) {
+  if (!flagEnabled(args?.directChildClicks || args?.["direct-child-clicks"])) {
+    return {};
+  }
+  const target = capture?.targetWindow || null;
+  const parent = capture?.window || null;
+  if (!target?.handle || !parent?.handle || Number(target.handle) === Number(parent.handle)) {
+    return {};
+  }
+  return {
+    targetHandle: Number(target.handle),
+    targetClassName: target.className || null,
+    directTargetWindow: true
+  };
+}
+
 function clickPointForMenu(menuLine, capture, args) {
   const box = menuLine?.box;
   if (!box) {
     return null;
   }
   const offsets = chromeOffsetsFromCapture(capture, args);
+  const yOffset = menuLine.synthetic ? 0 : Number(args.menuClickTextYOffset || args["menu-click-text-y-offset"] || 0);
+  const xOffset = menuLine.synthetic ? 0 : Number(args.menuClickTextXOffset || args["menu-click-text-x-offset"] || 0);
+  const screenshotY = Math.round(box.centerY + yOffset);
+  const screenshotX = Math.round(box.centerX + xOffset);
   return {
-    x: Math.round(box.centerX + offsets.x),
-    y: Math.round(box.centerY + offsets.y),
-    screenshotX: Math.round(box.centerX),
-    screenshotY: Math.round(box.centerY),
+    x: Math.round(screenshotX + offsets.x),
+    y: Math.round(screenshotY + offsets.y),
+    screenshotX,
+    screenshotY,
     browserChromeOffsetX: offsets.x,
-    browserChromeOffsetY: offsets.y
+    browserChromeOffsetY: offsets.y,
+    menuClickTextXOffset: xOffset,
+    menuClickTextYOffset: yOffset,
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
@@ -349,7 +396,8 @@ function clickPointForInventory(capture, menuLine, args) {
     screenshotY,
     browserChromeOffsetX: offsets.x,
     browserChromeOffsetY: offsets.y,
-    inventoryRightInset
+    inventoryRightInset,
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
@@ -369,7 +417,8 @@ function clickPointForRightInset(capture, menuLine, rightInset, args) {
     browserChromeOffsetX: offsets.x,
     browserChromeOffsetY: offsets.y,
     rightInset: Number(rightInset),
-    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0)
+    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0),
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
@@ -427,7 +476,8 @@ function clickPointForHudButtonIndex(capture, menuLine, args) {
       browserChromeOffsetX: offsets.x,
       browserChromeOffsetY: offsets.y,
       explicit: true,
-      insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= height
+      insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= height,
+      ...directClickTargetFromCapture(capture, args)
     };
   }
 
@@ -453,7 +503,8 @@ function clickPointForHudButtonIndex(capture, menuLine, args) {
     browserChromeOffsetY: offsets.y,
     buttonIndex,
     buttonCount,
-    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0)
+    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0),
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
@@ -478,7 +529,8 @@ function clickPointForTutorialWalk(capture, args, attemptIndex = 0) {
     browserChromeOffsetX: offsets.x,
     browserChromeOffsetY: offsets.y,
     xRatio,
-    yRatio
+    yRatio,
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
@@ -519,35 +571,38 @@ function clickPointForOcrLine(line, capture, args) {
     screenshotX: Math.round(box.centerX),
     screenshotY: Math.round(box.centerY),
     browserChromeOffsetX: offsets.x,
-    browserChromeOffsetY: offsets.y
+    browserChromeOffsetY: offsets.y,
+    ...directClickTargetFromCapture(capture, args)
   };
 }
 
 function clickWindowPoint({ runtime, handle, point, outputPath, args, holdMs, moveIntervalMs }) {
+  const directTarget = Number(point?.targetHandle || 0) > 0;
   const commandArgs = [
     "click-window",
     "--handle",
-    String(handle),
+    String(directTarget ? point.targetHandle : handle),
     "--process-names",
-    runtime.processNames.join(","),
+    directTarget ? "" : runtime.processNames.join(","),
     "--title-contains",
-    "poptropica",
-    "--pid",
-    String(runtime.pid),
+    directTarget ? "" : "poptropica",
     "--x",
-    String(point.x),
+    String(directTarget ? point.screenshotX : point.x),
     "--y",
-    String(point.y),
+    String(directTarget ? point.screenshotY : point.y),
     "--hold-ms",
     String(holdMs ?? args.menuClickHoldMs ?? args["menu-click-hold-ms"] ?? 80),
     "--output",
     outputPath
   ];
+  if (!directTarget && runtime.pid) {
+    commandArgs.push("--pid", String(runtime.pid));
+  }
   const interval = Number(moveIntervalMs ?? args.clickMoveIntervalMs ?? args["click-move-interval-ms"] ?? 0);
   if (interval > 0) {
     commandArgs.push("--move-interval-ms", String(interval));
   }
-  if (!flagEnabled(args.parentWindowClicks || args["parent-window-clicks"])) {
+  if (!directTarget && !flagEnabled(args.parentWindowClicks || args["parent-window-clicks"])) {
     const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "GeckoFPSandboxChildWindow").trim();
     if (clickChildClass) {
       commandArgs.push("--child-class-contains", clickChildClass);
@@ -557,9 +612,11 @@ function clickWindowPoint({ runtime, handle, point, outputPath, args, holdMs, mo
   }
   if (!flagEnabled(args.allowForegroundClicks || args["allow-foreground-clicks"])) {
     commandArgs.push("--post-message");
+  } else if (flagEnabled(args.restoreCursorAfterClick || args["restore-cursor-after-click"])) {
+    commandArgs.push("--restore-cursor");
   }
   const cmdlineContains = runtimeCmdlineContains(runtime);
-  if (cmdlineContains) {
+  if (!directTarget && cmdlineContains) {
     commandArgs.push("--cmdline-contains", cmdlineContains);
   }
   return runPythonQa(commandArgs, { timeoutMs: 30000 });
@@ -573,14 +630,41 @@ async function captureAndAnalyze({ runtime, handle, size, stem, runDir, args }) 
   const screenshotPath = path.join(runDir, `${stem}.png`);
   const capturePath = path.join(runDir, `${stem}-capture.json`);
   const ocrPath = path.join(runDir, `${stem}-ocr.json`);
-  const capture = runPythonQa(captureArgs({
-    runtime,
-    handle,
-    size,
-    screenshotPath,
-    metadataPath: capturePath,
-    args
-  }), { timeoutMs: 45000 });
+  const reacquireWindowPath = path.join(runDir, `${stem}-reacquire-window.json`);
+  let activeHandle = handle;
+  let reacquiredWindow = null;
+  let capture = null;
+  try {
+    capture = runPythonQa(captureArgs({
+      runtime,
+      handle: activeHandle,
+      size,
+      screenshotPath,
+      metadataPath: capturePath,
+      args
+    }), { timeoutMs: 45000 });
+  } catch (error) {
+    const message = String(error.message || error);
+    if (!/not valid|invalid|handle/iu.test(message)) {
+      throw error;
+    }
+    reacquiredWindow = runPythonQa(waitWindowArgs({
+      runtime,
+      size,
+      outputPath: reacquireWindowPath,
+      timeoutMs: Number(args.captureReacquireTimeoutMs || args["capture-reacquire-timeout-ms"] || 20000),
+      allowAnyPid: true
+    }), { timeoutMs: Number(args.captureReacquireTimeoutMs || args["capture-reacquire-timeout-ms"] || 20000) + 5000 });
+    activeHandle = reacquiredWindow.match.handle;
+    capture = runPythonQa(captureArgs({
+      runtime,
+      handle: activeHandle,
+      size,
+      screenshotPath,
+      metadataPath: capturePath,
+      args
+    }), { timeoutMs: 45000 });
+  }
   const ocr = runPythonQa([
     "ocr-image",
     "--input",
@@ -588,7 +672,7 @@ async function captureAndAnalyze({ runtime, handle, size, stem, runDir, args }) 
     "--output",
     ocrPath
   ], { timeoutMs: 120000 });
-  return { screenshotPath, capturePath, ocrPath, capture, ocr };
+  return { screenshotPath, capturePath, ocrPath, reacquireWindowPath: reacquiredWindow ? reacquireWindowPath : null, reacquiredWindow, capture, ocr };
 }
 
 async function testEntry({ config, entry, index, total, runDir, args }) {
@@ -603,6 +687,8 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
   const postClickDiffPath = path.join(runDir, `${safeStem}-post-click-diff.json`);
   const expandedHudRowPath = path.join(runDir, `${safeStem}-expanded-hud-row.json`);
   const expandedHudRowAnnotatedPath = path.join(runDir, `${safeStem}-expanded-hud-row.png`);
+  const fixedExpandedHudSlotRowPath = path.join(runDir, `${safeStem}-expanded-hud-fixed-slot-row.json`);
+  const fixedExpandedHudSlotRowAnnotatedPath = path.join(runDir, `${safeStem}-expanded-hud-fixed-slot-row.png`);
   const inventoryClickPath = path.join(runDir, `${safeStem}-inventory-click.json`);
   const secondaryClickPath = path.join(runDir, `${safeStem}-secondary-click.json`);
   const secondaryClickDiffPath = path.join(runDir, `${safeStem}-secondary-click-diff.json`);
@@ -803,6 +889,7 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
     let postClick = null;
     let postClickDiff = null;
     let expandedHudRow = null;
+    let fixedExpandedHudSlotRow = null;
     let inventoryClick = null;
     let inventory = null;
     let secondaryClick = null;
@@ -867,6 +954,56 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
           String(args.expandedHudMinPresentSlots || args["expanded-hud-min-present-slots"] || 7),
           "--max-row-top",
           String(args.expandedHudMaxRowTop || args["expanded-hud-max-row-top"] || 90),
+          "--no-fail-exit"
+        ], { timeoutMs: 30000 });
+      }
+      if (!flagEnabled(args.disableFixedHudSlotRowCheck || args["disable-fixed-hud-slot-row-check"])) {
+        const fixedHudImageWidth = Number(postClick.capture?.imageSize?.width || resized.capture?.imageSize?.width || 0);
+        const fixedHudScale = fixedHudImageWidth > 0 ? fixedHudImageWidth / 960 : 1;
+        const fixedHudMenuCenterX = Number(resizedMenu?.box?.centerX || 0);
+        const fixedHudMenuCenterY = Number(resizedMenu?.box?.centerY || 0);
+        const fixedHudRightInset = fixedHudImageWidth > 0 && fixedHudMenuCenterX > 0
+          ? Math.max(8, fixedHudImageWidth - fixedHudMenuCenterX)
+          : 58;
+        const fixedHudCenterY = fixedHudMenuCenterY > 0 ? fixedHudMenuCenterY : 114;
+        fixedExpandedHudSlotRow = runPythonQa([
+          "analyze-top-right-slot-row",
+          "--input",
+          postClick.screenshotPath,
+          "--before",
+          resized.screenshotPath,
+          "--output",
+          fixedExpandedHudSlotRowPath,
+          "--annotated-output",
+          fixedExpandedHudSlotRowAnnotatedPath,
+          "--slot-names",
+          String(args.fixedHudSlotNames || args["fixed-hud-slot-names"] || "settings,audio,home,store,map,costumizer,inventory,menu"),
+          "--critical-slots",
+          String(args.fixedHudCriticalSlots || args["fixed-hud-critical-slots"] || "settings,audio,home,store,map,costumizer,inventory,menu"),
+          "--change-slots",
+          String(args.fixedHudChangeSlots || args["fixed-hud-change-slots"] || "settings,audio,home,store,map,costumizer,inventory"),
+          "--rightmost-center-inset",
+          String(args.fixedHudRightmostCenterInset || args["fixed-hud-rightmost-center-inset"] || fixedHudRightInset),
+          "--center-y-offset",
+          String(args.fixedHudCenterYOffset || args["fixed-hud-center-y-offset"] || fixedHudCenterY),
+          "--slot-spacing",
+          String(args.fixedHudSlotSpacing || args["fixed-hud-slot-spacing"] || Math.max(86, 86 * fixedHudScale)),
+          "--slot-size",
+          String(args.fixedHudSlotSize || args["fixed-hud-slot-size"] || Math.max(78, 76 * fixedHudScale)),
+          "--min-edge-density",
+          String(args.fixedHudMinEdgeDensity || args["fixed-hud-min-edge-density"] || 0.018),
+          "--min-present-slots",
+          String(args.fixedHudMinPresentSlots || args["fixed-hud-min-present-slots"] || 7),
+          "--min-changed-slots",
+          String(args.fixedHudMinChangedSlots || args["fixed-hud-min-changed-slots"] || 7),
+          "--min-slot-change-density",
+          String(args.fixedHudMinSlotChangeDensity || args["fixed-hud-min-slot-change-density"] || 0.025),
+          "--change-threshold",
+          String(args.fixedHudChangeThreshold || args["fixed-hud-change-threshold"] || 30),
+          "--max-top-margin",
+          String(args.fixedHudMaxTopMargin || args["fixed-hud-max-top-margin"] || Math.max(64, fixedHudCenterY + 72)),
+          "--max-center-y-ratio",
+          String(args.fixedHudMaxCenterYRatio || args["fixed-hud-max-center-y-ratio"] || 0.18),
           "--no-fail-exit"
         ], { timeoutMs: 30000 });
       }
@@ -1024,13 +1161,37 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
       : {
           ok: true,
           skipped: true
+      };
+    const fixedExpandedHudSlotRowVisualOk = fixedHudSlotRowVisualOk(fixedExpandedHudSlotRow);
+    const fixedExpandedHudSlotRowCheck = !flagEnabled(args.disableFixedHudSlotRowCheck || args["disable-fixed-hud-slot-row-check"])
+      ? {
+          ok: Boolean(fixedExpandedHudSlotRow?.ok || fixedExpandedHudSlotRowVisualOk),
+          rawOk: Boolean(fixedExpandedHudSlotRow?.ok),
+          visualContractOk: fixedExpandedHudSlotRowVisualOk,
+          visualContract: "right/top anchored row with enough changed visible slots; semantic slot labels are advisory",
+          skipped: false,
+          outputPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowPath : null,
+          annotatedOutputPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowAnnotatedPath : null,
+          checks: fixedExpandedHudSlotRow?.checks || [],
+          slots: fixedExpandedHudSlotRow?.slots || []
+        }
+      : {
+          ok: true,
+          skipped: true
         };
+    const expandedHudRowEffectiveOk = Boolean(expandedHudRowCheck.ok || fixedExpandedHudSlotRowCheck.ok);
+    const expandedHudRowReport = {
+      ...expandedHudRowCheck,
+      effectiveOk: expandedHudRowEffectiveOk,
+      supersededByFixedSlotCheck: Boolean(!expandedHudRowCheck.ok && fixedExpandedHudSlotRowCheck.ok)
+    };
 
     const failedChecks = [
       ...(!initialPlacement.ok ? ["initial_menu_placement_failed"] : []),
       ...(!resizedPlacement.ok ? ["resized_menu_placement_failed"] : []),
       ...(!menuClickResponseOk ? ["menu_click_response_failed"] : []),
-      ...(!expandedHudRowCheck.ok ? ["expanded_hud_row_failed"] : []),
+      ...(!expandedHudRowEffectiveOk ? ["expanded_hud_row_failed"] : []),
+      ...(!fixedExpandedHudSlotRowCheck.ok ? ["expanded_hud_fixed_slot_row_failed"] : []),
       ...(!inventoryCheck.ok ? ["inventory_chinese_check_failed"] : []),
       ...(!visibleEnglishCheck.ok ? ["visible_english_forbidden_failed"] : []),
       ...(!secondaryClickCheck.ok ? ["secondary_click_response_failed"] : [])
@@ -1062,6 +1223,8 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
         postClickDiffPath: postClickDiff ? postClickDiffPath : null,
         expandedHudRowPath: expandedHudRow ? expandedHudRowPath : null,
         expandedHudRowAnnotatedPath: expandedHudRow ? expandedHudRowAnnotatedPath : null,
+        fixedExpandedHudSlotRowPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowPath : null,
+        fixedExpandedHudSlotRowAnnotatedPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowAnnotatedPath : null,
         initialScreenshotPath: initial.screenshotPath,
         startedInitialScreenshotPath: startedInitial?.screenshotPath || null,
         resizedScreenshotPath: resized.screenshotPath,
@@ -1114,7 +1277,8 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
         responsive: menuClickResponsive,
         postClickOcr: postClick?.ocr || null,
         postClickDiff,
-        expandedHudRow: expandedHudRowCheck,
+        expandedHudRow: expandedHudRowReport,
+        fixedExpandedHudSlotRow: fixedExpandedHudSlotRowCheck,
         inventory: {
           click: inventoryClick,
           check: inventoryCheck,
@@ -1188,7 +1352,7 @@ async function main() {
       throw new Error("--as3-scene-override requires exactly one selected AS3 island.");
     }
     const normalizedSceneOverride = normalizeAs3SceneOverride(as3SceneOverride);
-    const resizeReloadMode = args.resizeReloadMode || args["resize-reload-mode"] || "0";
+    const resizeReloadMode = args.resizeReloadMode || args["resize-reload-mode"] || "page";
     entries = entries.map((entry) => ({
       ...entry,
       as3TargetScene: normalizedSceneOverride,

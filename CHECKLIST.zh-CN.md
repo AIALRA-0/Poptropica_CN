@@ -1,12 +1,16 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 11:20 EDT
+更新时间：2026-06-23 14:44 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 14:44 EDT：重开 AS3 HUD 宽屏点击验收。新增 `npm run verify:as3-runtime-integrity`，直接验证 pack/runtime `Shell.swf`、`as3-direct.php` hash 一致，并反编译运行包里的 `Hud.as` 检查旧公式、静态 MENU 中文覆盖、右锚 helper 和 hit area。门禁先发现并修复 pack/runtime Shell 不一致；最新 `runtime-data/qa/as3/as3-runtime-integrity.json` 通过，运行包确认包含 `alpha=0.01`、`beginFill(16777215,0.01)`、`param1.hit = _loc3_`，且没有 `text="菜单"` 这类静态中文覆盖。随后多轮 G32QC/no-foreground/静音 1600x900 Poptropicon HUD 点击仍失败：最新 `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782240105920.json` 中右锚/top anchor 通过，但点击后 `changed_slot_count=0`，菜单未展开。当前判定：AS3 HUD 视觉右锚和运行包同步已收口，但宽屏真实点击尚未封版；需要一次 G32QC 侧屏真实鼠标点击或 AS3 事件级证据后才能关闭该 blocker。
+
+2026-06-23 13:10 EDT：修正 AS3 HUD “右上角”验收口径，避免继续出现我认为正常、用户截图看仍歪的判断偏差。新的口径是按 Flash 游戏内容可视区域右上角验收，不按浏览器窗口整幅右上角验收；菜单展开后必须同时满足 8 个槽位成行、右锚、顶部不下坠，并证明 7 个非 MENU 槽位点击前后发生真实变化。`tools/qa-helper.py analyze-top-right-slot-row` 已修正：点击前后截图若只有几像素客户区抖动，会裁到共同可见区域比较，并输出 `before_comparable/sameSize/comparableSlots/changedSlots`，不再因为 6px 抖动直接失败，也不跳过差分假通过。离线回放 `runtime-data/qa/as3/hud-smoke/run-1782233996202/01-poptropicon-expanded-hud-fixed-slot-row-recheck.json` 通过；正式 G32QC/no-foreground/静音回归 `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782234465659.json` 通过，`failedChecks=[]`、`expandedHudRow.ok=true`、`fixedExpandedHudSlotRow.ok=true`、右锚 `69.5px`、顶部 `60px`、7 个非 MENU 槽位变化通过。人工复核 `runtime-data/qa/as3/hud-smoke/run-1782234465659/01-poptropicon-post-click.png` 和 `.../01-poptropicon-expanded-hud-fixed-slot-row.png`：HUD 展开为游戏内容右上单行，静态 MENU 图标保持英文原图。该项只关闭 AS3 代表 HUD/检测误判缺口，不代表 Time Tangled 或全岛封版。
 
 2026-06-23 11:16 EDT：修正 Time Tangled Present 自然靠近科学家后的入门对话链。此前日志证明坐标条件满足、`char1.onPress` 存在，但运行时没有可见“请进来！”气泡；根因是该场景的自动触发链过早/过短，默认 `showSay` 没有留下可读 NPC 气泡。新增 `tools/patch-as2-time-present-entry.js`，只改 `scenePresent.swf` 的原生 `char1.sayFunction/checkPos`：等待 NPC 头像/嘴型/showSay 就绪，触发时把科学家放到玩家旁并调用原生 `_root.manualSay(char1,"请进来！")`，同时延长气泡等待到 600 帧，后续仍保留原场景进门逻辑，不做文字覆盖层。正式 G32QC/静音回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782227733415.json` 通过：`ok=true`、`failedChecks=[]`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`audioActive=0`；OCR 文本为 `请进来! 心 0000000`，服务日志记录 `AutoEntrySayFunction` 和 `AutoEntryManualSayBubble&bubble=1&wait=600`。人工复核截图 `runtime-data/qa/as2/interaction-smoke/run-1782227733415/01-time-tangled-initial.png`：科学家、角色、原生中文气泡同屏可见，右上 HUD 未重叠，左上淡暂停按钮未见。该项只关闭 Time Present 自然入门对话链；Time Tangled 仍未整岛封版，后续继续验证时间装置、更多 NPC、任务物品、外链和音频。
 
@@ -644,3 +648,21 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 - Monster Carnival、Mission Atlantis、Monkey Wrench、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map、Early Poptropica、Shark Tooth、24 Carrot 和 Time Tangled 当前 build 封版基线已闭合；自然剧情路径、普通 NPC 热区/更多深海/更多 FTUE/Survival/Arabian/Prison/GHD/Virus/Mocktropica/Viking/Early/Shark/Carrot/Time 更多房间和全流程仍未全审。
 - 按钮居中已有 Poptropicon、Timmy、Reality TV、Monster Carnival、Mission Atlantis、Survival、Arabian Nights、Escape from Pelican Rock、Galactic Hot Dogs、Virus Hunter、Mocktropica、Mystery of the Map 的背包/地图/商店确认框/设置面板首批证据；Monkey Wrench 已有设置/背包证据但 FTUE `mainLand` 不暴露商店/地图按钮；Early Poptropica、Shark Tooth、24 Carrot 已有 AS3 地图弹窗 `重新开始/开始` 和 AS2 HUD/MENU 稳定样本；全岛屿/全部面板仍未系统审计。
 - AS3 原生箭头/导航/native label 当前扫描范围已完成；AS2 native label 和静态资产替换清单未完成。
+
+## 2026-06-23 AS3 公共 HUD / resizeReload blocker
+
+- 状态：公共 AS3 HUD 右上角点击链和 wrapper resize 抖动已关闭；这不是任何单岛全流程封版。
+- 修复内容：
+  - 移除 AS3 MENU 静态图标的中文文字贴层，保留原英文美术。
+  - AS3 HUD MENU 增加多坐标系右上热区兜底，兜底只执行 `openHud(true)`，避免同一次 MouseDown/Click 打开后又关闭。
+  - AS3 wrapper 不再用 `window.outerWidth/outerHeight` 计算 Flash embed 尺寸，改用真实内容 viewport，并加入 5 秒 resizeReload 防抖，避免布局 watcher 反复重载 `Shell.swf` 抹掉刚打开的 HUD。
+  - `qa-as3-hud-smoke` 的固定槽位语义检查改为辅助信息，封版判定使用视觉合同：右上锚点、顶部位置、足够槽位变化和展开行可见。
+- 验证：
+  - `npm run verify:as3-runtime-integrity` 通过，报告 `runtime-data/qa/as3/as3-runtime-integrity.json`，生成时间 `2026-06-23T23:14:27.138Z`。
+  - Shell/runtime 哈希一致：`d1dfdc0e273d8655af646af65bd8626e997769089dcb1d4d20181d1086775c5c`。
+  - wrapper/runtime 哈希一致：`0e4a6f3bdd6d905565de9a0ef501b0f9f794a413c006a84176eb81e7d518b978`。
+  - G32QC/静音/侧屏 AS3 HUD smoke 通过：`runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782256759989.json`，`ok=true`、`failedKeys=[]`、`failedChecks=[]`。
+  - 人工复核截图：`runtime-data/qa/as3/hud-smoke/run-1782256759989/01-poptropicon-post-click.png`；展开栏位于游戏内容区右上，单行、不重叠，静态 MENU 保持英文。
+- 仍未完成：
+  - Time Tangled 仍需按新门槛继续自然路线封版。
+  - AS2/AS3 全岛窗口/F11、自然 NPC 对话、任务物品、外链、音频仍按岛顺序推进。

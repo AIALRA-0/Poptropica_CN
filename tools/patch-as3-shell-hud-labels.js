@@ -42,6 +42,37 @@ function findHudScript(root) {
 function applyHudLabelPatch(content) {
   let next = String(content || "").replace(/\r\n/gu, "\n");
 
+  if (!next.includes("import flash.display.Sprite;")) {
+    next = next.replace("   import flash.display.MovieClip;\n", "   import flash.display.MovieClip;\n   import flash.display.Sprite;\n");
+  }
+  if (!next.includes("import flash.events.MouseEvent;")) {
+    next = next.replace("   import flash.display.Sprite;\n", "   import flash.display.Sprite;\n   import flash.events.MouseEvent;\n");
+  }
+  if (!next.includes("import flash.external.ExternalInterface;")) {
+    next = next.replace("   import flash.events.MouseEvent;\n", "   import flash.events.MouseEvent;\n   import flash.external.ExternalInterface;\n");
+  }
+  if (!next.includes("import flash.utils.getTimer;")) {
+    next = next.replace("   import flash.geom.ColorTransform;\n", "   import flash.geom.ColorTransform;\n   import flash.utils.getTimer;\n");
+  }
+
+  if (!next.includes("_zhLastHudFallbackMs")) {
+    next = next.replace(
+      "      protected var _hudBtnEntity:Entity;\n",
+      "      protected var _hudBtnEntity:Entity;\n      private var _zhLastHudFallbackMs:Number = 0;\n"
+    );
+  }
+  if (!next.includes("this.zhRegisterHudBrowserCallbacks();")) {
+    next = next.replace(
+      "         this.reset();\n         super.groupReady();",
+      "         this.reset();\n         this.zhInstallHudStageMouseFallback();\n         SceneUtil.delay(this,0.25,this.zhInstallHudStageMouseFallback);\n         SceneUtil.delay(this,1,this.zhInstallHudStageMouseFallback);\n         this.zhRegisterHudBrowserCallbacks();\n         super.groupReady();"
+    );
+  } else if (!next.includes("SceneUtil.delay(this,0.25,this.zhInstallHudStageMouseFallback);")) {
+    next = next.replace(
+      "         this.reset();\n         this.zhRegisterHudBrowserCallbacks();",
+      "         this.reset();\n         this.zhInstallHudStageMouseFallback();\n         SceneUtil.delay(this,0.25,this.zhInstallHudStageMouseFallback);\n         SceneUtil.delay(this,1,this.zhInstallHudStageMouseFallback);\n         this.zhRegisterHudBrowserCallbacks();"
+    );
+  }
+
   next = next.replace(/\n\s*this\.zhLocalizeHudStaticLabels\(_loc4_\.hudBtn\);/gu, "");
 
   const methodStart = next.indexOf("\n      private function zhLocalizeHudStaticLabels");
@@ -108,8 +139,224 @@ function applyHudLabelPatch(content) {
     `_loc6_ = _loc4_.inventoryBtn;
          _loc6_.x = _loc7_ - _loc8_;`
   );
+  next = next
+    .replace(
+      "         this.setupBottomRow();\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);",
+      "         this.setupBottomRow();\n         this.zhEnsureHudHitArea(_loc4_.hudBtn);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);\n         this.zhWireHudMouseFallback(_loc4_.hudBtn);"
+    )
+    .replace(/         this\.zhEnsureHudHitArea\(_loc4_\.hudBtn\);\n         this\.zhEnsureHudHitArea\(_loc4_\.hudBtn\);/gu, "         this.zhEnsureHudHitArea(_loc4_.hudBtn);")
+    .replace(/         this\.zhWireHudMouseFallback\(_loc4_\.hudBtn\);\n         this\.zhWireHudMouseFallback\(_loc4_\.hudBtn\);/gu, "         this.zhWireHudMouseFallback(_loc4_.hudBtn);")
+    .replace(
+      "         this.zhEnsureHudHitArea(_loc4_.hudBtn);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);",
+      "         this.zhEnsureHudHitArea(_loc4_.hudBtn);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);\n         this.zhWireHudMouseFallback(_loc4_.hudBtn);"
+    )
+    .replace(
+      "         this.zhEnsureHudHitArea(_loc4_.hudBtn);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);",
+      "         this.zhEnsureHudHitArea(_loc4_.hudBtn);\n         this._hudBtnEntity = ButtonCreator.createButtonEntity(_loc4_.hudBtn,this,this.onHudBtnClick,null,null,null,false);\n         this.zhWireHudMouseFallback(_loc4_.hudBtn);"
+    )
+    .replace(/         this\.zhWireHudMouseFallback\(_loc4_\.hudBtn\);\n         this\.zhWireHudMouseFallback\(_loc4_\.hudBtn\);/gu, "         this.zhWireHudMouseFallback(_loc4_.hudBtn);");
+  const hudHitAreaMethod = `
+      
+      private function zhEnsureHudHitArea(param1:DisplayObjectContainer) : void
+      {
+         var _loc2_:DisplayObject = null;
+         var _loc3_:Sprite = null;
+         if(param1 == null)
+         {
+            return;
+         }
+         param1.mouseEnabled = true;
+         param1.mouseChildren = true;
+         _loc2_ = param1.getChildByName("hit");
+         if(_loc2_ != null && _loc2_.parent != null)
+         {
+            _loc2_.parent.removeChild(_loc2_);
+         }
+         _loc3_ = new Sprite();
+         _loc3_.name = "hit";
+         _loc3_.mouseEnabled = true;
+         _loc3_.mouseChildren = false;
+         _loc3_.buttonMode = true;
+         _loc3_.useHandCursor = true;
+         _loc3_.alpha = 0.01;
+         _loc3_.graphics.beginFill(16777215,0.01);
+         _loc3_.graphics.drawRect(-96,-72,168,144);
+         _loc3_.graphics.endFill();
+         param1.addChild(_loc3_);
+         if(param1 is MovieClip)
+         {
+            MovieClip(param1).mouseEnabled = true;
+            MovieClip(param1).mouseChildren = true;
+            MovieClip(param1).buttonMode = true;
+            MovieClip(param1).useHandCursor = true;
+            MovieClip(param1).hitArea = _loc3_;
+            MovieClip(param1).hit = _loc3_;
+         }
+      }
+      
+      private function zhWireHudMouseFallback(param1:DisplayObjectContainer) : void
+      {
+         var _loc2_:DisplayObject = null;
+         if(param1 == null)
+         {
+            return;
+         }
+         param1.mouseEnabled = true;
+         param1.mouseChildren = true;
+         if(param1 is MovieClip)
+         {
+            MovieClip(param1).mouseEnabled = true;
+            MovieClip(param1).mouseChildren = true;
+            MovieClip(param1).buttonMode = true;
+            MovieClip(param1).useHandCursor = true;
+         }
+         param1.removeEventListener(MouseEvent.MOUSE_DOWN,this.zhHudMouseFallback);
+         param1.removeEventListener(MouseEvent.MOUSE_UP,this.zhHudMouseFallback);
+         param1.removeEventListener(MouseEvent.CLICK,this.zhHudMouseFallback);
+         param1.addEventListener(MouseEvent.MOUSE_DOWN,this.zhHudMouseFallback,false,1000,true);
+         param1.addEventListener(MouseEvent.MOUSE_UP,this.zhHudMouseFallback,false,1000,true);
+         param1.addEventListener(MouseEvent.CLICK,this.zhHudMouseFallback,false,1000,true);
+         _loc2_ = param1.getChildByName("hit");
+         if(_loc2_ != null)
+         {
+            _loc2_.removeEventListener(MouseEvent.MOUSE_DOWN,this.zhHudMouseFallback);
+            _loc2_.removeEventListener(MouseEvent.MOUSE_UP,this.zhHudMouseFallback);
+            _loc2_.removeEventListener(MouseEvent.CLICK,this.zhHudMouseFallback);
+            _loc2_.addEventListener(MouseEvent.MOUSE_DOWN,this.zhHudMouseFallback,false,1000,true);
+            _loc2_.addEventListener(MouseEvent.MOUSE_UP,this.zhHudMouseFallback,false,1000,true);
+            _loc2_.addEventListener(MouseEvent.CLICK,this.zhHudMouseFallback,false,1000,true);
+         }
+         this.zhInstallHudStageMouseFallback();
+      }
+      
+      private function zhInstallHudStageMouseFallback() : void
+      {
+         var _loc1_:* = null;
+         if(this.shellApi != null && this.shellApi.screenManager != null && this.shellApi.screenManager.stage != null)
+         {
+            _loc1_ = this.shellApi.screenManager.stage;
+            _loc1_.removeEventListener(MouseEvent.MOUSE_DOWN,this.zhHudStageMouseFallback,true);
+            _loc1_.removeEventListener(MouseEvent.MOUSE_UP,this.zhHudStageMouseFallback,true);
+            _loc1_.removeEventListener(MouseEvent.CLICK,this.zhHudStageMouseFallback,true);
+            _loc1_.addEventListener(MouseEvent.MOUSE_DOWN,this.zhHudStageMouseFallback,true,1000,true);
+            _loc1_.addEventListener(MouseEvent.MOUSE_UP,this.zhHudStageMouseFallback,true,1000,true);
+            _loc1_.addEventListener(MouseEvent.CLICK,this.zhHudStageMouseFallback,true,1000,true);
+         }
+      }
+      
+      private function zhHudStageMouseFallback(param1:MouseEvent) : void
+      {
+         var _loc2_:Number = Number(NaN);
+         var _loc3_:Number = Number(NaN);
+         var _loc4_:Spatial = null;
+         var _loc5_:Number = Number(NaN);
+         var _loc6_:Number = Number(NaN);
+         var _loc7_:Number = Number(NaN);
+         var _loc8_:Number = Number(NaN);
+         var _loc9_:Boolean = false;
+         if(param1 == null || this._hudBtnEntity == null)
+         {
+            return;
+         }
+         _loc2_ = Number(param1.stageX);
+         _loc3_ = Number(param1.stageY);
+         if(!isFinite(_loc2_) || !isFinite(_loc3_))
+         {
+            return;
+         }
+         _loc4_ = this._hudBtnEntity.get(Spatial);
+         _loc5_ = _loc4_ != null ? _loc4_.x : this.zhVisibleRight() - 58;
+         _loc6_ = _loc4_ != null ? _loc4_.y : this.zhHudVisibleY();
+         _loc7_ = this.shellApi != null && this.shellApi.screenManager != null && this.shellApi.screenManager.stage != null ? Number(this.shellApi.screenManager.stage.stageWidth) : this.zhVisibleRight();
+         _loc8_ = this.shellApi != null && this.shellApi.screenManager != null && this.shellApi.screenManager.stage != null ? Number(this.shellApi.screenManager.stage.stageHeight) : this.zhVisibleBottom();
+         _loc9_ = _loc2_ >= _loc5_ - 140 && _loc2_ <= _loc5_ + 120 && _loc3_ >= _loc6_ - 130 && _loc3_ <= _loc6_ + 130;
+         _loc9_ = _loc9_ || _loc2_ >= this.zhVisibleRight() - 220 && _loc2_ <= this.zhVisibleRight() + 48 && _loc3_ >= this.zhVisibleTop() && _loc3_ <= this.zhVisibleTop() + 230;
+         _loc9_ = _loc9_ || _loc2_ >= _loc7_ - 220 && _loc2_ <= _loc7_ + 48 && _loc3_ >= 0 && _loc3_ <= 230;
+         _loc9_ = _loc9_ || _loc2_ >= this.shellApi.viewportWidth - 220 && _loc2_ <= this.shellApi.viewportWidth + 48 && _loc3_ >= 0 && _loc3_ <= 230;
+         if(!_loc9_)
+         {
+            return;
+         }
+         this.zhHudMouseFallback(param1);
+      }
+      
+      private function zhHudMouseFallback(param1:MouseEvent) : void
+      {
+         var _loc2_:Number = Number(NaN);
+         if(param1 != null)
+         {
+            param1.stopImmediatePropagation();
+         }
+         if(this._hudBtnEntity == null || this._isTransition)
+         {
+            return;
+         }
+         _loc2_ = getTimer();
+         if(_loc2_ - this._zhLastHudFallbackMs < 250)
+         {
+            return;
+         }
+         this._zhLastHudFallbackMs = _loc2_;
+         this.openHud(true);
+      }
+      
+      private function zhRegisterHudBrowserCallbacks() : void
+      {
+         try
+         {
+            if(ExternalInterface.available)
+            {
+               ExternalInterface.addCallback("flashpointOpenHud",this.zhFlashpointOpenHud);
+               ExternalInterface.addCallback("flashpointToggleHud",this.zhFlashpointToggleHud);
+            }
+         }
+         catch(_loc1_:Error)
+         {
+         }
+      }
+      
+      private function zhFlashpointOpenHud() : Boolean
+      {
+         if(this._hudBtnEntity == null)
+         {
+            return false;
+         }
+         this._zhLastHudFallbackMs = getTimer();
+         this.openHud(true);
+         return this._isHudOpen;
+      }
+      
+      private function zhFlashpointToggleHud() : Boolean
+      {
+         if(this._hudBtnEntity == null)
+         {
+            return false;
+         }
+         this._zhLastHudFallbackMs = getTimer();
+         this.openHud(!this._isHudOpen);
+         return true;
+      }
+`;
+  const hudHitAreaStart = next.indexOf("\n      private function zhEnsureHudHitArea");
+  if (hudHitAreaStart !== -1) {
+    const hudHitAreaEnd = next.indexOf("\n      public function createDebugConsoleButton", hudHitAreaStart);
+    if (hudHitAreaEnd === -1) {
+      throw new Error("Unable to locate end of Hud hit area helper.");
+    }
+    next = `${next.slice(0, hudHitAreaStart)}${hudHitAreaMethod}${next.slice(hudHitAreaEnd)}`;
+  } else {
+    const marker = "\n      public function createDebugConsoleButton";
+    const markerIndex = next.indexOf(marker);
+    if (markerIndex === -1) {
+      throw new Error("Unable to locate Hud createDebugConsoleButton marker for hit area helper.");
+    }
+    next = `${next.slice(0, markerIndex)}${hudHitAreaMethod}${next.slice(markerIndex)}`;
+  }
   if (!next.includes("_loc4_.audioBtn.x = _loc7_ - _loc8_ * 6 - 15") || !(next.includes("MovieClip(_loc4_.homeBtn).x = _loc7_ - _loc8_ * 5 - 25") || next.includes("_loc4_.homeBtn.x = _loc7_ - _loc8_ * 5 - 25")) || !next.includes("_loc4_.settingsBtn.x = _loc7_ - _loc8_ * 7") || next.includes("this.shellApi.viewportWidth - (80 / 2 + 10)")) {
     throw new Error("Unable to update AS3 Hud right-aligned button positions.");
+  }
+  if (!next.includes("this.zhEnsureHudHitArea(_loc4_.hudBtn);") || !next.includes("private function zhEnsureHudHitArea") || !next.includes("this.zhWireHudMouseFallback(_loc4_.hudBtn);") || !next.includes("private function zhHudMouseFallback")) {
+    throw new Error("Unable to add AS3 Hud MENU hit area.");
   }
   return next;
 }
