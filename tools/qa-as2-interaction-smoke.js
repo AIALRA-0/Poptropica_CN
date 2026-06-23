@@ -1351,6 +1351,114 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
   }
 }
 
+function clickMapResetConfirm({ runDir, stem, runtime, map, args, qaErrors }) {
+  const clickPath = path.join(runDir, `${stem}-map-reset-click.json`);
+  const postWindowPath = path.join(runDir, `${stem}-map-reset-window.json`);
+  if (!map?.runtimeWindow?.match?.handle || !map?.capture) {
+    return {
+      ok: false,
+      skipped: false,
+      reason: "map_window_or_capture_missing",
+      clickPath
+    };
+  }
+  const point = imageRelativeToWindow(map.capture, {
+    x: Number(args.mapResetX || args["map-reset-x"] || 0.218),
+    y: Number(args.mapResetY || args["map-reset-y"] || 0.875)
+  });
+  try {
+    const clickArgs = [
+      "click-window",
+      "--handle",
+      String(map.runtimeWindow.match.handle),
+      "--process-names",
+      runtime.processNames.join(","),
+      "--title-contains",
+      "poptropica",
+      "--x",
+      String(point.x),
+      "--y",
+      String(point.y),
+      "--output",
+      clickPath
+    ];
+    if (runtime.pid) {
+      clickArgs.push("--pid", String(runtime.pid));
+    }
+    appendWindowGeometryArgs(clickArgs, args);
+    if (flagEnabled(args.clickLargestChild || args["click-largest-child"]) || process.env.POPTROPICA_QA_CLICK_LARGEST_CHILD === "1") {
+      clickArgs.push("--largest-child");
+    }
+    const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "").trim();
+    if (clickChildClass) {
+      clickArgs.push("--child-class-contains", clickChildClass);
+    }
+    runPythonQa(clickArgs, {
+      timeoutMs: 20000
+    });
+    const waitMs = Math.max(0, Number(args.mapResetWaitMs || args["map-reset-wait-ms"] || 1200));
+    if (waitMs > 0) {
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
+    }
+    const postWindow = runPythonQa(buildWaitArgs({
+      runtime,
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+      outputPath: postWindowPath,
+      args
+    }), {
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+    });
+    const postCapture = captureAndAnalyze({
+      runDir,
+      stem,
+      suffix: "map-reset",
+      runtime,
+      runtimeWindow: postWindow,
+      qaErrors,
+      args
+    });
+    const ocrText = String(postCapture.ocr?.text || "");
+    const expected = String(args.mapResetExpectedText || args["map-reset-expected-text"] || "").trim();
+    const containsExpected = !expected || ocrText.includes(expected);
+    const containsChinese = /[\u3400-\u9fff]/u.test(ocrText);
+    const stageStable = Boolean(postCapture.stage?.stageRect);
+    return {
+      ok: stageStable && containsChinese && containsExpected,
+      skipped: false,
+      clickPoint: point,
+      clickPath,
+      windowPath: postWindowPath,
+      runtimeWindow: postWindow,
+      capture: postCapture.capture,
+      stage: postCapture.stage,
+      visualGuard: postCapture.visualGuard,
+      ocr: postCapture.ocr,
+      ocrText: ocrText.slice(0, 500),
+      containsChinese,
+      containsExpected,
+      expected,
+      artifacts: postCapture.artifacts,
+      reason: stageStable
+        ? !containsChinese
+          ? "map_reset_confirm_chinese_not_seen"
+          : !containsExpected
+          ? "map_reset_confirm_expected_text_missing"
+          : null
+        : "map_reset_confirm_stage_missing"
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError("map-reset-click", error));
+    return {
+      ok: false,
+      skipped: false,
+      clickPoint: point,
+      clickPath,
+      reason: "map_reset_click_or_recapture_failed",
+      error: String(error.message || error)
+    };
+  }
+}
+
 function explicitPopupClosePointProvided(args) {
   return args.popupCloseX !== undefined ||
     args["popup-close-x"] !== undefined ||
@@ -1812,6 +1920,17 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         qaErrors
       });
 
+  const mapResetConfirm = flagEnabled(args.mapResetClick || args["map-reset-click"])
+    ? clickMapResetConfirm({
+        runDir,
+        stem,
+        runtime,
+        map,
+        args,
+        qaErrors
+      })
+    : { ok: true, skipped: true };
+
   const hudAnchor = await captureHudAnchor({
     config,
     runDir,
@@ -1884,6 +2003,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!map.skipped && shouldRequireVisualGuard(args) && !map.visualGuard?.ok) {
     failedChecks.push("map_visual_guard_failed");
   }
+  if (!mapResetConfirm.skipped && flagEnabled(args.requireMapResetConfirm || args["require-map-reset-confirm"]) && !mapResetConfirm.ok) {
+    failedChecks.push("map_reset_confirm_failed");
+  }
   if (!hudAnchor.skipped && shouldRequireHudAnchor(args) && !hudAnchor.ok) {
     failedChecks.push("hud_anchor_failed");
   }
@@ -1921,6 +2043,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       initialPlayableCropGuardAnnotatedPath: initial.artifacts.playableCropGuardAnnotatedPath || null,
       popupCloseScreenshotPath: popupClose.artifacts?.screenshotPath || null,
       popupCloseStagePath: popupClose.artifacts?.stagePath || null,
+      mapResetConfirmScreenshotPath: mapResetConfirm.artifacts?.screenshotPath || null,
+      mapResetConfirmStagePath: mapResetConfirm.artifacts?.stagePath || null,
       hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
       hudAnchorAnnotatedPath: hudAnchor.artifacts?.annotatedPath || null,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
@@ -1953,6 +2077,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     popupClose,
     f11,
     map,
+    mapResetConfirm,
     hudAnchor,
     sceneEvidence,
     logSummary,
@@ -1971,6 +2096,7 @@ function buildSummary(startedAt, reports) {
     failed: reports.filter((report) => !report.ok).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
     mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen).length,
+    mapResetConfirmPassed: reports.filter((report) => report.mapResetConfirm && !report.mapResetConfirm.skipped && report.mapResetConfirm.ok).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     loadingCenterPassed: reports.filter((report) => report.loading && !report.loading.skipped && report.loading.observed && report.loading.centerOk).length,
     f11Passed: reports.filter((report) => report.f11 && !report.f11.skipped && report.f11.ok).length,

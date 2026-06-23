@@ -23,13 +23,41 @@ const PATCHES = new Map([
   ["42.txt", "重启[\nx 220\ny 660\n]岛屿"]
 ]);
 
-const MAP_BUTTON_LAYOUT_PATCH = `stop();
+const ISLAND_NAME_HELPER_PATCH = `function flashpointZhAs2MapIslandName(islandId, fallbackName)
+{
+   var names = new Object();
+   names.Early = "早期波普岛";
+   names.Shark = "鲨鱼牙岛";
+   names.Carrot = "24 胡萝卜岛";
+   names.Super = "超级英雄岛";
+   names.Time = "时空缠结岛";
+   names.Spy = "间谍岛";
+   names.Nabooti = "纳布提岛";
+   names.Astro = "太空岛";
+   names.Counter = "伪造岛";
+   names.Cryptid = "神秘生物岛";
+   names.Steam = "蒸汽工厂岛";
+   names.Trade = "贸易岛";
+   names.Train = "神秘列车岛";
+   names.GameShow = "游戏秀岛";
+   names.Myth = "神话岛";
+   if(names[String(islandId)] != undefined)
+   {
+      return names[String(islandId)];
+   }
+   return fallbackName;
+}`;
+
+const MAP_BUTTON_LAYOUT_PATCH = `${ISLAND_NAME_HELPER_PATCH}
+stop();
 if(resetIslandButton != undefined && !resetIslandButton.flashpointMapButtonLayoutApplied)
 {
    resetIslandButton.flashpointMapButtonLayoutApplied = true;
    resetIslandButton._y -= 34;
 }
 _root.useArrow();`;
+
+const BLIMP_HINT_CN = "到主街飞艇处\\n前往其他岛屿。";
 
 const FONT_FILE_CANDIDATES = [
   "C:\\Windows\\Fonts\\simhei.ttf",
@@ -102,23 +130,205 @@ function patchMapScript({ ffdecCli, inputSwf, outputSwf, workDir }) {
   runChecked(ffdecCli, ["-cli", "-export", "script", scriptDir, inputSwf], "export map popup scripts");
 
   const frameScript = path.join(scriptDir, "scripts", "frame_2", "DoAction.as");
-  if (!fileExists(frameScript)) {
-    return { ok: false, changed: false, reason: "missing-frame-2-script" };
+  const mapLoadScript = path.join(scriptDir, "scripts", "DefineSprite_38", "frame_1", "DoAction.as");
+  if (!fileExists(frameScript) || !fileExists(mapLoadScript)) {
+    return { ok: false, changed: false, reason: "missing-map-popup-script" };
   }
 
-  const sourceContent = fs.readFileSync(frameScript, "utf8");
-  if (/flashpointMapButtonLayoutApplied/iu.test(sourceContent)) {
-    fs.copyFileSync(inputSwf, outputSwf);
-    return { ok: true, changed: false, reason: "already-patched" };
+  const sourceFrameContent = fs.readFileSync(frameScript, "utf8");
+  let nextFrameContent = sourceFrameContent;
+  if (!/flashpointMapButtonLayoutApplied/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(/stop\(\);\s*_root\.useArrow\(\);/u, MAP_BUTTON_LAYOUT_PATCH);
+    if (nextFrameContent === sourceFrameContent) {
+      return { ok: false, changed: false, reason: "layout-anchor-not-found" };
+    }
+  }
+  if (!/flashpointZhAs2MapIslandName/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(/function showResetDialog\(\)/u, `${ISLAND_NAME_HELPER_PATCH}\nfunction showResetDialog()`);
+  }
+  if (!/gResetDialog\._parent != undefined/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /function showResetDialog\(\)\r?\n\{/u,
+      [
+        "function showResetDialog()",
+        "{",
+        "   if(gResetDialog != undefined && gResetDialog._parent != undefined)",
+        "   {",
+        "      return undefined;",
+        "   }"
+      ].join("\n")
+    );
+  }
+  if (!/gCurrentIslandName\s*=\s*flashpointZhAs2MapIslandName/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /var gCurrentIslandName = islandDescriptiveNames\[islandIndex\];/u,
+      "var gCurrentIslandName = islandDescriptiveNames[islandIndex];\ngCurrentIslandName = flashpointZhAs2MapIslandName(_root.island,gCurrentIslandName);"
+    );
+  }
+  if (!/flashpointMapResetRequestToken/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /resetIslandButton\.onRelease = Delegate\.create\(this,showResetDialog\);\r?\n/u,
+      [
+        "resetIslandButton.onRelease = Delegate.create(this,showResetDialog);",
+        "var flashpointMapResetRequestToken = \"\";",
+        "this.onEnterFrame = function()",
+        "{",
+        "   var requestToken = String(_root.__zhExternalMapResetRequest);",
+        "   if(requestToken != \"\" && requestToken != \"undefined\" && requestToken != flashpointMapResetRequestToken)",
+        "   {",
+        "      flashpointMapResetRequestToken = requestToken;",
+        "      showResetDialog();",
+        "   }",
+        "};",
+        ""
+      ].join("\n")
+    );
+  }
+  if (!/__zhMapPopupShowResetDialog/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /resetIslandButton\.onRelease = Delegate\.create\(this,showResetDialog\);\r?\n/u,
+      [
+        "resetIslandButton.onRelease = Delegate.create(this,showResetDialog);",
+        "_root.__zhMapPopupShowResetDialog = function()",
+        "{",
+        "   return showResetDialog();",
+        "};",
+        ""
+      ].join("\n")
+    );
+  }
+  if (!/flashpointMapResetMouseBridge/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /\};\r?\nvar gResetDialog;/u,
+      [
+        "};",
+        "function flashpointMapResetMouseBridge()",
+        "{",
+        "   var _loc2_;",
+        "   var _loc3_ = Math.round(_root._xmouse);",
+        "   var _loc4_ = Math.round(_root._ymouse);",
+        "   var _loc5_ = 32;",
+        "   if(gResetDialog != undefined && gResetDialog._parent != undefined)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   if(resetIslandButton != undefined && resetIslandButton.getBounds != undefined)",
+        "   {",
+        "      _loc2_ = resetIslandButton.getBounds(_root);",
+        "      if(_loc2_ != undefined && _loc3_ >= Number(_loc2_.xMin) - _loc5_ && _loc3_ <= Number(_loc2_.xMax) + _loc5_ && _loc4_ >= Number(_loc2_.yMin) - _loc5_ && _loc4_ <= Number(_loc2_.yMax) + _loc5_)",
+        "      {",
+        "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=MapPopup&event=MapResetMouseBridge&x=\" + _loc3_ + \"&y=\" + _loc4_,0);",
+        "         showResetDialog();",
+        "         return true;",
+        "      }",
+        "   }",
+        "   if(_loc3_ >= 0 && _loc3_ <= 190 && _loc4_ >= 410 && _loc4_ <= 650)",
+        "   {",
+        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=MapPopup&event=MapResetMouseFallback&x=\" + _loc3_ + \"&y=\" + _loc4_,0);",
+        "      showResetDialog();",
+        "      return true;",
+        "   }",
+        "   return false;",
+        "}",
+        "this.flashpointMapResetMouseListener = new Object();",
+        "this.flashpointMapResetMouseListener.onMouseDown = function()",
+        "{",
+        "   flashpointMapResetMouseBridge();",
+        "};",
+        "Mouse.addListener(this.flashpointMapResetMouseListener);",
+        "var gResetDialog;"
+      ].join("\n")
+    );
+  }
+  nextFrameContent = nextFrameContent.replace(
+    [
+      "var flashpointMapResetMouseListener = new Object();",
+      "flashpointMapResetMouseListener.onMouseDown = function()",
+      "{",
+      "   flashpointMapResetMouseBridge();",
+      "};",
+      "Mouse.addListener(flashpointMapResetMouseListener);"
+    ].join("\n"),
+    [
+      "this.flashpointMapResetMouseListener = new Object();",
+      "this.flashpointMapResetMouseListener.onMouseDown = function()",
+      "{",
+      "   flashpointMapResetMouseBridge();",
+      "};",
+      "Mouse.addListener(this.flashpointMapResetMouseListener);"
+    ].join("\n")
+  );
+  nextFrameContent = nextFrameContent.replace(
+    /var flashpointMapResetMouseListener = new Object\(\);\r?\nflashpointMapResetMouseListener\.onMouseDown = function\(\)\r?\n\{\r?\n   flashpointMapResetMouseBridge\(\);\r?\n\};\r?\nMouse\.addListener\(flashpointMapResetMouseListener\);/u,
+    [
+      "this.flashpointMapResetMouseListener = new Object();",
+      "this.flashpointMapResetMouseListener.onMouseDown = function()",
+      "{",
+      "   flashpointMapResetMouseBridge();",
+      "};",
+      "Mouse.addListener(this.flashpointMapResetMouseListener);"
+    ].join("\n")
+  );
+  if (!/flashpointMapResetButtonsArmed/iu.test(nextFrameContent)) {
+    nextFrameContent = nextFrameContent.replace(
+      /(gResetDialog\.label\.htmlText = "确定要重置<FONT color=\\?"#ffe23d\\?">" \+ gCurrentIslandName \+ "<\/FONT>吗？该岛上的道具和进度都会丢失。";\r?\n)/u,
+      [
+        "$1",
+        "   gResetDialog.resetButton.enabled = false;",
+        "   gResetDialog.cancelButton.enabled = false;",
+        "   gResetDialog.flashpointMapResetButtonsArmed = false;",
+        ""
+      ].join("\n")
+    );
+    nextFrameContent = nextFrameContent.replace(
+      /   gResetDialog\.cancelButton\.onRelease = function\(\)\r?\n   \{\r?\n      gResetDialog\.removeMovieClip\(\);\r?\n   \};\r?\n/u,
+      [
+        "   gResetDialog.cancelButton.onRelease = function()",
+        "   {",
+        "      gResetDialog.removeMovieClip();",
+        "   };",
+        "   gResetDialog.onEnterFrame = function()",
+        "   {",
+        "      if(!this.flashpointMapResetButtonsArmed)",
+        "      {",
+        "         this.flashpointMapResetButtonsArmed = true;",
+        "         this.resetButton.enabled = true;",
+        "         this.cancelButton.enabled = true;",
+        "         delete this.onEnterFrame;",
+        "      }",
+        "   };",
+        ""
+      ].join("\n")
+    );
   }
 
-  const nextContent = sourceContent.replace(/stop\(\);\s*_root\.useArrow\(\);/u, MAP_BUTTON_LAYOUT_PATCH);
-  if (nextContent === sourceContent) {
-    return { ok: false, changed: false, reason: "layout-anchor-not-found" };
+  const sourceMapLoadContent = fs.readFileSync(mapLoadScript, "utf8");
+  let nextMapLoadContent = sourceMapLoadContent.replace(
+    /blimpText\s*=\s*"Go to the blimp on Main Street\\nto travel to another island\.";/u,
+    `blimpText = "${BLIMP_HINT_CN}";`
+  );
+
+  let currentInput = inputSwf;
+  let changed = false;
+  const replacements = [];
+  if (nextFrameContent !== sourceFrameContent) {
+    const frameOutput = path.join(workDir, "map-popup-frame-script-pass.swf");
+    fs.writeFileSync(frameScript, nextFrameContent, "utf8");
+    runChecked(ffdecCli, ["-replace", currentInput, frameOutput, "\\frame_2\\DoAction", frameScript], "replace map popup frame script");
+    currentInput = frameOutput;
+    changed = true;
+    replacements.push("frame_2/DoAction");
   }
-  fs.writeFileSync(frameScript, nextContent, "utf8");
-  runChecked(ffdecCli, ["-replace", inputSwf, outputSwf, "\\frame_2\\DoAction", frameScript], "replace map popup layout script");
-  return { ok: true, changed: true, reason: null };
+  if (nextMapLoadContent !== sourceMapLoadContent) {
+    const loadOutput = path.join(workDir, "map-popup-load-script-pass.swf");
+    fs.writeFileSync(mapLoadScript, nextMapLoadContent, "utf8");
+    runChecked(ffdecCli, ["-replace", currentInput, loadOutput, "\\DefineSprite_38\\frame_1\\DoAction", mapLoadScript], "replace map popup load script");
+    currentInput = loadOutput;
+    changed = true;
+    replacements.push("DefineSprite_38/frame_1/DoAction");
+  }
+  fs.copyFileSync(currentInput, outputSwf);
+  return { ok: true, changed, reason: null, replacements };
 }
 
 function findFontFile() {

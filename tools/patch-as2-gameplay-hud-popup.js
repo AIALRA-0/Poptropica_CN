@@ -648,6 +648,7 @@ function patchFrameOne(content) {
     "   var _loc1_ = active == \"map\" ? \"map\" : (active == true ? \"1\" : \"0\");",
     "   if(_root != undefined)",
     "   {",
+    "      _root.__zhPopupMode = _loc1_;",
     "      _root.__zhPopupTightViewport = _loc1_ == \"1\" || _loc1_ == \"map\";",
     "   }",
     "   if(_root != undefined && (_root.flashpointQaCacheBust != undefined || (_level0 != undefined && _level0.flashpointQaCacheBust != undefined) || flashpointQaCacheBust != undefined))",
@@ -671,6 +672,15 @@ function patchFrameOne(content) {
     throw new Error("Unable to locate popup viewport notify helper for hardening.");
   }
   next = next.replace(notifyPopupViewportPattern, `${notifyPopupViewportHelper}\nfunction zhPopupUsesTightViewport(popupName)`);
+  if (!/_root\.__zhPopupMode = _loc1_;/u.test(next)) {
+    next = next.replace(
+      "      _root.__zhPopupTightViewport = _loc1_ == \"1\" || _loc1_ == \"map\";",
+      [
+        "      _root.__zhPopupMode = _loc1_;",
+        "      _root.__zhPopupTightViewport = _loc1_ == \"1\" || _loc1_ == \"map\";"
+      ].join("\n")
+    );
+  }
 
   if (!next.includes("function zhInstallPopupCloseHandlers()")) {
     const helper = [
@@ -1152,7 +1162,7 @@ function patchFrameOne(content) {
       "map mouse listener popup close bridge"
     );
   }
-  if (!next.includes("mapMouseListenerBlockedMap")) {
+  if (!next.includes("mapMouseListenerBlockedMap") && !next.includes("MapMouseListenerIgnoredPopup") && !next.includes("MapResetRootBridge")) {
     next = replaceRequired(
       next,
       [
@@ -1175,6 +1185,59 @@ function patchFrameOne(content) {
       "blocked map mouse listener closes popup"
     );
   }
+  next = next.replace(
+    [
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=mapMouseListenerBlockedMap\",0);",
+      "            _root.closePopup();",
+      "            return undefined;",
+      "            zhHideDirectMapButton();"
+    ].join("\n"),
+    [
+      "            zhHideDirectMapButton();",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup\",0);",
+      "            return undefined;"
+    ].join("\n")
+  );
+  next = next.replace(
+    /            loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=mapMouseListenerBlockedMap",0\);\r?\n            _root\.closePopup\(\);\r?\n            return undefined;/u,
+    [
+      "            zhHideDirectMapButton();",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);",
+      "            return undefined;"
+    ].join("\n")
+  );
+  next = next.replace(
+    "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup\",0);",
+    "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);"
+  );
+  if (!/MapResetRootBridge/iu.test(next)) {
+    next = next.replace(
+      [
+        "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+        "            {",
+        "               return undefined;",
+        "            }",
+        "            zhHideDirectMapButton();"
+      ].join("\n"),
+      [
+        "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+        "            {",
+        "               return undefined;",
+        "            }",
+        "            if(_root.__zhPopupMode == \"map\" && _root.__zhMapPopupShowResetDialog != undefined && Number(_root._xmouse) >= 0 && Number(_root._xmouse) <= 130 && Number(_root._ymouse) >= 250 && Number(_root._ymouse) <= 390)",
+        "            {",
+        "               loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapResetRootBridge&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);",
+        "               _root.__zhMapPopupShowResetDialog();",
+        "               return undefined;",
+        "            }",
+        "            zhHideDirectMapButton();"
+      ].join("\n")
+    );
+  }
+  next = next.replace(
+    /            return undefined;\r?\n            loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup&x=" \+ Math\.round\(_root\._xmouse\) \+ "&y=" \+ Math\.round\(_root\._ymouse\),0\);\r?\n            return undefined;/u,
+    "            return undefined;"
+  );
   if (!next.includes("zhDirectMapButtonBlockedByPopup") && !next.includes("zhTryClosePopupFromMouse(\"directMapButton\")")) {
     next = replaceRequired(
       next,
@@ -1220,7 +1283,7 @@ function patchFrameOne(content) {
       "direct map button popup close bridge"
     );
   }
-  if (!next.includes("directMapButtonBlockedMap")) {
+  if (!next.includes("directMapButtonBlockedMap") && !next.includes("DirectMapButtonIgnoredPopup")) {
     next = replaceRequired(
       next,
       [
@@ -1243,6 +1306,31 @@ function patchFrameOne(content) {
       "blocked direct map button closes popup"
     );
   }
+  next = next.replace(
+    [
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=directMapButtonBlockedMap\",0);",
+      "         _root.closePopup();",
+      "         return undefined;",
+      "         zhHideDirectMapButton();"
+    ].join("\n"),
+    [
+      "         zhHideDirectMapButton();",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=DirectMapButtonIgnoredPopup\",0);",
+      "         return undefined;"
+    ].join("\n")
+  );
+  next = next.replace(
+    /         loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=directMapButtonBlockedMap",0\);\r?\n         _root\.closePopup\(\);\r?\n         return undefined;/u,
+    [
+      "         zhHideDirectMapButton();",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=DirectMapButtonIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);",
+      "         return undefined;"
+    ].join("\n")
+  );
+  next = next.replace(
+    "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=DirectMapButtonIgnoredPopup\",0);",
+    "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=DirectMapButtonIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);"
+  );
   if (!next.includes("MapMouseProbe")) {
     const mapBoundsPattern = /\n(\s*)var ([A-Za-z_$][\w$]*) = _root\.__zhMapButtonBounds;/u;
     const match = next.match(mapBoundsPattern);

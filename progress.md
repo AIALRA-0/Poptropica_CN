@@ -5000,3 +5000,32 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the controlled Time Lab three-line native dialogue proof and the global AS2 same-line duplicate throttle proof.
   - This still does not seal Time Tangled. Natural time-machine traversal, natural NPC hot-zone no-repeat, item popup use-after-layout, external-link white screens, true F11 fullscreen under user-working constraints, map description Chinese, and real audio-source inventory remain open.
+
+## 2026-06-23 Time Tangled Map Reset Confirmation Recheck
+
+- Stayed on reopened Time Tangled; did not advance to Super Power.
+- Fixed the AS2 map popup `重启岛屿` confirmation chain.
+- Root cause:
+  - The map popup was visible and localized, but the gameplay root global map mouse listener still received background QA clicks while the popup was open.
+  - Earlier behavior closed the map by mistake; after that was fixed, the same root-layer click was ignored before `resetIslandButton.onRelease` could show the native confirmation.
+  - The visible reset click mapped to gameplay root coordinates `x=38,y=314`, not to the map popup's own listener, so the fix had to bridge from root to the native map popup function.
+- Code changes:
+  - `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js` now record `_root.__zhPopupMode`, do not close the active map popup from the hidden HUD listener, and only forward root clicks to map reset when `__zhPopupMode == "map"` and the root coordinates fall inside the reset-button region.
+  - `tools/patch-as2-map-popup-text.js` now exposes `_root.__zhMapPopupShowResetDialog`, adds a duplicate-dialog guard to `showResetDialog()`, and keeps the map popup's own mouse bridge as a secondary path.
+  - `packs/zh-CN/as2/swf/content/www.poptropica.com/popups/map.swf` and AS2 gameplay SWFs were rebuilt; AS2 runtime zip regenerated.
+- Static verification:
+  - `node --check tools\patch-as2-map-popup-text.js`
+  - `node --check tools\patch-as2-gameplay-hud-popup.js`
+  - `node --check tools\lib\pack.js`
+  - Exported AS proof:
+    - `runtime-data/tmp/as2-map-popup-text-patch/scripts/scripts/frame_2/DoAction.as` contains `__zhMapPopupShowResetDialog` and the `gResetDialog._parent` guard.
+    - `runtime-data/tmp/as2-gameplay-hud-popup/scripts/scripts/frame_1/DoAction.as` contains `__zhPopupMode` and `MapResetRootBridge`.
+- Runtime verification, G32QC/no-foreground/QA muted:
+  - Strict passed report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782216295331.json`.
+  - Result: `ok=true`, `mapClicksPassed=1`, `mapResetConfirmPassed=1`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - OCR: `TIME TANGLED ISLAND 重启岛屿？ 确定要重置时空缠结岛吗？该岛上的道具和 进度都会丢失。 重置 取消`.
+  - Server log records `MapResetRootBridge&x=38&y=314`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782216295331/01-time-tangled-map-reset.png`; the native confirmation box is centered, Chinese text/buttons are visible, and static `TIME TANGLED ISLAND` art remains English by policy.
+- Current conclusion:
+  - This closes the Time Tangled AS2 map reset confirmation chain and the root/map popup click-layer bug.
+  - This still does not seal Time Tangled. Remaining active blockers include safe true F11 fullscreen, natural time-machine traversal, natural NPC no-repeat checks, item popup use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, and real audio-source inventory.
