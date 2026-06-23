@@ -1,6 +1,6 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-22 20:30 EDT
+更新时间：2026-06-22 22:50 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
@@ -210,6 +210,25 @@ Poptropicon 样板岛最新进展：用户指出的“角色消失”已定位�
 | AS2 Early/Spy/Super F11 扩展样本 | `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781883257875.json`：总结果 1/3，因为 Spy 和 Super Power 的 loading 帧没有被采样捕获；但三岛 scene evidence、visual guard、F11 尺寸门槛均通过，音频 active 为 0。人工检查 `01-early-poptropica-f11.png`、`02-spy-f11.png`、`03-super-power-f11.png`：HUD/角色/场景稳定，静态英文美术字保留；AS2 F11 底部蓝色保存栏/裁切带仍需后续优化。Early loading `01-early-poptropica-loading-0.png` 人工检查居中，OCR 偏移 x=-1/y=22 |
 | AS2 F11/fullscreen loading hold 样本 | `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781888576562.json`：Mystery Train 在 G32QC 真全屏客户区 `2560x1306` 下通过；`flashpointQaLoadingHoldMs=6000` 只 hold framework 原生 startup loading，不再传给 gameplay；0-1500ms 多帧 `Poptropica LOADING` 居中，偏移约 x=-16/y=-40；人工检查 `run-1781888576562/...loading-0.png` 与 `...loading-1500.png` 通过，之后 `initial.png` 正常进入场景。`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1781888862295.json`：Early Poptropica 同样通过 F11/fullscreen loading center，0-4500ms 多帧偏移约 x=-16/y=-40，audio active=0 |
 | Poptropicon 样板岛展示 | 已更新：`runtime-data/qa/manual-poptropicon-demo.png` 是旧基线；最新证据为 `runtime-data/qa/poptropicon-player-boundsfix-start.png`、`runtime-data/qa/poptropicon-player-boundsfix-after-ground-right.png`、`runtime-data/qa/poptropicon-player-boundsfix-right-edge.png`、`runtime-data/qa/poptropicon-intro-cn-short-popup.png`、`runtime-data/qa/poptropicon-intro-cn-short-after-start.png`、`runtime-data/qa/poptropicon-resize-win32-1600x900-after.png`、`runtime-data/qa/as3/p0-playability/as3-p0-playability-1781974446974.json`。G32QC 侧屏静音打开，玩家不消失，右边界不露蓝底，原生介绍弹窗和 NPC 对话中文，真实窗口缩放/最大化/F11 后稳定；静态 `MENU/SPACE JAUNT/HOBO/MIGHTY/LEARN TO SPEAK FREMLON!/ENTRANCE` 等美术字保持英文，不使用中文覆盖层。该岛仍需补 loading 本轮复测、至少 3 个真实 NPC/剧情中文对话、完整房间自然遍历和自然剧情通关证据 |
+
+## 2026-06-22 22:50 EDT：AS2 Time/Super HUD 与任务文件弹窗复核
+
+- 当前状态：Time Tangled 仍是 **re-opened**，没有封版；本轮只关闭/推进公共 blocker 的一部分。
+- 修复/工具改动：
+  - `malidocs.swf` 从 AS2 tight popup viewport 白名单中排除，避免任务文件被 640x480 tight crop 放大裁切。
+  - 非 tight popup 不再创建额外 `__zhPopupBackdrop` 黑色遮罩，只隐藏 gameplay HUD 并使用原游戏 popupBack。
+  - `tools/qa-as2-interaction-smoke.js` 新增 `--popup-close-click` / `--popup-close-clicks`，并修正 Firefox client-only 截图与点击坐标 110px 偏移。
+  - QA map 点击默认回到初始稳定场景，不再用 F11 退出后仍处于 LOADING 的截图算点击点；`--map-after-f11` 才使用 post-F11 截图。
+- 验证通过：
+  - Time Tangled 常规回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782182603714.json`：`ok=true`，`audioActive=0`，`mapClicksPassed=1`，`sceneEvidencePassed=1`，`f11Passed=1`，`visualGuardPassed=1`，`hudAnchorPassed=1`。
+  - 人工复核：`run-1782182603714/01-time-tangled-hud-anchor.png` 显示三枚 AS2 HUD 图标右上单行；`01-time-tangled-f11.png` 角色可见、HUD 稳定、无左上暂停残影；`01-time-tangled-map.png` 地图可打开，静态 `TIME TANGLED ISLAND` 保留英文。
+  - Super Power 常规回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782182763256.json`：`ok=true`，`audioActive=0`，`mapClicksPassed=1`，`sceneEvidencePassed=1`，`f11Passed=1`，`visualGuardPassed=1`，`hudAnchorPassed=1`。
+  - 人工复核：`run-1782182763256/01-super-power-hud-anchor.png` 和 `01-super-power-f11.png` 显示 HUD 单行右上、角色可见、无左上暂停残影。
+- 任务文件弹窗进展：
+  - `malidocs` 打开截图 `runtime-data/qa/as2/interaction-smoke/run-1782181675632/01-time-tangled-initial.png` 已不再右侧裁切，关闭按钮可见，文件内容落在可视区域。
+  - 未关闭：关闭 `malidocs` 后仍会露出 Time Machine/Time map 弹窗层，见 `runtime-data/qa/as2/interaction-smoke/run-1782182012427/01-time-tangled-popup-close.png`。因此“任务物品关闭后无黑残留/回到正常场景”仍是 blocker。
+- 仍未关闭：
+  - Time Tangled 自然时间装置路线、任务物品关闭链、自然 NPC 热区 no-repeat、箭头/native label 全量检查、外链白屏、AS3 对话队列、真实音频源清单。
 
 ## P0 验收流程
 

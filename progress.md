@@ -4687,3 +4687,28 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the AS2 Time Tangled map popup `CLOSE` item using asset replacement, not a Chinese text overlay.
   - Time Tangled is still re-opened overall. Remaining blockers before calling the island sealed: item/file popup black residue and off-screen positioning, natural time-device route through eras, natural NPC no-repeat hot-zone checks, native arrow/label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.
+
+## 2026-06-22 AS2 Time/Super HUD Regression + malidocs Popup Partial Fix
+
+- Continued the reopened Time Tangled blocker wave; did not advance to a new island.
+- Code changes:
+  - `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js` now treat `malidocs.swf` as a non-tight popup viewport. This avoids the previous 640x480 tight-crop path that enlarged/cut the task file.
+  - Non-tight popups now skip the extra `__zhPopupBackdrop`; they still hide gameplay HUD but rely on the original game popupBack. The implementation uses `_root.__zhPopupTightViewport` rather than a local `_locN_` variable to avoid FFDec local-variable collisions.
+  - `tools/qa-as2-interaction-smoke.js` now supports `--popup-close-click`, `--popup-close-clicks`, and screenshot-coordinate click offset for Firefox client-only captures.
+  - The AS2 map-click source was corrected: default map clicks use the initial stable scene, not a post-F11 frame that may still be `LOADING`. `--map-after-f11` is now required to opt into post-F11 map clicking.
+- Verification:
+  - Static checks passed:
+    - `node --check tools/patch-as2-gameplay-hud-popup.js`
+    - `node --check tools/lib/pack.js`
+    - `node --check tools/qa-as2-interaction-smoke.js`
+  - Rebuilt AS2 runtime through `node tools/patch-as2-gameplay-hud-popup.js`; report `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json`.
+  - Time Tangled regular regression passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782182603714.json`.
+    - `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `hudAnchorPassed=1`.
+    - Reviewed `run-1782182603714/01-time-tangled-hud-anchor.png`, `01-time-tangled-map.png`, and `01-time-tangled-f11.png`.
+  - Super Power regular regression passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782182763256.json`.
+    - `ok=true`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `hudAnchorPassed=1`.
+    - Reviewed `run-1782182763256/01-super-power-hud-anchor.png` and `01-super-power-f11.png`.
+  - `malidocs` popup no longer renders with right-side clipping in `runtime-data/qa/as2/interaction-smoke/run-1782181675632/01-time-tangled-initial.png`.
+- Important non-closure:
+  - `malidocs` close flow is still not sealed. After close, the game remains on a Time Machine/Time map popup layer instead of returning to normal gameplay; evidence: `runtime-data/qa/as2/interaction-smoke/run-1782182012427/01-time-tangled-popup-close.png`.
+  - Do not mark Time Tangled sealed until the item popup close chain, natural time-device route, natural NPC hot-zone no-repeat checks, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory are handled.

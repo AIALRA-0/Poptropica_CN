@@ -132,6 +132,7 @@ function summarizeLogSegment(segment) {
   const sounds = lines.filter((line) => /(?:sceneAudioOverrides|sounds\.xml|\.mp3|\.wav|\.flv|\/sound|\/sounds)\b/iu.test(line));
   const sceneSwfs = lines.filter((line) => /\/scenes\/island[^?\s]+\/scene[^?\s]*\.swf/iu.test(line));
   const maps = lines.filter((line) => /(?:content\/www\.poptropica\.com\/)?popups\/(?:map|travelmap)\.swf\b/iu.test(line));
+  const popups = lines.filter((line) => /(?:content\/www\.poptropica\.com\/)?popups\/(?!map\.swf\b|travelmap\.swf\b)[^?\s]+\.swf\b/iu.test(line));
   const requests = lines.filter((line) => /(?:Request:|Response:|\[Zipfs\])/iu.test(line));
   return {
     lineCount: lines.length,
@@ -139,10 +140,12 @@ function summarizeLogSegment(segment) {
     soundRequestCount: sounds.length,
     sceneSwfRequestCount: sceneSwfs.length,
     mapRequestCount: maps.length,
+    popupRequestCount: popups.length,
     missingSamples: missing.slice(0, 20),
     soundSamples: sounds.slice(0, 20),
     sceneSwfSamples: sceneSwfs.slice(-20),
     mapSamples: maps.slice(-20),
+    popupSamples: popups.slice(-20),
     requestTail: requests.slice(-40),
     lastLines: lines.slice(-30)
   };
@@ -388,15 +391,28 @@ function resolveFlashpointQaHideHud(args) {
   ).trim();
 }
 
+function resolveFlashpointQaAs2Popup(args) {
+  return String(
+    args.flashpointQaAs2Popup ||
+    args["flashpoint-qa-as2-popup"] ||
+    args.as2QaPopup ||
+    args["as2-qa-popup"] ||
+    args.qaPopup ||
+    args["qa-popup"] ||
+    ""
+  ).trim();
+}
+
 function withLaunchQuery(url, args) {
   const roomOverride = String(args.roomOverride || args["room-override"] || "").trim();
   const islandOverride = String(args.islandOverride || args["island-override"] || "").trim();
   const autoOpenMapAfterMs = String(args.autoOpenMapAfterMs || args["auto-open-map-after-ms"] || "").trim();
   const flashpointQaAs2Dialog = resolveFlashpointQaAs2Dialog(args);
+  const flashpointQaAs2Popup = resolveFlashpointQaAs2Popup(args);
   const flashpointQaLoadingHoldMs = resolveFlashpointQaLoadingHoldMs(args);
   const flashpointQaHideHud = resolveFlashpointQaHideHud(args);
   const shouldCacheBust = !flagEnabled(args.disableQaCacheBust || args["disable-qa-cache-bust"]);
-  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaLoadingHoldMs && !flashpointQaHideHud) {
+  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaAs2Popup && !flashpointQaLoadingHoldMs && !flashpointQaHideHud) {
     return url;
   }
   const nextUrl = new URL(url);
@@ -411,6 +427,9 @@ function withLaunchQuery(url, args) {
   }
   if (flashpointQaAs2Dialog) {
     nextUrl.searchParams.set("flashpointQaAs2Dialog", flashpointQaAs2Dialog);
+  }
+  if (flashpointQaAs2Popup) {
+    nextUrl.searchParams.set("flashpointQaAs2Popup", flashpointQaAs2Popup);
   }
   if (flashpointQaLoadingHoldMs) {
     nextUrl.searchParams.set("flashpointQaLoadingHoldMs", flashpointQaLoadingHoldMs);
@@ -1216,6 +1235,116 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
   }
 }
 
+function clickPopupClose({ runDir, stem, runtime, runtimeWindow, capture, args, qaErrors }) {
+  const clickPath = path.join(runDir, `${stem}-popup-close-click.json`);
+  const postWindowPath = path.join(runDir, `${stem}-popup-close-window.json`);
+  if (!runtimeWindow?.match?.handle || !capture) {
+    return {
+      ok: false,
+      skipped: false,
+      reason: "window_or_capture_missing",
+      clickPath
+    };
+  }
+  const imageWidth = Number(capture.imageSize?.width || capture.captureBox?.width || 0);
+  const imageHeight = Number(capture.imageSize?.height || capture.captureBox?.height || 0);
+  const clickOffset = captureClickOffset(capture);
+  const point = {
+    x: Math.round(clickOffset.x + Number(args.popupCloseX || args["popup-close-x"] || imageWidth * Number(args.popupCloseXRatio || args["popup-close-x-ratio"] || 0.785))),
+    y: Math.round(clickOffset.y + Number(args.popupCloseY || args["popup-close-y"] || imageHeight * Number(args.popupCloseYRatio || args["popup-close-y-ratio"] || 0.135))),
+    source: (args.popupCloseX !== undefined || args["popup-close-x"] !== undefined || args.popupCloseY !== undefined || args["popup-close-y"] !== undefined)
+      ? "explicit"
+      : "capture-ratio"
+  };
+  try {
+    const clickCount = Math.max(1, Number.parseInt(String(args.popupCloseClicks || args["popup-close-clicks"] || 1), 10) || 1);
+    const waitMs = Math.max(0, Number(args.popupCloseWaitMs || args["popup-close-wait-ms"] || 1800));
+    const clickPaths = [];
+    for (let clickIndex = 0; clickIndex < clickCount; clickIndex += 1) {
+      const indexedClickPath = clickCount === 1
+        ? clickPath
+        : path.join(runDir, `${stem}-popup-close-click-${clickIndex + 1}.json`);
+      clickPaths.push(indexedClickPath);
+      const clickArgs = [
+        "click-window",
+        "--handle",
+        String(runtimeWindow.match.handle),
+        "--process-names",
+        runtime.processNames.join(","),
+        "--title-contains",
+        "poptropica",
+        "--x",
+        String(point.x),
+        "--y",
+        String(point.y),
+        "--output",
+        indexedClickPath
+      ];
+      if (runtime.pid) {
+        clickArgs.push("--pid", String(runtime.pid));
+      }
+      appendWindowGeometryArgs(clickArgs, args);
+      if (flagEnabled(args.clickLargestChild || args["click-largest-child"]) || process.env.POPTROPICA_QA_CLICK_LARGEST_CHILD === "1") {
+        clickArgs.push("--largest-child");
+      }
+      const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "").trim();
+      if (clickChildClass) {
+        clickArgs.push("--child-class-contains", clickChildClass);
+      }
+      runPythonQa(clickArgs, {
+        timeoutMs: 20000
+      });
+      if (waitMs > 0) {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
+      }
+    }
+    const postWindow = runPythonQa(buildWaitArgs({
+      runtime,
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+      outputPath: postWindowPath,
+      args
+    }), {
+      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+    });
+    const postCapture = captureAndAnalyze({
+      runDir,
+      stem,
+      suffix: "popup-close",
+      runtime,
+      runtimeWindow: postWindow,
+      qaErrors,
+      args: { ...args, skipOcr: true }
+    });
+    const stageStable = Boolean(postCapture.stage?.stageRect);
+    return {
+      ok: stageStable,
+      skipped: false,
+      clickPoint: point,
+      clickPath,
+      clickPaths,
+      clickCount,
+      windowPath: postWindowPath,
+      runtimeWindow: postWindow,
+      capture: postCapture.capture,
+      stage: postCapture.stage,
+      visualGuard: postCapture.visualGuard,
+      artifacts: postCapture.artifacts,
+      stageStable,
+      reason: stageStable ? null : "post_close_stage_missing"
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError("popup-close-click", error));
+    return {
+      ok: false,
+      skipped: false,
+      clickPoint: point,
+      clickPath,
+      reason: "popup_close_click_or_recapture_failed",
+      error: String(error.message || error)
+    };
+  }
+}
+
 function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
   const stageRect = stage?.stageRect;
   const clickPath = path.join(runDir, `${stem}-dialogue-click.json`);
@@ -1434,6 +1563,18 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       })
     : { ok: true, skipped: true, containsChinese: false };
 
+  const popupClose = flagEnabled(args.popupCloseClick || args["popup-close-click"])
+    ? clickPopupClose({
+        runDir,
+        stem,
+        runtime,
+        runtimeWindow: initial.runtimeWindow || runtimeWindow,
+        capture: initial.capture,
+        args,
+        qaErrors
+      })
+    : { ok: true, skipped: true };
+
   const f11 = await captureF11({
     runDir,
     stem,
@@ -1454,7 +1595,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         args: { ...args, skipOcr: true }
       })
     : null;
-  const mapSource = postF11ForMap?.capture && postF11ForMap?.stage?.stageRect ? postF11ForMap : initial;
+  const usePostF11ForMap = flagEnabled(args.mapAfterF11 || args["map-after-f11"]);
+  const mapSource = usePostF11ForMap && postF11ForMap?.capture && postF11ForMap?.stage?.stageRect ? postF11ForMap : initial;
 
   const map = flagEnabled(args.skipMapClick)
     ? { ok: true, skipped: true, mapRequestSeen: false }
@@ -1465,6 +1607,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         runtimeWindow: initial.runtimeWindow || runtimeWindow,
         capture: mapSource.capture,
         stage: mapSource.stage,
+        hudAnchor: null,
         args,
         qaErrors
       });
@@ -1504,6 +1647,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (flagEnabled(args.requireSceneEvidence) && !sceneEvidence.ok) {
     failedChecks.push("scene_evidence_missing");
   }
+  if (flagEnabled(args.requirePopupRequest || args["require-popup-request"]) && Number(logSummary.popupRequestCount || 0) <= 0) {
+    failedChecks.push("popup_request_not_seen");
+  }
   if (flagEnabled(args.requireAudio) && !audio?.audioLikelyActive) {
     failedChecks.push("audio_inactive");
   }
@@ -1537,6 +1683,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!hudAnchor.skipped && shouldRequireHudAnchor(args) && !hudAnchor.ok) {
     failedChecks.push("hud_anchor_failed");
   }
+  if (!popupClose.skipped && flagEnabled(args.requirePopupClose || args["require-popup-close"]) && !popupClose.ok) {
+    failedChecks.push("popup_close_failed");
+  }
   for (const qaError of qaErrors) {
     failedChecks.push(`qa_${qaError.step.replace(/[^a-z0-9]+/giu, "_")}_failed`);
   }
@@ -1564,6 +1713,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       initialScreenshotPath: initial.artifacts.screenshotPath || null,
       initialStagePath: initial.artifacts.stagePath || null,
       initialVisualGuardPath: initial.artifacts.visualGuardPath || null,
+      popupCloseScreenshotPath: popupClose.artifacts?.screenshotPath || null,
+      popupCloseStagePath: popupClose.artifacts?.stagePath || null,
       hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
       hudAnchorAnnotatedPath: hudAnchor.artifacts?.annotatedPath || null,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
@@ -1592,6 +1743,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       sessionCount: audio?.sessionCount ?? null
     },
     dialogue,
+    popupClose,
     f11,
     map,
     hudAnchor,

@@ -167,6 +167,7 @@ const gameViewport = document.getElementById("gameViewport"),
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
+      POPUP_VIEWPORT = { x: 0, y: 0, width: 640, height: 480 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };
 let viewportResizeReloadTimer = 0,
     viewportResizeLastSize = null;
@@ -185,9 +186,27 @@ function main() {
 }
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
+    if(gameState === "return_user_standard" && game && game.__zhAs2PopupMode)
+        return POPUP_VIEWPORT;
     if(gameState === "return_user_standard")
         return STANDARD_GAMEPLAY_VIEWPORT;
     return null;
+}
+
+function flashpointSetAs2PopupMode(active) {
+    if(!game)
+        return false;
+
+    game.__zhAs2PopupMode = String(active) === "1" || active === true || String(active).toLowerCase() === "true";
+    if(game.__zhViewportState) {
+        game.__zhViewportState.viewportCrop = resolveGameplayViewportCrop(
+            game.__zhViewportState.island,
+            game.__zhViewportState.scene,
+            game.__zhViewportState.gameState
+        );
+    }
+    applyCurrentViewport();
+    return true;
 }
 
 function initMapHotspotBridge() {
@@ -238,7 +257,7 @@ function applyMapHotspot(viewport, gameState) {
     if(!flashpointMapHotspot)
         return;
 
-    if(gameState !== "return_user_standard") {
+    if(gameState !== "return_user_standard" || game.__zhAs2PopupMode) {
         flashpointMapHotspot.hidden = true;
         return;
     }
@@ -392,6 +411,11 @@ function applyCurrentViewport() {
     if(!game.__zhViewportState)
         return;
 
+    game.__zhViewportState.viewportCrop = resolveGameplayViewportCrop(
+        game.__zhViewportState.island,
+        game.__zhViewportState.scene,
+        game.__zhViewportState.gameState
+    );
     const viewport = computeScaledViewport(
         game.__zhViewportState.baseWidth,
         game.__zhViewportState.baseHeight,
@@ -487,6 +511,7 @@ function flashpointPlayAs2Sound(soundName) {
 }
 
 window.flashpointPlayAs2Sound = flashpointPlayAs2Sound;
+window.flashpointSetAs2PopupMode = flashpointSetAs2PopupMode;
 
 function updateSceneAudio(island, scene, gameState) {
     if(!sceneAudio)
@@ -600,18 +625,21 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
     if(inputParams.flashpointQaAs2Dialog !== undefined)
         flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
+    if(inputParams.flashpointQaAs2Popup !== undefined)
+        flashVars.set("flashpointQaAs2Popup", inputParams.flashpointQaAs2Popup);
     if(inputParams.flashpointQaLoadingHoldMs !== undefined)
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
     if(inputParams.flashpointQaHideHud !== undefined)
         flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
 
+    game.__zhAs2PopupMode = false;
     if(getCharLazyLoadStatus()) {
         flashVars.set("charLazyLoad", "1");
     }
 
     const viewportCrop = resolveGameplayViewportCrop(island, scene, gameState);
     const viewport = computeScaledViewport(width, height, gameState, viewportCrop);
-    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState, viewportCrop };
+    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState, viewportCrop, island, scene, path };
     applyGameViewport(viewport, gameState);
     scheduleViewportRefreshes();
     game.setAttribute("flashvars", flashVars);

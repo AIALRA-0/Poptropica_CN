@@ -169,7 +169,7 @@ function patchCloseButtonText({ ffdecCli, inputSwf, outputSwf, workDir }) {
 function findGameplayFrameOneScript(scriptRoot) {
   const candidates = listAsScripts(scriptRoot).filter((scriptPath) => {
     const content = fs.readFileSync(scriptPath, "utf8");
-    return content.includes("function zhShowPopupBackdrop()") && content.includes("function layoutFramelessGameplayNav(forceLayout)");
+    return content.includes("function zhShowPopupBackdrop") && content.includes("function layoutFramelessGameplayNav(forceLayout)");
   });
   if (candidates.length !== 1) {
     throw new Error(`Expected one AS2 gameplay frame_1 HUD script, found ${candidates.length}.`);
@@ -315,10 +315,10 @@ function patchFrameOne(content) {
       "   _loc2_.btnSuperPower = true;",
       "   for(_loc3_ in navBar)",
       "   {",
-      "      if(String(_loc3_).indexOf(\"btn\") == 0 && _loc2_[_loc3_] != true)",
+      "      if(_loc2_[_loc3_] != true)",
       "      {",
       "         _loc4_ = navBar[_loc3_];",
-      "         if(_loc4_ != undefined)",
+      "         if(_loc4_ != undefined && typeof _loc4_ == \"movieclip\")",
       "         {",
       "            _loc4_._visible = false;",
       "            _loc4_._alpha = 0;",
@@ -329,10 +329,666 @@ function patchFrameOne(content) {
       "      }",
       "   }",
       "}",
-      "function zhShowPopupBackdrop()"
+      "function zhNotifyPopupViewport(active)",
+      "{",
+      "   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)",
+      "   {",
+      "      try",
+      "      {",
+      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",active == true ? \"1\" : \"0\");",
+      "      }",
+      "      catch(zhPopupViewportError)",
+      "      {",
+      "      }",
+      "   }",
+      "}",
+      "function zhPopupUsesTightViewport(popupName)",
+      "{",
+      "   var _loc2_ = String(popupName).toLowerCase();",
+      "   if(_loc2_ == \"map.swf\" || _loc2_ == \"travelmap.swf\" || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+      "   {",
+      "      return false;",
+      "   }",
+      "   return true;",
+      "}",
+      "function zhShowPopupBackdrop(popupName)"
     ].join("\n");
     next = replaceRequired(next, "function zhShowPopupBackdrop()", helperBlock, "popup HUD helper insertion point");
   }
+
+  if (!next.includes("function zhNotifyPopupViewport(active)")) {
+    const helper = [
+      "function zhNotifyPopupViewport(active)",
+      "{",
+      "   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)",
+      "   {",
+      "      try",
+      "      {",
+      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",active == true ? \"1\" : \"0\");",
+      "      }",
+      "      catch(zhPopupViewportError)",
+      "      {",
+      "      }",
+      "   }",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhShowPopupBackdrop()", `${helper}\nfunction zhShowPopupBackdrop()`, "popup viewport notify helper insertion point");
+  }
+
+  if (!next.includes("function zhPopupUsesTightViewport(popupName)")) {
+    const helper = [
+      "function zhPopupUsesTightViewport(popupName)",
+      "{",
+      "   var _loc2_ = String(popupName).toLowerCase();",
+      "   if(_loc2_ == \"map.swf\" || _loc2_ == \"travelmap.swf\" || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+      "   {",
+      "      return false;",
+      "   }",
+      "   return true;",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhShowPopupBackdrop()", `${helper}\nfunction zhShowPopupBackdrop()`, "popup viewport split helper insertion point");
+  }
+  if (!next.includes("function zhFitTightPopupClip()")) {
+    const helper = [
+      "function zhFitTightPopupClip()",
+      "{",
+      "   var _loc1_ = 640;",
+      "   var _loc2_ = 480;",
+      "   var _loc3_ = 16;",
+      "   var _loc4_;",
+      "   var _loc5_;",
+      "   var _loc6_;",
+      "   var _loc7_;",
+      "   var _loc8_;",
+      "   var _loc9_;",
+      "   if(popupClip == undefined || popupClip.getBounds == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(popupClip.bgHit != undefined)",
+      "   {",
+      "      popupClip.bgHit._alpha = 0;",
+      "   }",
+      "   _loc8_ = _loc1_ - _loc3_ * 2;",
+      "   _loc9_ = _loc2_ - _loc3_ * 2;",
+      "   _loc4_ = popupClip.getBounds(_root);",
+      "   _loc5_ = Number(_loc4_.xMax) - Number(_loc4_.xMin);",
+      "   _loc6_ = Number(_loc4_.yMax) - Number(_loc4_.yMin);",
+      "   if(!(_loc5_ > 0) || !(_loc6_ > 0))",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(_loc5_ <= _loc8_ && _loc6_ <= _loc9_)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc7_ = Math.min(100,_loc8_ * 100 / _loc5_);",
+      "   _loc7_ = Math.min(_loc7_,_loc9_ * 100 / _loc6_);",
+      "   if(!(_loc7_ > 0))",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(_loc7_ < 99)",
+      "   {",
+      "      popupClip._xscale = popupClip._xscale * _loc7_ / 100;",
+      "      popupClip._yscale = popupClip._yscale * _loc7_ / 100;",
+      "      _loc4_ = popupClip.getBounds(_root);",
+      "      _loc5_ = Number(_loc4_.xMax) - Number(_loc4_.xMin);",
+      "      _loc6_ = Number(_loc4_.yMax) - Number(_loc4_.yMin);",
+      "   }",
+      "   popupClip._x += (_loc1_ - _loc5_) / 2 - Number(_loc4_.xMin);",
+      "   popupClip._y += (_loc2_ - _loc6_) / 2 - Number(_loc4_.yMin);",
+      "   if(_root != undefined && _root.__zhTightPopupFitLogged != true)",
+      "   {",
+      "      _root.__zhTightPopupFitLogged = true;",
+      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=TightPopupFit&w=\" + Math.round(_loc5_) + \"&h=\" + Math.round(_loc6_) + \"&x=\" + Math.round(popupClip._x) + \"&y=\" + Math.round(popupClip._y),0);",
+      "   }",
+      "   return true;",
+      "}",
+      "function zhStartTightPopupFitWatchdog(popupName)",
+      "{",
+      "   if(_root == undefined || !zhPopupUsesTightViewport(popupName))",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   if(_root.__zhTightPopupFitInterval != undefined)",
+      "   {",
+      "      clearInterval(_root.__zhTightPopupFitInterval);",
+      "   }",
+      "   _root.__zhTightPopupFitLogged = false;",
+      "   _root.__zhTightPopupFitTicks = 0;",
+      "   _root.__zhTightPopupFitTick = function()",
+      "   {",
+      "      _root.__zhTightPopupFitTicks = Number(_root.__zhTightPopupFitTicks) + 1;",
+      "      zhFitTightPopupClip();",
+      "      if(_root.__zhTightPopupFitTicks > 600)",
+      "      {",
+      "         clearInterval(_root.__zhTightPopupFitInterval);",
+      "         _root.__zhTightPopupFitInterval = undefined;",
+      "      }",
+      "   };",
+      "   _root.__zhTightPopupFitInterval = setInterval(_root,\"__zhTightPopupFitTick\",100);",
+      "}",
+      "function zhStopTightPopupFitWatchdog()",
+      "{",
+      "   if(_root != undefined && _root.__zhTightPopupFitInterval != undefined)",
+      "   {",
+      "      clearInterval(_root.__zhTightPopupFitInterval);",
+      "      _root.__zhTightPopupFitInterval = undefined;",
+      "   }",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhRaisePopupLayers()", `${helper}\nfunction zhRaisePopupLayers()`, "tight popup fit helper insertion point");
+  }
+  next = next.replace("   var _loc8_;\n   if(popupClip == undefined || popupClip.getBounds == undefined)", "   if(popupClip == undefined || popupClip.getBounds == undefined)");
+  next = next.replace("   _loc4_ = popupClip.getBounds(popupClip);", "   _loc4_ = popupClip.getBounds(_root);");
+  next = next.replace(
+    "   _loc7_ = Math.min(100,(_loc1_ - _loc3_ * 2) * 100 / _loc5_,(_loc2_ - _loc3_ * 2) * 100 / _loc6_);",
+    [
+      "   _loc7_ = Math.min(100,(_loc1_ - _loc3_ * 2) * 100 / _loc5_);",
+      "   _loc7_ = Math.min(_loc7_,(_loc2_ - _loc3_ * 2) * 100 / _loc6_);"
+    ].join("\n")
+  );
+  if (!next.includes("_loc8_ = _loc1_ - _loc3_ * 2;")) {
+    next = next.replace(
+      "   var _loc7_;\n   if(popupClip == undefined || popupClip.getBounds == undefined)",
+      [
+        "   var _loc7_;",
+        "   var _loc8_;",
+        "   var _loc9_;",
+        "   if(popupClip == undefined || popupClip.getBounds == undefined)"
+      ].join("\n")
+    );
+    next = next.replace(
+      "   _loc4_ = popupClip.getBounds(_root);",
+      [
+        "   _loc8_ = _loc1_ - _loc3_ * 2;",
+        "   _loc9_ = _loc2_ - _loc3_ * 2;",
+        "   _loc4_ = popupClip.getBounds(_root);"
+      ].join("\n")
+    );
+  }
+  if (!next.includes("popupClip.bgHit._alpha = 0;")) {
+    next = next.replace(
+      [
+        "   if(popupClip == undefined || popupClip.getBounds == undefined)",
+        "   {",
+        "      return false;",
+        "   }"
+      ].join("\n"),
+      [
+        "   if(popupClip == undefined || popupClip.getBounds == undefined)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   if(popupClip.bgHit != undefined)",
+        "   {",
+        "      popupClip.bgHit._alpha = 0;",
+        "   }"
+      ].join("\n")
+    );
+  }
+  if (!next.includes("zhFitTightPopupChildClip(popupClip.board);")) {
+    next = next.replace(
+      [
+        "   if(popupClip.bgHit != undefined)",
+        "   {",
+        "      popupClip.bgHit._alpha = 0;",
+        "   }"
+      ].join("\n"),
+      [
+        "   if(popupClip.bgHit != undefined)",
+        "   {",
+        "      popupClip.bgHit._alpha = 0;",
+        "   }",
+        "   if(popupClip.board != undefined)",
+        "   {",
+        "      popupClip._x = 0;",
+        "      popupClip._y = 0;",
+        "      popupClip._xscale = 100;",
+        "      popupClip._yscale = 100;",
+        "      popupClip.board._x = 92;",
+        "      popupClip.board._y = 62;",
+        "      popupClip.board._xscale = 78;",
+        "      popupClip.board._yscale = 78;",
+        "      return false;",
+        "   }"
+      ].join("\n")
+    );
+  }
+  next = next.replace(
+    [
+      "      popupClip._x = 0;",
+      "      popupClip._y = 0;",
+      "      popupClip._xscale = 100;",
+      "      popupClip._yscale = 100;",
+      "      zhFitTightPopupChildClip(popupClip.board);",
+      "      return false;"
+    ].join("\n"),
+    [
+      "      popupClip._x = 0;",
+      "      popupClip._y = 0;",
+      "      popupClip._xscale = 100;",
+      "      popupClip._yscale = 100;",
+      "      popupClip.board._x = 92;",
+      "      popupClip.board._y = 62;",
+      "      popupClip.board._xscale = 78;",
+      "      popupClip.board._yscale = 78;",
+      "      return false;"
+    ].join("\n")
+  );
+  if (!next.includes("popupClip._xscale = 100;")) {
+    next = next.replace(
+      [
+        "   if(popupClip.board != undefined)",
+        "   {",
+        "      zhFitTightPopupChildClip(popupClip.board);",
+        "   }"
+      ].join("\n"),
+      [
+        "   if(popupClip.board != undefined)",
+        "   {",
+        "      popupClip._x = 0;",
+        "      popupClip._y = 0;",
+        "      popupClip._xscale = 100;",
+        "      popupClip._yscale = 100;",
+        "      zhFitTightPopupChildClip(popupClip.board);",
+        "      return false;",
+        "   }"
+      ].join("\n")
+    );
+  }
+  if (!next.includes("function zhFitTightPopupChildClip(targetClip)")) {
+    const helper = [
+      "function zhFitTightPopupChildClip(targetClip)",
+      "{",
+      "   var _loc2_ = 640;",
+      "   var _loc3_ = 480;",
+      "   var _loc4_ = 16;",
+      "   var _loc5_;",
+      "   var _loc6_;",
+      "   var _loc7_;",
+      "   var _loc8_;",
+      "   var _loc9_;",
+      "   var _loc10_;",
+      "   var _loc11_;",
+      "   if(targetClip == undefined || targetClip.getBounds == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc5_ = targetClip.getBounds(_root);",
+      "   _loc6_ = Number(_loc5_.xMax) - Number(_loc5_.xMin);",
+      "   _loc7_ = Number(_loc5_.yMax) - Number(_loc5_.yMin);",
+      "   if(!(_loc6_ > 0) || !(_loc7_ > 0))",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(_loc6_ <= _loc2_ - _loc4_ * 2 && _loc7_ <= _loc3_ - _loc4_ * 2 && Number(_loc5_.xMin) >= _loc4_ && Number(_loc5_.xMax) <= _loc2_ - _loc4_ && Number(_loc5_.yMin) >= _loc4_ && Number(_loc5_.yMax) <= _loc3_ - _loc4_)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc8_ = Math.min(100,(_loc2_ - _loc4_ * 2) * 100 / _loc6_);",
+      "   _loc8_ = Math.min(_loc8_,(_loc3_ - _loc4_ * 2) * 100 / _loc7_);",
+      "   if(!(_loc8_ > 0))",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(_loc8_ < 99)",
+      "   {",
+      "      targetClip._xscale = targetClip._xscale * _loc8_ / 100;",
+      "      targetClip._yscale = targetClip._yscale * _loc8_ / 100;",
+      "      _loc5_ = targetClip.getBounds(_root);",
+      "      _loc6_ = Number(_loc5_.xMax) - Number(_loc5_.xMin);",
+      "      _loc7_ = Number(_loc5_.yMax) - Number(_loc5_.yMin);",
+      "   }",
+      "   _loc9_ = targetClip._parent != undefined && targetClip._parent._xscale != undefined && targetClip._parent._xscale != 0 ? targetClip._parent._xscale / 100 : 1;",
+      "   _loc10_ = targetClip._parent != undefined && targetClip._parent._yscale != undefined && targetClip._parent._yscale != 0 ? targetClip._parent._yscale / 100 : 1;",
+      "   _loc11_ = (_loc2_ - _loc6_) / 2 - Number(_loc5_.xMin);",
+      "   targetClip._x += _loc11_ / _loc9_;",
+      "   targetClip._y += ((_loc3_ - _loc7_) / 2 - Number(_loc5_.yMin)) / _loc10_;",
+      "   return true;",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhStartTightPopupFitWatchdog(popupName)", `${helper}\nfunction zhStartTightPopupFitWatchdog(popupName)`, "tight popup child fit helper insertion point");
+  }
+  if (!next.includes("if(_loc5_ <= _loc8_ && _loc6_ <= _loc9_)")) {
+    next = next.replace(
+      [
+        "   if(_loc5_ <= 0 || _loc6_ <= 0)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc7_ = Math.min(100,(_loc1_ - _loc3_ * 2) * 100 / _loc5_);",
+        "   _loc7_ = Math.min(_loc7_,(_loc2_ - _loc3_ * 2) * 100 / _loc6_);"
+      ].join("\n"),
+      [
+        "   if(_loc5_ <= 0 || _loc6_ <= 0)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   if(_loc5_ <= _loc8_ && _loc6_ <= _loc9_)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc7_ = Math.min(100,_loc8_ * 100 / _loc5_);",
+        "   _loc7_ = Math.min(_loc7_,_loc9_ * 100 / _loc6_);"
+      ].join("\n")
+    );
+  }
+  if (!next.includes("if(_loc6_ <= _loc2_ - _loc4_ * 2 && _loc7_ <= _loc3_ - _loc4_ * 2)")) {
+    next = next.replace(
+      [
+        "   if(_loc6_ <= 0 || _loc7_ <= 0)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc8_ = Math.min(100,(_loc2_ - _loc4_ * 2) * 100 / _loc6_);",
+        "   _loc8_ = Math.min(_loc8_,(_loc3_ - _loc4_ * 2) * 100 / _loc7_);"
+      ].join("\n"),
+      [
+        "   if(_loc6_ <= 0 || _loc7_ <= 0)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   if(_loc6_ <= _loc2_ - _loc4_ * 2 && _loc7_ <= _loc3_ - _loc4_ * 2)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc8_ = Math.min(100,(_loc2_ - _loc4_ * 2) * 100 / _loc6_);",
+        "   _loc8_ = Math.min(_loc8_,(_loc3_ - _loc4_ * 2) * 100 / _loc7_);"
+      ].join("\n")
+    );
+  }
+  next = next.replace(
+    [
+      "   popupClip._xscale = _loc7_;",
+      "   popupClip._yscale = _loc7_;",
+      "   _loc8_ = _loc7_ / 100;",
+      "   popupClip._x = (_loc1_ - _loc5_ * _loc8_) / 2 - Number(_loc4_.xMin) * _loc8_;",
+      "   popupClip._y = (_loc2_ - _loc6_ * _loc8_) / 2 - Number(_loc4_.yMin) * _loc8_;"
+    ].join("\n"),
+    [
+      "   if(_loc7_ < 99)",
+      "   {",
+      "      popupClip._xscale = popupClip._xscale * _loc7_ / 100;",
+      "      popupClip._yscale = popupClip._yscale * _loc7_ / 100;",
+      "      _loc4_ = popupClip.getBounds(_root);",
+      "      _loc5_ = Number(_loc4_.xMax) - Number(_loc4_.xMin);",
+      "      _loc6_ = Number(_loc4_.yMax) - Number(_loc4_.yMin);",
+      "   }",
+      "   popupClip._x += (_loc1_ - _loc5_) / 2 - Number(_loc4_.xMin);",
+      "   popupClip._y += (_loc2_ - _loc6_) / 2 - Number(_loc4_.yMin);",
+      "   if(_root != undefined && _root.__zhTightPopupFitLogged != true)",
+      "   {",
+      "      _root.__zhTightPopupFitLogged = true;",
+      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=TightPopupFit&w=\" + Math.round(_loc5_) + \"&h=\" + Math.round(_loc6_) + \"&x=\" + Math.round(popupClip._x) + \"&y=\" + Math.round(popupClip._y),0);",
+      "   }"
+    ].join("\n")
+  );
+  next = next.replace(
+    "   _root.__zhTightPopupFitTicks = 0;",
+    "   _root.__zhTightPopupFitLogged = false;\n   _root.__zhTightPopupFitTicks = 0;"
+  );
+  next = next.replace(
+    "   _root.__zhTightPopupFitLogged = false;\n   _root.__zhTightPopupFitLogged = false;",
+    "   _root.__zhTightPopupFitLogged = false;"
+  );
+  next = next.replace("if(_root.__zhTightPopupFitTicks > 80)", "if(_root.__zhTightPopupFitTicks > 600)");
+  next = next.replace(
+    'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf")',
+    'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf")',
+    'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    [
+      "function zhShowPopupBackdrop(popupName)",
+      "{",
+      "   var _loc1_ = zhPopupStageWidth();",
+      "   var _loc2_ = zhPopupStageHeight();",
+      "   var _loc3_;",
+      "   if(_root == undefined)"
+    ].join("\n"),
+    [
+      "function zhShowPopupBackdrop(popupName)",
+      "{",
+      "   var _loc1_ = zhPopupStageWidth();",
+      "   var _loc2_ = zhPopupStageHeight();",
+      "   var _loc3_;",
+      "   if(_root == undefined)"
+    ].join("\n")
+  );
+  next = next.replace(
+    "   zhNotifyPopupViewport(zhPopupUsesTightViewport(popupName));",
+    "   _root.__zhPopupTightViewport = zhPopupUsesTightViewport(popupName);\n   zhNotifyPopupViewport(_root.__zhPopupTightViewport);"
+  );
+  next = next.replace(
+    "   _loc4_ = zhPopupUsesTightViewport(popupName);\n   zhNotifyPopupViewport(_loc4_);",
+    "   _root.__zhPopupTightViewport = zhPopupUsesTightViewport(popupName);\n   zhNotifyPopupViewport(_root.__zhPopupTightViewport);"
+  );
+  next = next.replace(
+    /   zhStartPopupHudWatchdog\(\);\n   (_loc\d+_ = _root\.__zhPopupBackdrop;)/,
+    [
+      "   zhStartPopupHudWatchdog();",
+      "   if(_root.__zhPopupTightViewport != true)",
+      "   {",
+      "      if(_root.__zhPopupBackdrop != undefined)",
+      "      {",
+      "         _root.__zhPopupBackdrop._visible = false;",
+      "      }",
+      "      return undefined;",
+      "   }",
+      "   $1"
+    ].join("\n")
+  );
+
+  next = next.replace("function zhShowPopupBackdrop()\n{", "function zhShowPopupBackdrop(popupName)\n{");
+  next = next.replace("zhNotifyPopupViewport(true);", "zhNotifyPopupViewport(zhPopupUsesTightViewport(popupName));");
+  next = next.replace(
+    [
+      "   zhShowPopupBackdrop();",
+      "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+      "   popupClip.loadMovie(\"popups/inventory.swf\");"
+    ].join("\n"),
+    [
+      "   zhShowPopupBackdrop(\"inventory.swf\");",
+      "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+      "   popupClip.loadMovie(\"popups/inventory.swf\");"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "   zhShowPopupBackdrop();",
+      "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+      "   popupClip.loadMovie(\"popups/\" + popupName);"
+    ].join("\n"),
+    [
+      "   zhShowPopupBackdrop(popupName);",
+      "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+      "   popupClip.loadMovie(\"popups/\" + popupName);"
+    ].join("\n")
+  );
+  if (!next.includes("zhStartTightPopupFitWatchdog(popupName);")) {
+    next = replaceRequired(
+      next,
+      [
+        "   zhShowPopupBackdrop(popupName);",
+        "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+        "   popupClip.loadMovie(\"popups/\" + popupName);"
+      ].join("\n"),
+      [
+        "   zhShowPopupBackdrop(popupName);",
+        "   createEmptyMovieClip(\"popupClip\",popupDepth);",
+        "   popupClip.loadMovie(\"popups/\" + popupName);",
+        "   zhStartTightPopupFitWatchdog(popupName);"
+      ].join("\n"),
+      "tight popup fit watchdog load hook"
+    );
+  }
+  if (!next.includes("zhScheduleQaPopup();")) {
+    next = replaceRequired(
+      next,
+      [
+        "if(_root != undefined && zhScheduleAutoMap != undefined)",
+        "{",
+        "   zhScheduleAutoMap();",
+        "}",
+        "if(_root != undefined && zhInstallExternalMapBridge != undefined)"
+      ].join("\n"),
+      [
+        "if(_root != undefined && zhScheduleAutoMap != undefined)",
+        "{",
+        "   zhScheduleAutoMap();",
+        "}",
+        "if(_root != undefined && zhScheduleQaPopup != undefined)",
+        "{",
+        "   zhScheduleQaPopup();",
+        "}",
+        "if(_root != undefined && zhInstallExternalMapBridge != undefined)"
+      ].join("\n"),
+      "QA popup schedule init hook"
+    );
+  }
+
+  const legacyNavHidePatterns = [
+    {
+      old: [
+        "      if(String(_loc3_).indexOf(\"btn\") == 0 && _loc2_[_loc3_] != true)",
+        "      {",
+        "         _loc4_ = navBar[_loc3_];",
+        "         if(_loc4_ != undefined)"
+      ].join("\n"),
+      replacement: [
+        "      if(_loc2_[_loc3_] != true)",
+        "      {",
+        "         _loc4_ = navBar[_loc3_];",
+        "         if(_loc4_ != undefined && typeof _loc4_ == \"movieclip\")"
+      ].join("\n")
+    },
+    {
+      old: [
+        "      if(String(_loc2_).indexOf(\"btn\") == 0 && _loc1_[_loc2_] != true)",
+        "      {",
+        "         _loc3_ = navBar[_loc2_];",
+        "         if(_loc3_ != undefined)"
+      ].join("\n"),
+      replacement: [
+        "      if(_loc1_[_loc2_] != true)",
+        "      {",
+        "         _loc3_ = navBar[_loc2_];",
+        "         if(_loc3_ != undefined && typeof _loc3_ == \"movieclip\")"
+      ].join("\n")
+    }
+  ];
+  for (const pattern of legacyNavHidePatterns) {
+    next = next.replace(pattern.old, pattern.replacement);
+  }
+
+  if (!next.includes("function zhReadQaPopupName()")) {
+    const helper = [
+      "function zhReadQaPopupName()",
+      "{",
+      "   var _loc1_;",
+      "   if(_global != undefined && _global.flashpointQaAs2Popup != undefined)",
+      "   {",
+      "      _loc1_ = _global.flashpointQaAs2Popup;",
+      "   }",
+      "   if((_loc1_ == undefined || _loc1_ == \"\" || String(_loc1_) == \"undefined\") && _root != undefined && _root.flashpointQaAs2Popup != undefined)",
+      "   {",
+      "      _loc1_ = _root.flashpointQaAs2Popup;",
+      "   }",
+      "   if((_loc1_ == undefined || _loc1_ == \"\" || String(_loc1_) == \"undefined\") && _level0 != undefined && _level0.flashpointQaAs2Popup != undefined)",
+      "   {",
+      "      _loc1_ = _level0.flashpointQaAs2Popup;",
+      "   }",
+      "   if(_loc1_ == undefined || String(_loc1_) == \"undefined\")",
+      "   {",
+      "      return \"\";",
+      "   }",
+      "   _loc1_ = String(_loc1_);",
+      "   if(_loc1_.indexOf(\"/\") >= 0 || _loc1_.indexOf(\"\\\\\") >= 0 || _loc1_.indexOf(\"..\") >= 0)",
+      "   {",
+      "      return \"\";",
+      "   }",
+      "   if(_loc1_.indexOf(\".swf\") < 0)",
+      "   {",
+      "      _loc1_ += \".swf\";",
+      "   }",
+      "   return _loc1_;",
+      "}",
+      "function zhScheduleQaPopup()",
+      "{",
+      "   var _loc1_ = zhReadQaPopupName();",
+      "   if(_root == undefined || _root.__zhQaPopupScheduled == true || _loc1_ == \"\")",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   _root.__zhQaPopupScheduled = true;",
+      "   _root.__zhQaPopupName = _loc1_;",
+      "   _root.__zhQaPopupTicks = 0;",
+      "   _root.__zhQaPopupTick = function()",
+      "   {",
+      "      _root.__zhQaPopupTicks = Number(_root.__zhQaPopupTicks) + 1;",
+      "      if(_root.__zhQaPopupTicks >= 24 && _root.popup != undefined && zhQaPopupSceneReady())",
+      "      {",
+      "         clearInterval(_root.__zhQaPopupInterval);",
+      "         _root.__zhQaPopupInterval = undefined;",
+      "         _root.popup(_root.__zhQaPopupName,true);",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=QaPopupOpened&popup=\" + escape(_root.__zhQaPopupName) + \"&ticks=\" + _root.__zhQaPopupTicks,0);",
+      "      }",
+      "      else if(_root.__zhQaPopupTicks > 120)",
+      "      {",
+      "         clearInterval(_root.__zhQaPopupInterval);",
+      "         _root.__zhQaPopupInterval = undefined;",
+      "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=QaPopupTimeout&popup=\" + escape(_root.__zhQaPopupName),0);",
+      "      }",
+      "   };",
+      "   _root.__zhQaPopupInterval = setInterval(_root,\"__zhQaPopupTick\",250);",
+      "}",
+      "function zhQaPopupSceneReady()",
+      "{",
+      "   var _loc1_;",
+      "   if(_root == undefined || _root.camera == undefined || _root.camera.scene == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc1_ = _root.camera.scene.char;",
+      "   if(_loc1_ == undefined || _loc1_.avatar == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   return true;",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhMaybeStartShowSayThrottleProof()", `${helper}\nfunction zhMaybeStartShowSayThrottleProof()`, "QA popup helper insertion point");
+  }
+  if (!next.includes("function zhQaPopupSceneReady()")) {
+    const helper = [
+      "function zhQaPopupSceneReady()",
+      "{",
+      "   var _loc1_;",
+      "   if(_root == undefined || _root.camera == undefined || _root.camera.scene == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc1_ = _root.camera.scene.char;",
+      "   if(_loc1_ == undefined || _loc1_.avatar == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   return true;",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhScheduleQaPopup()", `${helper}\nfunction zhScheduleQaPopup()`, "QA popup scene-ready helper insertion point");
+  }
+  next = next.replace(
+    "if(_root.popup != undefined && _root.camera != undefined && _root.camera.scene != undefined)",
+    "if(_root.__zhQaPopupTicks >= 24 && _root.popup != undefined && zhQaPopupSceneReady())"
+  );
+  next = next.replace("else if(_root.__zhQaPopupTicks > 80)", "else if(_root.__zhQaPopupTicks > 120)");
 
   if (!next.includes("zhStartPopupHudWatchdog();")) {
     next = replaceRequired(
@@ -354,6 +1010,28 @@ function patchFrameOne(content) {
         "   _loc4_ = _root.__zhPopupBackdrop;"
       ].join("\n"),
       "popup show HUD hide hook"
+    );
+  }
+
+  if (!next.includes("zhNotifyPopupViewport(zhPopupUsesTightViewport(popupName));") && !next.includes("zhNotifyPopupViewport(_loc4_);") && !next.includes("zhNotifyPopupViewport(_root.__zhPopupTightViewport);")) {
+    next = replaceRequired(
+      next,
+      [
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   zhSetPopupHudHidden(true);"
+      ].join("\n"),
+      [
+        "   if(_root == undefined)",
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   zhNotifyPopupViewport(zhPopupUsesTightViewport(popupName));",
+        "   zhSetPopupHudHidden(true);"
+      ].join("\n"),
+      "popup show viewport notify hook"
     );
   }
 
@@ -385,6 +1063,41 @@ function patchFrameOne(content) {
         "}"
       ].join("\n"),
       "popup hide HUD restore hook"
+    );
+  }
+
+  if (!next.includes("zhNotifyPopupViewport(false);")) {
+    next = replaceRequired(
+      next,
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   if(_root != undefined && _root.__zhPopupBackdrop != undefined)"
+      ].join("\n"),
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   zhNotifyPopupViewport(false);",
+        "   if(_root != undefined && _root.__zhPopupBackdrop != undefined)"
+      ].join("\n"),
+      "popup hide viewport notify hook"
+    );
+  }
+  if (!next.includes("zhStopTightPopupFitWatchdog();")) {
+    next = replaceRequired(
+      next,
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   zhNotifyPopupViewport(false);"
+      ].join("\n"),
+      [
+        "function zhHidePopupBackdrop()",
+        "{",
+        "   zhStopTightPopupFitWatchdog();",
+        "   zhNotifyPopupViewport(false);"
+      ].join("\n"),
+      "popup hide fit watchdog stop hook"
     );
   }
 

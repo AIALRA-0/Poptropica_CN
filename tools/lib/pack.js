@@ -2686,10 +2686,10 @@ function zhHideNonGameplayNavChrome()
    _loc1_.btnSuperPower = true;
    for(_loc2_ in navBar)
    {
-      if(String(_loc2_).indexOf("btn") == 0 && _loc1_[_loc2_] != true)
+      if(_loc1_[_loc2_] != true)
       {
          _loc3_ = navBar[_loc2_];
-         if(_loc3_ != undefined)
+         if(_loc3_ != undefined && typeof _loc3_ == "movieclip")
          {
             _loc3_._visible = false;
             _loc3_._alpha = 0;
@@ -2700,7 +2700,29 @@ function zhHideNonGameplayNavChrome()
       }
    }
 }
-function zhShowPopupBackdrop()
+function zhNotifyPopupViewport(active)
+{
+   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)
+   {
+      try
+      {
+         flash.external.ExternalInterface.call("flashpointSetAs2PopupMode",active == true ? "1" : "0");
+      }
+      catch(zhPopupViewportError)
+      {
+      }
+   }
+}
+function zhPopupUsesTightViewport(popupName)
+{
+   var _loc1_ = String(popupName).toLowerCase();
+   if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")
+   {
+      return false;
+   }
+   return true;
+}
+function zhShowPopupBackdrop(popupName)
 {
    var _loc1_ = zhPopupStageWidth();
    var _loc2_ = zhPopupStageHeight();
@@ -2709,8 +2731,18 @@ function zhShowPopupBackdrop()
    {
       return undefined;
    }
+   _root.__zhPopupTightViewport = zhPopupUsesTightViewport(popupName);
+   zhNotifyPopupViewport(_root.__zhPopupTightViewport);
    zhSetPopupHudHidden(true);
    zhStartPopupHudWatchdog();
+   if(_root.__zhPopupTightViewport != true)
+   {
+      if(_root.__zhPopupBackdrop != undefined)
+      {
+         _root.__zhPopupBackdrop._visible = false;
+      }
+      return undefined;
+   }
    _loc3_ = _root.__zhPopupBackdrop;
    if(_loc3_ == undefined)
    {
@@ -2729,6 +2761,153 @@ function zhShowPopupBackdrop()
    _loc3_.lineTo(0,0);
    _loc3_.endFill();
    _loc3_._visible = true;
+}
+function zhFitTightPopupClip()
+{
+   var _loc1_ = 640;
+   var _loc2_ = 480;
+   var _loc3_ = 16;
+   var _loc4_;
+   var _loc5_;
+   var _loc6_;
+   var _loc7_;
+   var _loc8_;
+   var _loc9_;
+   if(popupClip == undefined || popupClip.getBounds == undefined)
+   {
+      return false;
+   }
+   if(popupClip.bgHit != undefined)
+   {
+      popupClip.bgHit._alpha = 0;
+   }
+   if(popupClip.board != undefined)
+   {
+      popupClip._x = 0;
+      popupClip._y = 0;
+      popupClip._xscale = 100;
+      popupClip._yscale = 100;
+      popupClip.board._x = 92;
+      popupClip.board._y = 62;
+      popupClip.board._xscale = 78;
+      popupClip.board._yscale = 78;
+      return false;
+   }
+   _loc8_ = _loc1_ - _loc3_ * 2;
+   _loc9_ = _loc2_ - _loc3_ * 2;
+   _loc4_ = popupClip.getBounds(_root);
+   _loc5_ = Number(_loc4_.xMax) - Number(_loc4_.xMin);
+   _loc6_ = Number(_loc4_.yMax) - Number(_loc4_.yMin);
+   if(!(_loc5_ > 0) || !(_loc6_ > 0))
+   {
+      return false;
+   }
+   if(_loc5_ <= _loc8_ && _loc6_ <= _loc9_)
+   {
+      return false;
+   }
+   _loc7_ = Math.min(100,_loc8_ * 100 / _loc5_);
+   _loc7_ = Math.min(_loc7_,_loc9_ * 100 / _loc6_);
+   if(!(_loc7_ > 0))
+   {
+      return false;
+   }
+   if(_loc7_ < 99)
+   {
+      popupClip._xscale = popupClip._xscale * _loc7_ / 100;
+      popupClip._yscale = popupClip._yscale * _loc7_ / 100;
+      _loc4_ = popupClip.getBounds(_root);
+      _loc5_ = Number(_loc4_.xMax) - Number(_loc4_.xMin);
+      _loc6_ = Number(_loc4_.yMax) - Number(_loc4_.yMin);
+   }
+   popupClip._x += (_loc1_ - _loc5_) / 2 - Number(_loc4_.xMin);
+   popupClip._y += (_loc2_ - _loc6_) / 2 - Number(_loc4_.yMin);
+   if(_root != undefined && _root.__zhTightPopupFitLogged != true)
+   {
+      _root.__zhTightPopupFitLogged = true;
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=TightPopupFit&w=" + Math.round(_loc5_) + "&h=" + Math.round(_loc6_) + "&x=" + Math.round(popupClip._x) + "&y=" + Math.round(popupClip._y),0);
+   }
+   return true;
+}
+function zhFitTightPopupChildClip(targetClip)
+{
+   var _loc2_ = 640;
+   var _loc3_ = 480;
+   var _loc4_ = 16;
+   var _loc5_;
+   var _loc6_;
+   var _loc7_;
+   var _loc8_;
+   var _loc9_;
+   var _loc10_;
+   var _loc11_;
+   if(targetClip == undefined || targetClip.getBounds == undefined)
+   {
+      return false;
+   }
+   _loc5_ = targetClip.getBounds(_root);
+   _loc6_ = Number(_loc5_.xMax) - Number(_loc5_.xMin);
+   _loc7_ = Number(_loc5_.yMax) - Number(_loc5_.yMin);
+   if(!(_loc6_ > 0) || !(_loc7_ > 0))
+   {
+      return false;
+   }
+   if(_loc6_ <= _loc2_ - _loc4_ * 2 && _loc7_ <= _loc3_ - _loc4_ * 2 && Number(_loc5_.xMin) >= _loc4_ && Number(_loc5_.xMax) <= _loc2_ - _loc4_ && Number(_loc5_.yMin) >= _loc4_ && Number(_loc5_.yMax) <= _loc3_ - _loc4_)
+   {
+      return false;
+   }
+   _loc8_ = Math.min(100,(_loc2_ - _loc4_ * 2) * 100 / _loc6_);
+   _loc8_ = Math.min(_loc8_,(_loc3_ - _loc4_ * 2) * 100 / _loc7_);
+   if(!(_loc8_ > 0))
+   {
+      return false;
+   }
+   if(_loc8_ < 99)
+   {
+      targetClip._xscale = targetClip._xscale * _loc8_ / 100;
+      targetClip._yscale = targetClip._yscale * _loc8_ / 100;
+      _loc5_ = targetClip.getBounds(_root);
+      _loc6_ = Number(_loc5_.xMax) - Number(_loc5_.xMin);
+      _loc7_ = Number(_loc5_.yMax) - Number(_loc5_.yMin);
+   }
+   _loc9_ = targetClip._parent != undefined && targetClip._parent._xscale != undefined && targetClip._parent._xscale != 0 ? targetClip._parent._xscale / 100 : 1;
+   _loc10_ = targetClip._parent != undefined && targetClip._parent._yscale != undefined && targetClip._parent._yscale != 0 ? targetClip._parent._yscale / 100 : 1;
+   _loc11_ = (_loc2_ - _loc6_) / 2 - Number(_loc5_.xMin);
+   targetClip._x += _loc11_ / _loc9_;
+   targetClip._y += ((_loc3_ - _loc7_) / 2 - Number(_loc5_.yMin)) / _loc10_;
+   return true;
+}
+function zhStartTightPopupFitWatchdog(popupName)
+{
+   if(_root == undefined || !zhPopupUsesTightViewport(popupName))
+   {
+      return undefined;
+   }
+   if(_root.__zhTightPopupFitInterval != undefined)
+   {
+      clearInterval(_root.__zhTightPopupFitInterval);
+   }
+   _root.__zhTightPopupFitLogged = false;
+   _root.__zhTightPopupFitTicks = 0;
+   _root.__zhTightPopupFitTick = function()
+   {
+      _root.__zhTightPopupFitTicks = Number(_root.__zhTightPopupFitTicks) + 1;
+      zhFitTightPopupClip();
+      if(_root.__zhTightPopupFitTicks > 600)
+      {
+         clearInterval(_root.__zhTightPopupFitInterval);
+         _root.__zhTightPopupFitInterval = undefined;
+      }
+   };
+   _root.__zhTightPopupFitInterval = setInterval(_root,"__zhTightPopupFitTick",100);
+}
+function zhStopTightPopupFitWatchdog()
+{
+   if(_root != undefined && _root.__zhTightPopupFitInterval != undefined)
+   {
+      clearInterval(_root.__zhTightPopupFitInterval);
+      _root.__zhTightPopupFitInterval = undefined;
+   }
 }
 function zhRaisePopupLayers()
 {
@@ -2752,6 +2931,8 @@ function zhRaisePopupLayers()
 }
 function zhHidePopupBackdrop()
 {
+   zhStopTightPopupFitWatchdog();
+   zhNotifyPopupViewport(false);
    if(_root != undefined && _root.__zhPopupBackdrop != undefined)
    {
       _root.__zhPopupBackdrop._visible = false;
@@ -3008,6 +3189,79 @@ function zhQaAs2DialogMode()
       _loc1_ = "";
    }
    return String(_loc1_);
+}
+function zhReadQaPopupName()
+{
+   var _loc1_;
+   if(_global != undefined && _global.flashpointQaAs2Popup != undefined)
+   {
+      _loc1_ = _global.flashpointQaAs2Popup;
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _root != undefined && _root.flashpointQaAs2Popup != undefined)
+   {
+      _loc1_ = _root.flashpointQaAs2Popup;
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _level0 != undefined && _level0.flashpointQaAs2Popup != undefined)
+   {
+      _loc1_ = _level0.flashpointQaAs2Popup;
+   }
+   if(_loc1_ == undefined || String(_loc1_) == "undefined")
+   {
+      return "";
+   }
+   _loc1_ = String(_loc1_);
+   if(_loc1_.indexOf("/") >= 0 || _loc1_.indexOf("\\") >= 0 || _loc1_.indexOf("..") >= 0)
+   {
+      return "";
+   }
+   if(_loc1_.indexOf(".swf") < 0)
+   {
+      _loc1_ += ".swf";
+   }
+   return _loc1_;
+}
+function zhScheduleQaPopup()
+{
+   var _loc1_ = zhReadQaPopupName();
+   if(_root == undefined || _root.__zhQaPopupScheduled == true || _loc1_ == "")
+   {
+      return undefined;
+   }
+   _root.__zhQaPopupScheduled = true;
+   _root.__zhQaPopupName = _loc1_;
+   _root.__zhQaPopupTicks = 0;
+   _root.__zhQaPopupTick = function()
+   {
+      _root.__zhQaPopupTicks = Number(_root.__zhQaPopupTicks) + 1;
+      if(_root.__zhQaPopupTicks >= 24 && _root.popup != undefined && zhQaPopupSceneReady())
+      {
+         clearInterval(_root.__zhQaPopupInterval);
+         _root.__zhQaPopupInterval = undefined;
+         _root.popup(_root.__zhQaPopupName,true);
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaPopupOpened&popup=" + escape(_root.__zhQaPopupName) + "&ticks=" + _root.__zhQaPopupTicks,0);
+      }
+      else if(_root.__zhQaPopupTicks > 120)
+      {
+         clearInterval(_root.__zhQaPopupInterval);
+         _root.__zhQaPopupInterval = undefined;
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaPopupTimeout&popup=" + escape(_root.__zhQaPopupName),0);
+      }
+   };
+   _root.__zhQaPopupInterval = setInterval(_root,"__zhQaPopupTick",250);
+}
+function zhQaPopupSceneReady()
+{
+   var _loc1_;
+   if(_root == undefined || _root.camera == undefined || _root.camera.scene == undefined)
+   {
+      return false;
+   }
+   _loc1_ = _root.camera.scene.char;
+   if(_loc1_ == undefined || _loc1_.avatar == undefined)
+   {
+      return false;
+   }
+   return true;
 }
 function zhMaybeStartShowSayThrottleProof()
 {
@@ -3340,6 +3594,10 @@ if(_root != undefined && zhScheduleAutoMap != undefined)
 {
    zhScheduleAutoMap();
 }
+if(_root != undefined && zhScheduleQaPopup != undefined)
+{
+   zhScheduleQaPopup();
+}
 if(_root != undefined && zhInstallExternalMapBridge != undefined)
 {
    zhInstallExternalMapBridge();
@@ -3410,7 +3668,7 @@ btnPause.onRollOver = _root.useArrow;`,
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/inventory.swf");`,
    `   popupClose._visible = false;
-   zhShowPopupBackdrop();
+   zhShowPopupBackdrop("inventory.swf");
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/inventory.swf");
    zhRaisePopupLayers();`,
@@ -3443,9 +3701,10 @@ function popup(popupName, showBack, btnCloseOnTop, hideBtnClose)`,
       popupBack.btnClose._visible = false;
       popupClose._visible = false;
    }
-   zhShowPopupBackdrop();
+   zhShowPopupBackdrop(popupName);
    createEmptyMovieClip("popupClip",popupDepth);
    popupClip.loadMovie("popups/" + popupName);
+   zhStartTightPopupFitWatchdog(popupName);
    zhRaisePopupLayers();`,
     "gameplay popup backdrop"
   );
@@ -4101,6 +4360,7 @@ embed {
       as2SoundEffectPool = [],
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
+      POPUP_VIEWPORT = { x: 0, y: 0, width: 640, height: 480 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };
 let viewportResizeReloadTimer = 0,
     viewportResizeLastSize = null;`,
@@ -4128,9 +4388,27 @@ function main() {
 }
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
+    if(gameState === "return_user_standard" && game && game.__zhAs2PopupMode)
+        return POPUP_VIEWPORT;
     if(gameState === "return_user_standard")
         return STANDARD_GAMEPLAY_VIEWPORT;
     return null;
+}
+
+function flashpointSetAs2PopupMode(active) {
+    if(!game)
+        return false;
+
+    game.__zhAs2PopupMode = String(active) === "1" || active === true || String(active).toLowerCase() === "true";
+    if(game.__zhViewportState) {
+        game.__zhViewportState.viewportCrop = resolveGameplayViewportCrop(
+            game.__zhViewportState.island,
+            game.__zhViewportState.scene,
+            game.__zhViewportState.gameState
+        );
+    }
+    applyCurrentViewport();
+    return true;
 }
 
 function initMapHotspotBridge() {
@@ -4181,7 +4459,7 @@ function applyMapHotspot(viewport, gameState) {
     if(!flashpointMapHotspot)
         return;
 
-    if(gameState !== "return_user_standard") {
+    if(gameState !== "return_user_standard" || game.__zhAs2PopupMode) {
         flashpointMapHotspot.hidden = true;
         return;
     }
@@ -4335,6 +4613,11 @@ function applyCurrentViewport() {
     if(!game.__zhViewportState)
         return;
 
+    game.__zhViewportState.viewportCrop = resolveGameplayViewportCrop(
+        game.__zhViewportState.island,
+        game.__zhViewportState.scene,
+        game.__zhViewportState.gameState
+    );
     const viewport = computeScaledViewport(
         game.__zhViewportState.baseWidth,
         game.__zhViewportState.baseHeight,
@@ -4434,6 +4717,7 @@ function flashpointPlayAs2Sound(soundName) {
 }
 
 window.flashpointPlayAs2Sound = flashpointPlayAs2Sound;
+window.flashpointSetAs2PopupMode = flashpointSetAs2PopupMode;
 
 function updateSceneAudio(island, scene, gameState) {
     if(!sceneAudio)
@@ -4497,11 +4781,14 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
     if(inputParams.flashpointQaAs2Dialog !== undefined)
         flashVars.set("flashpointQaAs2Dialog", inputParams.flashpointQaAs2Dialog);
+    if(inputParams.flashpointQaAs2Popup !== undefined)
+        flashVars.set("flashpointQaAs2Popup", inputParams.flashpointQaAs2Popup);
     if(inputParams.flashpointQaLoadingHoldMs !== undefined)
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
     if(inputParams.flashpointQaHideHud !== undefined)
         flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
 
+    game.__zhAs2PopupMode = false;
     if(getCharLazyLoadStatus()) {`,
     "base page QA map flashvar passthrough"
   );
@@ -4514,7 +4801,7 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
     game.setAttribute("flashvars", flashVars);`,
     `    const viewportCrop = resolveGameplayViewportCrop(island, scene, gameState);
     const viewport = computeScaledViewport(width, height, gameState, viewportCrop);
-    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState, viewportCrop };
+    game.__zhViewportState = { baseWidth: width, baseHeight: height, gameState, viewportCrop, island, scene, path };
     applyGameViewport(viewport, gameState);
     scheduleViewportRefreshes();
     game.setAttribute("flashvars", flashVars);`,
