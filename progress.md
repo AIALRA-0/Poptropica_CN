@@ -5132,3 +5132,35 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes controlled AS2 bottom-layer dialogue re-entry/active-bubble抢句 proof.
   - It still does not seal Time Tangled: natural NPC hot-zone route must be walked for real, and the broader open blockers remain natural time-machine traversal, item use-after-layout, external white-screen links, AS3 queue protection, and real audio source inventory.
+
+## 2026-06-23 AS2 Screenshot Pause/HUD Gate + QA Start Probe
+
+- Stayed on reopened global blocker + Time Tangled wave; did not advance to Super Power or a new island.
+- Addressed the user's core complaint that HUD/pause issues were still being judged by my interpretation instead of final screenshots:
+  - Added `tools/qa-helper.py analyze-pause-artifact`, a screenshot-level detector for the faint top-left pause icon.
+  - Calibrated it against the user's bad wide screenshot: `runtime-data/qa/manual-pause-artifact-user-wide-density.json` fails and marks pause candidates.
+  - Calibrated false positives away using current Time Tangled screenshots and a building-edge sample: `manual-pause-artifact-time-present-density.json` and `manual-pause-artifact-x4200-density.json` pass.
+- Integrated the detector into AS2 interaction smoke:
+  - `tools/qa-as2-interaction-smoke.js` now supports `--require-no-pause-artifact`.
+  - Each guarded screenshot writes a `*-pause-artifact.json` and annotated `*-pause-artifact.png`.
+  - Reports now expose `pauseArtifactPassed` and fail with `initial_pause_artifact_seen` / `map_pause_artifact_seen` when the screenshot still contains the faint pause artifact.
+- Runtime verification, G32QC/no-foreground/QA muted:
+  - Passing report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782223547883.json`.
+  - Result: `ok=true`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `pauseArtifactPassed=1`, `hudAnchorPassed=1`, `failedChecks=[]`.
+  - HUD metrics: `rightMargin=59`, `topMargin=0`, `rowSpread=2`, `gaps=[27,22]`, `hudWidthRatio=0.1504`, `hudCenterYRatio=0.02857`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782223547883/01-time-tangled-initial.png`; player is visible, no faint top-left pause icon is visible, and the three visible HUD icons are in the content upper-right.
+- Added AS2 QA-only start-position plumbing for natural route probes:
+  - `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` passes `flashpointQaStartX/Y` into FlashVars.
+  - `tools/lib/pack.js` and `tools/patch-as2-gameplay-hud-popup.js` inject `zhScheduleQaStartPosition()` / `zhApplyQaStartPosition()` into gameplay.
+  - The helper repeatedly applies the requested position for early frames and logs `QaStartPosition&x=...&y=...&char1x=...&char1y=...` under HUD debug.
+  - `tools/qa-as2-interaction-smoke.js --start-x/--start-y` now maps to those FlashVars.
+  - Rebuilt `gameplay.swf`, `gameplay-zh.swf`, and the AS2 runtime zip through the narrow gameplay patcher.
+- Natural NPC route status:
+  - The start-position probe is working, but the Time Present NPC hot-zone is not yet proven.
+  - Latest probe: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782225349086.json`.
+  - Server log: `QaStartPosition&x=5480&y=2700&char1x=3212&char1y=2685`.
+  - OCR still did not show the expected NPC bubble; screenshot still places the player visually left of the target NPC.
+  - Current inference: the AS2 render/control layer is not fully controlled by `camera.scene.char._x/_y`, or this `checkPos` route is not a reliable natural-dialogue trigger. Next pass should instrument the actual active character/control layer or switch to a real NPC scene with a deterministic trigger.
+- Current conclusion:
+  - This closes the screenshot-level pause artifact guard and makes HUD/right-top regressions objectively catchable.
+  - This does not seal Time Tangled. Remaining active blockers include natural NPC hot-zone proof, natural time-machine traversal, item use-after-layout, external white-screen links, AS3 queue protection, and real audio source inventory.

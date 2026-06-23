@@ -2766,6 +2766,7 @@ function zhRestoreGameplayHudButtons()
    var _loc1_;
    var _loc2_;
    var _loc3_;
+   var _loc4_;
    if(navBar == undefined)
    {
       return undefined;
@@ -3637,6 +3638,86 @@ function zhQaAs2DialogMode()
    }
    return String(_loc1_);
 }
+function zhReadQaNumber(name)
+{
+   var _loc1_;
+   if(_global != undefined && _global[name] != undefined)
+   {
+      _loc1_ = _global[name];
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _root != undefined && _root[name] != undefined)
+   {
+      _loc1_ = _root[name];
+   }
+   if((_loc1_ == undefined || _loc1_ == "" || String(_loc1_) == "undefined") && _level0 != undefined && _level0[name] != undefined)
+   {
+      _loc1_ = _level0[name];
+   }
+   _loc1_ = Number(_loc1_);
+   if(isNaN(_loc1_))
+   {
+      return undefined;
+   }
+   return _loc1_;
+}
+function zhApplyQaStartPosition()
+{
+   var _loc1_;
+   var _loc2_;
+   var _loc3_;
+   if(_root == undefined)
+   {
+      return false;
+   }
+   _loc1_ = zhReadQaNumber("flashpointQaStartX");
+   _loc2_ = zhReadQaNumber("flashpointQaStartY");
+   if(_loc1_ == undefined && _loc2_ == undefined)
+   {
+      return false;
+   }
+   if(_root.camera == undefined || _root.camera.scene == undefined || _root.camera.scene.char == undefined || _root.camera.scene.char.avatar == undefined)
+   {
+      return false;
+   }
+   _loc3_ = _root.camera.scene.char;
+   if(_loc1_ != undefined)
+   {
+      _loc3_._x = _loc1_;
+   }
+   if(_loc2_ != undefined)
+   {
+      _loc3_._y = _loc2_;
+   }
+   _root.__zhQaStartPositionApplied = true;
+   if(zhQaHudDebugEnabled != undefined && zhQaHudDebugEnabled())
+   {
+      _loc4_ = _root.camera.scene.char1;
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&x=" + Math.round(Number(_loc3_._x)) + "&y=" + Math.round(Number(_loc3_._y)) + "&char1x=" + (_loc4_ != undefined ? Math.round(Number(_loc4_._x)) : "na") + "&char1y=" + (_loc4_ != undefined ? Math.round(Number(_loc4_._y)) : "na"),0);
+   }
+   return true;
+}
+function zhScheduleQaStartPosition()
+{
+   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined || _root.__zhQaStartPositionApplied == true)
+   {
+      return undefined;
+   }
+   if(zhReadQaNumber("flashpointQaStartX") == undefined && zhReadQaNumber("flashpointQaStartY") == undefined)
+   {
+      return undefined;
+   }
+   _root.__zhQaStartPositionTicks = 0;
+   _root.__zhQaStartPositionTick = function()
+   {
+      this.__zhQaStartPositionTicks = Number(this.__zhQaStartPositionTicks) + 1;
+      if((zhApplyQaStartPosition() == true && this.__zhQaStartPositionTicks > 24) || this.__zhQaStartPositionTicks > 80)
+      {
+         clearInterval(this.__zhQaStartPositionInterval);
+         this.__zhQaStartPositionInterval = undefined;
+      }
+   };
+   _root.__zhQaStartPositionInterval = setInterval(_root,"__zhQaStartPositionTick",250);
+}
 function zhReadQaPopupName()
 {
    var _loc1_;
@@ -4082,6 +4163,10 @@ if(_root != undefined && zhScheduleAutoMap != undefined)
 if(_root != undefined && zhScheduleQaPopup != undefined)
 {
    zhScheduleQaPopup();
+}
+if(_root != undefined && zhScheduleQaStartPosition != undefined)
+{
+   zhScheduleQaStartPosition();
 }
 if(_root != undefined && zhInstallExternalMapBridge != undefined)
 {
@@ -5461,6 +5546,10 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {`,
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
     if(inputParams.flashpointQaHideHud !== undefined)
         flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
+    if(inputParams.flashpointQaStartX !== undefined)
+        flashVars.set("flashpointQaStartX", inputParams.flashpointQaStartX);
+    if(inputParams.flashpointQaStartY !== undefined)
+        flashVars.set("flashpointQaStartY", inputParams.flashpointQaStartY);
 
     game.__zhAs2PopupMode = false;
     if(getCharLazyLoadStatus()) {`,

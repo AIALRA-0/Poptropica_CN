@@ -2007,6 +2007,30 @@ function patchFrameOne(content) {
       "QA popup schedule init hook"
     );
   }
+  if (!next.includes("zhScheduleQaStartPosition();")) {
+    next = replaceRequired(
+      next,
+      [
+        "if(_root != undefined && zhScheduleQaPopup != undefined)",
+        "{",
+        "   zhScheduleQaPopup();",
+        "}",
+        "if(_root != undefined && zhInstallExternalMapBridge != undefined)"
+      ].join("\n"),
+      [
+        "if(_root != undefined && zhScheduleQaPopup != undefined)",
+        "{",
+        "   zhScheduleQaPopup();",
+        "}",
+        "if(_root != undefined && zhScheduleQaStartPosition != undefined)",
+        "{",
+        "   zhScheduleQaStartPosition();",
+        "}",
+        "if(_root != undefined && zhInstallExternalMapBridge != undefined)"
+      ].join("\n"),
+      "QA start position schedule init hook"
+    );
+  }
 
   const legacyNavHidePatterns = [
     {
@@ -2120,6 +2144,122 @@ function patchFrameOne(content) {
     ].join("\n");
     next = replaceRequired(next, "function zhMaybeStartShowSayThrottleProof()", `${helper}\nfunction zhMaybeStartShowSayThrottleProof()`, "QA popup helper insertion point");
   }
+  if (!next.includes("function zhReadQaNumber(name)")) {
+    const helper = [
+      "function zhReadQaNumber(name)",
+      "{",
+      "   var _loc1_;",
+      "   if(_global != undefined && _global[name] != undefined)",
+      "   {",
+      "      _loc1_ = _global[name];",
+      "   }",
+      "   if((_loc1_ == undefined || _loc1_ == \"\" || String(_loc1_) == \"undefined\") && _root != undefined && _root[name] != undefined)",
+      "   {",
+      "      _loc1_ = _root[name];",
+      "   }",
+      "   if((_loc1_ == undefined || _loc1_ == \"\" || String(_loc1_) == \"undefined\") && _level0 != undefined && _level0[name] != undefined)",
+      "   {",
+      "      _loc1_ = _level0[name];",
+      "   }",
+      "   _loc1_ = Number(_loc1_);",
+      "   if(isNaN(_loc1_))",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   return _loc1_;",
+      "}",
+      "function zhApplyQaStartPosition()",
+      "{",
+      "   var _loc1_;",
+      "   var _loc2_;",
+      "   var _loc3_;",
+      "   var _loc4_;",
+      "   if(_root == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc1_ = zhReadQaNumber(\"flashpointQaStartX\");",
+      "   _loc2_ = zhReadQaNumber(\"flashpointQaStartY\");",
+      "   if(_loc1_ == undefined && _loc2_ == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   if(_root.camera == undefined || _root.camera.scene == undefined || _root.camera.scene.char == undefined || _root.camera.scene.char.avatar == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc3_ = _root.camera.scene.char;",
+      "   if(_loc1_ != undefined)",
+      "   {",
+      "      _loc3_._x = _loc1_;",
+      "   }",
+      "   if(_loc2_ != undefined)",
+      "   {",
+      "      _loc3_._y = _loc2_;",
+      "   }",
+      "   _root.__zhQaStartPositionApplied = true;",
+      "   if(zhQaHudDebugEnabled != undefined && zhQaHudDebugEnabled())",
+      "   {",
+      "      _loc4_ = _root.camera.scene.char1;",
+      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&x=\" + Math.round(Number(_loc3_._x)) + \"&y=\" + Math.round(Number(_loc3_._y)) + \"&char1x=\" + (_loc4_ != undefined ? Math.round(Number(_loc4_._x)) : \"na\") + \"&char1y=\" + (_loc4_ != undefined ? Math.round(Number(_loc4_._y)) : \"na\"),0);",
+      "   }",
+      "   return true;",
+      "}",
+      "function zhScheduleQaStartPosition()",
+      "{",
+      "   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined || _root.__zhQaStartPositionApplied == true)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   if(zhReadQaNumber(\"flashpointQaStartX\") == undefined && zhReadQaNumber(\"flashpointQaStartY\") == undefined)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   _root.__zhQaStartPositionTicks = 0;",
+      "   _root.__zhQaStartPositionTick = function()",
+      "   {",
+      "      this.__zhQaStartPositionTicks = Number(this.__zhQaStartPositionTicks) + 1;",
+      "      if((zhApplyQaStartPosition() == true && this.__zhQaStartPositionTicks > 24) || this.__zhQaStartPositionTicks > 80)",
+      "      {",
+      "         clearInterval(this.__zhQaStartPositionInterval);",
+      "         this.__zhQaStartPositionInterval = undefined;",
+      "      }",
+      "   };",
+      "   _root.__zhQaStartPositionInterval = setInterval(_root,\"__zhQaStartPositionTick\",250);",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhReadQaPopupName()", `${helper}\nfunction zhReadQaPopupName()`, "QA start position helper insertion point");
+  }
+  if (!next.includes("&char1x=")) {
+    const startLogPattern = /      loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=QaStartPosition&x=" \+ Math\.round\(Number\((_loc\d+_)\._x\)\) \+ "&y=" \+ Math\.round\(Number\(\1\._y\)\),0\);/u;
+    const startLogMatch = next.match(startLogPattern);
+    if (!startLogMatch) {
+      throw new Error("Unable to locate upgrade QA start position coordinate log.");
+    }
+    const charVar = startLogMatch[1];
+    const char1Var = "_loc5_";
+    next = next.replace(
+      /function zhApplyQaStartPosition\(\)\n\{\n((?:   var _loc\d+_;\n)+)/u,
+      (match, declarations) => declarations.includes(`var ${char1Var};`)
+        ? match
+        : match.replace(declarations, `${declarations}   var ${char1Var};\n`)
+    );
+    next = next.replace(
+      startLogPattern,
+      [
+        `      ${char1Var} = _root.camera.scene.char1;`,
+        `      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&x=" + Math.round(Number(${charVar}._x)) + "&y=" + Math.round(Number(${charVar}._y)) + "&char1x=" + (${char1Var} != undefined ? Math.round(Number(${char1Var}._x)) : "na") + "&char1y=" + (${char1Var} != undefined ? Math.round(Number(${char1Var}._y)) : "na"),0);`
+      ].join("\n")
+    );
+  }
+  next = next.replace(
+    "   if(_root == undefined || _root.__zhQaStartPositionApplied == true)",
+    "   if(_root == undefined)"
+  );
+  next = next.replace(
+    "      if(zhApplyQaStartPosition() == true || this.__zhQaStartPositionTicks > 80)",
+    "      if((zhApplyQaStartPosition() == true && this.__zhQaStartPositionTicks > 24) || this.__zhQaStartPositionTicks > 80)"
+  );
   if (!next.includes("function zhQaPopupSceneReady()")) {
     const helper = [
       "function zhQaPopupSceneReady()",

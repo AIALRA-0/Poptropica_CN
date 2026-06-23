@@ -785,6 +785,10 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         flashVars.set("flashpointQaLoadingHoldMs", inputParams.flashpointQaLoadingHoldMs);
     if(inputParams.flashpointQaHideHud !== undefined)
         flashVars.set("flashpointQaHideHud", inputParams.flashpointQaHideHud);
+    if(inputParams.flashpointQaStartX !== undefined)
+        flashVars.set("flashpointQaStartX", inputParams.flashpointQaStartX);
+    if(inputParams.flashpointQaStartY !== undefined)
+        flashVars.set("flashpointQaStartY", inputParams.flashpointQaStartY);
 
     game.__zhAs2PopupMode = false;
     if(getCharLazyLoadStatus()) {

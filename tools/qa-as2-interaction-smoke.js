@@ -217,7 +217,7 @@ function spawnRuntimeWithWindowGeometry(config, launchUrl, args = {}) {
     playerKey: String(args.playerKey || "flashpointnavigator-as2"),
     as2StartX: args.startX,
     as2StartY: args.startY,
-    forceAs2CharState: flagEnabled(args.forceAs2CharState),
+    forceAs2CharState: flagEnabled(args.forceAs2CharState || args["force-as2-char-state"]),
     useTemplateChar: flagEnabled(args.useTemplateChar || args["use-template-char"] || args.useAs2TemplateChar || args["use-as2-template-char"])
   }));
 }
@@ -402,6 +402,32 @@ function runPlayableCropGuard({ screenshotPath, outputPath, annotatedPath, args,
   }
 }
 
+function runPauseArtifactGuard({ screenshotPath, stagePath, outputPath, annotatedPath, args, qaErrors, step }) {
+  if (!screenshotPath || !fs.existsSync(screenshotPath) || !shouldRequireNoPauseArtifact(args)) {
+    return shouldRequireNoPauseArtifact(args) ? null : { skipped: true };
+  }
+  const guardArgs = [
+    "analyze-pause-artifact",
+    "--input",
+    screenshotPath,
+    "--stage-json",
+    stagePath,
+    "--output",
+    outputPath,
+    "--annotated-output",
+    annotatedPath,
+    "--no-fail-exit"
+  ];
+  try {
+    return runPythonQa(guardArgs, {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${step || "visual"}-pause-artifact`, error));
+    return null;
+  }
+}
+
 function shouldRequireVisualGuard(args) {
   return flagEnabled(args.requireVisualGuard) ||
     Boolean(String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim());
@@ -409,6 +435,10 @@ function shouldRequireVisualGuard(args) {
 
 function shouldRequirePlayableCropGuard(args) {
   return flagEnabled(args.requirePlayableCropGuard || args["require-playable-crop-guard"] || args.requirePlayerNotCropped || args["require-player-not-cropped"]);
+}
+
+function shouldRequireNoPauseArtifact(args) {
+  return flagEnabled(args.requireNoPauseArtifact || args["require-no-pause-artifact"]);
 }
 
 function shouldRequireHudAnchor(args) {
@@ -474,8 +504,10 @@ function withLaunchQuery(url, args) {
   const flashpointQaAs2Popup = resolveFlashpointQaAs2Popup(args);
   const flashpointQaLoadingHoldMs = resolveFlashpointQaLoadingHoldMs(args);
   const flashpointQaHideHud = resolveFlashpointQaHideHud(args);
+  const flashpointQaStartX = String(args.startX || args["start-x"] || args.flashpointQaStartX || args["flashpoint-qa-start-x"] || "").trim();
+  const flashpointQaStartY = String(args.startY || args["start-y"] || args.flashpointQaStartY || args["flashpoint-qa-start-y"] || "").trim();
   const shouldCacheBust = !flagEnabled(args.disableQaCacheBust || args["disable-qa-cache-bust"]);
-  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaAs2Popup && !flashpointQaLoadingHoldMs && !flashpointQaHideHud && !hasQaViewport) {
+  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaAs2Popup && !flashpointQaLoadingHoldMs && !flashpointQaHideHud && !flashpointQaStartX && !flashpointQaStartY && !hasQaViewport) {
     return url;
   }
   const nextUrl = new URL(url);
@@ -499,6 +531,12 @@ function withLaunchQuery(url, args) {
   }
   if (flashpointQaHideHud) {
     nextUrl.searchParams.set("flashpointQaHideHud", flashpointQaHideHud);
+  }
+  if (flashpointQaStartX) {
+    nextUrl.searchParams.set("flashpointQaStartX", flashpointQaStartX);
+  }
+  if (flashpointQaStartY) {
+    nextUrl.searchParams.set("flashpointQaStartY", flashpointQaStartY);
   }
   for (const [key, value] of Object.entries(qaViewportParams)) {
     if (value !== undefined && value !== null && String(value).trim() !== "") {
@@ -647,11 +685,14 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
   const visualGuardAnnotatedPath = path.join(runDir, `${stem}${safeSuffix}-visual-guard.png`);
   const playableCropGuardPath = path.join(runDir, `${stem}${safeSuffix}-playable-crop-guard.json`);
   const playableCropGuardAnnotatedPath = path.join(runDir, `${stem}${safeSuffix}-playable-crop-guard.png`);
+  const pauseArtifactPath = path.join(runDir, `${stem}${safeSuffix}-pause-artifact.json`);
+  const pauseArtifactAnnotatedPath = path.join(runDir, `${stem}${safeSuffix}-pause-artifact.png`);
   const ocrPath = path.join(runDir, `${stem}${safeSuffix}-ocr.json`);
   let capture = null;
   let stage = null;
   let visualGuard = null;
   let playableCropGuard = null;
+  let pauseArtifact = null;
   let ocr = null;
   try {
     capture = runPythonQa(buildCaptureArgs({
@@ -714,6 +755,15 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
       qaErrors,
       step: suffix || "initial"
     });
+    pauseArtifact = runPauseArtifactGuard({
+      screenshotPath,
+      stagePath,
+      outputPath: pauseArtifactPath,
+      annotatedPath: pauseArtifactAnnotatedPath,
+      args,
+      qaErrors,
+      step: suffix || "initial"
+    });
     if (!flagEnabled(args.skipOcr)) {
       try {
         ocr = runPythonQa([
@@ -736,6 +786,7 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     stage,
     visualGuard,
     playableCropGuard,
+    pauseArtifact,
     ocr,
     artifacts: {
       screenshotPath,
@@ -745,6 +796,8 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
       visualGuardAnnotatedPath: suffix === "map" && !flagEnabled(args.skipVisualGuard) ? visualGuardAnnotatedPath : null,
       playableCropGuardPath: shouldRequirePlayableCropGuard(args) ? playableCropGuardPath : null,
       playableCropGuardAnnotatedPath: shouldRequirePlayableCropGuard(args) ? playableCropGuardAnnotatedPath : null,
+      pauseArtifactPath: shouldRequireNoPauseArtifact(args) ? pauseArtifactPath : null,
+      pauseArtifactAnnotatedPath: shouldRequireNoPauseArtifact(args) ? pauseArtifactAnnotatedPath : null,
       ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
     }
   };
@@ -1323,6 +1376,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
       capture: postCapture.capture,
       stage: postCapture.stage,
       visualGuard: postCapture.visualGuard,
+      pauseArtifact: postCapture.pauseArtifact,
       ocr: postCapture.ocr,
       artifacts: postCapture.artifacts,
       logSummary,
@@ -1697,6 +1751,10 @@ function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, a
       if (Number.isFinite(holdMs) && holdMs > 0) {
         builtArgs.push("--hold-ms", String(Math.round(holdMs)));
       }
+      const moveIntervalMs = Number(args.dialogueMoveIntervalMs || args["dialogue-move-interval-ms"] || 0);
+      if (Number.isFinite(moveIntervalMs) && moveIntervalMs > 0) {
+        builtArgs.push("--move-interval-ms", String(Math.round(moveIntervalMs)));
+      }
       if (runtime.pid) {
         builtArgs.push("--pid", String(runtime.pid));
       }
@@ -1964,6 +2022,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (shouldRequirePlayableCropGuard(args) && !initial.playableCropGuard?.ok) {
     failedChecks.push("initial_playable_crop_guard_failed");
   }
+  if (shouldRequireNoPauseArtifact(args) && !initial.pauseArtifact?.ok) {
+    failedChecks.push("initial_pause_artifact_seen");
+  }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
     failedChecks.push("missing_requests_seen");
   }
@@ -2003,6 +2064,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!map.skipped && shouldRequireVisualGuard(args) && !map.visualGuard?.ok) {
     failedChecks.push("map_visual_guard_failed");
   }
+  if (!map.skipped && shouldRequireNoPauseArtifact(args) && !map.pauseArtifact?.ok) {
+    failedChecks.push("map_pause_artifact_seen");
+  }
   if (!mapResetConfirm.skipped && flagEnabled(args.requireMapResetConfirm || args["require-map-reset-confirm"]) && !mapResetConfirm.ok) {
     failedChecks.push("map_reset_confirm_failed");
   }
@@ -2041,6 +2105,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       initialVisualGuardPath: initial.artifacts.visualGuardPath || null,
       initialPlayableCropGuardPath: initial.artifacts.playableCropGuardPath || null,
       initialPlayableCropGuardAnnotatedPath: initial.artifacts.playableCropGuardAnnotatedPath || null,
+      initialPauseArtifactPath: initial.artifacts.pauseArtifactPath || null,
+      initialPauseArtifactAnnotatedPath: initial.artifacts.pauseArtifactAnnotatedPath || null,
       popupCloseScreenshotPath: popupClose.artifacts?.screenshotPath || null,
       popupCloseStagePath: popupClose.artifacts?.stagePath || null,
       mapResetConfirmScreenshotPath: mapResetConfirm.artifacts?.screenshotPath || null,
@@ -2057,6 +2123,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       stage: initial.stage,
       visualGuard: initial.visualGuard,
       playableCropGuard: initial.playableCropGuard,
+      pauseArtifact: initial.pauseArtifact,
       ocr: initial.ocr
         ? {
             skipped: Boolean(initial.ocr.skipped),
@@ -2106,6 +2173,10 @@ function buildSummary(startedAt, reports) {
     ).length,
     playableCropGuardPassed: reports.filter((report) =>
       report.initial?.playableCropGuard?.ok
+    ).length,
+    pauseArtifactPassed: reports.filter((report) =>
+      report.initial?.pauseArtifact?.ok &&
+      (report.map?.skipped || report.map?.pauseArtifact?.ok)
     ).length,
     hudAnchorPassed: reports.filter((report) => report.hudAnchor && !report.hudAnchor.skipped && report.hudAnchor.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,

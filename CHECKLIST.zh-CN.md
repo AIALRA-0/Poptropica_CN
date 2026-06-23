@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 09:38 EDT
+更新时间：2026-06-23 10:40 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 10:40 EDT：补上“肉眼截图层”的 AS2 暂停图标/HUD 验收门槛，避免再出现我认为右上角正常、实际截图仍歪或左上角淡暂停按钮残留的问题。新增 `tools/qa-helper.py analyze-pause-artifact`，用截图像素检测左上淡暂停图标；用户提供的坏样本 `codex-clipboard-8c954955-4b59-4253-951f-88296aedc130.png` 会失败并标出候选暂停图标，当前 Time Tangled Present 好样本通过。`tools/qa-as2-interaction-smoke.js` 已接入 `--require-no-pause-artifact`，并在每次截图旁输出 `*-pause-artifact.json/png`。G32QC/静音复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782223547883.json` 通过：`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`hudAnchorPassed=1`、`failedChecks=[]`；HUD 量化值为 `rightMargin=59`、`topMargin=0`、`rowSpread=2`、间距 `27/22`，人工复核截图 `runtime-data/qa/as2/interaction-smoke/run-1782223547883/01-time-tangled-initial.png`：角色可见、没有左上淡暂停图标、三枚 HUD 在内容右上。另新增 AS2 QA-only 起点参数 `flashpointQaStartX/Y`，可从 `base.php` 传入并写入 gameplay，日志会记录 `QaStartPosition`，用于后续自然 NPC/时间装置路线复测。当前自然热区还未封口：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782225349086.json` 记录 `x=5480,y=2700,char1x=3212,char1y=2685`，但 OCR 仍未出现预期 NPC 气泡，说明还要继续深挖 AS2 实际控制层/角色层或改用可稳定触发的真实 NPC 场景。该项关闭“截图层暂停残留 + HUD 对齐被误判”的回归缺口，但 Time Tangled 仍未整岛封版。
 
 2026-06-23 09:07 EDT：补齐并修正 Time Tangled AS3 地图介绍中文证据。源包 `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/time/island/page.xml` 与当前运行包 `runtime-data/patched-zips/as3-runtime.zip` 中的同一路径均为中文；失败样本 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219601793.json` 证明旧 AS3 map smoke 默认 `reloadOnResize=frame` 会在截图前重载 Shell，导致截到黑底 Poptropica loading 而不是地图页。已修 `tools/qa-as3-islands-smoke.js`：当 `overrideScene=game.scenes.map.map.Map` 且传入 `autoLoadIsland` 时，默认使用 `reloadOnResize=0`，避免地图验收被截图阶段的 resize reload 污染。复测 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219918934.json` 通过，`launchUrl` 为 `...Map&reloadOnResize=0&flashpointAutoLoadIsland=time`，`containsChinese=true`、`visualGuardPassed=1`、`audioActive=0`、`failedKeys=[]`。人工复核 `runtime-data/qa/as3/islands-smoke/run-1782219918934/01-poptropicon-map.png`：验收对象是 Time Tangled map page，标题 `时空缠结岛`、中文介绍、`重新开始/开始` 按钮可见且居中；静态 `TIME TANGLED ISLAND` logo、DIFFICULTY、MEDALLION、PROGRESS 等美术字保持英文/原图，没有中文文本层硬盖。注意：报告文件名里的 `poptropicon` 只是 AS3 Shell 宿主岛，不代表验收目标是 Poptropicon。该项关闭“Time Tangled 地图介绍中文 + AS3 map smoke 防重载”缺口，但 Time Tangled 仍未全岛封版；自然时间装置路线、自然 NPC no-repeat、任务物品使用后布局、外链白屏、AS3 对话队列和真实音频源仍待继续。
 

@@ -1912,6 +1912,160 @@ def command_analyze_popup_close_button(args):
         sys.exit(2)
 
 
+def command_analyze_pause_artifact(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    stage_rect = None
+    if getattr(args, "stage_json", ""):
+        stage_payload = json.loads(Path(args.stage_json).read_text(encoding="utf-8"))
+        stage_rect = stage_payload.get("stageRect") or None
+    if not stage_rect:
+        stage_rect = {
+            "left": 0,
+            "top": 0,
+            "right": width,
+            "bottom": height,
+            "width": width,
+            "height": height,
+        }
+
+    stage_left = int(stage_rect.get("left", 0))
+    stage_top = int(stage_rect.get("top", 0))
+    stage_right = int(stage_rect.get("right", width))
+    stage_bottom = int(stage_rect.get("bottom", height))
+    stage_width = max(1, int(stage_rect.get("width", stage_right - stage_left)))
+    stage_height = max(1, int(stage_rect.get("height", stage_bottom - stage_top)))
+    region_left = stage_left
+    region_top = stage_top
+    region_right = min(stage_right, stage_left + int(round(stage_width * float(args.left_ratio))))
+    region_bottom = min(stage_bottom, stage_top + int(round(stage_height * float(args.top_ratio))))
+    region_right = max(region_left + 1, region_right)
+    region_bottom = max(region_top + 1, region_bottom)
+
+    rgb = np.array(image).astype(np.int16)
+    region = rgb[region_top:region_bottom, region_left:region_right, :]
+    red = region[:, :, 0]
+    green = region[:, :, 1]
+    blue = region[:, :, 2]
+    max_channel = region.max(axis=2)
+    min_channel = region.min(axis=2)
+    light_mask_region = (
+        (red >= int(args.min_red)) &
+        (green >= int(args.min_green)) &
+        (blue >= int(args.min_blue)) &
+        ((max_channel - min_channel) <= int(args.max_channel_spread))
+    )
+    mask = np.zeros((height, width), dtype=bool)
+    mask[region_top:region_bottom, region_left:region_right] = light_mask_region
+    gradient_x = np.zeros(region.shape[:2], dtype=np.int16)
+    gradient_y = np.zeros(region.shape[:2], dtype=np.int16)
+    gradient_x[:, 1:] = np.max(np.abs(region[:, 1:] - region[:, :-1]), axis=2)
+    gradient_y[1:, :] = np.max(np.abs(region[1:, :] - region[:-1, :]), axis=2)
+    gradient = np.maximum(gradient_x, gradient_y)
+    edge_mask_region = (
+        (gradient >= int(args.min_edge_gradient)) &
+        (max_channel >= int(args.min_edge_brightness)) &
+        ((max_channel - min_channel) <= int(args.max_edge_channel_spread))
+    )
+    edge_mask = np.zeros((height, width), dtype=bool)
+    edge_mask[region_top:region_bottom, region_left:region_right] = edge_mask_region
+    components = _connected_components(mask, min_pixels=int(args.min_pixels))
+    edge_components = _connected_components(edge_mask, min_pixels=int(args.min_edge_pixels))
+    candidates = []
+    for source_name, source_components in [
+        ("light", components),
+        ("edge", edge_components),
+    ]:
+        for comp in source_components:
+            if comp["width"] < int(args.min_width) or comp["width"] > int(args.max_width):
+                continue
+            if comp["height"] < int(args.min_height) or comp["height"] > int(args.max_height):
+                continue
+            aspect = float(comp["width"]) / float(max(1, comp["height"]))
+            if aspect < float(args.min_aspect) or aspect > float(args.max_aspect):
+                continue
+            if comp["centerX"] > stage_left + stage_width * float(args.max_center_x_ratio):
+                continue
+            if comp["centerY"] > stage_top + stage_height * float(args.max_center_y_ratio):
+                continue
+            source_mask = edge_mask if source_name == "edge" else mask
+            crop = source_mask[comp["top"]:comp["bottom"], comp["left"]:comp["right"]]
+            density = float(crop.mean()) if crop.size else 0.0
+            if density < float(args.min_density) or density > float(args.max_density):
+                continue
+            candidates.append({
+                **comp,
+                "source": source_name,
+                "aspect": round(aspect, 4),
+                "density": round(density, 6),
+            })
+    candidates.sort(key=lambda comp: (comp["centerY"], comp["centerX"], -comp["pixels"]))
+    checks = [
+        {
+            "name": "no_pause_artifact_candidate",
+            "ok": len(candidates) == 0,
+            "candidateCount": len(candidates),
+        }
+    ]
+    payload = {
+        "ok": len(candidates) == 0,
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": int(width),
+            "height": int(height),
+        },
+        "stageRect": {
+            "left": int(stage_left),
+            "top": int(stage_top),
+            "right": int(stage_right),
+            "bottom": int(stage_bottom),
+            "width": int(stage_width),
+            "height": int(stage_height),
+        },
+        "analysisRegion": {
+            "left": int(region_left),
+            "top": int(region_top),
+            "right": int(region_right),
+            "bottom": int(region_bottom),
+            "width": int(region_right - region_left),
+            "height": int(region_bottom - region_top),
+        },
+        "candidates": candidates[:12],
+        "thresholds": {
+            "minRed": int(args.min_red),
+            "minGreen": int(args.min_green),
+            "minBlue": int(args.min_blue),
+            "maxChannelSpread": int(args.max_channel_spread),
+            "leftRatio": float(args.left_ratio),
+            "topRatio": float(args.top_ratio),
+            "maxCenterXRatio": float(args.max_center_x_ratio),
+            "maxCenterYRatio": float(args.max_center_y_ratio),
+            "minDensity": float(args.min_density),
+            "maxDensity": float(args.max_density),
+            "minEdgeGradient": int(args.min_edge_gradient),
+            "minEdgeBrightness": int(args.min_edge_brightness),
+            "maxEdgeChannelSpread": int(args.max_edge_channel_spread),
+            "minEdgePixels": int(args.min_edge_pixels),
+        },
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((region_left, region_top, region_right, region_bottom), outline=(255, 255, 0), width=3)
+        for candidate in candidates[:12]:
+            draw.rectangle((candidate["left"], candidate["top"], candidate["right"], candidate["bottom"]), outline=(255, 0, 0), width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
 def _parse_hex_color(value):
     text = str(value or "").strip().lstrip("#")
     if not text:
@@ -3403,6 +3557,35 @@ def main():
     close_button_parser.add_argument("--max-aspect", type=float, default=8.0)
     close_button_parser.add_argument("--no-fail-exit", action="store_true")
     close_button_parser.set_defaults(func=command_analyze_popup_close_button)
+
+    pause_artifact_parser = subparsers.add_parser("analyze-pause-artifact")
+    pause_artifact_parser.add_argument("--input", required=True)
+    pause_artifact_parser.add_argument("--stage-json")
+    pause_artifact_parser.add_argument("--output")
+    pause_artifact_parser.add_argument("--annotated-output")
+    pause_artifact_parser.add_argument("--left-ratio", type=float, default=0.26)
+    pause_artifact_parser.add_argument("--top-ratio", type=float, default=0.30)
+    pause_artifact_parser.add_argument("--max-center-x-ratio", type=float, default=0.25)
+    pause_artifact_parser.add_argument("--max-center-y-ratio", type=float, default=0.28)
+    pause_artifact_parser.add_argument("--min-red", type=int, default=170)
+    pause_artifact_parser.add_argument("--min-green", type=int, default=205)
+    pause_artifact_parser.add_argument("--min-blue", type=int, default=220)
+    pause_artifact_parser.add_argument("--max-channel-spread", type=int, default=70)
+    pause_artifact_parser.add_argument("--min-pixels", type=int, default=40)
+    pause_artifact_parser.add_argument("--min-width", type=int, default=18)
+    pause_artifact_parser.add_argument("--max-width", type=int, default=42)
+    pause_artifact_parser.add_argument("--min-height", type=int, default=20)
+    pause_artifact_parser.add_argument("--max-height", type=int, default=42)
+    pause_artifact_parser.add_argument("--min-aspect", type=float, default=0.55)
+    pause_artifact_parser.add_argument("--max-aspect", type=float, default=1.65)
+    pause_artifact_parser.add_argument("--min-density", type=float, default=0.25)
+    pause_artifact_parser.add_argument("--max-density", type=float, default=0.72)
+    pause_artifact_parser.add_argument("--min-edge-gradient", type=int, default=6)
+    pause_artifact_parser.add_argument("--min-edge-brightness", type=int, default=170)
+    pause_artifact_parser.add_argument("--max-edge-channel-spread", type=int, default=110)
+    pause_artifact_parser.add_argument("--min-edge-pixels", type=int, default=12)
+    pause_artifact_parser.add_argument("--no-fail-exit", action="store_true")
+    pause_artifact_parser.set_defaults(func=command_analyze_pause_artifact)
 
     visual_guard_parser = subparsers.add_parser("analyze-visual-guard")
     visual_guard_parser.add_argument("--input", required=True)

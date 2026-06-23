@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T13:35:06.842Z",
+  "generatedAt": "2026-06-23T14:35:22.905Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -642,12 +642,11 @@
       "gameplayChanged": true,
       "aliasSynced": true,
       "replaceTargets": [
-        "\\frame_1\\DoAction",
-        "\\frame_9\\DoAction"
+        "\\frame_1\\DoAction"
       ],
       "dialogueThrottlePatch": {
         "frameOneChanged": true,
-        "nativeDialogueChanged": true
+        "nativeDialogueChanged": false
       },
       "closeTextPatch": {
         "changed": false,
