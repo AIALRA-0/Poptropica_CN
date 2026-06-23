@@ -3665,6 +3665,8 @@ function zhApplyQaStartPosition()
    var _loc1_;
    var _loc2_;
    var _loc3_;
+   var _loc4_;
+   var _loc5_;
    if(_root == undefined)
    {
       return false;
@@ -3688,17 +3690,41 @@ function zhApplyQaStartPosition()
    {
       _loc3_._y = _loc2_;
    }
+   _loc4_ = _loc3_.avatar != undefined ? _loc3_.avatar.FunBrain_so : undefined;
+   if(_loc4_ == undefined && _root.FunBrain_so != undefined)
+   {
+      _loc4_ = _root.FunBrain_so;
+   }
+   if(_loc4_ != undefined && _loc4_.data != undefined)
+   {
+      if(_loc1_ != undefined)
+      {
+         _loc4_.data.xPos = _loc1_;
+         if(_root.desc != undefined)
+         {
+            _loc4_.data[String(_root.desc) + "xPos"] = _loc1_;
+         }
+      }
+      if(_loc2_ != undefined)
+      {
+         _loc4_.data.yPos = _loc2_;
+         if(_root.desc != undefined)
+         {
+            _loc4_.data[String(_root.desc) + "yPos"] = _loc2_;
+         }
+      }
+   }
    _root.__zhQaStartPositionApplied = true;
    if(zhQaHudDebugEnabled != undefined && zhQaHudDebugEnabled())
    {
-      _loc4_ = _root.camera.scene.char1;
-      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&x=" + Math.round(Number(_loc3_._x)) + "&y=" + Math.round(Number(_loc3_._y)) + "&char1x=" + (_loc4_ != undefined ? Math.round(Number(_loc4_._x)) : "na") + "&char1y=" + (_loc4_ != undefined ? Math.round(Number(_loc4_._y)) : "na"),0);
+      _loc5_ = _root.camera.scene.char1;
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&tick=" + (_root.__zhQaStartPositionTicks != undefined ? _root.__zhQaStartPositionTicks : "na") + "&x=" + Math.round(Number(_loc3_._x)) + "&y=" + Math.round(Number(_loc3_._y)) + "&targetX=" + (_loc3_.targetX != undefined ? Math.round(Number(_loc3_.targetX)) : "na") + "&targetY=" + (_loc3_.targetY != undefined ? Math.round(Number(_loc3_.targetY)) : "na") + "&speed=" + (_loc3_.speed != undefined ? Math.round(Number(_loc3_.speed)) : "na") + "&vSpeed=" + (_loc3_.vSpeed != undefined ? Math.round(Number(_loc3_.vSpeed)) : "na") + "&sceneX=" + Math.round(Number(_root.camera.scene._x)) + "&sceneY=" + Math.round(Number(_root.camera.scene._y)) + "&camX=" + Math.round(Number(_root.camera._x)) + "&camY=" + Math.round(Number(_root.camera._y)) + "&rootCharX=" + (_root.char != undefined ? Math.round(Number(_root.char._x)) : "na") + "&rootCharY=" + (_root.char != undefined ? Math.round(Number(_root.char._y)) : "na") + "&panCharX=" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._x)) : "na") + "&panCharY=" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._y)) : "na") + "&char1x=" + (_loc5_ != undefined ? Math.round(Number(_loc5_._x)) : "na") + "&char1y=" + (_loc5_ != undefined ? Math.round(Number(_loc5_._y)) : "na") + "&char1Press=" + (_loc5_ != undefined && _loc5_.onPress != undefined ? "1" : "0") + "&cond1=" + (_loc5_ != undefined && _loc3_._x > _loc5_._x ? "1" : "0") + "&cond2=" + (_loc5_ != undefined && _loc3_._y > _loc5_._y - 400 ? "1" : "0"),0);
    }
    return true;
 }
 function zhScheduleQaStartPosition()
 {
-   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined || _root.__zhQaStartPositionApplied == true)
+   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined)
    {
       return undefined;
    }

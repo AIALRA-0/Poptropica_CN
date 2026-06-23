@@ -11,6 +11,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 # Progress
 
+## 2026-06-23 Time Tangled Present 自然入门对话修复
+
+- 继续按中期反馈封版计划推进，不切新岛；本轮只处理 Time Tangled Present 中“靠近科学家应出现中文入门气泡，但运行时没有可见对话”的断点。
+- 先补强 AS2 QA 起点/对话判定链：`tools/lib/pack.js` 与 `tools/patch-as2-gameplay-hud-popup.js` 的 `zhApplyQaStartPosition()` 会持续写入 `_root.camera.scene.char`、`avatar.FunBrain_so.data.xPos/yPos` 和场景坐标，并记录 `rootChar/panChar/char1/cond` 等字段；`tools/qa-as2-interaction-smoke.js` 新增 initial dialogue 强判定，传入 `--require-initial-dialogue --dialogue-expected-text` 时不再允许只靠视觉 guard 误判通过。
+- 失败样本 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782226468971.json` 证明 `x=5480,y=2700` 时条件已满足、`char1.onPress` 存在，但没有“请进来”；后续 `1782226958945/1782227042133/1782227256020` 证明单纯把 `char1.onPress()` 改成 `char1.sayFunction()` 仍不够，气泡没有稳定可见。
+- 新增 `tools/patch-as2-time-present-entry.js`，只重打 `packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/scenePresent.swf`：在 `checkPos` 自动触发前等待 NPC 头像/嘴型/showSay 就绪；触发时把科学家设为可见并放到玩家旁边，调用原生 `_root.manualSay(char1,"请进来！")`，把气泡等待拉长到 600 帧，并保留原场景进门 `sayFunction` 后续逻辑。
+- 正式静音/G32QC/no-foreground 回归通过：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782227733415.json`，`ok=true`、`failedChecks=[]`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`audioActive=0`。OCR 文本为 `请进来! 心 0000000`；日志记录 `AutoEntrySayFunction` 和 `AutoEntryManualSayBubble&bubble=1&wait=600`。
+- 人工复核截图 `runtime-data/qa/as2/interaction-smoke/run-1782227733415/01-time-tangled-initial.png`：科学家、玩家、原生中文气泡同屏可见；右上 HUD 没重叠；左上淡暂停按钮未见；静态场景美术字未做中文叠层。
+- 当前状态：关闭 Time Tangled Present 自然入门对话链这一项；仍不能声明 Time Tangled 整岛封版。下一步继续按 Time Tangled 重新封版清单跑时间装置、至少 3 个真实 NPC/剧情对话、任务物品使用后布局、外链白屏和音频来源。
+
 ## 2026-06-22 中期反馈封版重开 / Time Tangled wave 1
 
 - 按用户中期反馈停止推进新岛，当前不进入 Super Power；`Time Tangled` 旧封版结论重开。

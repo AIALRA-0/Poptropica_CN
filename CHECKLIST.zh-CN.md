@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 10:40 EDT
+更新时间：2026-06-23 11:20 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 11:16 EDT：修正 Time Tangled Present 自然靠近科学家后的入门对话链。此前日志证明坐标条件满足、`char1.onPress` 存在，但运行时没有可见“请进来！”气泡；根因是该场景的自动触发链过早/过短，默认 `showSay` 没有留下可读 NPC 气泡。新增 `tools/patch-as2-time-present-entry.js`，只改 `scenePresent.swf` 的原生 `char1.sayFunction/checkPos`：等待 NPC 头像/嘴型/showSay 就绪，触发时把科学家放到玩家旁并调用原生 `_root.manualSay(char1,"请进来！")`，同时延长气泡等待到 600 帧，后续仍保留原场景进门逻辑，不做文字覆盖层。正式 G32QC/静音回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782227733415.json` 通过：`ok=true`、`failedChecks=[]`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`audioActive=0`；OCR 文本为 `请进来! 心 0000000`，服务日志记录 `AutoEntrySayFunction` 和 `AutoEntryManualSayBubble&bubble=1&wait=600`。人工复核截图 `runtime-data/qa/as2/interaction-smoke/run-1782227733415/01-time-tangled-initial.png`：科学家、角色、原生中文气泡同屏可见，右上 HUD 未重叠，左上淡暂停按钮未见。该项只关闭 Time Present 自然入门对话链；Time Tangled 仍未整岛封版，后续继续验证时间装置、更多 NPC、任务物品、外链和音频。
 
 2026-06-23 10:40 EDT：补上“肉眼截图层”的 AS2 暂停图标/HUD 验收门槛，避免再出现我认为右上角正常、实际截图仍歪或左上角淡暂停按钮残留的问题。新增 `tools/qa-helper.py analyze-pause-artifact`，用截图像素检测左上淡暂停图标；用户提供的坏样本 `codex-clipboard-8c954955-4b59-4253-951f-88296aedc130.png` 会失败并标出候选暂停图标，当前 Time Tangled Present 好样本通过。`tools/qa-as2-interaction-smoke.js` 已接入 `--require-no-pause-artifact`，并在每次截图旁输出 `*-pause-artifact.json/png`。G32QC/静音复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782223547883.json` 通过：`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`hudAnchorPassed=1`、`failedChecks=[]`；HUD 量化值为 `rightMargin=59`、`topMargin=0`、`rowSpread=2`、间距 `27/22`，人工复核截图 `runtime-data/qa/as2/interaction-smoke/run-1782223547883/01-time-tangled-initial.png`：角色可见、没有左上淡暂停图标、三枚 HUD 在内容右上。另新增 AS2 QA-only 起点参数 `flashpointQaStartX/Y`，可从 `base.php` 传入并写入 gameplay，日志会记录 `QaStartPosition`，用于后续自然 NPC/时间装置路线复测。当前自然热区还未封口：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782225349086.json` 记录 `x=5480,y=2700,char1x=3212,char1y=2685`，但 OCR 仍未出现预期 NPC 气泡，说明还要继续深挖 AS2 实际控制层/角色层或改用可稳定触发的真实 NPC 场景。该项关闭“截图层暂停残留 + HUD 对齐被误判”的回归缺口，但 Time Tangled 仍未整岛封版。
 

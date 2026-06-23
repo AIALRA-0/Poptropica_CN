@@ -577,6 +577,44 @@ function summarizeAutoDialogueCapture(initial, args) {
   };
 }
 
+function summarizeInitialDialogueCapture(initial, args) {
+  const text = String(initial?.ocr?.text || "");
+  const containsChinese = containsCjkText(text);
+  const requireChinese = flagEnabled(args.requireInitialDialogueChinese || args["require-initial-dialogue-chinese"] || args.requireDialogueChinese || args["require-dialogue-chinese"]);
+  const expectedText = String(args.initialDialogueExpectedText || args["initial-dialogue-expected-text"] || args.dialogueExpectedText || args["dialogue-expected-text"] || "").trim();
+  const explicit = flagEnabled(args.requireInitialDialogue || args["require-initial-dialogue"]) || Boolean(expectedText);
+  const dialogueWillBeCapturedElsewhere = Boolean(resolveFlashpointQaAs2Dialog(args)) || flagEnabled(args.dialogueClick || args["dialogue-click"]);
+  if (!explicit && (!requireChinese || dialogueWillBeCapturedElsewhere)) {
+    return {
+      ok: true,
+      skipped: true,
+      containsChinese,
+      expectedText: expectedText || null,
+      containsExpectedText: !expectedText || text.includes(expectedText)
+    };
+  }
+  const containsExpectedText = expectedText ? text.includes(expectedText) : true;
+  const stageStable = Boolean(initial?.stage?.stageRect);
+  return {
+    ok: stageStable && (!requireChinese || containsChinese) && containsExpectedText,
+    skipped: false,
+    trigger: "initial-scene",
+    containsChinese,
+    requireChinese,
+    expectedText: expectedText || null,
+    containsExpectedText,
+    textSample: text.slice(0, 1000),
+    artifacts: initial?.artifacts || {},
+    reason: stageStable
+      ? expectedText && !containsExpectedText
+        ? "initial_dialogue_expected_text_not_seen"
+        : requireChinese && !containsChinese
+          ? "initial_dialogue_chinese_not_seen"
+          : null
+      : "initial_stage_missing"
+  };
+}
+
 function captureWindowMatchesRuntime(capture, runtime) {
   const expectedPid = Number(runtime?.pid || 0);
   if (!expectedPid) {
@@ -1914,6 +1952,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         timeoutMs: Number(args.audioTimeoutMs || 30000)
       });
 
+  const initialDialogue = summarizeInitialDialogueCapture(initial, args);
   const dialogue = resolveFlashpointQaAs2Dialog(args)
     ? summarizeAutoDialogueCapture(initial, args)
     : flagEnabled(args.dialogueClick || args["dialogue-click"])
@@ -2052,6 +2091,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!dialogue.skipped && flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]) && !dialogue.containsChinese) {
     failedChecks.push("dialogue_chinese_not_seen");
   }
+  if (!initialDialogue.skipped && !initialDialogue.ok) {
+    failedChecks.push(initialDialogue.reason || "initial_dialogue_failed");
+  }
   if (!f11.skipped && flagEnabled(args.requireF11 || args["require-f11"]) && !f11.ok) {
     failedChecks.push("f11_fullscreen_size_visual_or_crop_guard_failed");
   }
@@ -2140,6 +2182,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       peak: audio?.loopback?.peak ?? null,
       sessionCount: audio?.sessionCount ?? null
     },
+    initialDialogue,
     dialogue,
     popupClose,
     f11,

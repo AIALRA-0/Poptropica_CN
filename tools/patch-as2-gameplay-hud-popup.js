@@ -2174,6 +2174,7 @@ function patchFrameOne(content) {
       "   var _loc2_;",
       "   var _loc3_;",
       "   var _loc4_;",
+      "   var _loc5_;",
       "   if(_root == undefined)",
       "   {",
       "      return false;",
@@ -2197,17 +2198,41 @@ function patchFrameOne(content) {
       "   {",
       "      _loc3_._y = _loc2_;",
       "   }",
+      "   _loc4_ = _loc3_.avatar != undefined ? _loc3_.avatar.FunBrain_so : undefined;",
+      "   if(_loc4_ == undefined && _root.FunBrain_so != undefined)",
+      "   {",
+      "      _loc4_ = _root.FunBrain_so;",
+      "   }",
+      "   if(_loc4_ != undefined && _loc4_.data != undefined)",
+      "   {",
+      "      if(_loc1_ != undefined)",
+      "      {",
+      "         _loc4_.data.xPos = _loc1_;",
+      "         if(_root.desc != undefined)",
+      "         {",
+      "            _loc4_.data[String(_root.desc) + \"xPos\"] = _loc1_;",
+      "         }",
+      "      }",
+      "      if(_loc2_ != undefined)",
+      "      {",
+      "         _loc4_.data.yPos = _loc2_;",
+      "         if(_root.desc != undefined)",
+      "         {",
+      "            _loc4_.data[String(_root.desc) + \"yPos\"] = _loc2_;",
+      "         }",
+      "      }",
+      "   }",
       "   _root.__zhQaStartPositionApplied = true;",
       "   if(zhQaHudDebugEnabled != undefined && zhQaHudDebugEnabled())",
       "   {",
-      "      _loc4_ = _root.camera.scene.char1;",
-      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&x=\" + Math.round(Number(_loc3_._x)) + \"&y=\" + Math.round(Number(_loc3_._y)) + \"&char1x=\" + (_loc4_ != undefined ? Math.round(Number(_loc4_._x)) : \"na\") + \"&char1y=\" + (_loc4_ != undefined ? Math.round(Number(_loc4_._y)) : \"na\"),0);",
+      "      _loc5_ = _root.camera.scene.char1;",
+      "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&tick=\" + (_root.__zhQaStartPositionTicks != undefined ? _root.__zhQaStartPositionTicks : \"na\") + \"&x=\" + Math.round(Number(_loc3_._x)) + \"&y=\" + Math.round(Number(_loc3_._y)) + \"&targetX=\" + (_loc3_.targetX != undefined ? Math.round(Number(_loc3_.targetX)) : \"na\") + \"&targetY=\" + (_loc3_.targetY != undefined ? Math.round(Number(_loc3_.targetY)) : \"na\") + \"&speed=\" + (_loc3_.speed != undefined ? Math.round(Number(_loc3_.speed)) : \"na\") + \"&vSpeed=\" + (_loc3_.vSpeed != undefined ? Math.round(Number(_loc3_.vSpeed)) : \"na\") + \"&sceneX=\" + Math.round(Number(_root.camera.scene._x)) + \"&sceneY=\" + Math.round(Number(_root.camera.scene._y)) + \"&camX=\" + Math.round(Number(_root.camera._x)) + \"&camY=\" + Math.round(Number(_root.camera._y)) + \"&rootCharX=\" + (_root.char != undefined ? Math.round(Number(_root.char._x)) : \"na\") + \"&rootCharY=\" + (_root.char != undefined ? Math.round(Number(_root.char._y)) : \"na\") + \"&panCharX=\" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._x)) : \"na\") + \"&panCharY=\" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._y)) : \"na\") + \"&char1x=\" + (_loc5_ != undefined ? Math.round(Number(_loc5_._x)) : \"na\") + \"&char1y=\" + (_loc5_ != undefined ? Math.round(Number(_loc5_._y)) : \"na\") + \"&char1Press=\" + (_loc5_ != undefined && _loc5_.onPress != undefined ? \"1\" : \"0\") + \"&cond1=\" + (_loc5_ != undefined && _loc3_._x > _loc5_._x ? \"1\" : \"0\") + \"&cond2=\" + (_loc5_ != undefined && _loc3_._y > _loc5_._y - 400 ? \"1\" : \"0\"),0);",
       "   }",
       "   return true;",
       "}",
       "function zhScheduleQaStartPosition()",
       "{",
-      "   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined || _root.__zhQaStartPositionApplied == true)",
+      "   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined)",
       "   {",
       "      return undefined;",
       "   }",
@@ -2252,6 +2277,83 @@ function patchFrameOne(content) {
       ].join("\n")
     );
   }
+  if (!next.includes('data[String(_root.desc) + "xPos"]')) {
+    const xReadMatch = next.match(/   (_loc\d+_|[A-Za-z_$][\w$]*) = zhReadQaNumber\("flashpointQaStartX"\);/u);
+    const yReadMatch = next.match(/   (_loc\d+_|[A-Za-z_$][\w$]*) = zhReadQaNumber\("flashpointQaStartY"\);/u);
+    const charMatch = next.match(/   (_loc\d+_|[A-Za-z_$][\w$]*) = _root\.camera\.scene\.char;/u);
+    if (!xReadMatch || !yReadMatch || !charMatch) {
+      throw new Error("Unable to locate QA start position variables for stored-position upgrade.");
+    }
+    const xVar = xReadMatch[1];
+    const yVar = yReadMatch[1];
+    const charVar = charMatch[1];
+    next = next.replace(
+      /function zhApplyQaStartPosition\(\)\n\{\n((?:   var [^;\n]+;\n)+)/u,
+      (match, declarations) => declarations.includes("var zhQaStartStore;")
+        ? match
+        : match.replace(declarations, `${declarations}   var zhQaStartStore;\n`)
+    );
+    const ySetBlock = [
+      `   if(${yVar} != undefined)`,
+      "   {",
+      `      ${charVar}._y = ${yVar};`,
+      "   }"
+    ].join("\n");
+    const storedBlock = [
+      ySetBlock,
+      `   zhQaStartStore = ${charVar}.avatar != undefined ? ${charVar}.avatar.FunBrain_so : undefined;`,
+      "   if(zhQaStartStore == undefined && _root.FunBrain_so != undefined)",
+      "   {",
+      "      zhQaStartStore = _root.FunBrain_so;",
+      "   }",
+      "   if(zhQaStartStore != undefined && zhQaStartStore.data != undefined)",
+      "   {",
+      `      if(${xVar} != undefined)`,
+      "      {",
+      `         zhQaStartStore.data.xPos = ${xVar};`,
+      "         if(_root.desc != undefined)",
+      "         {",
+      `            zhQaStartStore.data[String(_root.desc) + "xPos"] = ${xVar};`,
+      "         }",
+      "      }",
+      `      if(${yVar} != undefined)`,
+      "      {",
+      `         zhQaStartStore.data.yPos = ${yVar};`,
+      "         if(_root.desc != undefined)",
+      "         {",
+      `            zhQaStartStore.data[String(_root.desc) + "yPos"] = ${yVar};`,
+      "         }",
+      "      }",
+      "   }"
+    ].join("\n");
+    next = replaceRequired(next, ySetBlock, storedBlock, "QA start stored-position update");
+  }
+  if (!next.includes("&rootCharX=")) {
+    const logPattern = /      loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=QaStartPosition[^;\n]+;\n/u;
+    const logMatch = next.match(logPattern);
+    const charMatch = next.match(/   (_loc\d+_|[A-Za-z_$][\w$]*) = _root\.camera\.scene\.char;/u);
+    if (!logMatch || !charMatch) {
+      throw new Error("Unable to locate QA start position log for probe upgrade.");
+    }
+    const charVar = charMatch[1];
+    next = next.replace(
+      /function zhApplyQaStartPosition\(\)\n\{\n((?:   var [^;\n]+;\n)+)/u,
+      (match, declarations) => declarations.includes("var zhQaStartChar1;")
+        ? match
+        : match.replace(declarations, `${declarations}   var zhQaStartChar1;\n`)
+    );
+    next = next.replace(
+      logPattern,
+      [
+        "      zhQaStartChar1 = _root.camera.scene.char1;",
+        `      loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaStartPosition&tick=" + (_root.__zhQaStartPositionTicks != undefined ? _root.__zhQaStartPositionTicks : "na") + "&x=" + Math.round(Number(${charVar}._x)) + "&y=" + Math.round(Number(${charVar}._y)) + "&targetX=" + (${charVar}.targetX != undefined ? Math.round(Number(${charVar}.targetX)) : "na") + "&targetY=" + (${charVar}.targetY != undefined ? Math.round(Number(${charVar}.targetY)) : "na") + "&speed=" + (${charVar}.speed != undefined ? Math.round(Number(${charVar}.speed)) : "na") + "&vSpeed=" + (${charVar}.vSpeed != undefined ? Math.round(Number(${charVar}.vSpeed)) : "na") + "&sceneX=" + Math.round(Number(_root.camera.scene._x)) + "&sceneY=" + Math.round(Number(_root.camera.scene._y)) + "&camX=" + Math.round(Number(_root.camera._x)) + "&camY=" + Math.round(Number(_root.camera._y)) + "&rootCharX=" + (_root.char != undefined ? Math.round(Number(_root.char._x)) : "na") + "&rootCharY=" + (_root.char != undefined ? Math.round(Number(_root.char._y)) : "na") + "&panCharX=" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._x)) : "na") + "&panCharY=" + (_root.camera.scene.panChar != undefined ? Math.round(Number(_root.camera.scene.panChar._y)) : "na") + "&char1x=" + (zhQaStartChar1 != undefined ? Math.round(Number(zhQaStartChar1._x)) : "na") + "&char1y=" + (zhQaStartChar1 != undefined ? Math.round(Number(zhQaStartChar1._y)) : "na") + "&char1Press=" + (zhQaStartChar1 != undefined && zhQaStartChar1.onPress != undefined ? "1" : "0") + "&cond1=" + (zhQaStartChar1 != undefined && ${charVar}._x > zhQaStartChar1._x ? "1" : "0") + "&cond2=" + (zhQaStartChar1 != undefined && ${charVar}._y > zhQaStartChar1._y - 400 ? "1" : "0"),0);`
+      ].join("\n") + "\n"
+    );
+  }
+  next = next.replace(
+    /   if\(_root == undefined \|\| _root\.__zhQaStartPositionInterval != undefined(?: \|\| _root\.__zhQaStartPositionApplied == true)?\)/u,
+    "   if(_root == undefined || _root.__zhQaStartPositionInterval != undefined)"
+  );
   next = next.replace(
     "   if(_root == undefined || _root.__zhQaStartPositionApplied == true)",
     "   if(_root == undefined)"
