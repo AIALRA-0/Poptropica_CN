@@ -482,7 +482,7 @@ function syncUserAudioOverrides(managedLegacyDir) {
     throw new Error(`Refusing to link user audio outside managed Legacy root: ${targetRoot}`);
   }
 
-  ensureGeneratedAs2FallbackAudio();
+  // Do not synthesize a generic AS2 soundtrack. Missing authentic audio stays silent and is reported.
   syncRecoveredAs2EmbeddedSounds();
   ensureDirSync(sourceRoot);
   ensureDirSync(path.dirname(targetRoot));

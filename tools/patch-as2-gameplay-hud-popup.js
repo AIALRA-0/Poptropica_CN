@@ -185,7 +185,7 @@ function patchFrameOne(content) {
     const helperBlock = [
       "function zhGameplayLogicalRight()",
       "{",
-      "   return 820;",
+      "   return 1010;",
       "}",
       "function zhHideDirectMapButton()",
       "{",
@@ -423,6 +423,97 @@ function patchFrameOne(content) {
       "function zhShowPopupBackdrop(popupName)"
     ].join("\n");
     next = replaceRequired(next, "function zhShowPopupBackdrop()", helperBlock, "popup HUD helper insertion point");
+  }
+  next = next.replace(
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   return 820;",
+      "}"
+    ].join("\n"),
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   return 1010;",
+      "}"
+    ].join("\n")
+  );
+
+  if (!next.includes("function zhQaHudDebugEnabled()")) {
+    const helper = [
+      "function zhQaHudDebugEnabled()",
+      "{",
+      "   if(_level0 != undefined && _level0.flashpointQaCacheBust != undefined && String(_level0.flashpointQaCacheBust) != \"\")",
+      "   {",
+      "      return true;",
+      "   }",
+      "   if(_root != undefined && _root.flashpointQaCacheBust != undefined && String(_root.flashpointQaCacheBust) != \"\")",
+      "   {",
+      "      return true;",
+      "   }",
+      "   return false;",
+      "}",
+      "function zhQaHudRound(value)",
+      "{",
+      "   if(value == undefined)",
+      "   {",
+      "      return \"na\";",
+      "   }",
+      "   return String(Math.round(Number(value)));",
+      "}",
+      "function zhQaHudClipPath(clip)",
+      "{",
+      "   var _loc1_;",
+      "   if(clip == undefined)",
+      "   {",
+      "      return \"undefined\";",
+      "   }",
+      "   _loc1_ = \"\";",
+      "   try",
+      "   {",
+      "      _loc1_ = String(clip);",
+      "   }",
+      "   catch(zhQaHudPathError)",
+      "   {",
+      "      _loc1_ = \"\";",
+      "   }",
+      "   if(_loc1_ == \"\" || _loc1_ == \"undefined\")",
+      "   {",
+      "      _loc1_ = String(clip._name);",
+      "   }",
+      "   return escape(_loc1_);",
+      "}",
+      "function zhQaHudClipX(clip)",
+      "{",
+      "   return clip == undefined ? \"na\" : zhQaHudRound(clip._x);",
+      "}",
+      "function zhQaHudClipY(clip)",
+      "{",
+      "   return clip == undefined ? \"na\" : zhQaHudRound(clip._y);",
+      "}",
+      "function zhQaHudClipVisible(clip)",
+      "{",
+      "   return clip == undefined ? \"na\" : String(clip._visible);",
+      "}",
+      "function zhQaHudLog(eventName,payload)",
+      "{",
+      "   if(!zhQaHudDebugEnabled() || _root == undefined)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   if(_root.__zhHudLayoutDebugCount == undefined)",
+      "   {",
+      "      _root.__zhHudLayoutDebugCount = 0;",
+      "   }",
+      "   if(Number(_root.__zhHudLayoutDebugCount) >= 60)",
+      "   {",
+      "      return undefined;",
+      "   }",
+      "   _root.__zhHudLayoutDebugCount = Number(_root.__zhHudLayoutDebugCount) + 1;",
+      "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=\" + eventName + \"&\" + payload,0);",
+      "}"
+    ].join("\n");
+    next = replaceRequired(next, "function zhHideDirectMapButton()", `${helper}\nfunction zhHideDirectMapButton()`, "HUD QA debug helper insertion point");
   }
 
   if (!next.includes("function zhNotifyPopupViewport(active)")) {
@@ -782,7 +873,7 @@ function patchFrameOne(content) {
       "direct map ensure popup gate"
     );
   }
-  if (!next.includes("zhMapMouseListenerBlockedByPopup")) {
+  if (!next.includes("zhMapMouseListenerBlockedByPopup") && !next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
     next = replaceRequired(
       next,
       [
@@ -853,7 +944,7 @@ function patchFrameOne(content) {
       "blocked map mouse listener closes popup"
     );
   }
-  if (!next.includes("zhDirectMapButtonBlockedByPopup")) {
+  if (!next.includes("zhDirectMapButtonBlockedByPopup") && !next.includes("zhTryClosePopupFromMouse(\"directMapButton\")")) {
     next = replaceRequired(
       next,
       "   _loc2_.onPress = _loc2_.onRelease = zhOpenDirectMap;",
@@ -1844,20 +1935,161 @@ function patchFrameOne(content) {
     );
   }
 
-  next = next.replace(
-    [
-      "   _loc11_ = zhGameplayLogicalRight();",
-      "   _loc12_ = 14;",
-      "   _loc13_ = 7;",
-      "   _loc14_ = 12;"
-    ].join("\n"),
+  for (const source of [
     [
       "   _loc11_ = 640;",
       "   _loc12_ = 14;",
       "   _loc13_ = 14;",
       "   _loc14_ = 10;"
+    ].join("\n"),
+    [
+      "   _loc11_ = zhGameplayLogicalRight();",
+      "   _loc12_ = 14;",
+      "   _loc13_ = 14;",
+      "   _loc14_ = 10;"
+    ].join("\n"),
+    [
+      "   _loc11_ = zhGameplayLogicalRight();",
+      "   _loc12_ = 14;",
+      "   _loc13_ = 7;",
+      "   _loc14_ = 12;"
     ].join("\n")
-  );
+  ]) {
+    next = next.replace(
+      source,
+      [
+      "   _loc11_ = zhGameplayLogicalRight();",
+      "   _loc12_ = 14;",
+      "   _loc13_ = -32;",
+      "   _loc14_ = 20;"
+      ].join("\n")
+    );
+  }
+
+  if (!next.includes("HudLayoutNoNav")) {
+    const noNavPattern = /(   (_loc\d+_) = _root != undefined && _root\.island != undefined \? String\(_root\.island\) : island;\n   if\(navBar == undefined\)\n   \{\n)      return undefined;/u;
+    if (!noNavPattern.test(next)) {
+      throw new Error("Unable to locate HUD layout no-nav debug hook.");
+    }
+    next = next.replace(noNavPattern, (_match, prefix, islandVar) => {
+      return `${prefix}      zhQaHudLog("HudLayoutNoNav","island=" + escape(String(${islandVar})) + "&root=" + zhQaHudClipPath(_root));\n      return undefined;`;
+    });
+  }
+
+  const countGuardPattern = /         if\((_loc\d+_) != undefined\)\n         \{\n            (_loc\d+_) \+= \1\.width;/u;
+  if (countGuardPattern.test(next)) {
+    next = next.replace(countGuardPattern, (_match, layoutVar, widthVar) => {
+      return `         if(${layoutVar} != undefined && !isNaN(Number(${layoutVar}.width)) && !isNaN(Number(${layoutVar}.offsetX)) && !isNaN(Number(${layoutVar}.top)))\n         {\n            ${widthVar} += ${layoutVar}.width;`;
+    });
+  }
+
+  const applyGuardPattern = /         if\((_loc\d+_)\._visible && (_loc\d+_) != undefined\)\n         \{\n            \1\._x = Math\.round\((_loc\d+_) \+ \2\.offsetX\);/u;
+  if (applyGuardPattern.test(next)) {
+    next = next.replace(applyGuardPattern, (_match, clipVar, layoutVar, leftVar) => {
+      return `         if(${clipVar}._visible && ${layoutVar} != undefined && !isNaN(Number(${layoutVar}.width)) && !isNaN(Number(${layoutVar}.offsetX)) && !isNaN(Number(${layoutVar}.top)))\n         {\n            ${clipVar}._x = Math.round(${leftVar} + ${layoutVar}.offsetX);`;
+    });
+  }
+
+  if (!next.includes("HudLayoutFallback")) {
+    const fallbackVars = next.match(/   navBar\._x = 0;\n   navBar\._y = 0;\n   (_loc\d+_) = zhGameplayLogicalRight\(\);\n   (_loc\d+_) = 14;\n   (_loc\d+_) = -32;\n   (_loc\d+_) = 20;\n   (_loc\d+_) = 0;\n   (_loc\d+_) = 0;/u);
+    if (!fallbackVars) {
+      throw new Error("Unable to locate HUD layout fallback variable block.");
+    }
+    const countVar = fallbackVars[6];
+    const emptyCountBlock = [
+      `   if(${countVar} <= 0)`,
+      "   {",
+      "      return undefined;",
+      "   }"
+    ].join("\n");
+    if (!next.includes(emptyCountBlock)) {
+      throw new Error("Unable to locate HUD layout empty-count block.");
+    }
+    const fallbackBlock = [
+      `   if(${countVar} < 3)`,
+      "   {",
+      "      if(navBar.btnInventory != undefined)",
+      "      {",
+      "         navBar.btnInventory._x = 652;",
+      "         navBar.btnInventory._y = -20;",
+      "         navBar.btnInventory._visible = true;",
+      "         navBar.btnInventory._alpha = 100;",
+      "         navBar.btnInventory.enabled = true;",
+      "      }",
+      "      if(navBar.btnWardrobe != undefined)",
+      "      {",
+      "         navBar.btnWardrobe._x = 708;",
+      "         navBar.btnWardrobe._y = -20;",
+      "         navBar.btnWardrobe._visible = true;",
+      "         navBar.btnWardrobe._alpha = 100;",
+      "         navBar.btnWardrobe.enabled = true;",
+      "      }",
+      "      if(navBar.btnMap != undefined)",
+      "      {",
+      "         navBar.btnMap._x = 764;",
+      "         navBar.btnMap._y = -20;",
+      "         navBar.btnMap._visible = true;",
+      "         navBar.btnMap._alpha = 100;",
+      "         navBar.btnMap.enabled = true;",
+      "         _root.__zhGameplayMapBounds = {left:744,top:-38,right:820,bottom:50};",
+      "      }",
+      "      if(navBar.btnSuperPower != undefined && (isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))",
+      "      {",
+      "         navBar.btnSuperPower._visible = false;",
+      "         navBar.btnSuperPower._alpha = 0;",
+      "         navBar.btnSuperPower.enabled = false;",
+      "         navBar.btnSuperPower._x = -4000;",
+      "         navBar.btnSuperPower._y = -4000;",
+      "      }",
+      "      _root.__zhGameplayTopNavLeft = 652;",
+      "      _root.__zhGameplayTopNavRight = 820;",
+      "      _root.__zhGameplayTopNavTop = -20;",
+      "      _root.__zhGameplayTopNavCenterY = -20;",
+      `      zhQaHudLog("HudLayoutFallback","count=" + zhQaHudRound(${countVar}) + "&invX=" + zhQaHudClipX(navBar.btnInventory) + "&wardX=" + zhQaHudClipX(navBar.btnWardrobe) + "&mapX=" + zhQaHudClipX(navBar.btnMap) + "&superY=" + zhQaHudClipY(navBar.btnSuperPower));`,
+      "      zhEnsureDirectMapButton();",
+      "      zhHideLegacyPauseChrome();",
+      "      return undefined;",
+      "   }"
+    ].join("\n");
+    next = next.replace(emptyCountBlock, `${fallbackBlock}\n${emptyCountBlock}`);
+  }
+
+  if (!next.includes("HudLayoutPlan")) {
+    const layoutVars = next.match(/   navBar\._x = 0;\n   navBar\._y = 0;\n   (_loc\d+_) = zhGameplayLogicalRight\(\);\n   (_loc\d+_) = 14;\n   (_loc\d+_) = -32;\n   (_loc\d+_) = 20;\n   (_loc\d+_) = 0;\n   (_loc\d+_) = 0;/u);
+    if (!layoutVars) {
+      throw new Error("Unable to locate HUD layout variable block.");
+    }
+    const [, rightVar, , topVar, gapVar, widthVar, countVar] = layoutVars;
+    const planPattern = /(   if\((_loc\d+_) < 6\)\n   \{\n      \2 = 6;\n   \}\n)(   _root\.__zhGameplayTopNavLeft = \2;)/u;
+    if (!planPattern.test(next)) {
+      throw new Error("Unable to locate HUD layout plan debug hook.");
+    }
+    next = next.replace(planPattern, (_match, prefix, leftVar, suffix) => {
+      return `${prefix}   zhQaHudLog("HudLayoutPlan","right=" + zhQaHudRound(${rightVar}) + "&left=" + zhQaHudRound(${leftVar}) + "&top=" + zhQaHudRound(${topVar}) + "&gap=" + zhQaHudRound(${gapVar}) + "&width=" + zhQaHudRound(${widthVar}) + "&count=" + zhQaHudRound(${countVar}) + "&nav=" + zhQaHudClipPath(navBar) + "&parent=" + zhQaHudClipPath(navBar._parent));\n${suffix}`;
+    });
+  }
+
+  if (!next.includes("HudLayoutApplied")) {
+    next = replaceRequired(
+      next,
+      [
+        "   }",
+        "   zhEnsureDirectMapButton();",
+        "   zhHideLegacyPauseChrome();",
+        "}",
+        "function turnOffWardrobe()"
+      ].join("\n"),
+      [
+        "   }",
+        "   zhQaHudLog(\"HudLayoutApplied\",\"navX=\" + zhQaHudRound(navBar._x) + \"&navY=\" + zhQaHudRound(navBar._y) + \"&invX=\" + zhQaHudClipX(navBar.btnInventory) + \"&invY=\" + zhQaHudClipY(navBar.btnInventory) + \"&wardX=\" + zhQaHudClipX(navBar.btnWardrobe) + \"&wardY=\" + zhQaHudClipY(navBar.btnWardrobe) + \"&mapX=\" + zhQaHudClipX(navBar.btnMap) + \"&mapY=\" + zhQaHudClipY(navBar.btnMap) + \"&superX=\" + zhQaHudClipX(navBar.btnSuperPower) + \"&superY=\" + zhQaHudClipY(navBar.btnSuperPower) + \"&invVis=\" + zhQaHudClipVisible(navBar.btnInventory) + \"&mapVis=\" + zhQaHudClipVisible(navBar.btnMap));",
+        "   zhEnsureDirectMapButton();",
+        "   zhHideLegacyPauseChrome();",
+        "}",
+        "function turnOffWardrobe()"
+      ].join("\n"),
+      "HUD layout applied debug hook"
+    );
+  }
 
   const hardcodedBlock = [
     "   if(navBar.btnInventory != undefined)",
@@ -1886,16 +2118,44 @@ function patchFrameOne(content) {
       "      _root.__zhGameplayMapBounds = {left:744,top:-30,right:820,bottom:58};",
       "   }"
   ].join("\n");
-  if (!next.includes("navBar.btnInventory._x = 652;")) {
+  if (next.includes(hardcodedBlock)) {
+    next = next.replace(`${hardcodedBlock}\n`, "");
+  }
+
+  if (!next.includes("_root.layoutFramelessGameplayNav = layoutFramelessGameplayNav;")) {
     next = replaceRequired(
       next,
-      "   zhEnsureDirectMapButton();",
-      `${hardcodedBlock}\n   zhEnsureDirectMapButton();`,
-      "AS2 hardcoded HUD anchor restore point"
+      [
+        "if(_root != undefined)",
+        "{",
+        "   layoutFramelessGameplayNav(true);"
+      ].join("\n"),
+      [
+        "if(_root != undefined)",
+        "{",
+        "   _root.layoutFramelessGameplayNav = layoutFramelessGameplayNav;",
+        "   _root.layoutFramelessGameplayNav(true);"
+      ].join("\n"),
+      "publish gameplay nav layout helper on root"
     );
   }
 
-  if (!next.includes("function zhGameplayLogicalRight()") || !next.includes("navBar.btnInventory._x = 652;")) {
+  next = next.replace(
+    [
+      "         if(layoutFramelessGameplayNav != undefined)",
+      "         {",
+      "            layoutFramelessGameplayNav(true);",
+      "         }"
+    ].join("\n"),
+    [
+      "         if(_root.layoutFramelessGameplayNav != undefined)",
+      "         {",
+      "            _root.layoutFramelessGameplayNav(true);",
+      "         }"
+    ].join("\n")
+  );
+
+  if (!next.includes("function zhGameplayLogicalRight()") || (next.includes("navBar.btnInventory._x = 652;") && !next.includes("HudLayoutFallback"))) {
     throw new Error("AS2 gameplay HUD popup patch did not apply cleanly.");
   }
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T04:06:35.725Z",
+  "generatedAt": "2026-06-23T06:13:06.225Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 115,
+  "assetsPatched": 116,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -643,6 +643,14 @@
         "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
       "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
+    },
+    {
+      "assetId": "as2-shared:framework-top-nav-anchor",
+      "assetPath": "content/www.poptropica.com/framework.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\framework.swf",
+      "changed": false,
+      "replaceTargets": [],
+      "notes": "Anchors the AS2 framework top navigation row and loads gameplay-zh.swf during QA so Flash cannot reuse stale HUD code without query-string side effects."
     }
   ],
   "pendingSwfAssets": [],
@@ -657,7 +665,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 110,
+    "replacementCount": 111,
     "swfRuntimeOverrides": "enabled"
   }
 }

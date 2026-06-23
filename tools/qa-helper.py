@@ -2174,8 +2174,15 @@ def command_analyze_hud_diff(args):
         for index in range(1, len(ordered)):
             gaps.append(int(ordered[index]["left"] - ordered[index - 1]["right"]))
     hud_width_ratio = None
+    hud_center_y_ratio = None
+    hud_left_ratio = None
+    hud_right_margin_ratio = None
     if hud_box and stage_width > 0:
         hud_width_ratio = float(hud_box["width"]) / float(stage_width)
+        hud_left_ratio = float(hud_box["left"] - stage_left) / float(stage_width)
+        hud_right_margin_ratio = float(stage_right - hud_box["right"]) / float(stage_width)
+    if hud_box and stage_height > 0:
+        hud_center_y_ratio = float(hud_box["centerY"] - stage_top) / float(stage_height)
 
     checks = [
         {
@@ -2209,6 +2216,12 @@ def command_analyze_hud_diff(args):
             "ok": hud_width_ratio is not None and hud_width_ratio <= float(args.max_hud_width_ratio),
             "observed": hud_width_ratio,
             "max": float(args.max_hud_width_ratio),
+        },
+        {
+            "name": "hud_center_y_ratio",
+            "ok": hud_center_y_ratio is not None and hud_center_y_ratio <= float(args.max_center_y_ratio),
+            "observed": hud_center_y_ratio,
+            "max": float(args.max_center_y_ratio),
         },
         {
             "name": "hud_icon_gaps",
@@ -2260,6 +2273,9 @@ def command_analyze_hud_diff(args):
             "rowSpread": row_spread,
             "gaps": gaps,
             "hudWidthRatio": hud_width_ratio,
+            "hudCenterYRatio": hud_center_y_ratio,
+            "hudLeftRatio": hud_left_ratio,
+            "hudRightMarginRatio": hud_right_margin_ratio,
         },
         "thresholds": {
             "diffThreshold": diff_threshold,
@@ -2389,6 +2405,7 @@ def command_analyze_hud_row(args):
     row_bottom = max(slot["box"]["bottom"] for slot in slots) if slots else None
     right_inset = float(width - menu_center_x)
     row_left_ratio = float(row_left) / float(width) if row_left is not None and width else None
+    menu_center_y_ratio = float(menu_center_y) / float(height) if height else None
     checks = [
         {
             "name": "present_slot_count",
@@ -2421,6 +2438,12 @@ def command_analyze_hud_row(args):
             "observed": int(row_top) if row_top is not None else None,
             "max": int(args.max_row_top),
         },
+        {
+            "name": "menu_center_y_ratio",
+            "ok": menu_center_y_ratio is not None and menu_center_y_ratio <= float(args.max_menu_center_y_ratio),
+            "observed": float(round(menu_center_y_ratio, 6)) if menu_center_y_ratio is not None else None,
+            "max": float(args.max_menu_center_y_ratio),
+        },
     ]
     payload = {
         "ok": all(check["ok"] for check in checks),
@@ -2434,6 +2457,7 @@ def command_analyze_hud_row(args):
             "menuCenterX": float(round(menu_center_x, 3)),
             "menuCenterY": float(round(menu_center_y, 3)),
             "rightInset": float(round(right_inset, 3)),
+            "centerYRatio": float(round(menu_center_y_ratio, 6)) if menu_center_y_ratio is not None else None,
         },
         "layout": {
             "logicalWidth": float(logical_width),
@@ -3107,6 +3131,7 @@ def main():
     hud_diff_parser.add_argument("--max-top-margin", type=int, default=36)
     hud_diff_parser.add_argument("--max-row-spread", type=int, default=10)
     hud_diff_parser.add_argument("--max-hud-width-ratio", type=float, default=0.24)
+    hud_diff_parser.add_argument("--max-center-y-ratio", type=float, default=0.12)
     hud_diff_parser.add_argument("--min-icon-gap", type=int, default=10)
     hud_diff_parser.add_argument("--max-icon-gap", type=int, default=56)
     hud_diff_parser.add_argument("--max-unexpected-components", type=int, default=0)
@@ -3134,6 +3159,7 @@ def main():
     hud_row_parser.add_argument("--max-menu-right-inset", type=float, default=150.0)
     hud_row_parser.add_argument("--min-row-left-ratio", type=float, default=0.22)
     hud_row_parser.add_argument("--max-row-top", type=int, default=90)
+    hud_row_parser.add_argument("--max-menu-center-y-ratio", type=float, default=0.18)
     hud_row_parser.add_argument("--no-fail-exit", action="store_true")
     hud_row_parser.set_defaults(func=command_analyze_hud_row)
 

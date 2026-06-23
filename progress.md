@@ -4806,3 +4806,36 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes a representative Time Tangled direct-scene visual matrix for player visibility, HUD placement, and blue-edge leakage.
   - It does not close natural time-machine travel, all-era item chains, natural NPC hot-zone no-repeat checks, external white-screen links, AS3 dialogue queue protection, or real audio source inventory.
+
+## 2026-06-23 AS2 HUD Right-Top Regression Reopened And Fixed
+
+- Reopened the AS2 HUD "upper-right" gate after user screenshots showed the previous evidence was too lenient.
+- Root cause:
+  - `gameplay-zh.swf` was correctly loaded; this was not a stale-cache-only issue.
+  - QA-only runtime logs proved the visible HUD came from `_level0.gameplay_container_mc.navBar`.
+  - `layoutFramelessGameplayNav()` was executing, but `navBar` child bounds were not reliable: the first debug run logged `HudLayoutPlan right=1010 left=NaN width=NaN count=4`, so Flash kept the visible icons at their old positions.
+  - Filtering invalid bounds alone left only one valid/non-visible button (`count=1`) and still did not move the three visible icons.
+- Code changes:
+  - `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js` now add QA-only `HudLayoutNoNav/HudLayoutPlan/HudLayoutApplied/HudLayoutFallback` logging.
+  - Invalid `getBounds()` values are ignored for dynamic layout.
+  - When the three core AS2 gameplay HUD buttons cannot be measured reliably, the code uses a fixed right-top fallback for inventory/wardrobe/map at `x=652/708/764,y=-20`.
+  - The fallback is synchronized into the future rebuild path and `gameplay-zh.swf` is refreshed through `tools/patch-as2-framework-top-nav.js`.
+- Verification:
+  - Static checks passed:
+    - `node --check tools/patch-as2-gameplay-hud-popup.js`
+    - `node --check tools/lib/pack.js`
+  - Rebuilt AS2 gameplay/runtime and refreshed `gameplay-zh.swf`.
+  - Time Tangled HUD regression passed:
+    - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195195133.json`.
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782195195133/01-time-tangled-initial.png`.
+    - Annotated proof: `runtime-data/qa/as2/interaction-smoke/run-1782195195133/01-time-tangled-hud-anchor.png`.
+    - Metrics: `rightMargin=43`, `topMargin=2`, `hudCenterYRatio=0.03945578231292517`, `hudAnchorPassed=1`.
+    - Log proof: `HudLayoutFallback&count=1&invX=652&wardX=708&mapX=764`.
+  - Super Power HUD regression passed:
+    - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195292167.json`.
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782195292167/01-super-power-initial.png`.
+    - Metrics: `rightMargin=43`, `topMargin=2`, `hudCenterYRatio=0.03945578231292517`, `hudAnchorPassed=1`.
+- Current conclusion:
+  - AS2 representative HUD right-top anchor is fixed for Time Tangled and Super Power under the strict pixel contract.
+  - This does not seal Time Tangled or Super Power as complete islands.
+  - Still open under the active P0 plan: window resize/maximize/F11 full regression after this new HUD fallback, loading center sampling, natural NPC no-repeat checks, item/file popup residue/positioning, external white-screen links, AS3 dialogue queue protection, full island traversal, and real audio source inventory.

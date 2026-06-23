@@ -1,6 +1,6 @@
 # Poptropica HUD 视觉验收契约
 
-更新时间：2026-06-23 00:20 EDT
+更新时间：2026-06-23 01:08 EDT
 
 ## 适用范围
 
@@ -9,8 +9,9 @@
 ## 右上角 HUD 标准
 
 - 以实际 Flash 舞台矩形为基准，不以浏览器窗口外框或桌面截图整体为基准。
+- “右上角”同时要求横向和纵向成立：图标盒必须贴近舞台右边，且 HUD 中心必须落在舞台高度的前 12%（AS2）或菜单中心落在截图高度的前 18%（AS3）内。只在右侧但下坠，不算通过。
 - HUD 必须位于舞台右上安全区，单行排列，不能落到左上角、屏幕中部或弹窗内容上方。
-- AS2 折叠 HUD 当前硬阈值：右边距 8-96 px，顶距 -4-36 px，图标纵向偏差 <= 10 px，相邻图标间距 10-56 px，HUD 总宽 <= 舞台宽度 24%。
+- AS2 折叠 HUD 当前硬阈值：右边距 8-96 px，顶距 0-36 px，HUD 中心 Y <= 舞台高度 12%，图标纵向偏差 <= 10 px，相邻图标间距 10-56 px，HUD 总宽 <= 舞台宽度 24%。
 - AS3 展开 HUD 必须以 MENU 为右锚，8 个槽位完整，settings/audio/home/store/map/costumizer/inventory/menu 不缺槽、不重叠、不下坠。
 - 静态 MENU 图标、招牌、海报、美术字不使用中文 TextField 硬盖；只允许原图保留或走 bitmap/资产替换。
 
@@ -28,8 +29,8 @@
 
 ## 当前自动证据
 
-- AS2 HUD：`tools/qa-helper.py analyze-hud-diff`，输出 JSON 和带框标注图。
-- AS3 HUD：`tools/qa-helper.py analyze-hud-row`，输出 8 槽位检测和带框图。
+- AS2 HUD：`tools/qa-helper.py analyze-hud-diff`，输出 JSON 和带框标注图；必须检查 `hud_center_y_ratio`，避免“右侧但偏下”被误判。
+- AS3 HUD：`tools/qa-helper.py analyze-hud-row`，输出 8 槽位检测和带框图；必须检查 `menu_center_y_ratio`，避免 MENU 锚点下坠仍被误判。
 - AS2 弹窗关闭：`tools/qa-as2-interaction-smoke.js --popup-close-click --require-popup-close`，必须证明关闭按钮消失且无 `map.swf` 请求。
 
 ## 当前已知缺口

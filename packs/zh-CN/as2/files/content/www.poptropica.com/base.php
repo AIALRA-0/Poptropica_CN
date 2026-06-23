@@ -559,6 +559,15 @@ function updateSceneAudio(island, scene, gameState) {
     } catch(err) { }
 }
 
+function resolveSwfStateUrl(url) {
+    const inputParams = getInput();
+    if(url === "/framework.swf" && inputParams.flashpointQaCacheBust !== undefined) {
+        const separator = url.indexOf("?") >= 0 ? "&" : "?";
+        return url + separator + "flashpointQaCacheBust=" + encodeURIComponent(inputParams.flashpointQaCacheBust);
+    }
+    return url;
+}
+
 function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     let adScene = false,
         pageState;
@@ -621,6 +630,10 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     flashVars.set("startup_path", path);
     flashVars.set("state", gameState);
     const inputParams = getInput();
+    if(inputParams.flashpointQaCacheBust !== undefined) {
+        flashVars.set("flashpointQaCacheBust", inputParams.flashpointQaCacheBust);
+        flashVars.set("flashpointQaGameplayUrl", "gameplay-zh.swf");
+    }
     if(inputParams.flashpoint_auto_open_map_after_ms !== undefined)
         flashVars.set("flashpoint_auto_open_map_after_ms", inputParams.flashpoint_auto_open_map_after_ms);
     if(inputParams.flashpointQaAs2Dialog !== undefined)
@@ -646,12 +659,12 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
     updateSceneAudio(island, scene, gameState);
 
     if(pageState === STATE_FP_START)
-        loadFPStart(SWF_STATES[pageState]);
+        loadFPStart(resolveSwfStateUrl(SWF_STATES[pageState]));
     else {
         if(pageState === STATE_SCENE)
             sceneChange(island, scene);
 
-        game.src = SWF_STATES[pageState];
+        game.src = resolveSwfStateUrl(SWF_STATES[pageState]);
     }
 }
 
@@ -682,7 +695,7 @@ function loadFPStart(extraMenuSrc) {
     game.parentNode.insertBefore(extraMenu, game.nextElementSibling);
 
     window.flashpointLoad = function() {
-        game.src = SWF_STATES[STATE_SCENE];
+        game.src = resolveSwfStateUrl(SWF_STATES[STATE_SCENE]);
         game.hidden = extraMenu.hidden = false;
         extraMenu.style.top = `calc(50vh + ${ game.height }px / 2)`;
     };
