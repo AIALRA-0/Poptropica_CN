@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T22:13:35.000Z",
+  "generatedAt": "2026-06-23T00:09:02.423Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -629,10 +629,20 @@
       "assetPath": "content/www.poptropica.com/gameplay.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
       "changed": true,
-      "replaceTargets": [
-        "\\frame_1\\DoAction"
-      ],
-      "notes": "Anchors AS2 gameplay HUD by visible icon bounds and hides HUD while popup/map/inventory overlays are open."
+      "replaceTargets": [],
+      "closeTextPatch": {
+        "changed": false,
+        "reason": "already-translated"
+      },
+      "closeShapePatch": {
+        "changed": true,
+        "outputSwf": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\gameplay.popup-close-shape.swf",
+        "shapeId": 256,
+        "imagePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-label-zh.png",
+        "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg",
+        "replacementKind": "shape-bitmap-asset"
+      },
+      "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
     }
   ],
   "pendingSwfAssets": [],

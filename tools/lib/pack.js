@@ -10,6 +10,7 @@ const { containsCjk, normalizeTranslatedText } = require("./text-utils");
 const { generateAs3MapLogoOverrides } = require("./as3-logo-overrides");
 const { isItemXmlVisibleText, isProtectedTranslationRow } = require("./translation-guards");
 const { AS3_DIRECT_WRAPPER_PATH, buildAs3DirectWrapperPhp } = require("./as3-direct-wrapper");
+const { patchAs2PopupCloseShape } = require("./as2-popup-close-shape");
 
 const RUNTIME_FIX_VERSION = 28;
 const AS3_STAGE_BACKGROUND_RGB = Buffer.from([0x13, 0x9f, 0xfd]);
@@ -128,6 +129,10 @@ const AS2_SHARED_MAP_TEXT_REPLACEMENTS = [
 const AS2_SHARED_TRAVELMAP_TEXT_REPLACEMENTS = [
   ["MORE\nISLANDS", "更多\n岛屿"],
   ["MORE ISLANDS", "更多岛屿"]
+];
+
+const AS2_SHARED_GAMEPLAY_TEXT_REPLACEMENTS = [
+  ["CLOSE", "关闭"]
 ];
 
 function applyExactReplacements(content, rows) {
@@ -6040,6 +6045,22 @@ function buildAs2SuperPowerSharedAssets({ config, outputDir, manifest, islandIds
     return;
   }
 
+  const gameplayTextRoot = path.join(sharedTempRoot, "gameplay-texts");
+  const gameplayTextPatch = buildManualFormattedSwfTextPatch({
+    inputSwf: gameplaySourceSwf,
+    ffdecCli,
+    translatedTextRoot: gameplayTextRoot,
+    replacements: AS2_SHARED_GAMEPLAY_TEXT_REPLACEMENTS
+  });
+  if (!gameplayTextPatch.ok) {
+    manifest.pendingSwfAssets.push({
+      assetId: "super-power:gameplay",
+      assetPath: AS2_SUPER_POWER_GAMEPLAY_PATH,
+      reason: gameplayTextPatch.error || "Unable to export gameplay.swf text"
+    });
+    return;
+  }
+
   const gameplayPatchRoot = path.join(sharedTempRoot, "gameplay-patch");
   const gameplayTargetScript = ensureTranslatedScriptFromSource({
     sourceScriptRoot: gameplayScriptRoot,
@@ -6092,12 +6113,61 @@ function buildAs2SuperPowerSharedAssets({ config, outputDir, manifest, islandIds
 
   const gameplayOutputSwf = path.join(outputDir, "swf", AS2_SUPER_POWER_GAMEPLAY_PATH.replace(/\//gu, path.sep));
   ensureDirSync(path.dirname(gameplayOutputSwf));
+  const gameplayTextOutputSwf = path.join(sharedTempRoot, "gameplay-text-pass.swf");
+  let gameplayTextReplace = { ok: true };
+  if ((gameplayTextPatch.translatedFiles || []).length > 0) {
+    gameplayTextReplace = replaceSwfTexts({
+      ffdecCli,
+      inputSwf: gameplaySourceSwf,
+      outputSwf: gameplayTextOutputSwf,
+      translatedFiles: gameplayTextPatch.translatedFiles || [],
+      fontIds: gameplayTextPatch.fontIds || [],
+      fontIdsByExportPath: gameplayTextPatch.fontIdsByExportPath || new Map(),
+      fontFilePath: findPreferredSwfFontFile(config),
+      sequential: true
+    });
+  } else {
+    fs.copyFileSync(gameplaySourceSwf, gameplayTextOutputSwf);
+  }
+  if (!gameplayTextReplace.ok) {
+    manifest.pendingSwfAssets.push({
+      assetId: "super-power:gameplay",
+      assetPath: AS2_SUPER_POWER_GAMEPLAY_PATH,
+      reason: gameplayTextReplace.error || "Unable to rebuild gameplay.swf text pass"
+    });
+    return;
+  }
+
+  const gameplayCloseShapeOutputSwf = path.join(sharedTempRoot, "gameplay-popup-close-shape-pass.swf");
+  let gameplayCloseShapePatch = { changed: false, reason: "not-run" };
+  try {
+    gameplayCloseShapePatch = patchAs2PopupCloseShape({
+      ffdecCli,
+      inputSwf: gameplayTextOutputSwf,
+      outputSwf: gameplayCloseShapeOutputSwf,
+      workDir: path.join(sharedTempRoot, "gameplay-popup-close-shape")
+    });
+  } catch (error) {
+    manifest.pendingSwfAssets.push({
+      assetId: "super-power:gameplay",
+      assetPath: AS2_SUPER_POWER_GAMEPLAY_PATH,
+      reason: error?.message || "Unable to rebuild gameplay.swf popup close label shape"
+    });
+    return;
+  }
+
   const gameplayReplace = replaceSwfScriptExports({
     ffdecCli,
-    inputSwf: gameplaySourceSwf,
+    inputSwf: gameplayCloseShapePatch.changed ? gameplayCloseShapePatch.outputSwf : gameplayTextOutputSwf,
     outputSwf: gameplayOutputSwf,
     translatedFiles: collectSwfScriptFiles(gameplayPatchRoot)
   });
+  if (fileExists(gameplayTextOutputSwf)) {
+    fs.rmSync(gameplayTextOutputSwf, { force: true });
+  }
+  if (fileExists(gameplayCloseShapeOutputSwf)) {
+    fs.rmSync(gameplayCloseShapeOutputSwf, { force: true });
+  }
   if (!gameplayReplace.ok) {
     manifest.pendingSwfAssets.push({
       assetId: "super-power:gameplay",
@@ -6110,7 +6180,8 @@ function buildAs2SuperPowerSharedAssets({ config, outputDir, manifest, islandIds
   manifest.swfPatchedAssets.push({
     assetId: "super-power:gameplay",
     assetPath: AS2_SUPER_POWER_GAMEPLAY_PATH,
-    outputPath: gameplayOutputSwf
+    outputPath: gameplayOutputSwf,
+    popupCloseShapePatch: gameplayCloseShapePatch
   });
 
   const charExtractRoot = path.join(sharedTempRoot, "char-source");

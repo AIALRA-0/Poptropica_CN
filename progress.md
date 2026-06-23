@@ -4649,3 +4649,41 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the AS2 Time Tangled public F11/resize recovery + HUD visual gate more strongly than the previous `1782163826135` run.
   - Time Tangled is still re-opened overall. Remaining blockers before calling the island sealed: native map/popup button localization such as `CLOSE`, item/file popup positioning and black residue, natural time-device route, natural NPC hot-zone no-repeat checks, arrow/native label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.
+
+## 2026-06-22 AS2 Time Tangled Popup Close Asset Replacement
+
+- Paused the global island run and corrected the `CLOSE` diagnosis instead of treating it as another coordinate issue.
+- Root cause:
+  - The visible AS2 map popup `CLOSE` label was not the already-patched TextField `chid 40`.
+  - It came from `gameplay.swf` top-level `popupClose`, sprite 261, button 259, shape 256.
+  - Shape 256 stores the `CLOSE` letters as vector paths, so normal text replacement could report success while the screenshot still showed English.
+- Code changes:
+  - Added `tools/lib/as2-popup-close-shape.js`.
+  - The helper exports the target shape with FFDec, detects the original vector marker, replaces shape 256 with a Chinese `关闭` bitmap asset, and skips cleanly once the shape is already bitmap-patched.
+  - Wired the helper into `tools/patch-as2-gameplay-hud-popup.js`.
+  - Wired the helper into `tools/lib/pack.js` so future AS2 runtime rebuilds keep the static close-button asset patch.
+  - Rebuilt `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay.swf` and `runtime-data/patched-zips/as2-runtime.zip`.
+- Verification:
+  - JS static checks passed:
+    - `node --check tools/lib/as2-popup-close-shape.js`.
+    - `node --check tools/patch-as2-gameplay-hud-popup.js`.
+    - `node --check tools/lib/pack.js`.
+    - `node --check tools/qa-as2-interaction-smoke.js`.
+  - Patch report: `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json`.
+  - Shape preview: `runtime-data/tmp-as2-gameplay-close-after-patch-shape/close-button-zh-after-preview-x8.png`.
+  - Full G32QC/no-foreground/muted AS2 Time Tangled regression passed:
+    - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782174297821.json`.
+    - Result: `ok=true`, `passed=1`, `failed=0`, `failedKeys=[]`, `audioActive=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `loadingCenterPassed=1`, `f11Passed=1`, `visualGuardPassed=1`, `hudAnchorPassed=1`, `withMissingLogRequests=0`.
+    - Command scope included explicit loading samples: `--loading-sample-ms=300,1200,2400`.
+- Screenshot review:
+  - `runtime-data/qa/as2/interaction-smoke/run-1782174297821/01-time-tangled-map.png`: map popup now shows `关闭`; OCR also sees `重启 岛屿`; static `TIME TANGLED ISLAND` art remains English by policy.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782174297821/01-time-tangled-hud-anchor.png`: AS2 collapsed HUD is a single row inside the real stage upper-right; metrics are right margin 43 px, top margin 11 px, row spread 3 px, icon gaps 26/20 px.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782174297821/01-time-tangled-loading-sequence/01-time-tangled-loading-300.png`: `Poptropica LOADING` is centered; detected offset was about x=2/y=21.
+  - `runtime-data/qa/as2/interaction-smoke/run-1782174297821/01-time-tangled-f11.png`: player visible, HUD stable, no blue gameplay leak.
+- QA process correction:
+  - Loading evidence must include explicit `--loading-sample-ms`; otherwise a run can pass other gates while loading is skipped.
+  - Hidden-HUD baseline launch creates a second runtime, so it must run after map evidence or against a fresh target; otherwise it can invalidate the original Navigator window handle.
+  - From here on, HUD correctness is not accepted from code coordinates alone. A pass needs screenshot evidence plus either annotated HUD metrics or a direct visual crop.
+- Current conclusion:
+  - This closes the AS2 Time Tangled map popup `CLOSE` item using asset replacement, not a Chinese text overlay.
+  - Time Tangled is still re-opened overall. Remaining blockers before calling the island sealed: item/file popup black residue and off-screen positioning, natural time-device route through eras, natural NPC no-repeat hot-zone checks, native arrow/label pass, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.

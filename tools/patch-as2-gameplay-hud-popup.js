@@ -6,6 +6,7 @@ const { printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { buildRuntimeZipForSourceGroup } = require("./lib/pack");
+const { patchAs2PopupCloseShape } = require("./lib/as2-popup-close-shape");
 const {
   ensureDirSync,
   fileExists,
@@ -16,6 +17,14 @@ const {
 
 const AS2_GAMEPLAY_PATH = "content/www.poptropica.com/gameplay.swf";
 const PATCH_ASSET_ID = "as2-shared:gameplay-hud-popup-anchor";
+const CLOSE_TEXT_CHARACTER_ID = 40;
+const FONT_FILE_CANDIDATES = [
+  "C:\\Windows\\Fonts\\simhei.ttf",
+  "C:\\Windows\\Fonts\\msyh.ttc",
+  "C:\\Windows\\Fonts\\msyhbd.ttc",
+  "C:\\Windows\\Fonts\\ARIALUNI.ttf",
+  "C:\\Windows\\Fonts\\simsun.ttc"
+];
 
 function runChecked(command, args, label, options = {}) {
   const result = spawnSync(command, args, {
@@ -62,6 +71,99 @@ function replaceRequired(content, needle, replacement, label) {
     throw new Error(`Unable to locate ${label}.`);
   }
   return content.replace(needle, replacement);
+}
+
+function splitFormattedTextSections(content) {
+  const source = String(content || "");
+  let index = 0;
+  while (source[index] === "[") {
+    const closingIndex = source.indexOf("]", index);
+    if (closingIndex < 0) {
+      return { prefix: source, suffix: "", body: "" };
+    }
+    index = closingIndex + 1;
+    while (source[index] === "\r" || source[index] === "\n") {
+      index += 1;
+    }
+  }
+  const suffix = source.endsWith("\n") ? "\n" : "";
+  return {
+    prefix: source.slice(0, index),
+    suffix,
+    body: suffix ? source.slice(index, -suffix.length) : source.slice(index)
+  };
+}
+
+function extractFontIds(content) {
+  const ids = new Set();
+  for (const match of String(content || "").matchAll(/^\s*font\s+(\d+)$/gimu)) {
+    ids.add(Number.parseInt(match[1], 10));
+  }
+  return [...ids].filter(Number.isInteger).sort((left, right) => left - right);
+}
+
+function sanitizeFormattedTextMetadata(prefix, translatedText) {
+  if (!/[^\x00-\x7F]/u.test(String(translatedText || ""))) {
+    return prefix;
+  }
+  return String(prefix || "")
+    .split(/\r?\n/u)
+    .filter((line) => !/^\s*spacing(?:pair)?\s+/iu.test(line))
+    .join("\n");
+}
+
+function normalizeSwfTextFile(content) {
+  const normalized = String(content || "").replace(/\r?\n/gu, "\r\n");
+  return normalized.endsWith("\r\n") ? normalized : `${normalized}\r\n`;
+}
+
+function findFontFile() {
+  return FONT_FILE_CANDIDATES.find((candidate) => fileExists(candidate)) || null;
+}
+
+function patchCloseButtonText({ ffdecCli, inputSwf, outputSwf, workDir }) {
+  const exportDir = path.join(workDir, "text-export");
+  const patchDir = path.join(workDir, "text-patch");
+  removeDirContents(exportDir);
+  removeDirContents(patchDir);
+  ensureDirSync(exportDir);
+  ensureDirSync(patchDir);
+  runChecked(ffdecCli, ["-cli", "-format", "text:formatted", "-export", "text", exportDir, inputSwf], "export AS2 gameplay text");
+
+  const sourceFile = path.join(exportDir, `${CLOSE_TEXT_CHARACTER_ID}.txt`);
+  if (!fileExists(sourceFile)) {
+    return { changed: false, reason: "missing-close-text" };
+  }
+
+  const sourceContent = fs.readFileSync(sourceFile, "utf8");
+  const { prefix, suffix, body } = splitFormattedTextSections(sourceContent);
+  if (body.trim() === "关闭") {
+    return { changed: false, reason: "already-translated" };
+  }
+  if (body.trim() !== "CLOSE") {
+    return { changed: false, reason: `unexpected-close-body:${body.trim()}` };
+  }
+
+  const fontFile = findFontFile();
+  if (!fontFile) {
+    throw new Error("No CJK font file found for AS2 close button text replacement.");
+  }
+
+  const targetFile = path.join(patchDir, `${CLOSE_TEXT_CHARACTER_ID}.txt`);
+  const translatedText = "关闭";
+  fs.writeFileSync(
+    targetFile,
+    normalizeSwfTextFile(`${sanitizeFormattedTextMetadata(prefix, translatedText)}${translatedText}${suffix}`),
+    "utf8"
+  );
+
+  const args = ["-replace", inputSwf, outputSwf];
+  for (const fontId of extractFontIds(sourceContent)) {
+    args.push(String(fontId), fontFile);
+  }
+  args.push(String(CLOSE_TEXT_CHARACTER_ID), targetFile);
+  runChecked(ffdecCli, args, "replace AS2 gameplay close button text");
+  return { changed: true, outputSwf, fontFile };
 }
 
 function findGameplayFrameOneScript(scriptRoot) {
@@ -434,13 +536,37 @@ function main() {
   fs.writeFileSync(frameOneScript, patch.content, "utf8");
 
   const replacements = patch.changed ? [translatedScriptFileEntry(frameOneScript, scriptRoot)] : [];
+  let inputSwf = packSwf;
   if (replacements.length > 0) {
-    let inputSwf = packSwf;
     for (const replacement of replacements) {
       const patchedSwf = path.join(workDir, `gameplay.hud-popup.${replacements.indexOf(replacement)}.swf`);
       runChecked(ffdecCli, ["-replace", inputSwf, patchedSwf, replacement.replaceTarget, replacement.filePath], `replace ${replacement.exportPath}`);
       inputSwf = patchedSwf;
     }
+  }
+
+  const closeTextPatch = patchCloseButtonText({
+    ffdecCli,
+    inputSwf,
+    outputSwf: path.join(workDir, "gameplay.close-button.swf"),
+    workDir
+  });
+  if (closeTextPatch.changed) {
+    inputSwf = closeTextPatch.outputSwf;
+  }
+
+  const closeShapePatch = patchAs2PopupCloseShape({
+    ffdecCli,
+    inputSwf,
+    outputSwf: path.join(workDir, "gameplay.popup-close-shape.swf"),
+    workDir
+  });
+  if (closeShapePatch.changed) {
+    inputSwf = closeShapePatch.outputSwf;
+  }
+
+  const changed = replacements.length > 0 || closeTextPatch.changed || closeShapePatch.changed;
+  if (changed) {
     fs.copyFileSync(inputSwf, packSwf);
   }
 
@@ -455,9 +581,11 @@ function main() {
     assetId: PATCH_ASSET_ID,
     assetPath: AS2_GAMEPLAY_PATH,
     outputPath: packSwf,
-    changed: patch.changed,
+    changed,
     replaceTargets: replacements.map((entry) => entry.replaceTarget),
-    notes: "Anchors AS2 gameplay HUD by visible icon bounds and hides HUD while popup/map/inventory overlays are open."
+    closeTextPatch,
+    closeShapePatch,
+    notes: "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
   };
   const updatedManifest = updateManifest(manifestPath, runtimeZip, patchEntry);
   const report = {
@@ -465,8 +593,10 @@ function main() {
     generatedAt: new Date().toISOString(),
     assetPath: AS2_GAMEPLAY_PATH,
     outputSwf: packSwf,
-    changed: patch.changed,
+    changed,
     replacements,
+    closeTextPatch,
+    closeShapePatch,
     manifestPath,
     manifestEntry: updatedManifest.swfPatchedAssets.find((entry) => entry?.assetId === PATCH_ASSET_ID),
     runtimeZip
@@ -476,7 +606,7 @@ function main() {
   writeJson(reportPath, report);
   printJson({
     ok: true,
-    changed: patch.changed,
+    changed,
     reportPath,
     runtimeZip
   });

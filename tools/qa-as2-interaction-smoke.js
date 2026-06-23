@@ -1079,7 +1079,26 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
   }
 }
 
-function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, qaErrors }) {
+function mapClickPointFromHudAnchor(capture, hudAnchor) {
+  const components = hudAnchor?.analysis?.hudComponents || [];
+  const sourceImage = hudAnchor?.analysis?.imageSize || null;
+  const targetImage = capture?.imageSize || null;
+  const mapComponent = components.length ? components[components.length - 1] : null;
+  if (!mapComponent || !sourceImage?.width || !sourceImage?.height || !targetImage?.width || !targetImage?.height) {
+    return null;
+  }
+  const offset = captureClickOffset(capture);
+  const scaleX = Number(targetImage.width || 0) / Number(sourceImage.width || 1);
+  const scaleY = Number(targetImage.height || 0) / Number(sourceImage.height || 1);
+  return {
+    x: Math.round(offset.x + (Number(mapComponent.centerX || 0) * scaleX)),
+    y: Math.round(offset.y + (Number(mapComponent.centerY || 0) * scaleY)),
+    source: "hud-anchor-last-component",
+    component: mapComponent
+  };
+}
+
+function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnchor, args, qaErrors }) {
   const stageRect = stage?.stageRect;
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
   const clickPath = path.join(runDir, `${stem}-map-click.json`);
@@ -1094,9 +1113,11 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
       logPath
     };
   }
-  const point = stageRelativeToWindow(capture, stageRect, {
-    x: Number(args.mapX || 0.945),
-    y: Number(args.mapY || 0.052)
+  const explicitMapPoint = args.mapX !== undefined || args["map-x"] !== undefined || args.mapY !== undefined || args["map-y"] !== undefined;
+  const anchoredPoint = explicitMapPoint ? null : mapClickPointFromHudAnchor(capture, hudAnchor);
+  const point = anchoredPoint || stageRelativeToWindow(capture, stageRect, {
+    x: Number(args.mapX || args["map-x"] || 0.945),
+    y: Number(args.mapY || args["map-y"] || 0.052)
   });
   try {
     const clickArgs = [
@@ -1159,6 +1180,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
       ok: stageStable && (!mapRequestRequired || mapRequestSeen),
       skipped: false,
       clickPoint: point,
+      clickPointSource: point.source || "stage-relative",
       clickPath,
       windowPath: postWindowPath,
       logPath,
@@ -1184,6 +1206,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, args, 
       ok: false,
       skipped: false,
       clickPoint: point,
+      clickPointSource: point.source || "stage-relative",
       clickPath,
       logPath,
       mapRequestSeen: Number(summarizeLogSegment(segment).mapRequestCount || 0) > 0,
