@@ -1,6 +1,6 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 02:16 EDT
+更新时间：2026-06-23 02:26 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
@@ -9,6 +9,8 @@
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
 
 2026-06-23 02:16 EDT：重开 AS2 HUD “右上角”验收并修正此前误判。根因不是简单坐标偏移，而是 AS2 `navBar` 中部分按钮 `getBounds()` 返回无效值，导致动态布局算出 `NaN`，Flash 写入后可见三枚 HUD 仍停在旧位置。已给 `gameplay.swf` 加 QA-only `HudLayout*` 运行时日志，确认当前可见 HUD 来自 `_level0.gameplay_container_mc.navBar`，并在基础三按钮 bounds 不可信时走固定右上 fallback：背包/服装/地图固定到 `x=652/708/764,y=-20`，静态 MENU/图标仍保留原图，不叠中文。Time Tangled 复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195195133.json` 通过，标注图 `runtime-data/qa/as2/interaction-smoke/run-1782195195133/01-time-tangled-hud-anchor.png`：`rightMargin=43`、`topMargin=2`、`hudCenterYRatio=0.039`；日志记录 `HudLayoutFallback&count=1&invX=652&wardX=708&mapX=764`。Super Power 复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195292167.json` 同样通过，`rightMargin=43`、`topMargin=2`。这只关闭 AS2 代表样本的右上 HUD 锚点/淡暂停按钮可见问题，不代表窗口/F11、任务物品弹窗、自然路线、对话热区、AS3 队列或音频源全量封闭。
+
+2026-06-23 02:26 EDT：Time Tangled 在新 HUD fallback 后补跑 loading-hold 专项，报告 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195831456.json` 通过，`loadingCenterPassed=1`、`hudAnchorPassed=1`、`visualGuardPassed=1`、`audioActive=0`。6 个采样点 `0/300/800/1500/2500/4000ms` 均识别 `Poptropica LOADING`，人工复核 `runtime-data/qa/as2/interaction-smoke/run-1782195831456/01-time-tangled-loading-sequence/01-time-tangled-loading-300.png` 居中；进入场景截图 `.../01-time-tangled-initial.png` 角色可见、无蓝边、HUD 右上。完整 F11 同轮 `as2-interaction-smoke-1782195616084.json` 不记通过：HUD/视觉守卫通过，但 post-message F11 没有让侧屏 Flash 窗口进入全屏，前台窗口仍是用户主屏游戏；为避免抢主鼠标/焦点，该项暂记为待人工空档或更安全的侧屏全屏输入方案复测。
 
 2026-06-23 00:20 EDT：新增 `HUD_VISUAL_CONTRACT.zh-CN.md`，把“右上角 HUD 正确”改成以真实 Flash 舞台为基准的像素级契约；后续 HUD 不能再只凭代码坐标或能点击判断。AS2 Time Tangled `malidocs.swf` 任务文件关闭链已从 blocker 改为通过：修复隐藏地图热区抢关闭按钮的问题，popup 打开时任何隐藏地图入口触发都会关闭当前 popup，而不会跳到地图。最新 G32QC/no-foreground/静音自动回归 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782187745277.json` 通过，`popupClose.ok=true`，`closeButtonStillVisible=false`，`mapOpenedDuringClose=false`，关闭日志为 `PopupClosePressed&target=openDirectMapBlockedMap`；截图 `runtime-data/qa/as2/interaction-smoke/run-1782187745277/01-time-tangled-popup-close.png` 人工复核为回到 Mali 场景，无 `关闭` 按钮残留。该项只关闭任务文件关闭链，不代表 Time Tangled 全岛封版；左/右蓝边自然路线复核、时间装置物品链、自然 NPC no-repeat、外链白屏和真实音频仍未关闭。
 

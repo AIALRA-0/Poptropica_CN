@@ -4839,3 +4839,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - AS2 representative HUD right-top anchor is fixed for Time Tangled and Super Power under the strict pixel contract.
   - This does not seal Time Tangled or Super Power as complete islands.
   - Still open under the active P0 plan: window resize/maximize/F11 full regression after this new HUD fallback, loading center sampling, natural NPC no-repeat checks, item/file popup residue/positioning, external white-screen links, AS3 dialogue queue protection, full island traversal, and real audio source inventory.
+
+## 2026-06-23 Time Tangled Loading Recheck After AS2 HUD Fallback
+
+- Ran a combined Time Tangled regression with loading/map/F11/HUD after the HUD fallback:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195616084.json`.
+  - Result was not accepted as a pass.
+  - HUD anchor and visual guard passed, but loading was not captured without a hold and F11 did not enter fullscreen through post-message input.
+  - `01-time-tangled-f11.png` was visually stable, but the capture stayed at `1428x760`; `01-time-tangled-f11-key.json` showed the user's foreground window was a separate main-screen game, so the QA key did not make the side-screen Flash window fullscreen. I did not force focus or mouse control.
+- Ran a separate loading-hold proof without F11:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195831456.json`.
+  - Result: `ok=true`, `loadingCenterPassed=1`, `hudAnchorPassed=1`, `visualGuardPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Samples at `0/300/800/1500/2500/4000ms` all detected `Poptropica LOADING`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782195831456/01-time-tangled-loading-sequence/01-time-tangled-loading-300.png`; loading logo/spinner/text are centered.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782195831456/01-time-tangled-initial.png`; player is visible, no blue-edge leak, HUD remains right-top.
+- Current conclusion:
+  - Time Tangled loading center is reconfirmed after the new AS2 HUD fallback.
+  - F11 remains open in the current user-working constraint: the safe background post-message path did not trigger fullscreen while another app had foreground focus.
