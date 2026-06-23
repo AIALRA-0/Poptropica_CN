@@ -4785,3 +4785,24 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - AS2 native navigation labels are closed at the file-level gate for current 80 scene SWFs.
   - This does not translate static art arrows/signs/posters. If an English label only exists as artwork and not as exported script/text, it remains English unless a real image-asset replacement is created later.
   - Time Tangled remains reopened overall. Still open: natural time-machine route, more era scenes, camera blue-edge checks beyond representative samples, natural NPC no-repeat hot-zone checks, external white-screen links, AS3 dialogue queue protection, and real audio source inventory.
+
+## 2026-06-23 Time Tangled Six-Scene Visual Matrix
+
+- Stayed on Time Tangled after sealing AS2 native labels; did not advance to another island.
+- Ran six direct-entry scene smokes on G32QC/no-foreground/muted runtime:
+  - `Present`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189496055.json`
+  - `Lab`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189530706.json`
+  - `Future`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189565754.json`
+  - `Future2`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189600365.json`
+  - `Mali`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189635533.json`
+  - `Viking`: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782189670277.json`
+- Result:
+  - 6/6 passed with `ok=true`, `passed=1`, `failed=0`, `failedKeys=[]`.
+  - Each run used `--visual-guard-target-color=139ffd --visual-guard-max-target-edge-pct=4` to catch blue-stage leakage.
+  - Scene evidence and initial visual guard passed in all six scenes.
+- Screenshot review:
+  - Reviewed `runtime-data/qa/as2/interaction-smoke/run-1782189600365/01-time-tangled-initial.png` (`Future2`): player visible, HUD upper-right, no blue-stage edge; visual guard target-blue edge pct was 0%.
+  - Reviewed `runtime-data/qa/as2/interaction-smoke/run-1782189670277/01-time-tangled-initial.png` (`Viking`): player visible, HUD upper-right, no blue-stage edge; visual guard target-blue edge pct was 0%.
+- Current conclusion:
+  - This closes a representative Time Tangled direct-scene visual matrix for player visibility, HUD placement, and blue-edge leakage.
+  - It does not close natural time-machine travel, all-era item chains, natural NPC hot-zone no-repeat checks, external white-screen links, AS3 dialogue queue protection, or real audio source inventory.
