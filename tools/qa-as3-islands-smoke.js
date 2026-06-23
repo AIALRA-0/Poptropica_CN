@@ -2104,8 +2104,12 @@ async function main() {
       }
       const overrideScene = String(overrideSceneArg);
       const sceneParts = overrideScene.split(".");
+      const autoLoadIsland = args.autoLoadIsland || args["auto-load-island"] || args.flashpointAutoLoadIsland || args["flashpoint-auto-load-island"];
+      const reloadOnResize = args.reloadOnResize ||
+        args["reload-on-resize"] ||
+        (overrideScene === "game.scenes.map.map.Map" && autoLoadIsland ? "0" : undefined);
       const overrideOptions = {
-        reloadOnResize: args.reloadOnResize || args["reload-on-resize"],
+        reloadOnResize,
         seedIsland: args.seedIsland || args["seed-island"],
         seedEvents: args.seedEvents || args["seed-events"],
         startX: args.startX || args["start-x"],
@@ -2116,7 +2120,7 @@ async function main() {
         qaAutoScene: args.qaAutoScene || args["qa-auto-scene"],
         qaAutoSceneDelayMs: args.qaAutoSceneDelayMs || args["qa-auto-scene-delay-ms"],
         qaLoadingHoldMs: args.qaLoadingHoldMs || args["qa-loading-hold-ms"],
-        autoLoadIsland: args.autoLoadIsland || args["auto-load-island"] || args.flashpointAutoLoadIsland || args["flashpoint-auto-load-island"]
+        autoLoadIsland
       };
       entries = [{
         ...entries[0],

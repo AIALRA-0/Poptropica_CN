@@ -5061,3 +5061,33 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the Time Tangled representative windowed/maximized/F11 visual evidence gap.
   - This does not seal Time Tangled. Remaining blockers: natural time-machine route, natural NPC no-repeat checks, item use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, and real audio source inventory.
+
+## 2026-06-23 Time Tangled AS3 Map Description Recheck
+
+- Stayed on reopened Time Tangled; did not advance to Super Power or any new island.
+- Verified the Time Tangled AS3 map description source and runtime zip are already localized:
+  - `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/time/island/page.xml`
+  - `runtime-data/patched-zips/as3-runtime.zip` entry `content/www.poptropica.com/game/data/scenes/map/map/islands/time/island/page.xml`
+  - Both contain title `时空缠结岛` and the Chinese Time Tangled description.
+- Reproduced the QA evidence problem:
+  - Failed run: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219601793.json`.
+  - Server log loaded the Time map page XML, logo, slides, medallion, and layout, but `reloadOnResize=frame` then repeatedly reloaded `Shell.swf` before the screenshot.
+  - Screenshot `runtime-data/qa/as3/islands-smoke/run-1782219601793/01-poptropicon-map.png` therefore captured the black Poptropica loading screen, not the map page.
+- Code change:
+  - `tools/qa-as3-islands-smoke.js` now defaults AS3 map auto-load smoke to `reloadOnResize=0` whenever `overrideScene=game.scenes.map.map.Map` and `autoLoadIsland` is present.
+  - This keeps map intro screenshots from being invalidated by the capture/resize phase.
+- Static check:
+  - `node --check tools\qa-as3-islands-smoke.js`
+- Runtime verification, G32QC/QA muted:
+  - Passing run without manually supplying `--reload-on-resize 0`: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219918934.json`.
+  - Report confirms `launchUrl=...overrideScene=game.scenes.map.map.Map&reloadOnResize=0&flashpointAutoLoadIsland=time`.
+  - Result: `ok=true`, `containsChinese=true`, `visualGuardPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - OCR contains `时空缠结岛`, the Chinese description, `重新开始`, and `开始`.
+- Screenshot review:
+  - `runtime-data/qa/as3/islands-smoke/run-1782219918934/01-poptropicon-map.png`.
+  - The visible target is Time Tangled map page: Chinese title/description and centered Chinese buttons are visible.
+  - Static `TIME TANGLED ISLAND`, `DIFFICULTY`, `MEDALLION`, `PROGRESS`, and the Greek image lettering remain original art/English by policy.
+  - The `poptropicon` filename is only the AS3 Shell host selected by the smoke harness; the actual target is identified by `flashpointAutoLoadIsland=time`.
+- Current conclusion:
+  - This closes the Time Tangled AS3 map description Chinese evidence gap and fixes the AS3 map smoke reload flake.
+  - This still does not seal Time Tangled. Remaining active blockers: natural time-machine traversal, natural NPC no-repeat hot-zone checks, item popup use-after-layout, external white-screen links, AS3 dialogue queue protection, and real audio-source inventory.

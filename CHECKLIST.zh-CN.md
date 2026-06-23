@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 08:50 EDT
+更新时间：2026-06-23 09:07 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 09:07 EDT：补齐并修正 Time Tangled AS3 地图介绍中文证据。源包 `packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/map/map/islands/time/island/page.xml` 与当前运行包 `runtime-data/patched-zips/as3-runtime.zip` 中的同一路径均为中文；失败样本 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219601793.json` 证明旧 AS3 map smoke 默认 `reloadOnResize=frame` 会在截图前重载 Shell，导致截到黑底 Poptropica loading 而不是地图页。已修 `tools/qa-as3-islands-smoke.js`：当 `overrideScene=game.scenes.map.map.Map` 且传入 `autoLoadIsland` 时，默认使用 `reloadOnResize=0`，避免地图验收被截图阶段的 resize reload 污染。复测 `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1782219918934.json` 通过，`launchUrl` 为 `...Map&reloadOnResize=0&flashpointAutoLoadIsland=time`，`containsChinese=true`、`visualGuardPassed=1`、`audioActive=0`、`failedKeys=[]`。人工复核 `runtime-data/qa/as3/islands-smoke/run-1782219918934/01-poptropicon-map.png`：验收对象是 Time Tangled map page，标题 `时空缠结岛`、中文介绍、`重新开始/开始` 按钮可见且居中；静态 `TIME TANGLED ISLAND` logo、DIFFICULTY、MEDALLION、PROGRESS 等美术字保持英文/原图，没有中文文本层硬盖。注意：报告文件名里的 `poptropicon` 只是 AS3 Shell 宿主岛，不代表验收目标是 Poptropicon。该项关闭“Time Tangled 地图介绍中文 + AS3 map smoke 防重载”缺口，但 Time Tangled 仍未全岛封版；自然时间装置路线、自然 NPC no-repeat、任务物品使用后布局、外链白屏、AS3 对话队列和真实音频源仍待继续。
 
 2026-06-23 02:16 EDT：重开 AS2 HUD “右上角”验收并修正此前误判。根因不是简单坐标偏移，而是 AS2 `navBar` 中部分按钮 `getBounds()` 返回无效值，导致动态布局算出 `NaN`，Flash 写入后可见三枚 HUD 仍停在旧位置。已给 `gameplay.swf` 加 QA-only `HudLayout*` 运行时日志，确认当前可见 HUD 来自 `_level0.gameplay_container_mc.navBar`，并在基础三按钮 bounds 不可信时走固定右上 fallback：背包/服装/地图固定到 `x=652/708/764,y=-20`，静态 MENU/图标仍保留原图，不叠中文。Time Tangled 复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195195133.json` 通过，标注图 `runtime-data/qa/as2/interaction-smoke/run-1782195195133/01-time-tangled-hud-anchor.png`：`rightMargin=43`、`topMargin=2`、`hudCenterYRatio=0.039`；日志记录 `HudLayoutFallback&count=1&invX=652&wardX=708&mapX=764`。Super Power 复测 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782195292167.json` 同样通过，`rightMargin=43`、`topMargin=2`。这只关闭 AS2 代表样本的右上 HUD 锚点/淡暂停按钮可见问题，不代表窗口/F11、任务物品弹窗、自然路线、对话热区、AS3 队列或音频源全量封闭。
 
