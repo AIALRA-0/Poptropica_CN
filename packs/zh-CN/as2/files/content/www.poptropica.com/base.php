@@ -168,7 +168,13 @@ const gameViewport = document.getElementById("gameViewport"),
       AS2_SOUND_EFFECT_POOL_LIMIT = 8,
       MAP_HOTSPOT = { x: 785, y: 70, width: 95, height: 90 },
       POPUP_VIEWPORT = { x: 0, y: 0, width: 640, height: 480 },
-      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 };
+      MAP_POPUP_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 },
+      STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 },
+      TIME_TANGLED_GAMEPLAY_LAYOUT = {
+          baseWidth: 1182,
+          baseHeight: 645,
+          viewport: { x: 186, y: 0, width: 996, height: 580 }
+      };
 let viewportResizeReloadTimer = 0,
     viewportResizeLastSize = null;
 
@@ -186,18 +192,76 @@ function main() {
 }
 
 function resolveGameplayViewportCrop(island, scene, gameState) {
+    if(gameState === "return_user_standard" && game && game.__zhAs2PopupMode === "map")
+        return MAP_POPUP_VIEWPORT;
     if(gameState === "return_user_standard" && game && game.__zhAs2PopupMode)
         return POPUP_VIEWPORT;
-    if(gameState === "return_user_standard")
+    if(gameState === "return_user_standard") {
+        const qaViewport = resolveQaGameplayViewportCrop();
+        if(qaViewport)
+            return qaViewport;
+        const layoutOverride = resolveGameplayLayoutOverride(island, scene);
+        if(layoutOverride && layoutOverride.viewport)
+            return layoutOverride.viewport;
         return STANDARD_GAMEPLAY_VIEWPORT;
+    }
     return null;
+}
+
+function resolveGameplayLayoutOverride(island, scene) {
+    const islandKey = String(island || "").toLowerCase();
+    if(islandKey === "time")
+        return TIME_TANGLED_GAMEPLAY_LAYOUT;
+    return null;
+}
+
+function resolveQaGameplayViewportCrop() {
+    const input = getInput();
+    if(input.flashpointQaCacheBust === undefined)
+        return null;
+    if(input.flashpointQaViewportX === undefined && input.flashpointQaViewportY === undefined && input.flashpointQaViewportWidth === undefined && input.flashpointQaViewportHeight === undefined)
+        return null;
+
+    const x = Number(input.flashpointQaViewportX || 0),
+          y = Number(input.flashpointQaViewportY || 0),
+          width = Number(input.flashpointQaViewportWidth || STANDARD_GAMEPLAY_VIEWPORT.width),
+          height = Number(input.flashpointQaViewportHeight || STANDARD_GAMEPLAY_VIEWPORT.height);
+    if(!isFinite(x) || !isFinite(y) || !isFinite(width) || !isFinite(height) || width < 320 || height < 240)
+        return null;
+    return { x, y, width, height };
+}
+
+function resolveQaGameplayBaseSize(width, height, gameState) {
+    const input = getInput();
+    if(gameState !== "return_user_standard" || input.flashpointQaCacheBust === undefined)
+        return { width, height };
+
+    const qaWidth = Number(input.flashpointQaBaseWidth || input.flashpointQaStageWidth || 0),
+          qaHeight = Number(input.flashpointQaBaseHeight || input.flashpointQaStageHeight || 0);
+    return {
+        width: isFinite(qaWidth) && qaWidth >= width && qaWidth <= 1800 ? Math.round(qaWidth) : width,
+        height: isFinite(qaHeight) && qaHeight >= height && qaHeight <= 1200 ? Math.round(qaHeight) : height
+    };
+}
+
+function resolveGameplayBaseSize(width, height, gameState, island, scene) {
+    if(gameState === "return_user_standard") {
+        const layoutOverride = resolveGameplayLayoutOverride(island, scene);
+        if(layoutOverride) {
+            width = Math.max(width, Number(layoutOverride.baseWidth) || width);
+            height = Math.max(height, Number(layoutOverride.baseHeight) || height);
+        }
+    }
+    return resolveQaGameplayBaseSize(width, height, gameState);
 }
 
 function flashpointSetAs2PopupMode(active) {
     if(!game)
         return false;
 
-    game.__zhAs2PopupMode = String(active) === "1" || active === true || String(active).toLowerCase() === "true";
+    const activeMode = String(active).toLowerCase();
+    const nextPopupMode = activeMode === "map" ? "map" : (String(active) === "1" || active === true || activeMode === "true");
+    game.__zhAs2PopupMode = nextPopupMode;
     if(game.__zhViewportState) {
         game.__zhViewportState.viewportCrop = resolveGameplayViewportCrop(
             game.__zhViewportState.island,
@@ -206,7 +270,18 @@ function flashpointSetAs2PopupMode(active) {
         );
     }
     applyCurrentViewport();
+    if(!nextPopupMode)
+        scheduleAs2PopupViewportRecovery();
     return true;
+}
+
+function scheduleAs2PopupViewportRecovery() {
+    [ 50, 150, 350, 800, 1500 ].forEach(function(delayMs) {
+        setTimeout(function() {
+            if(game && !game.__zhAs2PopupMode)
+                applyCurrentViewport();
+        }, delayMs);
+    });
 }
 
 function initMapHotspotBridge() {
@@ -623,6 +698,9 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
         width = 1010;
         height = 645;
     }
+    const gameplayBaseSize = resolveGameplayBaseSize(width, height, gameState, island, scene);
+    width = gameplayBaseSize.width;
+    height = gameplayBaseSize.height;
 
     const flashVars = new URLSearchParams();
     flashVars.set("desc", scene);

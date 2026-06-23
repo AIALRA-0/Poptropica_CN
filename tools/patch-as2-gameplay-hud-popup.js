@@ -186,7 +186,16 @@ function patchFrameOne(content) {
     const helperBlock = [
       "function zhGameplayLogicalRight()",
       "{",
-      "   return 1010;",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
       "}",
       "function zhHideDirectMapButton()",
       "{",
@@ -369,6 +378,19 @@ function patchFrameOne(content) {
       "      }",
       "   }",
       "}",
+      "function zhIsSuperPowerIsland()",
+      "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   return zhIslandName == \"super\" || zhIslandName == \"super power\" || zhIslandName.indexOf(\"super\") >= 0;",
+      "}",
       "function zhHideNonGameplayNavChrome()",
       "{",
       "   var _loc2_;",
@@ -378,11 +400,23 @@ function patchFrameOne(content) {
       "   {",
       "      return undefined;",
       "   }",
+      "   if(gameMenu != undefined)",
+      "   {",
+      "      gameMenu._visible = false;",
+      "      gameMenu._alpha = 0;",
+      "      gameMenu.enabled = false;",
+      "      gameMenu._x = -4000;",
+      "      gameMenu._y = -4000;",
+      "      delete gameMenu.onEnterFrame;",
+      "   }",
       "   _loc2_ = new Object();",
       "   _loc2_.btnInventory = true;",
       "   _loc2_.btnWardrobe = true;",
       "   _loc2_.btnMap = true;",
-      "   _loc2_.btnSuperPower = true;",
+      "   if(zhIsSuperPowerIsland())",
+      "   {",
+      "      _loc2_.btnSuperPower = true;",
+      "   }",
       "   for(_loc3_ in navBar)",
       "   {",
       "      if(_loc2_[_loc3_] != true)",
@@ -401,11 +435,12 @@ function patchFrameOne(content) {
       "}",
       "function zhNotifyPopupViewport(active)",
       "{",
+      "   var _loc1_ = active == \"map\" ? \"map\" : (active == true ? \"1\" : \"0\");",
       "   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)",
       "   {",
       "      try",
       "      {",
-      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",active == true ? \"1\" : \"0\");",
+      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",_loc1_);",
       "      }",
       "      catch(zhPopupViewportError)",
       "      {",
@@ -415,7 +450,7 @@ function patchFrameOne(content) {
       "function zhPopupUsesTightViewport(popupName)",
       "{",
       "   var _loc2_ = String(popupName).toLowerCase();",
-      "   if(_loc2_ == \"map.swf\" || _loc2_ == \"travelmap.swf\" || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+      "   if(_loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
       "   {",
       "      return false;",
       "   }",
@@ -435,7 +470,62 @@ function patchFrameOne(content) {
     [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   return 640;",
+      "}"
+    ].join("\n"),
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
       "   return 1010;",
+      "}"
+    ].join("\n"),
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
       "}"
     ].join("\n")
   );
@@ -521,11 +611,12 @@ function patchFrameOne(content) {
     const helper = [
       "function zhNotifyPopupViewport(active)",
       "{",
+      "   var _loc1_ = active == \"map\" ? \"map\" : (active == true ? \"1\" : \"0\");",
       "   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)",
       "   {",
       "      try",
       "      {",
-      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",active == true ? \"1\" : \"0\");",
+      "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",_loc1_);",
       "      }",
       "      catch(zhPopupViewportError)",
       "      {",
@@ -541,7 +632,7 @@ function patchFrameOne(content) {
       "function zhPopupUsesTightViewport(popupName)",
       "{",
       "   var _loc2_ = String(popupName).toLowerCase();",
-      "   if(_loc2_ == \"map.swf\" || _loc2_ == \"travelmap.swf\" || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+      "   if(_loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
       "   {",
       "      return false;",
       "   }",
@@ -550,6 +641,36 @@ function patchFrameOne(content) {
     ].join("\n");
     next = replaceRequired(next, "function zhShowPopupBackdrop()", `${helper}\nfunction zhShowPopupBackdrop()`, "popup viewport split helper insertion point");
   }
+
+  const notifyPopupViewportHelper = [
+    "function zhNotifyPopupViewport(active)",
+    "{",
+    "   var _loc1_ = active == \"map\" ? \"map\" : (active == true ? \"1\" : \"0\");",
+    "   if(_root != undefined)",
+    "   {",
+    "      _root.__zhPopupTightViewport = _loc1_ == \"1\" || _loc1_ == \"map\";",
+    "   }",
+    "   if(_root != undefined && (_root.flashpointQaCacheBust != undefined || (_level0 != undefined && _level0.flashpointQaCacheBust != undefined) || flashpointQaCacheBust != undefined))",
+    "   {",
+    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupViewport&active=\" + _loc1_,0);",
+    "   }",
+    "   if(flash.external.ExternalInterface != undefined && flash.external.ExternalInterface.available == true)",
+    "   {",
+    "      try",
+    "      {",
+    "         flash.external.ExternalInterface.call(\"flashpointSetAs2PopupMode\",_loc1_);",
+    "      }",
+    "      catch(zhPopupViewportError)",
+    "      {",
+    "      }",
+    "   }",
+    "}"
+  ].join("\n");
+  const notifyPopupViewportPattern = /function zhNotifyPopupViewport\(active\)\n\{[\s\S]*?\n\}\nfunction zhPopupUsesTightViewport\(popupName\)/u;
+  if (!notifyPopupViewportPattern.test(next)) {
+    throw new Error("Unable to locate popup viewport notify helper for hardening.");
+  }
+  next = next.replace(notifyPopupViewportPattern, `${notifyPopupViewportHelper}\nfunction zhPopupUsesTightViewport(popupName)`);
 
   if (!next.includes("function zhInstallPopupCloseHandlers()")) {
     const helper = [
@@ -869,6 +990,88 @@ function patchFrameOne(content) {
   while (next.includes(staleDirectMapPopupGate)) {
     next = next.replace(staleDirectMapPopupGate, directMapPopupCloseGate);
   }
+  if (!next.includes("zhDirectMapViewportForced")) {
+    next = replaceRequired(
+      next,
+      [
+        "   if(_root.__zhDirectMapButton != undefined)",
+        "   {",
+        "      _root.__zhDirectMapButton._visible = false;",
+        "   }",
+        "   if(_root.popup != undefined)"
+      ].join("\n"),
+      [
+        "   if(_root.__zhDirectMapButton != undefined)",
+        "   {",
+        "      _root.__zhDirectMapButton._visible = false;",
+        "   }",
+        "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportForced\",0);",
+        "   zhNotifyPopupViewport(\"map\");",
+        "   if(_root.popup != undefined)"
+      ].join("\n"),
+      "direct map popup viewport force"
+    );
+  }
+  if (!next.includes("zhDirectMapViewportDelayed")) {
+    next = replaceRequired(
+      next,
+      [
+        "   else",
+        "   {",
+        "      popup(\"map.swf\",true);",
+        "   }",
+        "   if(_root.trackEvent != undefined)"
+      ].join("\n"),
+      [
+        "   else",
+        "   {",
+        "      popup(\"map.swf\",true);",
+        "   }",
+        "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportDelayed\",0);",
+        "   zhNotifyPopupViewport(\"map\");",
+        "   setTimeout(function()",
+        "   {",
+        "      zhNotifyPopupViewport(\"map\");",
+        "   },50);",
+        "   setTimeout(function()",
+        "   {",
+        "      zhNotifyPopupViewport(\"map\");",
+        "   },250);",
+        "   if(_root.trackEvent != undefined)"
+      ].join("\n"),
+      "direct map popup viewport delayed force"
+    );
+  }
+  next = next.replace(
+    "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportForced\",0);\n   zhNotifyPopupViewport(true);",
+    "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportForced\",0);\n   zhNotifyPopupViewport(\"map\");"
+  );
+  next = next.replace(
+    [
+      "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportDelayed\",0);",
+      "   zhNotifyPopupViewport(true);",
+      "   setTimeout(function()",
+      "   {",
+      "      zhNotifyPopupViewport(true);",
+      "   },50);",
+      "   setTimeout(function()",
+      "   {",
+      "      zhNotifyPopupViewport(true);",
+      "   },250);"
+    ].join("\n"),
+    [
+      "   loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportDelayed\",0);",
+      "   zhNotifyPopupViewport(\"map\");",
+      "   setTimeout(function()",
+      "   {",
+      "      zhNotifyPopupViewport(\"map\");",
+      "   },50);",
+      "   setTimeout(function()",
+      "   {",
+      "      zhNotifyPopupViewport(\"map\");",
+      "   },250);"
+    ].join("\n")
+  );
   next = next.replace(
     /(\n\s+)([A-Za-z_$][\w$]*)\._x = 785;\1\2\._y = 70;\1([A-Za-z_$][\w$]*) = 95;\1([A-Za-z_$][\w$]*) = 90;/u,
     "$1$2._x = 920;$1$2._y = -42;$1$3 = 90;$1$4 = 142;"
@@ -1548,11 +1751,11 @@ function patchFrameOne(content) {
   next = next.replace("if(_root.__zhTightPopupFitTicks > 80)", "if(_root.__zhTightPopupFitTicks > 600)");
   next = next.replace(
     'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf")',
-    'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
+    'if(_loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
   );
   next = next.replace(
     'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf")',
-    'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
+    'if(_loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
   );
   next = next.replace(
     [
@@ -1948,6 +2151,39 @@ function patchFrameOne(content) {
     next = next.replace(/   zhRaisePopupLayers\(\);/gu, "   zhRaisePopupLayers();\n   zhRefreshPopupCloseHit();");
   }
 
+  const hidePopupBackdropHelper = [
+    "function zhHidePopupBackdrop()",
+    "{",
+    "   zhHidePopupCloseHit();",
+    "   zhStopTightPopupFitWatchdog();",
+    "   zhNotifyPopupViewport(false);",
+    "   if(_root != undefined)",
+    "   {",
+    "      _root.__zhPopupTightViewport = false;",
+    "   }",
+    "   if(_root != undefined && _root.__zhPopupBackdrop != undefined)",
+    "   {",
+    "      _root.__zhPopupBackdrop._visible = false;",
+    "   }",
+    "   if(_root != undefined && _root.__zhPopupHudWatchdog != undefined)",
+    "   {",
+    "      clearInterval(_root.__zhPopupHudWatchdog);",
+    "      _root.__zhPopupHudWatchdog = undefined;",
+    "   }",
+    "   zhSetPopupHudHidden(false);",
+    "}"
+  ].join("\n");
+  const hidePopupBackdropPattern = /function zhHidePopupBackdrop\(\)\n\{[\s\S]*?\n\}\nfunction zhOpenDirectMap\(\)/u;
+  if (!hidePopupBackdropPattern.test(next)) {
+    throw new Error("Unable to locate popup backdrop hide helper for hardening.");
+  }
+  next = next.replace(hidePopupBackdropPattern, `${hidePopupBackdropHelper}\nfunction zhOpenDirectMap()`);
+
+  next = next.replace(
+    /function closePopup\(\)\n\{\n(?!   zhNotifyPopupViewport\(false\);\n)/u,
+    "function closePopup()\n{\n   zhNotifyPopupViewport(false);\n"
+  );
+
   if (!next.includes("_root.__zhPopupHudHidden == true")) {
     next = replaceRequired(
       next,
@@ -2069,9 +2305,13 @@ function patchFrameOne(content) {
     const fallbackBlock = [
       `   if(${countVar} < 3)`,
       "   {",
+      "      var zhHudRight = zhGameplayLogicalRight();",
+      "      var zhInventoryX = Math.max(6,zhHudRight - 358);",
+      "      var zhWardrobeX = Math.max(62,zhHudRight - 302);",
+      "      var zhMapX = Math.max(118,zhHudRight - 246);",
       "      if(navBar.btnInventory != undefined)",
       "      {",
-      "         navBar.btnInventory._x = 652;",
+      "         navBar.btnInventory._x = zhInventoryX;",
       "         navBar.btnInventory._y = -20;",
       "         navBar.btnInventory._visible = true;",
       "         navBar.btnInventory._alpha = 100;",
@@ -2079,7 +2319,7 @@ function patchFrameOne(content) {
       "      }",
       "      if(navBar.btnWardrobe != undefined)",
       "      {",
-      "         navBar.btnWardrobe._x = 708;",
+      "         navBar.btnWardrobe._x = zhWardrobeX;",
       "         navBar.btnWardrobe._y = -20;",
       "         navBar.btnWardrobe._visible = true;",
       "         navBar.btnWardrobe._alpha = 100;",
@@ -2087,14 +2327,14 @@ function patchFrameOne(content) {
       "      }",
       "      if(navBar.btnMap != undefined)",
       "      {",
-      "         navBar.btnMap._x = 764;",
+      "         navBar.btnMap._x = zhMapX;",
       "         navBar.btnMap._y = -20;",
       "         navBar.btnMap._visible = true;",
       "         navBar.btnMap._alpha = 100;",
       "         navBar.btnMap.enabled = true;",
-      "         _root.__zhGameplayMapBounds = {left:920,top:-42,right:1010,bottom:100};",
+      "         _root.__zhGameplayMapBounds = {left:zhMapX - 20,top:-38,right:zhMapX + 56,bottom:50};",
       "      }",
-      "      if(navBar.btnSuperPower != undefined && (isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))",
+      "      if(navBar.btnSuperPower != undefined && (!zhIsSuperPowerIsland() || isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))",
       "      {",
       "         navBar.btnSuperPower._visible = false;",
       "         navBar.btnSuperPower._alpha = 0;",
@@ -2102,8 +2342,8 @@ function patchFrameOne(content) {
       "         navBar.btnSuperPower._x = -4000;",
       "         navBar.btnSuperPower._y = -4000;",
       "      }",
-      "      _root.__zhGameplayTopNavLeft = 652;",
-      "      _root.__zhGameplayTopNavRight = 820;",
+      "      _root.__zhGameplayTopNavLeft = zhInventoryX;",
+      "      _root.__zhGameplayTopNavRight = zhMapX + 56;",
       "      _root.__zhGameplayTopNavTop = -20;",
       "      _root.__zhGameplayTopNavCenterY = -20;",
       `      zhQaHudLog("HudLayoutFallback","count=" + zhQaHudRound(${countVar}) + "&invX=" + zhQaHudClipX(navBar.btnInventory) + "&wardX=" + zhQaHudClipX(navBar.btnWardrobe) + "&mapX=" + zhQaHudClipX(navBar.btnMap) + "&superY=" + zhQaHudClipY(navBar.btnSuperPower));`,
@@ -2155,32 +2395,128 @@ function patchFrameOne(content) {
   const hardcodedBlock = [
     "   if(navBar.btnInventory != undefined)",
     "   {",
-    "      navBar.btnInventory._x = 652;",
-    "      navBar.btnInventory._y = -12;",
+      "      navBar.btnInventory._x = 652;",
+      "      navBar.btnInventory._y = -20;",
     "      navBar.btnInventory._visible = true;",
     "      navBar.btnInventory._alpha = 100;",
     "      navBar.btnInventory.enabled = true;",
     "   }",
     "   if(navBar.btnWardrobe != undefined)",
     "   {",
-    "      navBar.btnWardrobe._x = 708;",
-    "      navBar.btnWardrobe._y = -12;",
+      "      navBar.btnWardrobe._x = 708;",
+      "      navBar.btnWardrobe._y = -20;",
     "      navBar.btnWardrobe._visible = true;",
     "      navBar.btnWardrobe._alpha = 100;",
     "      navBar.btnWardrobe.enabled = true;",
     "   }",
     "   if(navBar.btnMap != undefined)",
     "   {",
-    "      navBar.btnMap._x = 764;",
-    "      navBar.btnMap._y = -12;",
+      "      navBar.btnMap._x = 764;",
+      "      navBar.btnMap._y = -20;",
     "      navBar.btnMap._visible = true;",
     "      navBar.btnMap._alpha = 100;",
     "      navBar.btnMap.enabled = true;",
-      "      _root.__zhGameplayMapBounds = {left:920,top:-42,right:1010,bottom:100};",
+      "      _root.__zhGameplayMapBounds = {left:744,top:-38,right:820,bottom:50};",
       "   }"
   ].join("\n");
   if (next.includes(hardcodedBlock)) {
     next = next.replace(`${hardcodedBlock}\n`, "");
+  }
+
+  next = next
+    .replace(/navBar\.btnInventory\._x = (?:472|652);/gu, "navBar.btnInventory._x = Math.max(6,zhGameplayLogicalRight() - 358);")
+    .replace(/navBar\.btnInventory\._y = 10;/gu, "navBar.btnInventory._y = -20;")
+    .replace(/navBar\.btnWardrobe\._x = (?:528|708);/gu, "navBar.btnWardrobe._x = Math.max(62,zhGameplayLogicalRight() - 302);")
+    .replace(/navBar\.btnWardrobe\._y = 10;/gu, "navBar.btnWardrobe._y = -20;")
+    .replace(/navBar\.btnMap\._x = (?:584|764);/gu, "navBar.btnMap._x = Math.max(118,zhGameplayLogicalRight() - 246);")
+    .replace(/navBar\.btnMap\._y = 10;/gu, "navBar.btnMap._y = -20;")
+    .replace(/zhMapButton\._x = (?:552|920);/gu, "zhMapButton._x = Math.max(6,zhGameplayLogicalRight() - 90);")
+    .replace(/_root\.__zhGameplayMapBounds = \{left:(?:920|744|564),top:(?:-42|0|-38),right:(?:1010|820|640),bottom:(?:100|90|50)\};/gu, "_root.__zhGameplayMapBounds = {left:Math.max(6,zhGameplayLogicalRight() - 266),top:-38,right:Math.max(86,zhGameplayLogicalRight() - 190),bottom:50};")
+    .replace(/_root\.__zhGameplayTopNavLeft = (?:472|652);/gu, "_root.__zhGameplayTopNavLeft = Math.max(6,zhGameplayLogicalRight() - 358);")
+    .replace(/_root\.__zhGameplayTopNavRight = (?:640|820);/gu, "_root.__zhGameplayTopNavRight = Math.max(86,zhGameplayLogicalRight() - 190);")
+    .replace(/_root\.__zhGameplayTopNavTop = 10;/gu, "_root.__zhGameplayTopNavTop = -20;")
+    .replace(/_root\.__zhGameplayTopNavCenterY = 10;/gu, "_root.__zhGameplayTopNavCenterY = -20;");
+
+  next = next.replace(
+    /(\n   [A-Za-z_$][\w$]* = zhGameplayLogicalRight\(\);\n   [A-Za-z_$][\w$]* = 14;\n   )([A-Za-z_$][\w$]*) = 10;/u,
+    "$1$2 = -32;"
+  );
+
+  if (!next.includes("function zhSuppressGameMenuNow()")) {
+    next = replaceRequired(
+      next,
+      "function showGameMenu(target)",
+      [
+        "function zhSuppressGameMenuNow()",
+        "{",
+        "   if(gameMenu != undefined)",
+        "   {",
+        "      gameMenu._visible = false;",
+        "      gameMenu._alpha = 0;",
+        "      gameMenu.enabled = false;",
+        "      gameMenu._x = -4000;",
+        "      gameMenu._y = -4000;",
+        "      delete gameMenu.onEnterFrame;",
+        "      gameMenu.zhGameMenuSuppressed = true;",
+        "   }",
+        "}",
+        "function showGameMenu(target)"
+      ].join("\n"),
+      "insert mini-game menu suppressor"
+    );
+  }
+
+  if (!next.includes("zhGameMenuSuppressed")) {
+    next = replaceRequired(
+      next,
+      [
+        "function showGameMenu(target)",
+        "{",
+        "   menu._visible = false;",
+        "   delete menu.onEnterFrame;",
+        "   positionChat(gameMenu,target);",
+        "   gameMenu.animateIn();",
+        "   gameMenu._visible = true;",
+        "   gameMenu.onEnterFrame = function()",
+        "   {",
+        "      positionChat(this,target);",
+        "   };",
+        "}"
+      ].join("\n"),
+      [
+        "function showGameMenu(target)",
+        "{",
+        "   if(menu != undefined)",
+        "   {",
+        "      menu._visible = false;",
+        "      delete menu.onEnterFrame;",
+        "   }",
+        "   if(gameMenu != undefined)",
+        "   {",
+        "      gameMenu._visible = false;",
+        "      delete gameMenu.onEnterFrame;",
+        "      gameMenu.zhGameMenuSuppressed = true;",
+        "   }",
+        "   return undefined;",
+        "}"
+      ].join("\n"),
+      "suppress legacy mini-game menu"
+    );
+  }
+
+  if (!next.includes("zhGameMenuSuppressInterval = setInterval")) {
+    next = replaceRequired(
+      next,
+      "gameMenuDepth = 10000;",
+      [
+        "gameMenuDepth = 10000;",
+        "if(zhGameMenuSuppressInterval == undefined)",
+        "{",
+        "   zhGameMenuSuppressInterval = setInterval(zhSuppressGameMenuNow,100);",
+        "}"
+      ].join("\n"),
+      "start mini-game menu suppress interval"
+    );
   }
 
   if (!next.includes("_root.layoutFramelessGameplayNav = layoutFramelessGameplayNav;")) {
@@ -2213,6 +2549,35 @@ function patchFrameOne(content) {
       "         {",
       "            _root.layoutFramelessGameplayNav(true);",
       "         }"
+      ].join("\n")
+  );
+
+  // The generic popup normalization above rewrites every popup viewport notify
+  // to boolean tight/fullscreen mode. Map popups need their own wider viewport.
+  next = next.replace(
+    /   loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=zhDirectMapViewportForced",0\);\n(?:   _root\.__zhPopupTightViewport = zhPopupUsesTightViewport\(popupName\);\n   zhNotifyPopupViewport\(_root\.__zhPopupTightViewport\);\n|   zhNotifyPopupViewport\(zhPopupUsesTightViewport\(popupName\)\);\n|   zhNotifyPopupViewport\(true\);\n|   zhNotifyPopupViewport\("map"\);\n)(?=   if\(_root\.popup != undefined\))/u,
+    [
+      '   loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportForced",0);',
+      '   zhNotifyPopupViewport("map");',
+      ""
+    ].join("\n")
+  );
+
+  next = next.replace(
+    /   loadVariablesNum\("\/brain\/track\.php\?cluster=QA&scene=Gameplay&event=zhDirectMapViewportDelayed",0\);\n[\s\S]*?   ,250\);(?=\n   if\(_root\.trackEvent != undefined\))/u,
+    [
+      '   loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=zhDirectMapViewportDelayed",0);',
+      '   zhNotifyPopupViewport("map");',
+      "   setTimeout(function()",
+      "   {",
+      '      zhNotifyPopupViewport("map");',
+      "   }",
+      "   ,50);",
+      "   setTimeout(function()",
+      "   {",
+      '      zhNotifyPopupViewport("map");',
+      "   }",
+      "   ,250);"
     ].join("\n")
   );
 

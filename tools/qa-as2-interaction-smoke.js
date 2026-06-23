@@ -352,9 +352,63 @@ function runVisualGuard({ screenshotPath, outputPath, args, qaErrors, step }) {
   }
 }
 
+function runMapPopupGuard({ screenshotPath, outputPath, annotatedPath, args, qaErrors, step }) {
+  if (!screenshotPath || !fs.existsSync(screenshotPath) || flagEnabled(args.skipVisualGuard)) {
+    return flagEnabled(args.skipVisualGuard) ? { skipped: true } : null;
+  }
+  const guardArgs = [
+    "analyze-map-popup-guard",
+    "--input",
+    screenshotPath,
+    "--output",
+    outputPath,
+    "--annotated-output",
+    annotatedPath
+  ];
+  try {
+    return runPythonQa(guardArgs, {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${step || "map"}-map-popup-guard`, error));
+    return null;
+  }
+}
+
+function runPlayableCropGuard({ screenshotPath, outputPath, annotatedPath, args, qaErrors, step }) {
+  if (!screenshotPath || !fs.existsSync(screenshotPath) || !shouldRequirePlayableCropGuard(args)) {
+    return shouldRequirePlayableCropGuard(args) ? null : { skipped: true };
+  }
+  const guardArgs = [
+    "analyze-playable-crop-guard",
+    "--input",
+    screenshotPath,
+    "--output",
+    outputPath,
+    "--annotated-output",
+    annotatedPath,
+    "--lower-top-ratio",
+    String(args.playableCropLowerTopRatio || args["playable-crop-lower-top-ratio"] || 0.5),
+    "--min-bottom-gap",
+    String(args.playableCropMinBottomGap || args["playable-crop-min-bottom-gap"] || 24)
+  ];
+  try {
+    return runPythonQa(guardArgs, {
+      timeoutMs: 30000
+    });
+  } catch (error) {
+    qaErrors.push(formatQaError(`${step || "visual"}-playable-crop-guard`, error));
+    return null;
+  }
+}
+
 function shouldRequireVisualGuard(args) {
   return flagEnabled(args.requireVisualGuard) ||
     Boolean(String(args.visualGuardTargetColor || args["visual-guard-target-color"] || "").trim());
+}
+
+function shouldRequirePlayableCropGuard(args) {
+  return flagEnabled(args.requirePlayableCropGuard || args["require-playable-crop-guard"] || args.requirePlayerNotCropped || args["require-player-not-cropped"]);
 }
 
 function shouldRequireHudAnchor(args) {
@@ -407,12 +461,21 @@ function withLaunchQuery(url, args) {
   const roomOverride = String(args.roomOverride || args["room-override"] || "").trim();
   const islandOverride = String(args.islandOverride || args["island-override"] || "").trim();
   const autoOpenMapAfterMs = String(args.autoOpenMapAfterMs || args["auto-open-map-after-ms"] || "").trim();
+  const qaViewportParams = {
+    flashpointQaViewportX: args.flashpointQaViewportX || args["flashpoint-qa-viewport-x"],
+    flashpointQaViewportY: args.flashpointQaViewportY || args["flashpoint-qa-viewport-y"],
+    flashpointQaViewportWidth: args.flashpointQaViewportWidth || args["flashpoint-qa-viewport-width"],
+    flashpointQaViewportHeight: args.flashpointQaViewportHeight || args["flashpoint-qa-viewport-height"],
+    flashpointQaBaseWidth: args.flashpointQaBaseWidth || args["flashpoint-qa-base-width"] || args.flashpointQaStageWidth || args["flashpoint-qa-stage-width"],
+    flashpointQaBaseHeight: args.flashpointQaBaseHeight || args["flashpoint-qa-base-height"] || args.flashpointQaStageHeight || args["flashpoint-qa-stage-height"]
+  };
+  const hasQaViewport = Object.values(qaViewportParams).some((value) => value !== undefined && value !== null && String(value).trim() !== "");
   const flashpointQaAs2Dialog = resolveFlashpointQaAs2Dialog(args);
   const flashpointQaAs2Popup = resolveFlashpointQaAs2Popup(args);
   const flashpointQaLoadingHoldMs = resolveFlashpointQaLoadingHoldMs(args);
   const flashpointQaHideHud = resolveFlashpointQaHideHud(args);
   const shouldCacheBust = !flagEnabled(args.disableQaCacheBust || args["disable-qa-cache-bust"]);
-  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaAs2Popup && !flashpointQaLoadingHoldMs && !flashpointQaHideHud) {
+  if (!shouldCacheBust && !autoOpenMapAfterMs && !roomOverride && !islandOverride && !flashpointQaAs2Dialog && !flashpointQaAs2Popup && !flashpointQaLoadingHoldMs && !flashpointQaHideHud && !hasQaViewport) {
     return url;
   }
   const nextUrl = new URL(url);
@@ -436,6 +499,11 @@ function withLaunchQuery(url, args) {
   }
   if (flashpointQaHideHud) {
     nextUrl.searchParams.set("flashpointQaHideHud", flashpointQaHideHud);
+  }
+  for (const [key, value] of Object.entries(qaViewportParams)) {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      nextUrl.searchParams.set(key, String(value).trim());
+    }
   }
   if (shouldCacheBust) {
     nextUrl.searchParams.set("flashpointQaCacheBust", `${Date.now()}-${Math.random().toString(16).slice(2)}`);
@@ -495,6 +563,19 @@ function stageRelativeToWindow(capture, stageRect, relativePoint) {
   return {
     x: Math.round(offset.x + stageRect.left + (stageRect.width * relativePoint.x)),
     y: Math.round(offset.y + stageRect.top + (stageRect.height * relativePoint.y))
+  };
+}
+
+function imageRelativeToWindow(capture, relativePoint) {
+  const offset = captureClickOffset(capture);
+  const width = Number(capture?.imageSize?.width || capture?.captureBox?.width || 0);
+  const height = Number(capture?.imageSize?.height || capture?.captureBox?.height || 0);
+  if (!width || !height) {
+    return null;
+  }
+  return {
+    x: Math.round(offset.x + (width * relativePoint.x)),
+    y: Math.round(offset.y + (height * relativePoint.y))
   };
 }
 
@@ -563,10 +644,14 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
   const metadataPath = path.join(runDir, `${stem}${safeSuffix}-capture.json`);
   const stagePath = path.join(runDir, `${stem}${safeSuffix}-stage.json`);
   const visualGuardPath = path.join(runDir, `${stem}${safeSuffix}-visual-guard.json`);
+  const visualGuardAnnotatedPath = path.join(runDir, `${stem}${safeSuffix}-visual-guard.png`);
+  const playableCropGuardPath = path.join(runDir, `${stem}${safeSuffix}-playable-crop-guard.json`);
+  const playableCropGuardAnnotatedPath = path.join(runDir, `${stem}${safeSuffix}-playable-crop-guard.png`);
   const ocrPath = path.join(runDir, `${stem}${safeSuffix}-ocr.json`);
   let capture = null;
   let stage = null;
   let visualGuard = null;
+  let playableCropGuard = null;
   let ocr = null;
   try {
     capture = runPythonQa(buildCaptureArgs({
@@ -605,9 +690,26 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     } catch (error) {
       qaErrors.push(formatQaError(`${suffix || "initial"}-analyze-stage`, error));
     }
-    visualGuard = runVisualGuard({
+    visualGuard = suffix === "map"
+      ? runMapPopupGuard({
+        screenshotPath,
+        outputPath: visualGuardPath,
+        annotatedPath: visualGuardAnnotatedPath,
+        args,
+        qaErrors,
+        step: suffix || "map"
+      })
+      : runVisualGuard({
+        screenshotPath,
+        outputPath: visualGuardPath,
+        args,
+        qaErrors,
+        step: suffix || "initial"
+      });
+    playableCropGuard = runPlayableCropGuard({
       screenshotPath,
-      outputPath: visualGuardPath,
+      outputPath: playableCropGuardPath,
+      annotatedPath: playableCropGuardAnnotatedPath,
       args,
       qaErrors,
       step: suffix || "initial"
@@ -633,12 +735,16 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     capture,
     stage,
     visualGuard,
+    playableCropGuard,
     ocr,
     artifacts: {
       screenshotPath,
       metadataPath,
       stagePath,
       visualGuardPath: flagEnabled(args.skipVisualGuard) ? null : visualGuardPath,
+      visualGuardAnnotatedPath: suffix === "map" && !flagEnabled(args.skipVisualGuard) ? visualGuardAnnotatedPath : null,
+      playableCropGuardPath: shouldRequirePlayableCropGuard(args) ? playableCropGuardPath : null,
+      playableCropGuardAnnotatedPath: shouldRequirePlayableCropGuard(args) ? playableCropGuardAnnotatedPath : null,
       ocrPath: flagEnabled(args.skipOcr) ? null : ocrPath
     }
   };
@@ -1052,6 +1158,7 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
     });
     const stageStable = Boolean(capture.stage?.stageRect);
     const visualStable = !shouldRequireVisualGuard(args) || Boolean(capture.visualGuard?.ok);
+    const playableCropStable = !shouldRequirePlayableCropGuard(args) || Boolean(capture.playableCropGuard?.ok);
     const fullscreenSize = summarizeF11SizeCheck(capture.capture, runtimeWindow, args);
     const restore = runPythonQa(buildKeyArgs({
       runtime,
@@ -1065,7 +1172,7 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
     await sleep(Number(args.f11RestoreSettleMs || args["f11-restore-settle-ms"] || 1200));
     return {
       skipped: false,
-      ok: stageStable && visualStable && fullscreenSize.ok,
+      ok: stageStable && visualStable && playableCropStable && fullscreenSize.ok,
       keyPath,
       restoreKeyPath,
       keyOk: Boolean(key?.ok),
@@ -1076,15 +1183,19 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
         capturePath: capture.artifacts.metadataPath || null,
         stagePath: capture.artifacts.stagePath || null,
         visualGuardPath: capture.artifacts.visualGuardPath || null,
+        playableCropGuardPath: capture.artifacts.playableCropGuardPath || null,
+        playableCropGuardAnnotatedPath: capture.artifacts.playableCropGuardAnnotatedPath || null,
         ocrPath: capture.artifacts.ocrPath || null,
         imageSize: capture.capture?.imageSize || null,
         stageRect: capture.stage?.stageRect || null,
         stageCoverageRatio: capture.stage?.stageCoverageRatio ?? null,
         visualGuard: capture.visualGuard,
+        playableCropGuard: capture.playableCropGuard,
         ocrText: String(capture.ocr?.text || "").slice(0, 500)
       },
       stageStable,
-      visualStable
+      visualStable,
+      playableCropStable
     };
   } catch (error) {
     qaErrors.push(formatQaError(`${stem}-f11`, error));
@@ -1135,7 +1246,11 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
   }
   const explicitMapPoint = args.mapX !== undefined || args["map-x"] !== undefined || args.mapY !== undefined || args["map-y"] !== undefined;
   const anchoredPoint = explicitMapPoint ? null : mapClickPointFromHudAnchor(capture, hudAnchor);
-  const point = anchoredPoint || stageRelativeToWindow(capture, stageRect, {
+  const imagePoint = anchoredPoint ? null : imageRelativeToWindow(capture, {
+    x: Number(args.mapX || args["map-x"] || 0.951),
+    y: Number(args.mapY || args["map-y"] || 0.068)
+  });
+  const point = anchoredPoint || imagePoint || stageRelativeToWindow(capture, stageRect, {
     x: Number(args.mapX || args["map-x"] || 0.945),
     y: Number(args.mapY || args["map-y"] || 0.052)
   });
@@ -1697,10 +1812,6 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         qaErrors
       });
 
-  const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
-  fs.writeFileSync(logPath, logSegment, "utf8");
-  const logSummary = summarizeLogSegment(logSegment);
-  const sceneEvidence = buildAs2SceneEvidence(effectiveEntry, logSegment, args);
   const hudAnchor = await captureHudAnchor({
     config,
     runDir,
@@ -1710,6 +1821,11 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     args,
     qaErrors
   });
+
+  const logSegment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
+  fs.writeFileSync(logPath, logSegment, "utf8");
+  const logSummary = summarizeLogSegment(logSegment);
+  const sceneEvidence = buildAs2SceneEvidence(effectiveEntry, logSegment, args);
   const failedChecks = [];
   if (!runtimeWindow?.match) {
     failedChecks.push("window_not_found");
@@ -1725,6 +1841,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
   if (shouldRequireVisualGuard(args) && !initial.visualGuard?.ok) {
     failedChecks.push("initial_visual_guard_failed");
+  }
+  if (shouldRequirePlayableCropGuard(args) && !initial.playableCropGuard?.ok) {
+    failedChecks.push("initial_playable_crop_guard_failed");
   }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
     failedChecks.push("missing_requests_seen");
@@ -1754,7 +1873,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     failedChecks.push("dialogue_chinese_not_seen");
   }
   if (!f11.skipped && flagEnabled(args.requireF11 || args["require-f11"]) && !f11.ok) {
-    failedChecks.push("f11_fullscreen_size_or_visual_guard_failed");
+    failedChecks.push("f11_fullscreen_size_visual_or_crop_guard_failed");
   }
   if (!map.skipped && !map.ok) {
     failedChecks.push("map_post_message_click_failed");
@@ -1798,6 +1917,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       initialScreenshotPath: initial.artifacts.screenshotPath || null,
       initialStagePath: initial.artifacts.stagePath || null,
       initialVisualGuardPath: initial.artifacts.visualGuardPath || null,
+      initialPlayableCropGuardPath: initial.artifacts.playableCropGuardPath || null,
+      initialPlayableCropGuardAnnotatedPath: initial.artifacts.playableCropGuardAnnotatedPath || null,
       popupCloseScreenshotPath: popupClose.artifacts?.screenshotPath || null,
       popupCloseStagePath: popupClose.artifacts?.stagePath || null,
       hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
@@ -1811,6 +1932,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       capture: initial.capture,
       stage: initial.stage,
       visualGuard: initial.visualGuard,
+      playableCropGuard: initial.playableCropGuard,
       ocr: initial.ocr
         ? {
             skipped: Boolean(initial.ocr.skipped),
@@ -1855,6 +1977,9 @@ function buildSummary(startedAt, reports) {
     visualGuardPassed: reports.filter((report) =>
       report.initial?.visualGuard?.ok &&
       (report.map?.skipped || report.map?.visualGuard?.ok)
+    ).length,
+    playableCropGuardPassed: reports.filter((report) =>
+      report.initial?.playableCropGuard?.ok
     ).length,
     hudAnchorPassed: reports.filter((report) => report.hudAnchor && !report.hudAnchor.skipped && report.hudAnchor.ok).length,
     withMissingLogRequests: reports.filter((report) => Number(report.logSummary?.missingCount || 0) > 0).length,

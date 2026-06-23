@@ -4911,3 +4911,59 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - AS2 Time Tangled right-top map icon now satisfies both visual anchoring and actual click-open evidence.
   - Time Tangled is still not sealed. The popup-close screenshot still shows a left-side dark viewport edge, so camera/viewport boundary remains a blocker alongside safe F11, natural route, NPC no-repeat, external white-screen links, AS3 queue protection, full traversal, and real audio source inventory.
+
+## 2026-06-23 Time Tangled HUD/Map Proof Restored After Viewport Rollback
+
+- Stayed on the reopened Time Tangled blocker wave; did not advance to Super Power.
+- Corrected the latest AS2 HUD/map proof after a bad intermediate state had effectively treated ordinary gameplay as a 640x480 tight viewport:
+  - Restored ordinary AS2 gameplay viewport assumptions to the full `1000x580`/logical-right `1010` path.
+  - Kept the visible AS2 HUD icons at the screenshot-right positions: inventory/wardrobe/map at `x=652/708/764,y=-20`.
+  - Restored the hidden map hitbox to the proven internal Flash coordinates while keeping the visible icon in place.
+  - Adjusted `tools/qa-as2-interaction-smoke.js` so map clicking can target the final screenshot right-top map icon instead of relying on a hidden-HUD baseline that launches a second runtime.
+  - Adjusted `tools/qa-helper.py analyze-hud-diff` so the HUD detector falls back to full screenshot width when stage detection is too narrow for right-side HUD evaluation.
+- Final HUD/map verification:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782203179046.json`.
+  - Result: `ok=true`, `passed=1`, `failed=0`, `mapClicksPassed=1`, `hudAnchorPassed=1`, `visualGuardPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782203179046/01-time-tangled-initial.png`; player is visible, the three AS2 HUD icons are a single upper-right row, and no faint upper-left pause button is visible.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782203179046/01-time-tangled-map.png`; the map popup opens, native `关闭` is visible, and the static `TIME TANGLED ISLAND` title remains English artwork by policy.
+- Popup-close regression:
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782203285075.json`.
+  - Overall `ok=false` only because the dark-edge visual guard intentionally failed; the popup close assertion itself passed with `popupClose.ok=true`, `closeButtonStillVisible=false`, and `mapOpenedDuringClose=false`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782203285075/01-time-tangled-popup-close.png`; the task-file popup is gone, the player remains visible, and the HUD returns to the upper-right.
+- Current conclusion:
+  - AS2 Time Tangled HUD placement, visible-map clickability, and `malidocs.swf` close behavior are again supported by current screenshots.
+  - Time Tangled remains reopened. The left-side dark viewport edge is still visible in the latest screenshots and is the next camera/viewport blocker before any island can be called sealed.
+
+## 2026-06-23 Time Tangled Map Popup Viewport and Guard Fix
+
+- Responded to the user's concern that the project was still mixing coordinate systems and that "right top" was being judged too loosely.
+- Added `EXTERNAL_REVIEW_PROMPT.zh-CN.md` so the current HUD/viewport/popup coordinate-system problem can be reviewed by an external model without losing the project-specific constraints.
+- Root cause found for the current map regression:
+  - `zhNotifyPopupViewport("map")` had been added for the direct map path, but later generic popup normalization in `tools/patch-as2-gameplay-hud-popup.js` rewrote the direct-map block back to boolean `zhPopupUsesTightViewport(popupName)`.
+  - The exported AS therefore logged `PopupViewport&active=1` instead of `active=map`, causing the Time Tangled map to use the generic 640x480 popup viewport and appear zoomed/cropped.
+- Code changes:
+  - Added final direct-map normalization near the end of `tools/patch-as2-gameplay-hud-popup.js`, after the generic popup rewrites, so the exported AS keeps `zhNotifyPopupViewport("map")` for direct map open and delayed recovery.
+  - Confirmed exported `runtime-data/tmp/as2-gameplay-hud-popup/scripts/scripts/frame_1/DoAction.as` now contains `zhNotifyPopupViewport("map")` in the `zhDirectMapViewportForced` and delayed blocks.
+  - Kept `MAP_POPUP_VIEWPORT={x:0,y:0,width:1000,height:580}` in `base.php` and `tools/lib/pack.js`.
+  - Added `tools/qa-helper.py analyze-map-popup-guard` to evaluate map popups by parchment/map-paper bbox, center delta, and blue-edge leakage instead of generic dark-edge visual guard.
+  - Updated `tools/qa-as2-interaction-smoke.js` so `suffix === "map"` uses the map popup guard while ordinary scenes still use the standard visual guard.
+- Static checks:
+  - `node --check tools/patch-as2-gameplay-hud-popup.js`
+  - `node --check tools/lib/pack.js`
+  - `node --check tools/qa-as2-interaction-smoke.js`
+  - `python -m py_compile tools/qa-helper.py`
+- Runtime build:
+  - Stopped the Flashpoint Game Server once to release a write lock on `gameplay.swf`.
+  - Rebuilt AS2 gameplay/runtime with `node tools\patch-as2-gameplay-hud-popup.js`.
+  - Patch report: `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json`, runtime zip ready with `replacementCount=111`.
+- Verification:
+  - Passed report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782210583755.json`.
+  - Result: `ok=true`, `passed=1`, `failed=0`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Initial screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-initial.png`; player visible, no faint upper-left pause button, right-top HUD not clipped.
+  - HUD metrics: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-hud-anchor.json` reports `rightMargin=57`, `topMargin=1`, row spread `3`, gaps `23/21`.
+  - Map screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-map.png`; map paper is complete and centered, `关闭` and `重启岛屿` are Chinese UI buttons, static `TIME TANGLED ISLAND` art remains English by policy.
+  - Map guard: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-map-visual-guard.json` reports paper bbox `342,130-1103,724`, center delta `0.005952`, paper pixel pct `38.578063`, blue-edge pct top/left/right `0`, bottom `1.683437`.
+  - Annotated proof: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-map-visual-guard.png`.
+- Current conclusion:
+  - The specific Time Tangled/Mali HUD + direct map popup path is now supported by current code, screenshots, and a map-specific guard that matches the actual visual contract.
+  - This does not seal Time Tangled. Remaining blockers include safe F11 true-fullscreen without stealing focus, natural time-machine route, at least 3 natural NPC dialogue checks with no-repeat behavior, task item/file popup use-after-layout, external white-screen links, map/island description Chinese, AS3 dialogue queue protection, full traversal, and real audio source inventory.

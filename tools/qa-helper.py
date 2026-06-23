@@ -2046,6 +2046,228 @@ def command_analyze_visual_guard(args):
     to_json(payload)
 
 
+def command_analyze_map_popup_guard(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    rgb = np.array(image)
+    r = rgb[:, :, 0].astype(np.int16)
+    g = rgb[:, :, 1].astype(np.int16)
+    b = rgb[:, :, 2].astype(np.int16)
+
+    paper_mask = (
+        (r >= int(args.min_paper_red))
+        & (g >= int(args.min_paper_green))
+        & (b >= int(args.min_paper_blue))
+        & (r >= g)
+        & (g >= b)
+        & ((r - b) >= int(args.min_paper_red_blue_delta))
+        & ((g - b) >= int(args.min_paper_green_blue_delta))
+    )
+    paper_pixels = int(np.count_nonzero(paper_mask))
+    paper_pct = round(float(paper_pixels / max(1, width * height) * 100.0), 6)
+    if paper_pixels:
+        ys, xs = np.where(paper_mask)
+        paper_box = {
+            "left": int(xs.min()),
+            "top": int(ys.min()),
+            "right": int(xs.max() + 1),
+            "bottom": int(ys.max() + 1),
+        }
+    else:
+        paper_box = { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+    paper_box["width"] = int(paper_box["right"] - paper_box["left"])
+    paper_box["height"] = int(paper_box["bottom"] - paper_box["top"])
+    paper_box["centerX"] = round(float((paper_box["left"] + paper_box["right"]) / 2.0), 3)
+    paper_box["centerY"] = round(float((paper_box["top"] + paper_box["bottom"]) / 2.0), 3)
+
+    edge_ratio = max(0.02, min(0.5, float(args.edge_ratio)))
+    edge_width = max(1, int(round(width * edge_ratio)))
+    edge_height = max(1, int(round(height * edge_ratio)))
+    blue_mask = (r <= int(args.max_blue_red)) & (g >= int(args.min_blue_green)) & (b >= int(args.min_blue_blue)) & ((b - r) >= int(args.min_blue_delta))
+    edge_regions = {
+        "topMargin": blue_mask[0:edge_height, :],
+        "leftMargin": blue_mask[:, 0:edge_width],
+        "rightMargin": blue_mask[:, max(0, width - edge_width):width],
+        "bottomMargin": blue_mask[max(0, height - edge_height):height, :],
+    }
+    blue_edge_regions = {
+        name: round(float(mask.mean() * 100.0), 6) if mask.size else 0.0
+        for name, mask in edge_regions.items()
+    }
+
+    min_margin = int(args.min_margin)
+    right_margin = int(width - paper_box["right"])
+    bottom_margin = int(height - paper_box["bottom"])
+    center_delta_ratio = abs(float(paper_box["centerX"]) - width / 2.0) / max(1, width)
+    checks = [
+        {
+            "name": "paper_pixel_pct",
+            "ok": paper_pct >= float(args.min_paper_pct),
+            "observedPct": paper_pct,
+            "minPct": float(args.min_paper_pct),
+        },
+        {
+            "name": "paper_width_ratio",
+            "ok": (paper_box["width"] / max(1, width)) >= float(args.min_paper_width_ratio),
+            "observed": round(float(paper_box["width"] / max(1, width)), 6),
+            "min": float(args.min_paper_width_ratio),
+        },
+        {
+            "name": "paper_height_ratio",
+            "ok": (paper_box["height"] / max(1, height)) >= float(args.min_paper_height_ratio),
+            "observed": round(float(paper_box["height"] / max(1, height)), 6),
+            "min": float(args.min_paper_height_ratio),
+        },
+        {
+            "name": "paper_left_margin",
+            "ok": paper_box["left"] >= min_margin,
+            "observed": paper_box["left"],
+            "min": min_margin,
+        },
+        {
+            "name": "paper_right_margin",
+            "ok": right_margin >= min_margin,
+            "observed": right_margin,
+            "min": min_margin,
+        },
+        {
+            "name": "paper_top_margin",
+            "ok": paper_box["top"] >= min_margin,
+            "observed": paper_box["top"],
+            "min": min_margin,
+        },
+        {
+            "name": "paper_bottom_margin",
+            "ok": bottom_margin >= int(args.min_bottom_margin),
+            "observed": bottom_margin,
+            "min": int(args.min_bottom_margin),
+        },
+        {
+            "name": "paper_center_x_delta_ratio",
+            "ok": center_delta_ratio <= float(args.max_center_x_delta_ratio),
+            "observed": round(float(center_delta_ratio), 6),
+            "max": float(args.max_center_x_delta_ratio),
+        },
+    ]
+    max_blue_edge_pct = float(args.max_blue_edge_pct)
+    checks.extend([
+        {
+            "name": f"{name}_blue_pct",
+            "ok": pct <= max_blue_edge_pct,
+            "observedPct": pct,
+            "maxPct": max_blue_edge_pct,
+        }
+        for name, pct in blue_edge_regions.items()
+    ])
+
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": { "width": width, "height": height },
+        "paperBox": paper_box,
+        "paperPixelPct": paper_pct,
+        "blueEdgeRegions": blue_edge_regions,
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", None):
+        annotated = image.copy()
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle([paper_box["left"], paper_box["top"], paper_box["right"], paper_box["bottom"]], outline=(255, 0, 0), width=3)
+        annotated.save(args.annotated_output)
+        payload["annotatedOutput"] = args.annotated_output
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+
+
+def command_analyze_playable_crop_guard(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    rgb = np.array(image).astype(np.int16)
+    lower_top = max(0, min(height - 1, int(round(height * float(args.lower_top_ratio)))))
+    pale_mask = (
+        (rgb[:, :, 0] >= int(args.min_red)) &
+        (rgb[:, :, 1] >= int(args.min_green)) &
+        (rgb[:, :, 2] >= int(args.min_blue)) &
+        ((np.max(rgb, axis=2) - np.min(rgb, axis=2)) <= int(args.max_channel_spread))
+    )
+    pale_mask[:lower_top, :] = False
+    components = _connected_components(pale_mask, min_pixels=int(args.min_pixels))
+    candidates = []
+    for component in components:
+        if component["width"] < int(args.min_width) or component["height"] < int(args.min_height):
+            continue
+        bottom_gap = int(height - component["bottom"])
+        candidate = {
+            **component,
+            "bottomGap": bottom_gap,
+            "touchesBottom": bottom_gap <= int(args.touch_tolerance),
+            "belowLowerTop": component["top"] >= lower_top,
+        }
+        candidate["croppedRisk"] = (
+            candidate["bottomGap"] <= int(args.min_bottom_gap) and
+            component["pixels"] >= int(args.min_pixels)
+        )
+        candidates.append(candidate)
+    candidates.sort(key=lambda item: (item["croppedRisk"], -item["bottomGap"], item["pixels"]), reverse=True)
+    cropped = [candidate for candidate in candidates if candidate["croppedRisk"]]
+    checks = [
+        {
+            "name": "no_large_pale_component_near_bottom_edge",
+            "ok": not cropped,
+            "candidateCount": len(candidates),
+            "croppedRiskCount": len(cropped),
+            "minBottomGap": int(args.min_bottom_gap),
+        }
+    ]
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": width,
+            "height": height,
+        },
+        "analysisRegion": {
+            "left": 0,
+            "top": lower_top,
+            "right": width,
+            "bottom": height,
+            "width": width,
+            "height": height - lower_top,
+        },
+        "checks": checks,
+        "candidates": candidates[:12],
+        "thresholds": {
+            "minRed": int(args.min_red),
+            "minGreen": int(args.min_green),
+            "minBlue": int(args.min_blue),
+            "maxChannelSpread": int(args.max_channel_spread),
+            "minPixels": int(args.min_pixels),
+            "minWidth": int(args.min_width),
+            "minHeight": int(args.min_height),
+            "minBottomGap": int(args.min_bottom_gap),
+            "touchTolerance": int(args.touch_tolerance),
+            "lowerTopRatio": float(args.lower_top_ratio),
+        },
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((0, lower_top, width - 1, height - 1), outline=(255, 255, 0), width=3)
+        for candidate in candidates[:12]:
+            color = (255, 0, 0) if candidate["croppedRisk"] else (0, 255, 0)
+            draw.rectangle((candidate["left"], candidate["top"], candidate["right"], candidate["bottom"]), outline=color, width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
 def _connected_components(mask, min_pixels=1):
     height, width = mask.shape
     seen = np.zeros(mask.shape, dtype=bool)
@@ -2121,6 +2343,12 @@ def command_analyze_hud_diff(args):
     stage_bottom = int(stage_rect.get("bottom", height))
     stage_width = max(1, int(stage_rect.get("width", stage_right - stage_left)))
     stage_height = max(1, int(stage_rect.get("height", stage_bottom - stage_top)))
+    stage_rect_expanded_for_hud = False
+    if stage_width < int(width * 0.8):
+        stage_left = 0
+        stage_right = width
+        stage_width = width
+        stage_rect_expanded_for_hud = True
 
     top_bottom = min(stage_bottom, stage_top + int(round(stage_height * float(args.top_ratio))))
     right_left = max(stage_left, stage_right - int(round(stage_width * float(args.right_ratio))))
@@ -2281,6 +2509,7 @@ def command_analyze_hud_diff(args):
             "diffThreshold": diff_threshold,
             "topRatio": float(args.top_ratio),
             "rightRatio": float(args.right_ratio),
+            "stageRectExpandedForHud": stage_rect_expanded_for_hud,
         },
         "checks": checks,
     }
@@ -3111,6 +3340,46 @@ def main():
     visual_guard_parser.add_argument("--min-sampled-unique-colors", type=int, default=8)
     visual_guard_parser.add_argument("--max-dominant-color-pct", type=float, default=98.0)
     visual_guard_parser.set_defaults(func=command_analyze_visual_guard)
+
+    map_popup_guard_parser = subparsers.add_parser("analyze-map-popup-guard")
+    map_popup_guard_parser.add_argument("--input", required=True)
+    map_popup_guard_parser.add_argument("--output")
+    map_popup_guard_parser.add_argument("--annotated-output")
+    map_popup_guard_parser.add_argument("--min-paper-red", type=int, default=135)
+    map_popup_guard_parser.add_argument("--min-paper-green", type=int, default=95)
+    map_popup_guard_parser.add_argument("--min-paper-blue", type=int, default=35)
+    map_popup_guard_parser.add_argument("--min-paper-red-blue-delta", type=int, default=45)
+    map_popup_guard_parser.add_argument("--min-paper-green-blue-delta", type=int, default=18)
+    map_popup_guard_parser.add_argument("--min-paper-pct", type=float, default=12.0)
+    map_popup_guard_parser.add_argument("--min-paper-width-ratio", type=float, default=0.42)
+    map_popup_guard_parser.add_argument("--min-paper-height-ratio", type=float, default=0.45)
+    map_popup_guard_parser.add_argument("--min-margin", type=int, default=10)
+    map_popup_guard_parser.add_argument("--min-bottom-margin", type=int, default=4)
+    map_popup_guard_parser.add_argument("--max-center-x-delta-ratio", type=float, default=0.18)
+    map_popup_guard_parser.add_argument("--edge-ratio", type=float, default=0.10)
+    map_popup_guard_parser.add_argument("--max-blue-red", type=int, default=80)
+    map_popup_guard_parser.add_argument("--min-blue-green", type=int, default=105)
+    map_popup_guard_parser.add_argument("--min-blue-blue", type=int, default=170)
+    map_popup_guard_parser.add_argument("--min-blue-delta", type=int, default=85)
+    map_popup_guard_parser.add_argument("--max-blue-edge-pct", type=float, default=8.0)
+    map_popup_guard_parser.set_defaults(func=command_analyze_map_popup_guard)
+
+    playable_crop_parser = subparsers.add_parser("analyze-playable-crop-guard")
+    playable_crop_parser.add_argument("--input", required=True)
+    playable_crop_parser.add_argument("--output")
+    playable_crop_parser.add_argument("--annotated-output")
+    playable_crop_parser.add_argument("--lower-top-ratio", type=float, default=0.5)
+    playable_crop_parser.add_argument("--min-red", type=int, default=215)
+    playable_crop_parser.add_argument("--min-green", type=int, default=215)
+    playable_crop_parser.add_argument("--min-blue", type=int, default=215)
+    playable_crop_parser.add_argument("--max-channel-spread", type=int, default=55)
+    playable_crop_parser.add_argument("--min-pixels", type=int, default=600)
+    playable_crop_parser.add_argument("--min-width", type=int, default=18)
+    playable_crop_parser.add_argument("--min-height", type=int, default=18)
+    playable_crop_parser.add_argument("--min-bottom-gap", type=int, default=24)
+    playable_crop_parser.add_argument("--touch-tolerance", type=int, default=2)
+    playable_crop_parser.add_argument("--no-fail-exit", action="store_true")
+    playable_crop_parser.set_defaults(func=command_analyze_playable_crop_guard)
 
     hud_diff_parser = subparsers.add_parser("analyze-hud-diff")
     hud_diff_parser.add_argument("--input", required=True)
