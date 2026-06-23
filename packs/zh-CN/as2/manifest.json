@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T12:04:26.369Z",
+  "generatedAt": "2026-06-23T13:35:06.842Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -642,8 +642,13 @@
       "gameplayChanged": true,
       "aliasSynced": true,
       "replaceTargets": [
-        "\\frame_1\\DoAction"
+        "\\frame_1\\DoAction",
+        "\\frame_9\\DoAction"
       ],
+      "dialogueThrottlePatch": {
+        "frameOneChanged": true,
+        "nativeDialogueChanged": true
+      },
       "closeTextPatch": {
         "changed": false,
         "reason": "already-translated"
@@ -654,7 +659,7 @@
         "shapeId": 256,
         "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
-      "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
+      "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, replaces the static vector CLOSE label asset, and throttles active/native AS2 dialogue re-entry."
     }
   ],
   "pendingSwfAssets": [],
@@ -669,7 +674,7 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 111,
+    "replacementCount": 95,
     "swfRuntimeOverrides": "enabled"
   }
 }

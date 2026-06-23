@@ -5091,3 +5091,44 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - This closes the Time Tangled AS3 map description Chinese evidence gap and fixes the AS3 map smoke reload flake.
   - This still does not seal Time Tangled. Remaining active blockers: natural time-machine traversal, natural NPC no-repeat hot-zone checks, item popup use-after-layout, external white-screen links, AS3 dialogue queue protection, and real audio-source inventory.
+
+## 2026-06-23 AS2 Dialogue Re-entry /抢句 Throttle Recheck
+
+- Stayed on reopened global blocker + Time Tangled wave; did not advance to a new island.
+- Corrected an execution mistake first:
+  - `node tools\patch-pack.js --source as2 --asset-pattern gameplay.swf` is not a safe narrow patch path. It starts by clearing `packs/zh-CN/as2`, and it failed with `EPERM` after deleting many AS2 pack entries.
+  - Recovered the deleted AS2 SWF entries from `runtime-data/patched-zips/as2-runtime.zip` back into `packs/zh-CN/as2/swf`.
+  - Restored only necessary AS2 `files` entries for startup/config and the previously modified text assets: `base.php`, framework config XMLs, `get_inventory_menu.php`, `trivia_noItalics.xml`, `clues.xml`, and `islandTime/vendorCart.swf`.
+  - Left pre-existing deleted audio/provenance/report files alone, so deleted/noise fallback audio was not reintroduced.
+- Root cause found:
+  - Existing AS2 `showSay()` duplicate guard only suppressed same-text repeats.
+  - If a new line arrived while a bubble was active, `showSay()` could still replace the current bubble because it only checked `target.__zhLastSayText == text`.
+  - Natural dialogue gate in exported `frame_9` was still short: global `1200ms`, per-target `1600ms`.
+- Code changes:
+  - `tools/lib/pack.js`: source pack logic now blocks any active same-target bubble for 2800ms, raises natural global gate to 2800ms, and per-target gate to 3500ms.
+  - `tools/patch-as2-gameplay-hud-popup.js`: the safe narrow patch entry now patches both gameplay `frame_1` and `frame_9`, including the dialogue throttle, so `gameplay.swf`/`gameplay-zh.swf` can be updated without clearing the whole AS2 pack.
+  - Added QA mode `as2-show-say-active-throttle`, which displays `第一句对话测试` and immediately attempts to push three different follow-up lines. Passing evidence requires the first line to remain visible and the next three to be suppressed.
+- Static/build verification:
+  - `node --check tools\patch-as2-gameplay-hud-popup.js`
+  - `node --check tools\lib\pack.js`
+  - `node tools\patch-as2-gameplay-hud-popup.js`
+  - Patch report: `runtime-data/qa/as2/as2-gameplay-hud-popup-patch.json`.
+  - Runtime zip rebuilt with `replacementCount=95`; the count is lower than the old 111 because previously deleted noise/fallback audio replacements were not restored.
+  - Reverse export proof from `runtime-data/tmp/verify-gameplay-dialogue-throttle`:
+    - `frame_1` contains `_loc4_ - target.__zhLastShowSayAt < 2800`.
+    - `frame_1` contains `as2-show-say-active-throttle` and `QaShowSayActiveThrottle`.
+    - `frame_9` contains `__zhLastDialogueAt < 3500` and `__zhDialogueGateUntil = _loc3_ + 2800`.
+- Runtime verification, G32QC and QA muted:
+  - Active different-text抢句 test passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782221765583.json`.
+    - OCR: `第一句对话测试`.
+    - Server log: `QaShowSayActiveThrottle&suppressed=3&bubble=true&text=...`.
+    - `audioActive=0`, `visualGuardPassed=1`, `failedKeys=[]`.
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782221765583/01-time-tangled-initial.png`; only the first Chinese bubble is visible.
+  - Same-text duplicate regression passed: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782221840607.json`.
+    - OCR: `重复对话测试`.
+    - Server log: `QaShowSayThrottle&suppressed=4&bubble=true&text=...`.
+    - `audioActive=0`, `visualGuardPassed=1`, `failedKeys=[]`.
+    - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782221840607/01-time-tangled-initial.png`; only one duplicate-test bubble is visible.
+- Current conclusion:
+  - This closes controlled AS2 bottom-layer dialogue re-entry/active-bubble抢句 proof.
+  - It still does not seal Time Tangled: natural NPC hot-zone route must be walked for real, and the broader open blockers remain natural time-machine traversal, item use-after-layout, external white-screen links, AS3 queue protection, and real audio source inventory.

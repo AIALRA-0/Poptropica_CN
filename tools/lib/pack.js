@@ -2477,6 +2477,14 @@ function showSay(target, sayText, id)
    zhNow = getTimer();
    zhSayTextKey = decodeZhSayText(sayText);
    zhActiveBubble = target.sayDepth != undefined && this["say" + target.sayDepth] != undefined;
+   if(zhActiveBubble && target.__zhLastShowSayAt != undefined && zhNow - target.__zhLastShowSayAt < 2800)
+   {
+      if(_root != undefined)
+      {
+         _root.__zhSuppressedDuplicateSayCount = Number(_root.__zhSuppressedDuplicateSayCount) + 1;
+      }
+      return undefined;
+   }
    if(target.__zhLastSayText == zhSayTextKey && (zhActiveBubble || target.__zhLastSayClosedAt != undefined && zhNow - target.__zhLastSayClosedAt < 1500 || target.__zhLastShowSayAt != undefined && zhNow - target.__zhLastShowSayAt < 900))
    {
       if(_root != undefined)
@@ -3704,10 +3712,13 @@ function zhQaPopupSceneReady()
 }
 function zhMaybeStartShowSayThrottleProof()
 {
-   if(zhQaAs2DialogMode() != "as2-show-say-throttle" || _root == undefined || _root.__zhQaShowSayThrottleStarted == true)
+   var _loc1_;
+   _loc1_ = zhQaAs2DialogMode();
+   if((_loc1_ != "as2-show-say-throttle" && _loc1_ != "as2-show-say-active-throttle") || _root == undefined || _root.__zhQaShowSayThrottleStarted == true)
    {
       return undefined;
    }
+   _root.__zhQaShowSayThrottleMode = _loc1_;
    _root.__zhQaShowSayThrottleStarted = true;
    _root.__zhQaShowSayThrottleTicks = 0;
    _root.__zhQaShowSayThrottleDone = false;
@@ -3717,6 +3728,8 @@ function zhMaybeStartShowSayThrottleProof()
       var _loc3_;
       var _loc4_;
       var _loc5_;
+      var _loc6_;
+      var _loc7_;
       this.__zhQaShowSayThrottleTicks = Number(this.__zhQaShowSayThrottleTicks) + 1;
       if(this.__zhQaShowSayThrottleTicks < 16)
       {
@@ -3727,12 +3740,21 @@ function zhMaybeStartShowSayThrottleProof()
       {
          this.__zhQaShowSayThrottleDone = true;
          this.__zhSuppressedDuplicateSayCount = 0;
-         _loc3_ = "重复对话测试";
+         _loc3_ = this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle" ? "第一句对话测试" : "重复对话测试";
          this.showSay(_loc2_,_loc3_);
-         this.showSay(_loc2_,_loc3_);
-         this.showSay(_loc2_,_loc3_);
-         this.showSay(_loc2_,_loc3_);
-         this.showSay(_loc2_,_loc3_);
+         if(this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle")
+         {
+            this.showSay(_loc2_,"第二句不应该抢出来");
+            this.showSay(_loc2_,"第三句不应该抢出来");
+            this.showSay(_loc2_,"第四句不应该抢出来");
+         }
+         else
+         {
+            this.showSay(_loc2_,_loc3_);
+            this.showSay(_loc2_,_loc3_);
+            this.showSay(_loc2_,_loc3_);
+            this.showSay(_loc2_,_loc3_);
+         }
          _loc4_ = _loc2_.sayDepth != undefined && this["say" + _loc2_.sayDepth] != undefined;
          if(_loc4_)
          {
@@ -3741,7 +3763,9 @@ function zhMaybeStartShowSayThrottleProof()
             this["say" + _loc2_.sayDepth]._alpha = 100;
          }
          _loc5_ = Number(this.__zhSuppressedDuplicateSayCount);
-         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=QaShowSayThrottle&suppressed=" + _loc5_ + "&bubble=" + _loc4_ + "&ticks=" + this.__zhQaShowSayThrottleTicks,0);
+         _loc6_ = _loc4_ && this["say" + _loc2_.sayDepth].fld != undefined ? escape(this["say" + _loc2_.sayDepth].fld.text) : "";
+         _loc7_ = this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle" ? "QaShowSayActiveThrottle" : "QaShowSayThrottle";
+         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=" + _loc7_ + "&suppressed=" + _loc5_ + "&bubble=" + _loc4_ + "&text=" + _loc6_ + "&ticks=" + this.__zhQaShowSayThrottleTicks,0);
       }
       if(this.__zhQaShowSayThrottleDone == true || this.__zhQaShowSayThrottleTicks > 80)
       {
@@ -4268,7 +4292,7 @@ function zhCanTriggerNativeDialogue(targetPlayer)
    {
       return false;
    }
-   if(targetPlayer.__zhLastDialogueAt != undefined && _loc1_ - targetPlayer.__zhLastDialogueAt < 1600)
+   if(targetPlayer.__zhLastDialogueAt != undefined && _loc1_ - targetPlayer.__zhLastDialogueAt < 3500)
    {
       return false;
    }
@@ -4289,7 +4313,7 @@ function zhCanTriggerNativeDialogue(targetPlayer)
 function zhMarkNativeDialogueTriggered(targetPlayer)
 {
    var _loc1_ = getTimer();
-   _root.__zhDialogueGateUntil = _loc1_ + 1200;
+   _root.__zhDialogueGateUntil = _loc1_ + 2800;
    if(targetPlayer != undefined)
    {
       targetPlayer.__zhLastDialogueAt = _loc1_;

@@ -178,6 +178,43 @@ function findGameplayFrameOneScript(scriptRoot) {
   return candidates[0];
 }
 
+function findGameplayNativeDialogueScript(scriptRoot) {
+  const candidates = listAsScripts(scriptRoot).filter((scriptPath) => {
+    const content = fs.readFileSync(scriptPath, "utf8");
+    return content.includes("function zhCanTriggerNativeDialogue(targetPlayer)") &&
+      content.includes("function zhTriggerNativeDialogue(targetPlayer)");
+  });
+  if (candidates.length !== 1) {
+    throw new Error(`Expected one AS2 gameplay native dialogue script, found ${candidates.length}.`);
+  }
+  return candidates[0];
+}
+
+function patchNativeDialogueGate(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  const before = next;
+  if (!next.includes("targetPlayer.__zhLastDialogueAt != undefined && _loc3_ - targetPlayer.__zhLastDialogueAt < 3500")) {
+    next = replaceRequired(
+      next,
+      "targetPlayer.__zhLastDialogueAt != undefined && _loc3_ - targetPlayer.__zhLastDialogueAt < 1600",
+      "targetPlayer.__zhLastDialogueAt != undefined && _loc3_ - targetPlayer.__zhLastDialogueAt < 3500",
+      "AS2 native dialogue per-target gate"
+    );
+  }
+  if (!next.includes("_root.__zhDialogueGateUntil = _loc3_ + 2800;")) {
+    next = replaceRequired(
+      next,
+      "_root.__zhDialogueGateUntil = _loc3_ + 1200;",
+      "_root.__zhDialogueGateUntil = _loc3_ + 2800;",
+      "AS2 native dialogue global gate"
+    );
+  }
+  return {
+    changed: next !== before,
+    content: next
+  };
+}
+
 function patchFrameOne(content) {
   let next = String(content || "").replace(/\r\n/gu, "\n");
   const before = next;
@@ -2669,6 +2706,106 @@ function patchFrameOne(content) {
     ].join("\n")
   );
 
+  if (!next.includes("_loc4_ - target.__zhLastShowSayAt < 2800")) {
+    next = replaceRequired(
+      next,
+      [
+        '   _loc6_ = target.sayDepth != undefined && this["say" + target.sayDepth] != undefined;',
+        "   if(target.__zhLastSayText == _loc5_ && (_loc6_ || target.__zhLastSayClosedAt != undefined && _loc4_ - target.__zhLastSayClosedAt < 1500 || target.__zhLastShowSayAt != undefined && _loc4_ - target.__zhLastShowSayAt < 900))"
+      ].join("\n"),
+      [
+        '   _loc6_ = target.sayDepth != undefined && this["say" + target.sayDepth] != undefined;',
+        "   if(_loc6_ && target.__zhLastShowSayAt != undefined && _loc4_ - target.__zhLastShowSayAt < 2800)",
+        "   {",
+        "      if(_root != undefined)",
+        "      {",
+        "         _root.__zhSuppressedDuplicateSayCount = Number(_root.__zhSuppressedDuplicateSayCount) + 1;",
+        "      }",
+        "      return undefined;",
+        "   }",
+        "   if(target.__zhLastSayText == _loc5_ && (_loc6_ || target.__zhLastSayClosedAt != undefined && _loc4_ - target.__zhLastSayClosedAt < 1500 || target.__zhLastShowSayAt != undefined && _loc4_ - target.__zhLastShowSayAt < 900))"
+      ].join("\n"),
+      "AS2 active showSay bubble throttle"
+    );
+  }
+
+  if (!next.includes("as2-show-say-active-throttle")) {
+    next = next.replace(
+      /function zhMaybeStartShowSayThrottleProof\(\)\n\{\n[\s\S]*?\n\}\nfunction layoutFramelessGameplayNav\(forceLayout\)/u,
+      [
+        "function zhMaybeStartShowSayThrottleProof()",
+        "{",
+        "   var _loc1_;",
+        "   _loc1_ = zhQaAs2DialogMode();",
+        '   if((_loc1_ != "as2-show-say-throttle" && _loc1_ != "as2-show-say-active-throttle") || _root == undefined || _root.__zhQaShowSayThrottleStarted == true)',
+        "   {",
+        "      return undefined;",
+        "   }",
+        "   _root.__zhQaShowSayThrottleMode = _loc1_;",
+        "   _root.__zhQaShowSayThrottleStarted = true;",
+        "   _root.__zhQaShowSayThrottleTicks = 0;",
+        "   _root.__zhQaShowSayThrottleDone = false;",
+        "   _root.__zhQaShowSayThrottleTick = function()",
+        "   {",
+        "      var _loc2_;",
+        "      var _loc3_;",
+        "      var _loc4_;",
+        "      var _loc5_;",
+        "      var _loc6_;",
+        "      var _loc7_;",
+        "      this.__zhQaShowSayThrottleTicks = Number(this.__zhQaShowSayThrottleTicks) + 1;",
+        "      if(this.__zhQaShowSayThrottleTicks < 16)",
+        "      {",
+        "         return undefined;",
+        "      }",
+        "      _loc2_ = this.camera != undefined && this.camera.scene != undefined ? this.camera.scene.char : undefined;",
+        "      if(this.__zhQaShowSayThrottleDone != true && _loc2_ != undefined && _loc2_.avatar != undefined && this.showSay != undefined && this.sayDepth != undefined)",
+        "      {",
+        "         this.__zhQaShowSayThrottleDone = true;",
+        "         this.__zhSuppressedDuplicateSayCount = 0;",
+        '         _loc3_ = this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle" ? "第一句对话测试" : "重复对话测试";',
+        "         this.showSay(_loc2_,_loc3_);",
+        '         if(this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle")',
+        "         {",
+        '            this.showSay(_loc2_,"第二句不应该抢出来");',
+        '            this.showSay(_loc2_,"第三句不应该抢出来");',
+        '            this.showSay(_loc2_,"第四句不应该抢出来");',
+        "         }",
+        "         else",
+        "         {",
+        "            this.showSay(_loc2_,_loc3_);",
+        "            this.showSay(_loc2_,_loc3_);",
+        "            this.showSay(_loc2_,_loc3_);",
+        "            this.showSay(_loc2_,_loc3_);",
+        "         }",
+        '         _loc4_ = _loc2_.sayDepth != undefined && this["say" + _loc2_.sayDepth] != undefined;',
+        "         if(_loc4_)",
+        "         {",
+        '            this["say" + _loc2_.sayDepth].wait = 7000;',
+        '            this["say" + _loc2_.sayDepth]._visible = true;',
+        '            this["say" + _loc2_.sayDepth]._alpha = 100;',
+        "         }",
+        "         _loc5_ = Number(this.__zhSuppressedDuplicateSayCount);",
+        '         _loc6_ = _loc4_ && this["say" + _loc2_.sayDepth].fld != undefined ? escape(this["say" + _loc2_.sayDepth].fld.text) : "";',
+        '         _loc7_ = this.__zhQaShowSayThrottleMode == "as2-show-say-active-throttle" ? "QaShowSayActiveThrottle" : "QaShowSayThrottle";',
+        '         loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=" + _loc7_ + "&suppressed=" + _loc5_ + "&bubble=" + _loc4_ + "&text=" + _loc6_ + "&ticks=" + this.__zhQaShowSayThrottleTicks,0);',
+        "      }",
+        "      if(this.__zhQaShowSayThrottleDone == true || this.__zhQaShowSayThrottleTicks > 80)",
+        "      {",
+        "         clearInterval(this.__zhQaShowSayThrottleInterval);",
+        "         this.__zhQaShowSayThrottleInterval = undefined;",
+        "      }",
+        "   };",
+        '   _root.__zhQaShowSayThrottleInterval = setInterval(_root,"__zhQaShowSayThrottleTick",250);',
+        "}",
+        "function layoutFramelessGameplayNav(forceLayout)"
+      ].join("\n")
+    );
+    if (!next.includes("QaShowSayActiveThrottle")) {
+      throw new Error("AS2 active showSay QA patch did not apply cleanly.");
+    }
+  }
+
   if (!next.includes("function zhGameplayLogicalRight()") || (next.includes("navBar.btnInventory._x = 652;") && !next.includes("HudLayoutFallback"))) {
     throw new Error("AS2 gameplay HUD popup patch did not apply cleanly.");
   }
@@ -2715,10 +2852,17 @@ function main() {
   runChecked(ffdecCli, ["-cli", "-export", "script", scriptRoot, packSwf], "export AS2 gameplay scripts");
 
   const frameOneScript = findGameplayFrameOneScript(scriptRoot);
-  const patch = patchFrameOne(fs.readFileSync(frameOneScript, "utf8"));
-  fs.writeFileSync(frameOneScript, patch.content, "utf8");
+  const frameOnePatch = patchFrameOne(fs.readFileSync(frameOneScript, "utf8"));
+  fs.writeFileSync(frameOneScript, frameOnePatch.content, "utf8");
 
-  const replacements = patch.changed ? [translatedScriptFileEntry(frameOneScript, scriptRoot)] : [];
+  const nativeDialogueScript = findGameplayNativeDialogueScript(scriptRoot);
+  const nativeDialoguePatch = patchNativeDialogueGate(fs.readFileSync(nativeDialogueScript, "utf8"));
+  fs.writeFileSync(nativeDialogueScript, nativeDialoguePatch.content, "utf8");
+
+  const replacements = [
+    frameOnePatch.changed ? translatedScriptFileEntry(frameOneScript, scriptRoot) : null,
+    nativeDialoguePatch.changed ? translatedScriptFileEntry(nativeDialogueScript, scriptRoot) : null
+  ].filter(Boolean);
   let inputSwf = packSwf;
   if (replacements.length > 0) {
     for (const replacement of replacements) {
@@ -2775,9 +2919,13 @@ function main() {
     gameplayChanged: changed,
     aliasSynced,
     replaceTargets: replacements.map((entry) => entry.replaceTarget),
+    dialogueThrottlePatch: {
+      frameOneChanged: frameOnePatch.changed,
+      nativeDialogueChanged: nativeDialoguePatch.changed
+    },
     closeTextPatch,
     closeShapePatch,
-    notes: "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, and replaces the static vector CLOSE label asset."
+    notes: "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, replaces the static vector CLOSE label asset, and throttles active/native AS2 dialogue re-entry."
   };
   const updatedManifest = updateManifest(manifestPath, runtimeZip, patchEntry);
   const report = {
@@ -2790,6 +2938,10 @@ function main() {
     gameplayChanged: changed,
     aliasSynced,
     replacements,
+    dialogueThrottlePatch: {
+      frameOneChanged: frameOnePatch.changed,
+      nativeDialogueChanged: nativeDialoguePatch.changed
+    },
     closeTextPatch,
     closeShapePatch,
     manifestPath,
