@@ -5580,3 +5580,13 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - The full project goal is not complete yet.
   - The latest verified goal evidence before this checkpoint was `proved=8`, `partial=1`, with `github_sync` as the remaining partial item until the WIP checkpoint is pushed.
   - The new bulk WIP checkpoint still needs a full audit/test pass before it should be treated as final gameplay evidence.
+
+## 2026-06-24 Temporary Extraction Directory Ignore Rules
+
+- Added root-level ignore rules for `$out/`, `$tmp/`, and `content/`.
+- These directories are local extraction/rebuild workspaces produced by AS3 Shell/runtime rebuild experiments and should not be treated as source assets or GitHub sync gaps.
+- Verification:
+  - Before this change, `npm run qa:goal-evidence` stayed at `proved=8`, `partial=1` only because `github_sync` saw `?? $out/`, `?? $tmp/`, and `?? content/`.
+  - After updating `.gitignore`, `git status --short --branch` shows only the `.gitignore` / `progress.md` source changes pending for this batch.
+- Scope note:
+  - This does not prove the full game goal by itself; it removes generated local workspaces from the sync signal so future completion evidence reflects real source changes.

@@ -6,6 +6,9 @@ tools/__pycache__/
 tools/native/**/__pycache__/
 tools/native/php-cgi-wrapper/bin/
 tools/native/php-cgi-wrapper/obj/
+$out/
+$tmp/
+content/
 catalog/coverage-matrix.json
 catalog/islands.json
 runtime-data/*
