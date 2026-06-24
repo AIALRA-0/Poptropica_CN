@@ -5453,3 +5453,16 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This proves the local browser page can trigger AS2 sound-effect bridge behavior without foreground interaction.
   - It still does not prove every natural island scene emits its intended sound; next sound work should target natural scene interactions or regenerate the AS2 sound audit after SWF WIP is stabilized.
+
+## 2026-06-24 Shutdown Handoff
+
+- Paused by user for shutdown after commit `f32b09b` on branch `codex/full-poptropica-qa-20260617`.
+- Last pushed verified checkpoint:
+  - AS2 browser sound playback smoke is active in `tools/qa-as2-sound-bridge.js`.
+  - `npm run qa:as2-sound-bridge` passed with browser playback, coverage manifest, and no failed checks.
+  - Full `npm run verify:pack-inputs` passed for AS2 and AS3 at that checkpoint.
+- Current dirty worktree contains a large unrelated WIP set across AS2 SWFs, AS3 XMLs, manifests, and patch tools. Do not bulk-stage it without a fresh audit.
+- Recommended next continuation:
+  - Re-run `git status --short --branch`.
+  - Continue with AS2 natural sound verification by gating the gameplay `showSound()` to `flashpointPlayAs2Sound` injection path.
+  - Then run `node --check tools\qa-as2-sound-bridge.js`, `npm run qa:as2-sound-bridge`, and `npm run verify:pack-inputs` before staging any code changes.
