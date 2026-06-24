@@ -11,6 +11,37 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 # Progress
 
+## 2026-06-23 Time Tangled map room names and external-link blocker
+
+- Stayed on reopened Time Tangled; did not advance to Super Power.
+- Added `tools/patch-as2-time-map-room-names.js`.
+  - Patched `packs/zh-CN/as2/swf/content/www.poptropica.com/popups/maps/Time.swf`.
+  - Replaced 14 native `RoomName` fields, including `Main\nStreet -> 主街`, `Ancient\nGreece -> 古希腊`, `Vikings -> 维京时代`, and `Possible\nFuture -> 可能的未来`.
+  - Rebuilt `runtime-data/patched-zips/as2-runtime.zip`; later runtime export confirmed `RoomName = "主街"` and `RoomName = "古希腊"` are present in the actual zip.
+- Added `tools/patch-as2-time-external-links.js`.
+  - Time scene FactMonster URLs were removed from the patched Time scene SWFs.
+  - Shared `popups/info/info.swf` now guards external link clicks with `FactMonsterSiteSuppressed` and shows a local disabled-link message instead of opening a browser/blank page.
+  - `scenes/islandTime/vendorCart.swf` is now patched from the current AS2 runtime zip when no source file exists in the pack; its `poptropica.com/books` click is suppressed with `ClickedCartSuppressed`.
+  - Current report: `runtime-data/qa/as2/time-tangled-external-links-patch.json`, `infoGuardPresent=true`, `directLinkSuppressionPresent=true`, runtime `replacementCount=98`.
+  - Runtime export verification: `runtime-data/tmp/as2-time-external-links-verify-zip-scripts` has no `factmonster.com` or `poptropica.com/books` matches; remaining `getURL` hits are the guarded `info.swf` branch and Time Lab internal `_self` requests.
+- Re-ran Time Tangled native navigation audit:
+  - `runtime-data/qa/as2/native-navigation-labels/time-tangled.json`
+  - Result: `ok=true`, `swfCount=25`, `blockerCount=0`, `proofCount=20`, `failedExports=[]`.
+- Runtime verification, G32QC target / no foreground / muted:
+  - Map/HUD report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782267427286.json`.
+    - Result: `ok=true`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `pauseArtifactPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, `failedKeys=[]`.
+    - Screenshots reviewed: `run-1782267427286/01-time-tangled-initial.png` and `run-1782267427286/01-time-tangled-map.png`.
+  - Dialogue active-throttle report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782267559458.json`.
+    - Result: one visible Chinese bubble `第一句对话测试`; server log has `QaShowSayActiveThrottle&suppressed=3&bubble=true`.
+    - Screenshot reviewed: `run-1782267559458/01-time-tangled-initial.png`.
+  - Loading-center report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782267660488.json`.
+    - Result: `loadingCenterPassed=1`; screenshot reviewed: `run-1782267660488/01-time-tangled-loading-sequence/01-time-tangled-loading-300.png`.
+  - Mali visual report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782267770994.json`.
+    - Result: `ok=true`, visual/playable crop/pause artifact/HUD checks passed; screenshot reviewed: `run-1782267770994/01-time-tangled-initial.png`.
+- Current conclusion:
+  - Closed this Time Tangled map-room-name and external-link white-screen blocker wave.
+  - Time Tangled still is not sealed. Remaining items: natural time-device route, more natural NPC no-repeat checks, item use-after-layout, deeper year-scene walkthroughs, real audio-source inventory, and then Super Power.
+
 ## 2026-06-23 Time Tangled Desolation map hotspot / guard fix
 
 - Stayed on the reopened Time Tangled UI blocker; did not advance to Super Power.

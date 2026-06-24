@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 21:40 EDT
+更新时间：2026-06-23 22:25 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 22:25 EDT：Time Tangled 新增地图房间名和外链白屏收口，但仍不声明整岛封版。`tools/patch-as2-time-map-room-names.js` 已把 `popups/maps/Time.swf` 的 14 个原生 `RoomName` 字段改为中文（例如 `主街`、`古希腊`、`维京时代`），运行包反编译确认 `runtime-data/patched-zips/as2-runtime.zip` 使用的是 patched map。`tools/patch-as2-time-external-links.js` 已禁用 Time 岛 FactMonster 科普外链和 `vendorCart` 书籍外链；当前报告 `runtime-data/qa/as2/time-tangled-external-links-patch.json` 记录 `infoGuardPresent=true`、`directLinkSuppressionPresent=true`、AS2 runtime `replacementCount=98`，运行包反编译确认无 `factmonster.com` 和 `poptropica.com/books` 残留，仅保留受保护的 `FactMonsterSiteSuppressed`/`ClickedCartSuppressed` 与 Lab 内部跳转。最新 G32QC/静音/no-foreground 证据：主街地图/HUD `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782267427286.json` 通过，截图 `run-1782267427286/01-time-tangled-initial.png` 与 `01-time-tangled-map.png` 已人工复核；Lab 对话节流 `1782267559458` 通过，截图只有一个中文气泡，日志 `QaShowSayActiveThrottle&suppressed=3`；loading 居中专项 `1782267660488` 通过，截图 `run-1782267660488/01-time-tangled-loading-sequence/01-time-tangled-loading-300.png` 居中；Mali 场景稳定 `1782267770994` 通过；原生导航审计 `runtime-data/qa/as2/native-navigation-labels/time-tangled.json` 通过，`swfCount=25`、`blockerCount=0`。剩余：自然时间装置完整路线、更多自然 NPC no-repeat、任务物品使用后布局、更多年代场景实走、真实音频源和后续逐岛封版。
 
 2026-06-23 21:40 EDT：Time Tangled `Desolation` 的 820px 裁剪地图热点和地图 guard 假阳性已修复，但仍不声明整岛封版。修复 AS2 内部 direct-map 命中区：旧 `right-266..right-190` 已改为跟随可视右边界的 `right-110..right-10`；`base.php` 外层透明 map hotspot 也改为按当前裁剪宽度动态计算。QA 修复：地图点击现在使用 HUD slot row 的 `map` 槽位中心，不再点固定过右坐标；`analyze-map-popup-guard` 增加“大块蓝色按钮组件”检查，避免把橙色场景误判为地图纸张。已重打 `gameplay.swf`、`gameplay-zh.swf` 和 `runtime-data/patched-zips/as2-runtime.zip`，导出 AS 证明旧 `-266/-190` 地图命中区已清除。最新 G32QC/静音/no-foreground 严格证据：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782264817174.json` 通过，`mapClicksPassed=1`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`hudAnchorPassed=1`、`audioActive=0`、`failedKeys=[]`；截图 `run-1782264817174/01-time-tangled-initial.png` 角色可见、无大块蓝边、无淡暂停图标、HUD 在内容右上；截图 `run-1782264817174/01-time-tangled-map.png` 为真实 Time Tangled 地图弹窗，`关闭`/`重启岛屿` 中文按钮可见，静态 `TIME TANGLED ISLAND` 仍按规则保留英文美术。剩余：自然时间装置完整路线、自然 NPC no-repeat、任务物品使用后布局、外链白屏、AS3 对话队列、真实音频源和后续逐岛封版。
 
