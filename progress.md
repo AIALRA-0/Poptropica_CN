@@ -5432,3 +5432,24 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This makes the current AS2 known-sound coverage regressions catchable in CI/local QA.
   - It still does not prove every natural in-scene trigger fires audibly; that needs targeted scene interaction probes or a fresh post-WIP AS2 sound audit.
+
+## 2026-06-24 AS2 Browser Sound Playback Smoke
+
+- Added a real headless browser playback smoke to `tools/qa-as2-sound-bridge.js`.
+- The QA now launches Chromium through the Flashpoint proxy, loads the AS2 `base.php` page with `flashpointQaMuteAudio=1`, wraps the page `Audio()` constructor with `addInitScript`, and invokes `window.flashpointPlayAs2Sound()`.
+- New browser checks prove:
+  - Unknown AS2 sound names return `false`.
+  - Known AS2 sound names return `true`.
+  - The bridge creates real browser `Audio` objects with the expected `_sounds/<key>.mp3` source.
+  - `play()` is called for each created audio object.
+  - QA mute is applied (`muted=true`, `volume=0`).
+  - The bounded sound-effect pool prunes old objects after the configured pool limit of 8.
+- Kept a CLI escape hatch: `--skip-browser-playback` disables this browser-only gate if a future environment needs to run the non-browser source/hash checks only.
+- Verification:
+  - `node --check tools\qa-as2-sound-bridge.js` passed.
+  - `npm run qa:as2-sound-bridge` passed with `expectedSoundCount=20`, `overrideSoundCount=20`, `expectedPathCount=4`, `soundCallCoverage.coveredKnownCount=24`, and `failedChecks=[]`.
+  - Browser playback details from `runtime-data/qa/as2-sound-bridge-latest.json`: Chrome executable `C:\Program Files\Google\Chrome\Application\chrome.exe`, proxy port `22500`, `soundKey=zap`, `playCount=10`, `unknownResult=false`, `audioRecordCount=10`, `playCalledCount=10`, `mutedRecordCount=10`, `pauseCalledCount=2`, `expectedPausedByPool=2`, `consoleErrors=[]`.
+  - Full `npm run verify:pack-inputs` passed for AS2 and AS3; AS2 remains `replacementCount=99`, AS3 remains `replacementCount=1316`, and both have `untrackedRuntimeInputCount=0`.
+- Scope note:
+  - This proves the local browser page can trigger AS2 sound-effect bridge behavior without foreground interaction.
+  - It still does not prove every natural island scene emits its intended sound; next sound work should target natural scene interactions or regenerate the AS2 sound audit after SWF WIP is stabilized.

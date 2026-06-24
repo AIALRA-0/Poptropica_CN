@@ -6,7 +6,7 @@ const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { acquireQaLock } = require("./lib/qa");
-const { readJson, writeJson } = require("./lib/fs-utils");
+const { fileExists, readJson, writeJson } = require("./lib/fs-utils");
 const {
   ensureFlashpointServices,
   mountSourceZip,
@@ -23,6 +23,13 @@ const SOURCE_ZIP_PATHS = {
   as3: path.join(paths.projectRoot, "AS3.zip")
 };
 const SOURCE_ZIP_ENTRY_MAX_BYTES = 32 * 1024 * 1024;
+const AS2_SOUND_EFFECT_POOL_LIMIT = 8;
+const BROWSER_CANDIDATES = [
+  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+  "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+];
 
 function sha256Buffer(buffer) {
   return crypto.createHash("sha256").update(buffer).digest("hex").toUpperCase();
@@ -113,6 +120,16 @@ function normalizePoptropicaAssetPath(assetPath) {
 function sanitizeAs2SoundName(value) {
   const clean = String(value || "").replace(/[^A-Za-z0-9_-]+/gu, "_").replace(/^_+|_+$/gu, "").toLowerCase();
   return clean || null;
+}
+
+function withQaMutedAudio(url) {
+  const nextUrl = new URL(url);
+  nextUrl.searchParams.set("flashpointQaMuteAudio", "1");
+  return nextUrl.href;
+}
+
+function findBrowserExecutable() {
+  return BROWSER_CANDIDATES.find((candidate) => fileExists(candidate)) || null;
 }
 
 function readSourceZipEntry(sourceGroup, sourceAssetPath) {
@@ -228,11 +245,198 @@ function buildSoundCallCoverage({ manifestEntries, pathEntries }) {
   };
 }
 
+async function runBrowserPlaybackCheck({ launchUrl, soundKey, playCount }) {
+  let chromium = null;
+  try {
+    ({ chromium } = require("playwright"));
+  } catch (error) {
+    return {
+      ok: false,
+      failedChecks: ["browser_playback_playwright_missing"],
+      error: String(error.message || error)
+    };
+  }
+
+  const executablePath = findBrowserExecutable();
+  let browser = null;
+  const consoleErrors = [];
+
+  try {
+    browser = await chromium.launch({
+      headless: true,
+      ...(executablePath ? { executablePath } : {}),
+      proxy: {
+        server: `http://127.0.0.1:${PORTS.proxy}`
+      },
+      args: [
+        "--autoplay-policy=no-user-gesture-required"
+      ]
+    });
+
+    const page = await browser.newPage({
+      viewport: {
+        width: 1000,
+        height: 700
+      }
+    });
+    page.on("console", (message) => {
+      if (message.type() === "error") {
+        consoleErrors.push(message.text());
+      }
+    });
+    page.on("pageerror", (error) => {
+      consoleErrors.push(String(error.message || error));
+    });
+    await page.addInitScript(() => {
+      const NativeAudio = window.Audio;
+      const records = [];
+      function WrappedAudio(src) {
+        const audio = new NativeAudio(src);
+        const record = {
+          requestedSrc: String(src || ""),
+          playCalled: false,
+          playResolved: false,
+          playRejected: null,
+          pauseCalled: false,
+          audio
+        };
+        records.push(record);
+        const originalPlay = audio.play ? audio.play.bind(audio) : null;
+        audio.play = function() {
+          record.playCalled = true;
+          if (!originalPlay) {
+            record.playResolved = true;
+            return Promise.resolve();
+          }
+          const result = originalPlay();
+          if (result && typeof result.then === "function") {
+            result
+              .then(() => {
+                record.playResolved = true;
+              })
+              .catch((error) => {
+                record.playRejected = String(error && (error.name || error.message) || error);
+              });
+          }
+          return result;
+        };
+        const originalPause = audio.pause ? audio.pause.bind(audio) : null;
+        audio.pause = function() {
+          record.pauseCalled = true;
+          return originalPause ? originalPause() : undefined;
+        };
+        return audio;
+      }
+      WrappedAudio.prototype = NativeAudio.prototype;
+      window.Audio = WrappedAudio;
+      window.__flashpointAs2AudioProbe = records;
+    });
+
+    const targetUrl = withQaMutedAudio(launchUrl);
+    await page.goto(targetUrl, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000
+    });
+    await page.waitForFunction(() => typeof window.flashpointPlayAs2Sound === "function", null, {
+      timeout: 30000
+    });
+
+    const playback = await page.evaluate(async ({ requestedSoundKey, requestedPlayCount }) => {
+      const unknownResult = window.flashpointPlayAs2Sound("__missing_sound__");
+      const playResults = [];
+      for (let index = 0; index < requestedPlayCount; index += 1) {
+        playResults.push(window.flashpointPlayAs2Sound(requestedSoundKey));
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const records = (window.__flashpointAs2AudioProbe || []).map((record, index) => ({
+        index,
+        requestedSrc: record.requestedSrc,
+        src: record.audio.src,
+        currentSrc: record.audio.currentSrc,
+        muted: record.audio.muted,
+        volume: record.audio.volume,
+        paused: record.audio.paused,
+        readyState: record.audio.readyState,
+        networkState: record.audio.networkState,
+        playCalled: record.playCalled,
+        playResolved: record.playResolved,
+        playRejected: record.playRejected,
+        pauseCalled: record.pauseCalled
+      }));
+      return {
+        href: window.location.href,
+        unknownResult,
+        playResults,
+        records
+      };
+    }, {
+      requestedSoundKey: soundKey,
+      requestedPlayCount: playCount
+    });
+
+    const failedChecks = [];
+    const expectedPausedByPool = Math.max(0, playCount - AS2_SOUND_EFFECT_POOL_LIMIT);
+    const pauseCalledCount = playback.records.filter((record) => record.pauseCalled).length;
+    const expectedSrcFragment = `/_sounds/${soundKey}.`;
+
+    if (consoleErrors.length > 0) failedChecks.push("browser_playback_console_errors");
+    if (playback.unknownResult !== false) failedChecks.push("browser_playback_unknown_sound_not_false");
+    if (playback.playResults.length !== playCount || playback.playResults.some((result) => result !== true)) {
+      failedChecks.push("browser_playback_known_sound_not_true");
+    }
+    if (playback.records.length !== playCount) failedChecks.push("browser_playback_audio_record_count_mismatch");
+    if (playback.records.some((record) => !String(record.currentSrc || record.src || record.requestedSrc).includes(expectedSrcFragment))) {
+      failedChecks.push("browser_playback_audio_src_mismatch");
+    }
+    if (playback.records.some((record) => !record.playCalled)) failedChecks.push("browser_playback_play_not_called");
+    if (playback.records.some((record) => record.muted !== true || record.volume !== 0)) {
+      failedChecks.push("browser_playback_audio_not_muted");
+    }
+    if (pauseCalledCount < expectedPausedByPool) failedChecks.push("browser_playback_pool_limit_not_enforced");
+
+    return {
+      ok: failedChecks.length === 0,
+      failedChecks,
+      executablePath,
+      proxyPort: PORTS.proxy,
+      launchUrl: playback.href,
+      soundKey,
+      playCount,
+      unknownResult: playback.unknownResult,
+      knownResultCount: playback.playResults.length,
+      audioRecordCount: playback.records.length,
+      playCalledCount: playback.records.filter((record) => record.playCalled).length,
+      mutedRecordCount: playback.records.filter((record) => record.muted === true && record.volume === 0).length,
+      pauseCalledCount,
+      expectedPausedByPool,
+      playRejectedCount: playback.records.filter((record) => record.playRejected).length,
+      consoleErrors,
+      records: playback.records
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failedChecks: ["browser_playback_exception"],
+      executablePath,
+      proxyPort: PORTS.proxy,
+      error: String(error.stack || error.message || error),
+      consoleErrors
+    };
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig();
   const launchUrl = String(args.url || DEFAULT_LAUNCH_URL);
   const reportPath = path.resolve(args.output || DEFAULT_REPORT_PATH);
+  const browserPlaybackSoundKey = sanitizeAs2SoundName(args.browserPlaybackSound || args["browser-playback-sound"] || "zap");
+  const browserPlaybackCount = Math.max(1, Number(args.browserPlaybackCount || args["browser-playback-count"] || 10));
+  const skipBrowserPlayback = Boolean(args.skipBrowserPlayback || args["skip-browser-playback"]);
   const manifestPath = path.join(paths.userAudioDir, "as2", "_sounds", ".embedded-sounds.json");
   const lock = acquireQaLock("flashpoint-runtime-qa.lock", {
     sourceGroup: "as2",
@@ -251,6 +455,11 @@ async function main() {
   const pathEntries = Array.isArray(provenance?.pathEntries) ? provenance.pathEntries : [];
   const sourceChecks = buildProvenanceSourceChecks(provenanceEntries, pathEntries);
   const soundCallCoverage = buildSoundCallCoverage({ manifestEntries, pathEntries });
+  let browserPlayback = {
+    ok: true,
+    skipped: true,
+    reason: "disabled_by_cli"
+  };
 
   const basePage = await proxyRequest(launchUrl);
   const overrides = extractSceneAudioOverrides(basePage.body);
@@ -276,6 +485,9 @@ async function main() {
   if (!bridge.externalNamePresent) failedChecks.push("missing_flashpointPlayAs2Sound_export");
   if (!bridge.boundedPoolPresent) failedChecks.push("missing_bounded_audio_pool");
   if (!expectedKeys.length) failedChecks.push("missing_sound_manifest_entries");
+  if (!browserPlaybackSoundKey || !manifestEntries[browserPlaybackSoundKey]) {
+    failedChecks.push(`browser_playback_sound_missing:${browserPlaybackSoundKey || "unknown"}`);
+  }
   if (!soundCallCoverage.available) failedChecks.push("missing_as2_sound_call_coverage");
   if (soundCallCoverage.expectedSoundCount !== expectedKeys.length) failedChecks.push("sound_call_coverage_sound_count_mismatch");
   if (soundCallCoverage.expectedPathCount !== pathEntries.length) failedChecks.push("sound_call_coverage_path_count_mismatch");
@@ -365,6 +577,17 @@ async function main() {
     pathChecks.push(pathCheck);
   }
 
+  if (!skipBrowserPlayback && browserPlaybackSoundKey && manifestEntries[browserPlaybackSoundKey]) {
+    browserPlayback = await runBrowserPlaybackCheck({
+      launchUrl,
+      soundKey: browserPlaybackSoundKey,
+      playCount: browserPlaybackCount
+    });
+    for (const checkName of browserPlayback.failedChecks || []) {
+      failedChecks.push(checkName);
+    }
+  }
+
   const report = {
     ok: failedChecks.length === 0,
     generatedAt: new Date().toISOString(),
@@ -378,6 +601,7 @@ async function main() {
     expectedPathCount: pathEntries.length,
     expectedProvenanceSourceCount: sourceChecks.length,
     soundCallCoverage,
+    browserPlayback,
     bridge,
     failedChecks,
     sourceChecks,
@@ -396,6 +620,16 @@ async function main() {
       expectedKnownCount: report.soundCallCoverage.expectedKnownCount,
       coveredKnownCount: report.soundCallCoverage.coveredKnownCount,
       missingKnownCount: report.soundCallCoverage.missingKnownCount
+    },
+    browserPlayback: {
+      ok: report.browserPlayback.ok,
+      skipped: Boolean(report.browserPlayback.skipped),
+      soundKey: report.browserPlayback.soundKey || browserPlaybackSoundKey,
+      playCount: report.browserPlayback.playCount || browserPlaybackCount,
+      audioRecordCount: report.browserPlayback.audioRecordCount ?? null,
+      playCalledCount: report.browserPlayback.playCalledCount ?? null,
+      mutedRecordCount: report.browserPlayback.mutedRecordCount ?? null,
+      pauseCalledCount: report.browserPlayback.pauseCalledCount ?? null
     },
     failedChecks: report.failedChecks,
     reportPath
