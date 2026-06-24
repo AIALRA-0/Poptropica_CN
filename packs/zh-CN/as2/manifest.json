@@ -681,7 +681,15 @@
     "status": "ready",
     "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 95,
+    "replacementCount": 99,
     "swfRuntimeOverrides": "enabled"
+  },
+  "superPowerSceneLoadCheckPatch": {
+    "generatedAt": "2026-06-24T04:29:04.515Z",
+    "reportPath": "runtime-data/qa/as2/super-power-scene-loadcheck-patch.json",
+    "changedCount": 1,
+    "changedSwfs": [
+      "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneBank.swf"
+    ]
   }
 }

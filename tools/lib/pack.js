@@ -2105,7 +2105,7 @@ function removeAs2SuperPowerStaticLabelPatch(content) {
 const AS2_SUPER_POWER_SCENE_LOADCHECK_BASE_SNIPPET = `this.createEmptyMovieClip("loadCheck",1);
 loadCheck.onEnterFrame = function()
 {
-   if(Chars.length <= 0)
+   if(Chars.length <= 0 || this.wait > 120)
    {
       delete this.onEnterFrame;
       initChars();
@@ -2127,13 +2127,6 @@ loadCheck.wait = 0;
 loadCheck.onEnterFrame = function()
 {
    this.wait += 1;
-   if(Chars.length <= 0 || this.wait > 24)
-   {
-      delete this.onEnterFrame;
-      initChars();
-      removeMovieClip(loadCheck);
-      return undefined;
-   }
    var _loc2_ = 0;
    while(_loc2_ < Chars.length)
    {
@@ -2143,6 +2136,13 @@ loadCheck.onEnterFrame = function()
          _loc2_ -= 1;
       }
       _loc2_ += 1;
+   }
+   if(Chars.length <= 0)
+   {
+      delete this.onEnterFrame;
+      initChars();
+      removeMovieClip(loadCheck);
+      return undefined;
    }
 };`;
 
@@ -2158,9 +2158,8 @@ function applyAs2SuperPowerSceneLoadCheckCompatibilityPatch({ sourceScriptRoot, 
       patchedContent = patchedContent.replace(AS2_SUPER_POWER_SCENE_LOADCHECK_BASE_SNIPPET, AS2_SUPER_POWER_SCENE_LOADCHECK_TIMEOUT_SNIPPET);
     } else if (patchedContent.includes(AS2_SUPER_POWER_SCENE_LOADCHECK_TIMEOUT_SNIPPET)) {
       // Already patched.
-    } else {
-      continue;
     }
+    patchedContent = applyAs2SuperPowerSceneAvatarReadinessPatch(patchedContent);
     if (patchedContent === normalizeScriptContent(baseContent)) {
       continue;
     }
@@ -2169,6 +2168,191 @@ function applyAs2SuperPowerSceneLoadCheckCompatibilityPatch({ sourceScriptRoot, 
     changed = true;
   }
   return { ok: true, changed };
+}
+
+const AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER = `function zhSuperAdvanceGameplayFrame()
+{
+   var target = null;
+   if(typeof com != "undefined" && com.poptropica != undefined && com.poptropica.models != undefined && com.poptropica.models.PopModelConst != undefined && com.poptropica.models.PopModelConst.gameplayMC != undefined)
+   {
+      target = com.poptropica.models.PopModelConst.gameplayMC;
+   }
+   if((target == undefined || target.nextFrame == undefined) && _root != undefined && _root.gameplay_container_mc != undefined)
+   {
+      target = _root.gameplay_container_mc;
+   }
+   if((target == undefined || target.nextFrame == undefined) && _parent != undefined && _parent._parent != undefined && _parent._parent != _root && _parent._parent.nextFrame != undefined)
+   {
+      target = _parent._parent;
+   }
+   if(target != undefined && target.nextFrame != undefined)
+   {
+      var beforeFrame = Number(target._currentframe);
+      target.nextFrame();
+      if(!isNaN(beforeFrame) && beforeFrame < 2 && Number(target._currentframe) < 3)
+      {
+         target.nextFrame();
+      }
+      if(typeof zhSuperBankQaLog == "function")
+      {
+         zhSuperBankQaLog("AdvanceFrame","target=gameplay&before=" + beforeFrame + "&after=" + Number(target._currentframe));
+      }
+      return "gameplay";
+   }
+   if(_root != undefined && _root.nextFrame != undefined)
+   {
+      var rootBeforeFrame = Number(_root._currentframe);
+      _root.nextFrame();
+      if(!isNaN(rootBeforeFrame) && rootBeforeFrame < 2 && Number(_root._currentframe) < 3)
+      {
+         _root.nextFrame();
+      }
+      if(typeof zhSuperBankQaLog == "function")
+      {
+         zhSuperBankQaLog("AdvanceFrame","target=root&before=" + rootBeforeFrame + "&after=" + Number(_root._currentframe));
+      }
+      return "root";
+   }
+   if(_level0 != undefined && _level0.nextFrame != undefined)
+   {
+      var levelBeforeFrame = Number(_level0._currentframe);
+      _level0.nextFrame();
+      if(!isNaN(levelBeforeFrame) && levelBeforeFrame < 2 && Number(_level0._currentframe) < 3)
+      {
+         _level0.nextFrame();
+      }
+      if(typeof zhSuperBankQaLog == "function")
+      {
+         zhSuperBankQaLog("AdvanceFrame","target=level0&before=" + levelBeforeFrame + "&after=" + Number(_level0._currentframe));
+      }
+      return "level0";
+   }
+   if(typeof zhSuperBankQaLog == "function")
+   {
+      zhSuperBankQaLog("AdvanceFrame","target=none");
+   }
+   return "none";
+}`;
+
+function applyAs2SuperPowerSceneAvatarReadinessPatch(content) {
+  let normalized = normalizeScriptContent(content);
+  normalized = normalized.replace(
+    '      zhSuperAdvanceGameplayFrame();\n      return "root";',
+    '      _root.nextFrame();\n      return "root";'
+  );
+  const helperStart = normalized.indexOf("function zhSuperAdvanceGameplayFrame()\n{");
+  const initStart = helperStart >= 0 ? normalized.indexOf("\nfunction initChars()", helperStart) : -1;
+  if (helperStart >= 0 && initStart > helperStart) {
+    normalized = `${normalized.slice(0, helperStart)}${AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER}${normalized.slice(initStart)}`;
+  } else if (normalized.includes("_root.nextFrame();") && !normalized.includes("function zhSuperAdvanceGameplayFrame()")) {
+    normalized = normalized.replace(
+      "function initChars()\n{",
+      `${AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER}\nfunction initChars()\n{`
+    );
+  }
+  const lines = normalized.split("\n");
+  const output = [];
+  let insideAdvanceHelper = false;
+  let advanceHelperBraceDepth = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (/^function zhSuperAdvanceGameplayFrame\(\)$/u.test(line.trim())) {
+      insideAdvanceHelper = true;
+      advanceHelperBraceDepth = 0;
+      output.push(line);
+      continue;
+    }
+    if (insideAdvanceHelper) {
+      output.push(line);
+      advanceHelperBraceDepth += (line.match(/\{/gu) || []).length;
+      advanceHelperBraceDepth -= (line.match(/\}/gu) || []).length;
+      if (advanceHelperBraceDepth <= 0 && line.trim() === "}") {
+        insideAdvanceHelper = false;
+      }
+      continue;
+    }
+    const createBack = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.createBackPlayer\(\);$/u);
+    if (createBack && !hasRecentGuard(lines, index, `if(${createBack[2]}.createBackPlayer != undefined)`)) {
+      output.push(`${createBack[1]}if(${createBack[2]}.createBackPlayer != undefined)`);
+      output.push(`${createBack[1]}{`);
+      output.push(`${createBack[1]}   ${createBack[2]}.createBackPlayer();`);
+      output.push(`${createBack[1]}}`);
+      continue;
+    }
+    const createNpc = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.createNPC\((.*)\);$/u);
+    if (createNpc && !hasRecentGuard(lines, index, `if(${createNpc[2]}.createNPC != undefined)`)) {
+      output.push(`${createNpc[1]}if(${createNpc[2]}.createNPC != undefined)`);
+      output.push(`${createNpc[1]}{`);
+      output.push(`${createNpc[1]}   ${createNpc[2]}.createNPC(${createNpc[3]});`);
+      output.push(`${createNpc[1]}}`);
+      continue;
+    }
+    const nextFrame = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.avatar\.nextFrame\(\);$/u);
+    if (nextFrame && !hasRecentGuard(lines, index, `if(${nextFrame[2]}.avatar != undefined)`)) {
+      output.push(`${nextFrame[1]}if(${nextFrame[2]}.avatar != undefined)`);
+      output.push(`${nextFrame[1]}{`);
+      output.push(`${nextFrame[1]}   ${nextFrame[2]}.avatar.nextFrame();`);
+      output.push(`${nextFrame[1]}}`);
+      continue;
+    }
+    const meanEyes = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.avatar\.meanEyes\(\);$/u);
+    if (meanEyes && !hasRecentGuard(lines, index, `if(${meanEyes[2]}.avatar != undefined && ${meanEyes[2]}.avatar.meanEyes != undefined)`)) {
+      output.push(`${meanEyes[1]}if(${meanEyes[2]}.avatar != undefined && ${meanEyes[2]}.avatar.meanEyes != undefined)`);
+      output.push(`${meanEyes[1]}{`);
+      output.push(`${meanEyes[1]}   ${meanEyes[2]}.avatar.meanEyes();`);
+      output.push(`${meanEyes[1]}}`);
+      continue;
+    }
+    const setParts = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.avatar\.setParts\(\);$/u);
+    if (setParts && !hasRecentGuard(lines, index, `if(${setParts[2]}.avatar != undefined && ${setParts[2]}.avatar.setParts != undefined)`)) {
+      output.push(`${setParts[1]}if(${setParts[2]}.avatar != undefined && ${setParts[2]}.avatar.setParts != undefined)`);
+      output.push(`${setParts[1]}{`);
+      output.push(`${setParts[1]}   ${setParts[2]}.avatar.setParts();`);
+      output.push(`${setParts[1]}}`);
+      continue;
+    }
+    const itemFrame = line.match(/^(\s*)([A-Za-z_$][\w$]*)\.avatar\.itemFrame = ([^;]+);$/u);
+    if (itemFrame && !hasRecentGuard(lines, index, `if(${itemFrame[2]}.avatar != undefined)`)) {
+      output.push(`${itemFrame[1]}if(${itemFrame[2]}.avatar != undefined)`);
+      output.push(`${itemFrame[1]}{`);
+      output.push(`${itemFrame[1]}   ${itemFrame[2]}.avatar.itemFrame = ${itemFrame[3]};`);
+      output.push(`${itemFrame[1]}}`);
+      continue;
+    }
+    const rootNext = line.match(/^(\s*)_root\.nextFrame\(\);$/u);
+    if (rootNext) {
+      output.push(`${rootNext[1]}zhSuperAdvanceGameplayFrame();`);
+      if (
+        String(lines[index + 1] || "").trim() === "if(_level0 != undefined && _level0 != _root && _level0.nextFrame != undefined)" &&
+        String(lines[index + 2] || "").trim() === "{" &&
+        String(lines[index + 3] || "").trim() === "_level0.nextFrame();" &&
+        String(lines[index + 4] || "").trim() === "}"
+      ) {
+        index += 4;
+      }
+      continue;
+    }
+    output.push(line);
+  }
+  return output.join("\n");
+}
+
+function hasRecentGuard(lines, index, guardLine) {
+  for (let cursor = index - 1; cursor >= 0 && index - cursor <= 3; cursor -= 1) {
+    if (String(lines[cursor] || "").trim() === guardLine) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function hasFollowingLine(lines, index, expectedLine) {
+  for (let cursor = index + 1; cursor < lines.length && cursor - index <= 4; cursor += 1) {
+    if (String(lines[cursor] || "").trim() === expectedLine) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function applyAs2SuperPowerDirectEdgeExitPatch({ sourceScriptRoot, translatedScriptRoot }) {
@@ -5239,7 +5423,7 @@ function requestFlashMapResetDialog() {
 
 function resolveMapHotspot(viewport) {
     const hotspot = Object.assign({}, MAP_HOTSPOT);
-    if(viewport && viewport.useViewportCrop && Number(viewport.cropWidth) <= 840) {
+    if(viewport && viewport.useViewportCrop) {
         const cropRight = Number(viewport.cropLeft || 0) + Number(viewport.cropWidth || 0);
         hotspot.x = Math.max(Number(viewport.cropLeft || 0), cropRight - 110);
         hotspot.y = -5;
@@ -5356,12 +5540,26 @@ function scheduleResizeRecoveryReload() {
     viewportResizeLastSize = size;
     if(!shrank)
         return;
+    if(resizeRecoveryAlreadyReloaded())
+        return;
     if(viewportResizeReloadTimer)
         clearTimeout(viewportResizeReloadTimer);
     viewportResizeReloadTimer = setTimeout(reloadAfterViewportShrink, 900);
 }
 
+function resizeRecoveryAlreadyReloaded() {
+    try {
+        return new URL(window.location.href).searchParams.has("flashpointResizeReload");
+    } catch(err) {
+        return String(window.location.search || "").indexOf("flashpointResizeReload=") >= 0;
+    }
+}
+
 function reloadAfterViewportShrink() {
+    if(resizeRecoveryAlreadyReloaded()) {
+        applyCurrentViewport();
+        return;
+    }
     try {
         const url = new URL(window.location.href);
         url.searchParams.delete("flashpointQaLoadingHoldMs");
@@ -7833,6 +8031,10 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
             sourceScriptRoot,
             translatedScriptRoot,
             assetPath: sample.asset_path
+          });
+          applyAs2SuperPowerSceneLoadCheckCompatibilityPatch({
+            sourceScriptRoot,
+            translatedScriptRoot
           });
         } catch (error) {
           manifest.pendingSwfAssets.push({

@@ -5351,3 +5351,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 ## TODO AS3 Runtime Input Tracking
 
 - Continue resolving the remaining dirty working tree separately: AS2 Super Power / Time Tangled SWF changes, AS3 tracked XML edits, helper script edits, and scratch `$out` / `$tmp` / `content` paths are still outside this focused runtime-input tracking commit.
+
+## 2026-06-24 Shutdown Handoff - AS2 Super Power Bank
+
+- Stopped active iteration for shutdown and kept the scope to a handoff-safe WIP commit.
+- Investigated the AS2 Super Power interaction-smoke failure for `room=The Bank`.
+- Root cause 1 is fixed in the QA launcher: the room override now normalizes against discovered AS2 room names, so `The Bank` resolves to `Bank` and requests `scenes/islandSuper/sceneBank.swf` instead of the missing `sceneThe%20Bank.swf`.
+- Hardened `tools/qa-as2-interaction-smoke.js` so `--require-scene-evidence` now also fails if the final screenshot is still on the Poptropica loading screen. This exposed a previous false pass.
+- Added Super Power scene avatar/readiness hardening to `tools/lib/pack.js` and mirrored it in `tools/patch-as2-super-power-scenes.js`; rebuilt AS2 runtime zip after patching `sceneBank.swf`.
+- Static checks passed:
+  - `node --check tools\qa-as2-interaction-smoke.js`
+  - `node --check tools\lib\pack.js`
+  - `node --check tools\patch-as2-super-power-scenes.js`
+- Latest Super Power Bank runtime QA still fails correctly with `initial_loading_screen_still_visible`.
+  - Report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782275427486.json`
+  - Screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782275427486/01-super-power-initial.png`
+  - Server log shows the corrected `sceneBank.swf` request and `AdvanceFrame&target=gameplay&before=2&after=2`, so the next pass should debug deferred gameplay timeline advancement after frame 2.
+- Do not treat this as a completed island fix. It is a reproducible narrowed blocker with better QA detection and a committed handoff point.

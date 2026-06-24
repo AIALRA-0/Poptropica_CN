@@ -50,8 +50,54 @@ function splitCsv(value) {
     .filter(Boolean);
 }
 
+function normalizeAs2RoomToken(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/^the\s+/u, "")
+    .replace(/[^a-z0-9]+/gu, "");
+}
+
+function resolveAs2RoomParam(entry, requestedRoom) {
+  const rawRoom = String(requestedRoom || "").trim();
+  if (!rawRoom) {
+    return {
+      roomParam: String(entry.roomParam || "").trim(),
+      requestedRoom: null,
+      normalized: false,
+      matchedBy: "entry"
+    };
+  }
+
+  const discoveredRooms = Array.isArray(entry.discoveredRooms) ? entry.discoveredRooms : [];
+  if (discoveredRooms.includes(rawRoom)) {
+    return {
+      roomParam: rawRoom,
+      requestedRoom: rawRoom,
+      normalized: false,
+      matchedBy: "exact"
+    };
+  }
+
+  const wantedTokens = new Set([
+    normalizeAs2RoomToken(rawRoom),
+    normalizeAs2RoomToken(rawRoom.replace(/^the\s+/iu, "")),
+    normalizeAs2RoomToken(rawRoom.replace(/\broom\b/giu, ""))
+  ].filter(Boolean));
+  const matchedRoom = discoveredRooms.find((room) => wantedTokens.has(normalizeAs2RoomToken(room)));
+  return {
+    roomParam: matchedRoom || rawRoom,
+    requestedRoom: rawRoom,
+    normalized: Boolean(matchedRoom && matchedRoom !== rawRoom),
+    matchedBy: matchedRoom ? "discovered-room-token" : "unmatched"
+  };
+}
+
 function containsCjkText(value) {
   return /[\u3400-\u9fff].*[\u3400-\u9fff]/u.test(String(value || ""));
+}
+
+function containsLoadingScreenText(value) {
+  return /\b(?:POPTROPICA\s+)?(?:LOADING|STARTING)\b/iu.test(String(value || ""));
 }
 
 function applyVisibleQaDefaults(args) {
@@ -503,7 +549,7 @@ function withoutAs2PopupLaunchArgs(args) {
 }
 
 function withLaunchQuery(url, args) {
-  const roomOverride = String(args.roomOverride || args["room-override"] || "").trim();
+  const roomOverride = String(args.resolvedRoomOverride || args.roomOverride || args["room-override"] || "").trim();
   const islandOverride = String(args.islandOverride || args["island-override"] || "").trim();
   const autoOpenMapAfterMs = String(args.autoOpenMapAfterMs || args["auto-open-map-after-ms"] || "").trim();
   const qaViewportParams = {
@@ -2054,11 +2100,19 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     clearPoptropicaFlashState({ reason: `qa-as2-interaction-smoke:${entry.canonicalKey}` });
   }
 
+  const requestedRoomOverride = String(args.roomOverride || args["room-override"] || "").trim();
+  const roomOverrideResolution = resolveAs2RoomParam(entry, requestedRoomOverride);
+  const launchArgs = roomOverrideResolution.requestedRoom
+    ? {
+        ...args,
+        resolvedRoomOverride: roomOverrideResolution.roomParam
+      }
+    : args;
   const logOffset = getFileSize(GAME_SERVER_LOG_PATH);
-  const launchUrl = withLaunchQuery(entry.launchUrl, args);
+  const launchUrl = withLaunchQuery(entry.launchUrl, launchArgs);
   const effectiveEntry = {
     ...entry,
-    roomParam: String(args.roomOverride || args["room-override"] || entry.roomParam || "").trim(),
+    roomParam: roomOverrideResolution.roomParam,
     islandParam: String(args.islandOverride || args["island-override"] || entry.islandParam || "").trim()
   };
   const launchHealth = await requestLaunchHealth(launchUrl, args);
@@ -2227,6 +2281,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!initial.stage?.stageRect || Number(initial.stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
   }
+  if (flagEnabled(args.requireSceneEvidence) && containsLoadingScreenText(initial.ocr?.text)) {
+    failedChecks.push("initial_loading_screen_still_visible");
+  }
   if (shouldRequireVisualGuard(args) && !initial.visualGuard?.ok) {
     failedChecks.push("initial_visual_guard_failed");
   }
@@ -2302,6 +2359,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     canonicalKey: entry.canonicalKey,
     islandParam: effectiveEntry.islandParam,
     roomParam: effectiveEntry.roomParam,
+    roomOverrideResolution,
     sceneFolder: entry.sceneFolder,
     launchUrl,
     launchHealth: summarizeLaunchHealth(launchHealth),
