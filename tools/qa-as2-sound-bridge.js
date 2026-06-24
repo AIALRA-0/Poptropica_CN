@@ -17,6 +17,7 @@ const {
 const DEFAULT_LAUNCH_URL = "http://www.poptropica.com/base.php?room=Costume&island=Super&startup_path=gameplay";
 const DEFAULT_REPORT_PATH = path.join(paths.qaDir, "as2-sound-bridge-latest.json");
 const SEEDED_AS2_SOUND_PROVENANCE_PATH = path.join(paths.as2PackDir, "provenance", "as2-sound-effect-sources.json");
+const AS2_SOUND_CALL_COVERAGE_PATH = path.join(paths.as2PackDir, "provenance", "as2-sound-call-coverage.json");
 const SOURCE_ZIP_PATHS = {
   as2: path.join(paths.projectRoot, "AS2.zip"),
   as3: path.join(paths.projectRoot, "AS3.zip")
@@ -103,6 +104,17 @@ function normalizeAssetPath(assetPath) {
   return String(assetPath || "").replace(/\\/gu, "/").replace(/^\/+/u, "");
 }
 
+function normalizePoptropicaAssetPath(assetPath) {
+  return normalizeAssetPath(assetPath)
+    .replace(/^content\/www\.poptropica\.com\//iu, "")
+    .toLowerCase();
+}
+
+function sanitizeAs2SoundName(value) {
+  const clean = String(value || "").replace(/[^A-Za-z0-9_-]+/gu, "_").replace(/^_+|_+$/gu, "").toLowerCase();
+  return clean || null;
+}
+
 function readSourceZipEntry(sourceGroup, sourceAssetPath) {
   const zipPath = SOURCE_ZIP_PATHS[sourceGroup];
   const entryPath = normalizeAssetPath(sourceAssetPath);
@@ -168,6 +180,54 @@ function buildProvenanceSourceChecks(entries, pathEntries) {
   });
 }
 
+function buildSoundCallCoverage({ manifestEntries, pathEntries }) {
+  const coverage = readJson(AS2_SOUND_CALL_COVERAGE_PATH, null);
+  const coverageEntries = Array.isArray(coverage?.entries) ? coverage.entries : [];
+  const manifestSoundKeys = new Set(Object.keys(manifestEntries || {}));
+  const pathKeys = new Set(
+    pathEntries
+      .map((entry) => normalizePoptropicaAssetPath(entry.assetPath))
+      .filter(Boolean)
+  );
+  const checks = [];
+
+  for (const entry of coverageEntries) {
+    const type = entry.type === "path" ? "path" : "sound";
+    const expectedKey = type === "path"
+      ? normalizePoptropicaAssetPath(entry.pathKey || entry.assetPath || entry.names?.[0])
+      : sanitizeAs2SoundName(entry.soundKey || entry.names?.[0]);
+    const ok = Boolean(expectedKey) && (type === "path" ? pathKeys.has(expectedKey) : manifestSoundKeys.has(expectedKey));
+    checks.push({
+      type,
+      expectedKey,
+      soundKey: type === "sound" ? expectedKey : null,
+      assetPath: type === "path" ? (entry.assetPath || null) : null,
+      names: Array.isArray(entry.names) ? entry.names : [],
+      callCount: Number.isFinite(entry.callCount) ? entry.callCount : null,
+      ok
+    });
+  }
+
+  const missing = checks.filter((check) => !check.ok);
+  const expectedSoundCount = checks.filter((check) => check.type === "sound").length;
+  const expectedPathCount = checks.filter((check) => check.type === "path").length;
+  return {
+    coveragePath: AS2_SOUND_CALL_COVERAGE_PATH,
+    available: Boolean(coverage),
+    generatedAt: coverage?.generatedAt || null,
+    sourceAuditPath: coverage?.sourceAuditPath || null,
+    sourceAuditGeneratedAt: coverage?.sourceAuditGeneratedAt || null,
+    sourceAuditSummary: coverage?.sourceAuditSummary || null,
+    expectedKnownCount: checks.length,
+    expectedSoundCount,
+    expectedPathCount,
+    coveredKnownCount: checks.length - missing.length,
+    missingKnownCount: missing.length,
+    checks,
+    missing
+  };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig();
@@ -190,6 +250,7 @@ async function main() {
   const provenanceEntries = Array.isArray(provenance?.entries) ? provenance.entries : [];
   const pathEntries = Array.isArray(provenance?.pathEntries) ? provenance.pathEntries : [];
   const sourceChecks = buildProvenanceSourceChecks(provenanceEntries, pathEntries);
+  const soundCallCoverage = buildSoundCallCoverage({ manifestEntries, pathEntries });
 
   const basePage = await proxyRequest(launchUrl);
   const overrides = extractSceneAudioOverrides(basePage.body);
@@ -215,6 +276,12 @@ async function main() {
   if (!bridge.externalNamePresent) failedChecks.push("missing_flashpointPlayAs2Sound_export");
   if (!bridge.boundedPoolPresent) failedChecks.push("missing_bounded_audio_pool");
   if (!expectedKeys.length) failedChecks.push("missing_sound_manifest_entries");
+  if (!soundCallCoverage.available) failedChecks.push("missing_as2_sound_call_coverage");
+  if (soundCallCoverage.expectedSoundCount !== expectedKeys.length) failedChecks.push("sound_call_coverage_sound_count_mismatch");
+  if (soundCallCoverage.expectedPathCount !== pathEntries.length) failedChecks.push("sound_call_coverage_path_count_mismatch");
+  for (const missing of soundCallCoverage.missing) {
+    failedChecks.push(`missing_sound_call_coverage:${missing.type}:${missing.expectedKey || "unknown"}`);
+  }
   if (overrideSoundKeys.length !== expectedKeys.length) failedChecks.push("override_sound_count_mismatch");
   for (const overrideKey of unexpectedOverrideKeys) {
     failedChecks.push(`unexpected_override:${overrideKey}`);
@@ -310,6 +377,7 @@ async function main() {
     unexpectedOverrideKeys,
     expectedPathCount: pathEntries.length,
     expectedProvenanceSourceCount: sourceChecks.length,
+    soundCallCoverage,
     bridge,
     failedChecks,
     sourceChecks,
@@ -324,6 +392,11 @@ async function main() {
     overrideSoundCount: report.overrideSoundCount,
     expectedPathCount: report.expectedPathCount,
     expectedProvenanceSourceCount: report.expectedProvenanceSourceCount,
+    soundCallCoverage: {
+      expectedKnownCount: report.soundCallCoverage.expectedKnownCount,
+      coveredKnownCount: report.soundCallCoverage.coveredKnownCount,
+      missingKnownCount: report.soundCallCoverage.missingKnownCount
+    },
     failedChecks: report.failedChecks,
     reportPath
   });

@@ -5413,3 +5413,22 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This raises AS2 bridge coverage from 17 to 20 named `_sounds/*` overrides and closes the current explicit known uncovered names from the June 10 audit.
   - It does not prove every in-scene sound trigger naturally fires, and it does not replace a future full fresh sound audit after the remaining SWF/XML WIP settles.
+
+## 2026-06-24 AS2 Sound Call Coverage Gate
+
+- Converted the June 10 AS2 sound-call audit result into a tracked coverage manifest:
+  - New file: `packs/zh-CN/as2/provenance/as2-sound-call-coverage.json`.
+  - It records 24 normalized known audio targets from the audit: 20 `_sounds/*` keys and 4 direct path-loaded MP3 assets.
+  - The source audit remains `runtime-data/qa/as2-sound-calls-audit.json`, generated `2026-06-10T13:29:58.577Z`, with 616 total AS2 sound calls and 24 unique known sound names.
+- Hardened `tools/qa-as2-sound-bridge.js`:
+  - Reads the tracked coverage manifest instead of depending on untracked runtime-data at test time.
+  - Fails if any expected sound key is missing from the generated AS2 sound override manifest.
+  - Fails if any expected path-loaded MP3 is missing from the provenance path entries.
+  - Reports `soundCallCoverage.expectedKnownCount`, `coveredKnownCount`, and `missingKnownCount`.
+- Verification:
+  - `node --check tools\qa-as2-sound-bridge.js` passed.
+  - `npm run qa:as2-sound-bridge` passed with `expectedSoundCount=20`, `overrideSoundCount=20`, `expectedPathCount=4`, `expectedProvenanceSourceCount=21`, `soundCallCoverage.expectedKnownCount=24`, `coveredKnownCount=24`, `missingKnownCount=0`, and `failedChecks=[]`.
+  - Full `npm run verify:pack-inputs` passed for AS2 and AS3; AS2 remains `replacementCount=99`, AS3 remains `replacementCount=1316`, and both have `untrackedRuntimeInputCount=0`.
+- Scope note:
+  - This makes the current AS2 known-sound coverage regressions catchable in CI/local QA.
+  - It still does not prove every natural in-scene trigger fires audibly; that needs targeted scene interaction probes or a fresh post-WIP AS2 sound audit.

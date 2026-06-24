@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-06-24T05:01:25.105Z",
+  "sourceAuditPath": "runtime-data/qa/as2-sound-calls-audit.json",
+  "sourceAuditGeneratedAt": "2026-06-10T13:29:58.577Z",
+  "sourceAuditSummary": {
+    "soundCallCount": 616,
+    "uniqueKnownSoundNames": 24
+  },
+  "entries": [
+    {
+      "type": "path",
+      "assetPath": "externalAssets/audio/haunted_house.mp3",
+      "pathKey": "externalassets/audio/haunted_house.mp3",
+      "names": [
+        "externalAssets/audio/haunted_house.mp3"
+      ],
+      "callCount": 1
+    },
+    {
+      "type": "path",
+      "assetPath": "scenes/islandNightWatch/assets/elevatorMusic.mp3",
+      "pathKey": "scenes/islandnightwatch/assets/elevatormusic.mp3",
+      "names": [
+        "scenes/islandNightWatch/assets/elevatorMusic.mp3"
+      ],
+      "callCount": 1
+    },
+    {
+      "type": "path",
+      "assetPath": "scenes/islandVampire/assets/RainSound.mp3",
+      "pathKey": "scenes/islandvampire/assets/rainsound.mp3",
+      "names": [
+        "scenes/islandVampire/assets/RainSound.mp3"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "path",
+      "assetPath": "scenes/islandVampire/assets/ThunderSound.mp3",
+      "pathKey": "scenes/islandvampire/assets/thundersound.mp3",
+      "names": [
+        "scenes/islandVampire/assets/ThunderSound.mp3"
+      ],
+      "callCount": 1
+    },
+    {
+      "type": "sound",
+      "soundKey": "alvin",
+      "names": [
+        "Alvin"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "sound",
+      "soundKey": "boom",
+      "names": [
+        "boom"
+      ],
+      "callCount": 28
+    },
+    {
+      "type": "sound",
+      "soundKey": "chomp",
+      "names": [
+        "chomp"
+      ],
+      "callCount": 10
+    },
+    {
+      "type": "sound",
+      "soundKey": "coolhisssound_wav",
+      "names": [
+        "CoolHissSound.wav"
+      ],
+      "callCount": 3
+    },
+    {
+      "type": "sound",
+      "soundKey": "croneline",
+      "names": [
+        "croneLine"
+      ],
+      "callCount": 1
+    },
+    {
+      "type": "sound",
+      "soundKey": "crunch",
+      "names": [
+        "crunch"
+      ],
+      "callCount": 16
+    },
+    {
+      "type": "sound",
+      "soundKey": "gr",
+      "names": [
+        "gr"
+      ],
+      "callCount": 5
+    },
+    {
+      "type": "sound",
+      "soundKey": "ouch",
+      "names": [
+        "ouch"
+      ],
+      "callCount": 34
+    },
+    {
+      "type": "sound",
+      "soundKey": "poof",
+      "names": [
+        "poof"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "sound",
+      "soundKey": "pop",
+      "names": [
+        "pop"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "sound",
+      "soundKey": "pow",
+      "names": [
+        "Pow",
+        "pow"
+      ],
+      "callCount": 9
+    },
+    {
+      "type": "sound",
+      "soundKey": "raarr",
+      "names": [
+        "raarr"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "sound",
+      "soundKey": "ring",
+      "names": [
+        "ring"
+      ],
+      "callCount": 9
+    },
+    {
+      "type": "sound",
+      "soundKey": "shock",
+      "names": [
+        "shock"
+      ],
+      "callCount": 3
+    },
+    {
+      "type": "sound",
+      "soundKey": "splat",
+      "names": [
+        "splat"
+      ],
+      "callCount": 11
+    },
+    {
+      "type": "sound",
+      "soundKey": "stingwimpy",
+      "names": [
+        "stingWimpy"
+      ],
+      "callCount": 2
+    },
+    {
+      "type": "sound",
+      "soundKey": "thump",
+      "names": [
+        "thump"
+      ],
+      "callCount": 11
+    },
+    {
+      "type": "sound",
+      "soundKey": "tickle",
+      "names": [
+        "tickle"
+      ],
+      "callCount": 1
+    },
+    {
+      "type": "sound",
+      "soundKey": "whack",
+      "names": [
+        "whack"
+      ],
+      "callCount": 15
+    },
+    {
+      "type": "sound",
+      "soundKey": "zap",
+      "names": [
+        "zap"
+      ],
+      "callCount": 309
+    }
+  ]
+}
