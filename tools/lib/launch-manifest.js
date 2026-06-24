@@ -207,20 +207,23 @@ function chooseRoom(rooms, priorities) {
   return viable.sort((left, right) => left.localeCompare(right))[0] || null;
 }
 
-function buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath, as3TargetScene }) {
+function buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath, as3TargetScene, reloadOnResize, seedIsland, seedEvents, startX, startY, startDirection }) {
   if (sourceGroup === "as3") {
     return as3TargetScene
-      ? buildAs3DirectSceneUrl(as3TargetScene)
+      ? buildAs3DirectSceneUrl(as3TargetScene, { reloadOnResize, seedIsland, seedEvents, startX, startY, startDirection })
       : "http://www.poptropica.com/base.php?room=FlashpointStart";
   }
 
   return `http://www.poptropica.com/base.php?room=${encodeURIComponent(roomParam)}&island=${encodeURIComponent(islandParam)}&startup_path=${encodeURIComponent(startupPath || "gameplay")}`;
 }
 
-function buildEntry({ catalogEntry, sourceGroup, sceneFolder, roomParam, islandParam, startupPath, discoveredRooms, shellEvidence }) {
+function buildEntry({ catalogEntry, sourceGroup, sceneFolder, roomParam, islandParam, startupPath, discoveredRooms, shellEvidence, reloadOnResize, seedIsland, seedEvents, startX, startY, startDirection }) {
   const resolvedStartupPath = startupPath || "gameplay";
   const as3TargetScene = sourceGroup === "as3" ? toAs3SceneClass(sceneFolder, roomParam) : null;
   const classPresent = sourceGroup === "as3" ? shellContainsTargetClass(shellEvidence, as3TargetScene, sceneFolder) : null;
+  const hasSeedEvents = Array.isArray(seedEvents) ? seedEvents.length > 0 : Boolean(seedEvents);
+  const hasStartPosition = startX !== undefined && startX !== null && startX !== "" &&
+    startY !== undefined && startY !== null && startY !== "";
 
   if (!sceneFolder || !roomParam || !islandParam || !discoveredRooms || discoveredRooms.size === 0) {
     return {
@@ -269,8 +272,24 @@ function buildEntry({ catalogEntry, sourceGroup, sceneFolder, roomParam, islandP
     discoveredRooms: discoveredRooms ? [...discoveredRooms].sort() : [],
     fallbackMode: sourceGroup === "as3" ? "as3-direct-wrapper" : "base-php",
     launchMode: sourceGroup === "as3" ? "as3-direct-scene" : "as2-scene",
-    launchUrl: buildLaunchUrl({ sourceGroup, roomParam, islandParam, startupPath: resolvedStartupPath, as3TargetScene }),
+    launchUrl: buildLaunchUrl({
+      sourceGroup,
+      roomParam,
+      islandParam,
+      startupPath: resolvedStartupPath,
+      as3TargetScene,
+      reloadOnResize,
+      seedIsland,
+      seedEvents,
+      startX,
+      startY,
+      startDirection
+    }),
     ...(as3TargetScene ? { as3TargetScene } : {}),
+    ...(sourceGroup === "as3" && seedIsland ? { seedIsland } : {}),
+    ...(sourceGroup === "as3" && hasSeedEvents ? { seedEvents } : {}),
+    ...(sourceGroup === "as3" && hasStartPosition ? { startX, startY } : {}),
+    ...(sourceGroup === "as3" && startDirection ? { startDirection } : {}),
     ...(sourceGroup === "as3"
       ? {
           classEvidence: {
@@ -311,6 +330,13 @@ function discoverAs3Entries(as3Entries, sceneMap, overrides, shellEvidence) {
     const discoveredRooms = sceneMap.get(sceneFolder) || new Set();
     const roomParam = override.roomParam || chooseRoom(discoveredRooms, AS3_ROOM_PRIORITY);
     const islandParam = override.islandParam || sceneFolder;
+    const hasQaSeedState = Boolean(
+      override.seedIsland ||
+      override.seedEvents ||
+      override.startX !== undefined ||
+      override.startY !== undefined ||
+      override.startDirection
+    );
     return buildEntry({
       catalogEntry: entry,
       sourceGroup: "as3",
@@ -319,7 +345,13 @@ function discoverAs3Entries(as3Entries, sceneMap, overrides, shellEvidence) {
       islandParam,
       startupPath: override.startupPath || "gameplay",
       discoveredRooms,
-      shellEvidence
+      shellEvidence,
+      reloadOnResize: override.reloadOnResize !== undefined ? override.reloadOnResize : "frame",
+      seedIsland: override.seedIsland || (hasQaSeedState ? islandParam : null),
+      seedEvents: override.seedEvents || [],
+      startX: override.startX,
+      startY: override.startY,
+      startDirection: override.startDirection
     });
   });
 }

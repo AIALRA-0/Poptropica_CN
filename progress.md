@@ -5553,3 +5553,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This improves no-foreground resize/UI QA stability for AS2 visual checks.
   - It does not replace live all-island interaction smoke; future runtime-flow work should reuse this helper in the broader resize matrix once that larger WIP is audited.
+
+## 2026-06-24 AS3 Launch Manifest Seed/Resize URL Sync
+
+- Hardened `tools/lib/launch-manifest.js` so AS3 launch entries now pass launch override QA state through to `buildAs3DirectSceneUrl()`.
+- The generator now preserves tracked manifest behavior for AS3 direct wrapper URLs:
+  - Default AS3 `reloadOnResize` stays `frame`.
+  - `poptropicon` gets `flashpointSeedIsland=con1`, `flashpointStartX=1740`, `flashpointStartY=1430`, and `flashpointStartDirection=right`.
+  - `timmy-failure` gets `flashpointSeedIsland=timmy`, `flashpointSeedEvents=intro_complete`, `flashpointStartX=3050`, `flashpointStartY=1530`, and `flashpointStartDirection=left`.
+- Verification:
+  - `node --check tools/lib/launch-manifest.js` passed.
+  - Direct `generateLaunchManifest(undefined, { write: false })` assertions confirmed those AS3 URL params and entry metadata are reproduced.
+  - `npm run qa:launch-gaps` passed with `manifestTotalEntries=47`, `manifestLaunchableCount=47`, and `manifestUnresolvedCount=0`.
+  - A full generated-vs-tracked manifest comparison still differs at `as3Shell.compressedBytes` because current AS3 runtime/Shell assets are dirty WIP; `catalog/launch-manifest.json` was intentionally not rewritten in this batch.
+- Scope note:
+  - This prevents future manifest regeneration from silently dropping AS3 QA seed/start positions or changing resize reload behavior.
+  - It does not validate live AS3 gameplay flows; those remain covered by separate AS3 smoke/P0 playability WIP.
