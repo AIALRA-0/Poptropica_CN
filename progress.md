@@ -5392,3 +5392,24 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - Default Super Power report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782276066178.json`, `ok=true`, `failedChecks=[]`.
   - Default screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782276066178/01-super-power-initial.png`; it shows the Down Town/Main Street entry with player, NPCs, and right-top HUD.
 - Scope note: this closes the previously narrowed Super Power Bank entry blocker. It does not prove all Super Power objectives or all-island completion yet.
+
+## 2026-06-24 AS2 Sound Seed Coverage +3
+
+- Continued the AS2 sound recovery track from the current dirty `codex/full-poptropica-qa-20260617` worktree without reverting unrelated WIP.
+- Re-read `runtime-data/qa/as2-sound-calls-audit.json` and narrowed the remaining known uncovered AS2 sound names to:
+  - `tickle`: one Back Lot `sceneCoffeeshopLeft.swf` call from `CoffeshopLeft.strollerSay()` after the player salutes near the stroller.
+  - `stingWimpy`: two inferred Wimpy Boardwalk `sceneLeftside.swf` comicSound collision calls.
+  - `Alvin`: two literal calls from `alvinYell()` in Poptropolis `scenes/islandTribal/assets/char.swf` and Wild West `scenes/islandWest/assets/horse.swf`, paired with avatar cry mouth animation and screen shake.
+- Added three official AS3 effect seeds to `packs/zh-CN/as2/audio/as2/_sounds/` and documented each in `packs/zh-CN/as2/provenance/as2-sound-effect-sources.json`:
+  - `tickle.mp3` from `content/www.poptropica.com/game/sound/effects/baby_cry_01.mp3`, sha256 `DC545BE401F54EBB9B7FE307662C36A51058DFAEBD36C4F50C756DA80AF02D17`.
+  - `stingwimpy.mp3` from `content/www.poptropica.com/game/sound/effects/choral_stinger_01.mp3`, sha256 `8F43F852FFC699CC570D206F6F254551D77DBD36B26CAC5DF5187ED5A424249F`.
+  - `alvin.mp3` from `content/www.poptropica.com/game/sound/effects/tally_ho_yell.mp3`, sha256 `7FA15A98F4AB62EB5A6A79CF170CD79071AC45DB4DB3DB64ABB42161FA0F1406`.
+- Verification:
+  - Seed hash check against provenance passed for all three new files.
+  - `npm run rebuild:runtime-zip -- --source as2` passed; the runtime zip was reused, but AS2 sound manifest sync is performed by the Flashpoint mount path.
+  - `npm run qa:as2-sound-bridge` passed with `expectedSoundCount=20`, `overrideSoundCount=20`, `expectedPathCount=4`, `expectedProvenanceSourceCount=21`, and `failedChecks=[]`.
+  - `npm run verify:pack-inputs -- --source as2` passed with `replacementCount=99`, `manifestReplacementCount=99`, and `untrackedRuntimeInputCount=0`.
+  - Full `npm run verify:pack-inputs` passed for AS2 and AS3; AS3 remains `replacementCount=1316` with `untrackedRuntimeInputCount=0`.
+- Scope note:
+  - This raises AS2 bridge coverage from 17 to 20 named `_sounds/*` overrides and closes the current explicit known uncovered names from the June 10 audit.
+  - It does not prove every in-scene sound trigger naturally fires, and it does not replace a future full fresh sound audit after the remaining SWF/XML WIP settles.

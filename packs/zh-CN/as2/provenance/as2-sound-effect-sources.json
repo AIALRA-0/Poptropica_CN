@@ -168,6 +168,42 @@
       "sha256": "5F6D2AC57FA17D4F9DC860F87A05633EDFDFCE815DDBD685FC80E84ABAD15886",
       "confidence": "script-context-match",
       "mappingReason": "AS2 raarr is emitted by a function named lionRoar; official AS3 lion_roar_01.mp3 directly matches that script context."
+    },
+    {
+      "soundName": "tickle",
+      "fileName": "tickle.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/baby_cry_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/tickle.mp3",
+      "bytes": 15673,
+      "sha256": "DC545BE401F54EBB9B7FE307662C36A51058DFAEBD36C4F50C756DA80AF02D17",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 tickle is emitted from Back Lot CoffeeshopLeft.strollerSay() at the stroller after the player salutes; official AS3 baby_cry_01.mp3 is the closest local baby/stroller vocal source."
+    },
+    {
+      "soundName": "stingWimpy",
+      "fileName": "stingwimpy.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/choral_stinger_01.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/stingwimpy.mp3",
+      "bytes": 34481,
+      "sha256": "8F43F852FFC699CC570D206F6F254551D77DBD36B26CAC5DF5187ED5A424249F",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 stingWimpy is inferred from Wimpy Boardwalk comicSound arguments passed into hit collision handlers; official AS3 choral_stinger_01.mp3 is the closest local stinger cue."
+    },
+    {
+      "soundName": "Alvin",
+      "fileName": "alvin.mp3",
+      "sourceGroup": "as3",
+      "sourceType": "official-as3-sound-effect-seed",
+      "sourceAssetPath": "content/www.poptropica.com/game/sound/effects/tally_ho_yell.mp3",
+      "seedPath": "packs/zh-CN/as2/audio/as2/_sounds/alvin.mp3",
+      "bytes": 19121,
+      "sha256": "7FA15A98F4AB62EB5A6A79CF170CD79071AC45DB4DB3DB64ABB42161FA0F1406",
+      "confidence": "script-context-match",
+      "mappingReason": "AS2 Alvin is emitted by alvinYell() in Tribal char.swf and West horse.swf while the avatar mouth plays cry and the scene shakes; official AS3 tally_ho_yell.mp3 is the closest local single-character yell source."
     }
   ],
   "pathEntries": [
