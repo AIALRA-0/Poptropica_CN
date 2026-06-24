@@ -193,6 +193,12 @@ async function main() {
 
   const basePage = await proxyRequest(launchUrl);
   const overrides = extractSceneAudioOverrides(basePage.body);
+  const overrideSoundKeys = Object.keys(overrides)
+    .filter((key) => key.startsWith("_sounds/"))
+    .sort((left, right) => left.localeCompare(right, "en"));
+  const expectedOverrideKeys = expectedKeys.map((soundKey) => `_sounds/${soundKey}`);
+  const expectedOverrideKeySet = new Set(expectedOverrideKeys);
+  const unexpectedOverrideKeys = overrideSoundKeys.filter((key) => !expectedOverrideKeySet.has(key));
   const checks = [];
   const pathChecks = [];
   const failedChecks = [];
@@ -209,6 +215,10 @@ async function main() {
   if (!bridge.externalNamePresent) failedChecks.push("missing_flashpointPlayAs2Sound_export");
   if (!bridge.boundedPoolPresent) failedChecks.push("missing_bounded_audio_pool");
   if (!expectedKeys.length) failedChecks.push("missing_sound_manifest_entries");
+  if (overrideSoundKeys.length !== expectedKeys.length) failedChecks.push("override_sound_count_mismatch");
+  for (const overrideKey of unexpectedOverrideKeys) {
+    failedChecks.push(`unexpected_override:${overrideKey}`);
+  }
   for (const check of sourceChecks) {
     if (!check.ok) {
       failedChecks.push(`source_mismatch:${check.sourceGroup}:${check.sourceAssetPath}`);
@@ -295,7 +305,9 @@ async function main() {
     manifestPath,
     manifestGeneratedAt: manifest?.generatedAt || null,
     expectedSoundCount: expectedKeys.length,
-    overrideSoundCount: Object.keys(overrides).filter((key) => key.startsWith("_sounds/")).length,
+    overrideSoundCount: overrideSoundKeys.length,
+    overrideSoundKeys,
+    unexpectedOverrideKeys,
     expectedPathCount: pathEntries.length,
     expectedProvenanceSourceCount: sourceChecks.length,
     bridge,

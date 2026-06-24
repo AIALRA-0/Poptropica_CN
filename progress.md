@@ -5324,3 +5324,18 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Current conclusion:
   - Public AS3 HUD click/visual blocker is closed for the Poptropicon representative sample.
   - Next route stays in the user-requested order: return to Time Tangled reopened seal, then Super Power, Early Poptropica, Shark Tooth, 24 Carrot, Spy, Mystery Train.
+
+## 2026-06-24 AS2 Sound Bridge Provenance Recheck
+
+- Resumed from the dirty `codex/full-poptropica-qa-20260617` worktree and did not revert the existing Time Tangled / AS3 / AS2 WIP.
+- First `npm run qa:as2-sound-bridge` exposed a weak-pass condition: `expectedSoundCount: 3`, `overrideSoundCount: 17`, `expectedPathCount: 0`, `expectedProvenanceSourceCount: 0`, and `ok: true`. The page still exposed 17 `_sounds` overrides, but the current manifest only validated 3 of them.
+- Restored the tracked AS2 official seed sound provenance path and seed presence from current local evidence so `syncSeededAs2SoundOverrides()` can rebuild the expected manifest. Restored `externalAssets/audio/haunted_house.mp3` into the AS2 pack, then rebuilt only AS2 runtime zip with `npm run rebuild:runtime-zip -- --source as2`.
+- Hardened `tools/qa-as2-sound-bridge.js`: it now records `overrideSoundKeys` and `unexpectedOverrideKeys`, fails on `_sounds` override count mismatch, and fails on extra page overrides that are not backed by the manifest.
+- Re-ran `npm run qa:as2-sound-bridge`; it now passes with `expectedSoundCount: 17`, `overrideSoundCount: 17`, `expectedPathCount: 4`, `expectedProvenanceSourceCount: 18`, and no failed checks.
+- Re-ran `npm run verify:pack-inputs -- --source as2`; AS2 passes with `replacementCount: 99`, `manifestReplacementCount: 99`, and `untrackedRuntimeInputCount: 0`.
+- Full `npm run verify:pack-inputs` still fails because the current AS3 WIP has 628 untracked runtime input files. This is not caused by the AS2 sound restore, but it must be resolved before claiming full pack integrity.
+
+## TODO AS2 Sound Bridge Provenance Recheck
+
+- Commit the focused AS2 sound bridge QA hardening separately from the larger existing WIP if the worktree remains mixed.
+- Resolve or intentionally manifest the 628 AS3 untracked runtime inputs before treating AS3 runtime pack verification as green.
