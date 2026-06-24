@@ -1,0 +1,75 @@
+<doors>
+	<door id="doorMansion">
+		<scene>game.scenes.timmy.mansion.Mansion</scene>
+		<x>2650</x>
+		<y>950</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>40</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorTimmysHouse">
+		<scene>game.scenes.timmy.timmysHouse.TimmysHouse</scene>
+		<x>1020</x>
+		<y>750</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+
+<!-- 	<door id="doorTimmysRoom"> -->
+<!-- 		<scene>game.scenes.timmy.timmysHouse.TimmysHouse</scene> -->
+<!-- 		<x>158</x> -->
+<!-- 		<y>255</y> -->
+<!-- 		<label> -->
+<!-- 			<text>Enter</text> -->
+<!-- 			<type>exit3D</type> -->
+<!-- 			<offset> -->
+<!-- 				<x>0</x> -->
+<!-- 				<y>40</y> -->
+<!-- 			</offset> -->
+<!-- 		</label> -->
+<!-- 		<direction>right</direction> -->
+<!-- 	</door> -->
+
+	<door id="doorSchool">
+		<scene>game.scenes.timmy.adStreet3.AdStreet3</scene>
+		<x>150</x>
+		<y>940</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.timmysStreet.TimmysStreet</scene>
+				<x>4000</x>
+				<y>940</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.school.School</scene>
+				<x>150</x>
+				<y>695</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

@@ -1,0 +1,210 @@
+<dialogs>
+	<character id="crusoe">
+		<statement id="look">啊……冒险家朋友们！</statement>
+		<statement id="scat">蒙戈，在客人面前不穿制服？！快走开！</statement>
+		<statement id="memories" link="long_ago">你说比赛？这让我想起我年轻时的冒险时光。</statement>
+		<statement id="long_ago" link="dreams">那时我正年轻，准备去追寻梦想。</statement>
+		<statement id="dreams" link="father">每个人都想追随梦想，但我的梦想与众不同。</statement>
+		<statement id="father" link="voyage">父亲一直很支持我，但连他也跟不上我的脚步。</statement>
+		<statement id="voyage" link="one_day">我航行到许多遥远的岛，却总是功亏一篑。</statement>
+		<statement id="one_day" link="afraid">直到有一天，我遇到了一群猴子。</statement>
+		<statement id="afraid" link="knew">一开始我很害怕，可以说是吓呆了。</statement>
+		<statement id="knew" link="smoothies">但我内心深处知道，这才是我该待的地方。</statement>
+		<statement id="smoothies" link="dreams">这杯水果冰沙让我想起了年轻时的时光……</statement>
+		<statement id="long_story_short" link="digress">所以我就来到了这个度假村。</statement>
+		<statement id="digress" link="help" linkEntityId="player">不过说远了。你想重新参加比赛吗？</statement>
+		<statement id="need" link="stuff" linkEntityId="amelia">当然可以。给我带些绳子、一块布和一杯清爽的水果饮料就行。</statement>
+		<statement id="stop_bell">别摇铃了，我就在这儿！</statement>
+		<statement event="three_ingredients">记住，带三样东西给我：布、绳子和一杯水果饮料。</statement>
+		<statement event="has_crusoe_item" triggerEvent="triggerEvent" triggerEventArgs="give_items">有东西要给我吗？</statement>
+		<statement event="gave_rope">光有绳子不够。我还需要布和饮料。</statement>
+		<statement event="gave_canvas">布是个开始，但我还需要绳子和饮料来把它们组合起来</statement>
+		<statement event="gave_drink">这饮料真提神。不过没有绳子或布，我也做不了什么。</statement>
+		<statement event="gave_rope_canvas">就差一杯饮料就能参加比赛了！记得往机器里加水果。</statement>
+		<statement event="gave_rope_drink">我还需要那块布。我记得水果原本是装在……</statement>
+		<statement event="gave_canvas_drink">就差绳子来把它们绑在一起了。</statement>
+		<statement id="gave_all" link="wait">在这儿等着，看我大显身手。</statement>
+		<statement id="wait">谁都不许打扰我。我必须全神贯注。</statement>
+		<statement id="hammock">嗯？什么？没什么比一杯冷饮更棒了。</statement>
+		<statement id="rested">休息好了才能发挥最佳水平。</statement>
+		<statement id="plans">这是设计图。</statement>
+		<statement id="built">等你搭好了再叫醒我。</statement>
+		<statement event="saw_crusoe_plans">呼呼呼冒险呼呼呼</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="amelia">
+		<statement id="strange">这是什么，热带度假村吗？</statement>
+		<statement>度假村怎么空荡荡的，有人吗？</statement>
+		<statement id="ring_bell" forceOnScreen="true">我们按铃叫人来吧。</statement>
+		<statement id="guests">我们不能久留，得赢下飞行王牌大赛！</statement>
+		<statement id="dialog_speed" link="dialog_speed_answer">那个克鲁索话真多，要我教你快速跳过对话吗？</statement>
+		<statement id="stuff" triggerEvent="triggerEvent" triggerEventArgs="heard_ingredients">绳子、布料和饮料？我们能找到。</statement>
+		<statement event="three_ingredients">看这古怪的装置！他能造这个，肯定也能造飞机。</statement>
+		<statement event="has_crusoe_item">希望克鲁索能好好利用那些东西！</statement>
+		<statement id="so_long" link="gave_everything" forceOnScreen="true">他怎么这么久？</statement>
+		<statement event="gave_everything" forceOnScreen="true">也许你该去看看他在干嘛。</statement>
+		<statement id="well_rested">嘿！你用那些材料做了个吊床！</statement>
+		<statement event="saw_crusoe_plans" link="holding">唉，这计划行不通了。</statement>
+		<statement id="holding">嘿，那只猴子拿着什么？</statement>
+		<statement id="masterminds">原来猴子们才是整个计划的主谋！</statement>
+		<statement id="great">这飞艇太棒了！ [Player Name]，快上来吧。</statement>
+		<statement id="made_blimp">快上来！</statement>
+		<statement id="gone" link="no_time">可能在哪打盹呢。</statement>
+		<statement id="no_time">不过没时间耽搁了，我们得赶紧回到比赛中！</statement>
+		<conversation id="dialog_speed_answer">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="show_dialog_speed_tutorial">好！</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="skip_speed_tutorial">不用了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="help" link="need" linkEntityId="crusoe">是的，你能帮我们吗？</statement>
+		<statement id="stahp" link="you_bet" linkEntityId="crusoe">我们只想问：你能帮我们离开这座岛吗？</statement>
+		<statement id="no_fruit">它需要更多水果。</statement>
+		<statement id="no_fruit_dropped">我得给这台机器找些水果。</statement>
+		<statement id="pushing">嗯……看来他们想把它弄到什么地方去。</statement>
+		<statement id="fruit_canvas">怎么才能把水果送到机器那儿？</statement>
+		<statement id="cranking">克鲁索把这些可怜的猴子使唤得团团转。</statement>
+		<statement id="just_need" link="gasp">我只需要——</statement>
+		<statement id="gasp" link="pull_harder">*倒吸一口气*</statement>
+		<statement id="pull_harder">——再用力拉！</statement>
+		<statement id="strong">我可能低估了自己的力气。</statement>
+		<statement id="need_fruit">至少我们拿到了水果，还顺便弄到了绳子！</statement>
+		<statement id="last_fruit">好了，启动这台机器吧。</statement>
+		<statement id="get_drink">费这么大劲就为这么一小杯饮料。</statement>
+		<statement id="hes_not_here">他肯定就在附近……</statement>
+		<statement id="plan">这就是你的计划？</statement>
+		<statement id="monkey_plans">哇，太棒了！你真能造出来吗？</statement>
+		<statement id="thanks_mongo">谢谢你的帮助，蒙戈。</statement>
+		<statement id="where_crusoe" link="gone" linkEntityId="amelia">克鲁索去哪儿了？还以为他会来送我们呢。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="monkey">
+		<statement id="hello">呼呼哈哈啊！</statement>
+		<statement event="gave_everything">啊啊咿咿咿咿！</statement>
+		<statement id="plans">咿咿咿咿咿！</statement>
+		<statement event="made_blimp">咿咿咿咿咿！</statement>
+
+
+
+
+
+	</character>
+	<character id="monkey1">
+		<statement>喔喔啊啊啊？</statement>
+		<statement event="made_blimp">咿咿咿咿咿！</statement>
+
+
+
+	</character>
+	<character id="monkey2">
+		<statement event="gotItem_rope">咿咿喔喔喔！</statement>
+		<statement event="made_blimp">咿咿咿咿咿！</statement>
+
+
+
+	</character>
+	<character id="monkey3">
+		<statement event="gotItem_rope">呼呼咿咿咿！</statement>
+		<statement event="made_blimp">咿咿咿咿咿！</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

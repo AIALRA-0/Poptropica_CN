@@ -1,0 +1,21 @@
+<doors>
+	<door id="doorJoesCondo">
+		<scene>game.scenes.virusHunter.joesCondo.JoesCondo</scene>
+		<x>750</x>
+		<y>450</y>
+		<label>
+			<text>退出</text>
+			<asset>exitUp</asset>
+		</label>
+	</door>
+
+	<door id="doorHeart">
+		<scene>game.scenes.virusHunter.heart.Heart</scene>
+		<x>2850</x>
+		<y>250</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,97 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.virusHunter.adStreet.AdStreet</scene>
+		<x>920</x>
+		<y>590</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.virusHunter.cityLeft.CityLeft</scene>
+				<x>2650</x>
+				<y>1320</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+				<x>50</x>
+				<y>1440</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.virusHunter.adStreetR.AdStreetR</scene>
+		<x>40</x>
+		<y>590</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+				<x>4370</x>
+				<y>1440</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.virusHunter.cityRight.CityRight</scene>
+				<x>50</x>
+				<y>1355</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="exitGlobochem">
+		<scene>game.scenes.virusHunter.officeInterior.OfficeInterior</scene>
+		<x>1150</x>
+		<y>1193</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitTownHall">
+		<scene>game.scenes.virusHunter.common.Common</scene>
+		<x>608</x>
+		<y>936</y>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>旅行</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

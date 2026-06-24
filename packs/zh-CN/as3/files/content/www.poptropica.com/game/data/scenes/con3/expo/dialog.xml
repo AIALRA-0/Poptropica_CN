@@ -1,0 +1,39 @@
+<dialogs>
+	<character id="player">
+		<statement id="gotIt">明白了！</statement>
+
+
+		</character>
+	<character id="wizard">
+		<statement id="best">史上最棒的展会！</statement>
+		<statement>史上最棒的展会！</statement>
+
+
+
+		</character>
+	<character id="fan">
+		<statement id="top">明年肯定没法超越。</statement>
+		<statement>明年肯定没法超越。</statement>
+
+
+
+		</character>
+	<character id="leader">
+		<statement id="sorry" triggerEvent="giveItem" triggerEventArgs="medal_con3, leader">那个……我出卖人类的事，咱们能一笔勾销吗？要不，我把这个给你？</statement>
+		<statement>那个……我出卖人类的事，咱们能一笔勾销吗？</statement>
+
+
+
+	</character>
+	<character id="stan">
+		<statment>这剧情太刺激了，真该拍成电影！</statment>
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

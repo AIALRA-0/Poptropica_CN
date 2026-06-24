@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorApartmentNormal">
+		<scene>game.scenes.shrink.apartmentNormal.ApartmentNormal</scene>
+		<x>2190</x>
+		<y>510</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

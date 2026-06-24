@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorAvenueA">
+		<scene>game.scenes.shrink.avenueA.AvenueA</scene>
+		<x>1667</x>
+		<y>990</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorBathroomNormal">
+		<scene>game.scenes.shrink.bathroomNormal.BathroomNormal</scene>
+		<x>1145</x>
+		<y>470</y>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+</doors>

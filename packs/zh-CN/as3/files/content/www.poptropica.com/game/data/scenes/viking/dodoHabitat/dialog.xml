@@ -1,0 +1,15 @@
+<dialogs>
+	<character id="player">
+		<statment id="hungry">这附近有什么东西胃口真大。</statment>
+		<statment id="lure">我得把嘟嘟鸟从它们的巢边引开。</statment>
+		<statment id="empty">空酒杯在这儿可派不上用场。</statment>
+		<statment id="finished">天哪。那些嘟嘟鸟饿坏了。</statment>
+
+
+
+
+
+	</character>
+
+
+</dialogs>

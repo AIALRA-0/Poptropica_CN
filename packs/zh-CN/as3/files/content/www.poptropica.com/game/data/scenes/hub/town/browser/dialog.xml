@@ -1,0 +1,182 @@
+<dialogs>
+	<character id="dj">
+		<statement id="join">嘿，来加入派对吧！在这里可以聊天、换酷炫装扮、和其他玩家一起玩游戏！</statement>
+		<statement id="main_street">大多数岛的主街上都能找到公共房间。</statement>
+		<statement id="friends">这样你就能在Poptropica里关注他们的精彩冒险了。</statement>
+		<conversation id="dj_questions">
+			<exchange>
+				<question>什么是公共房间？</question>
+				<answer link="main_street">那是可以聊天、玩游戏、结交其他玩家的房间。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>可以玩游戏和聊天吗？</question>
+				<answer>当然！在公共房间里点击其他玩家，就能挑战游戏或提问。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>可以借用服装部件吗？</question>
+				<answer>没错！我最酷的造型都是在公共房间找到的。那里的服装简直绝了！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>可以交朋友吗？</question>
+				<answer link="friends">当然！保存游戏后，点击其他玩家就能加为好友。</answer>
+
+
+
+						</exchange>
+
+
+
+
+
+				</conversation>
+
+
+
+
+
+	</character>
+	<character id="amelia">
+		<conversation id="what_else">
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！打造有趣造型本身就是乐趣。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">当然，公共房间是找到它们的最佳去处。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="else_no_look">
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">当然，公共房间是找到它们的最佳去处。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="else_no_common">
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！自定义造型是乐趣的一半，你有很多选择。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="try_realms">
+			<exchange>
+				<question>是的，我想现在试试创世空间。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="open_realms">太好了，我带你去。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我稍后再了解创世空间。</question>
+				<answer link="else_no_realms">等你准备好了，可以从地图上过去。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="else_no_realms">
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">当然，公共房间是找到它们的最佳去处。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！自定义造型是乐趣的一半，你有很多选择。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="custom_looks" link="anything_else_no_look">有成千上万的部件可选，你的可能性是无限的。</statement>
+		<statement id="anything_else_no_look" link="else_no_look">还有其他想了解的吗？</statement>
+		<statement id="common_room" triggerEvent="triggerEvent" triggerEventArgs="show_arcade">其实街那头就有一个。</statement>
+		<statement id="arcade_shown" link="anything_else_no_common">在那里你可以聊天、玩游戏，并和其他玩家交朋友。</statement>
+		<statement id="anything_else_no_common" link="else_no_common">还有其他想了解的吗？</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+
+
+
+</dialogs>

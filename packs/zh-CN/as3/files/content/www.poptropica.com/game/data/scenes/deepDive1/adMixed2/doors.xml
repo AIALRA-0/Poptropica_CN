@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.deepDive1.maze.Maze</scene>
+		<x>2700</x>
+		<y>447</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorRight">
+		<scene>game.scenes.deepDive1.reef.Reef</scene>
+		<x>202</x>
+		<y>1024</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

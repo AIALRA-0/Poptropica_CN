@@ -1,0 +1,28 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.virusHunter.videoStore.VideoStore</scene>
+		<x>757</x>
+		<y>570</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.virusHunter.backRoom.BackRoom</scene>
+		<x>1460</x>
+		<y>904</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

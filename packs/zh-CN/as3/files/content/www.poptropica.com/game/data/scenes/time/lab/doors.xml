@@ -1,0 +1,55 @@
+<doors>
+ <door id="door1">
+	<scene>game.scenes.time.mainStreet.MainStreet</scene>
+		<x>3361</x>
+		<y>1930</y>
+	<label>
+		<text>退出</text>
+		<type>exit3D</type>
+		<offset>
+			<x>0</x>
+			<y>0</y>
+		</offset>
+	</label>
+	</door>
+	<door id="door2">
+		  <scene>game.scenes.time.adStreet.AdStreet</scene>
+			<x>920</x>
+			<y>590</y>
+		  <label>
+			  <text>进入</text>
+			  <type>exit3D</type>
+			  <offset>
+				  <x>0</x>
+				  <y>0</y>
+			  </offset>
+		  </label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.time.desolation.Desolation</scene>
+				<x>1898</x>
+				<y>639</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.time.lab.Lab</scene>
+				<x>1655</x>
+				<y>937</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="door3">
+		  <scene>game.scenes.time.future.Future</scene>
+			<x>700</x>
+			<y>3355</y>
+		  <label>
+			  <text>进入</text>
+			  <type>exitRight</type>
+			  <offset>
+				  <x>0</x>
+				  <y>0</y>
+			  </offset>
+		  </label>
+	</door>
+</doors>

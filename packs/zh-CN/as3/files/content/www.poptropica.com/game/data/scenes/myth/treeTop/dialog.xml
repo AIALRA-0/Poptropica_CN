@@ -1,0 +1,61 @@
+<dialogs>
+	<character id="player">
+		<statement id="sorry" link="makeImortal" linkEntityId="char2">text1</statement>
+		<statement id="refuse" link="wrath" linkEntityId="char2">text2</statement>
+		<statement id="okay" triggerEvent="triggerEvent" triggerEventArgs="quest_started">text3</statement>
+		<statement triggeredByEvent="honey_chase_failed">text4</statement>
+		<statement id="collectionComplete">我成功了！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="char1">
+		<conversation>
+			<exchange>
+				<question>text5</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="honey_chase_started">text6</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="honey_chase_failed">
+			<exchange>
+				<question>text5</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="honey_chase_started">text6</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement event="gotItem_goldenApple">text7</statement>
+		<statement event="honey_chase_passed" triggerEvent="triggerEvent" triggerEventArgs="show_path">text8</statement>
+		<statement event="honey_chase_started">text9</statement>
+
+
+
+
+
+
+	</character>
+	<character id="char2">
+		<statement triggeredByEvent="zeus_appears_tree" link="sorry" linkEntityId="player">text10</statement>
+		<statement id="makeImortal" link="refuse" linkEntityId="player">text11</statement>
+		<statement id="wrath" link="okay" linkEntityId="player">text12</statement>
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

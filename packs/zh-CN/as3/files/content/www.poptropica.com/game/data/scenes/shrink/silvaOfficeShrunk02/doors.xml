@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorBedroomShrunk01">
+		<scene>game.scenes.shrink.bedroomShrunk01.BedroomShrunk01</scene>
+		<x>1000</x>
+		<y>1780</y>
+		<label>
+			<text>返回</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorSilvaOfficeShrunk01">
+		<scene>game.scenes.shrink.silvaOfficeShrunk01.SilvaOfficeShrunk01</scene>
+		<x>3320</x>
+		<y>1280</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

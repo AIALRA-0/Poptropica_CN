@@ -1,0 +1,44 @@
+<doors>
+	<door id="doorBedroomShrunk01">
+		<scene>game.scenes.shrink.adStreet4.AdStreet4</scene>
+		<x>40</x>
+		<y>540</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-120</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.bedroomShrunk02.BedroomShrunk02</scene>
+				<x>3500</x>
+				<y>1855</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.bedroomShrunk01.BedroomShrunk01</scene>
+				<x>40</x>
+				<y>1780</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+		<direction>right</direction>
+	</door>
+
+	<door id="doorMap">
+		<scene>game.scenes.map.map.Map</scene>
+	    <x>0</x>
+	    <y>0</y>
+	    <label>
+	      <text>旅行</text>
+	      <asset>exitUp</asset>
+	      <offset>
+	        <x>0</x>
+	        <y>0</y>
+	      </offset>
+	    </label>
+	</door>
+</doors>

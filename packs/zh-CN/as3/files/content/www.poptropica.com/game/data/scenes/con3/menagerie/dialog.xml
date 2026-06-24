@@ -1,0 +1,22 @@
+<dialogs>
+	<character id="elf_archer">
+		<statement>我以前觉得被《时报》批评就是最残酷的惩罚了！</statement>
+		<statement id="help">快帮我离开这儿！</statement>
+		<statement id="punishment" link="hq">你真是大明星！太感谢了！</statement>
+		<statement id="hq">来总部找我！</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="machine">它没电了。</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

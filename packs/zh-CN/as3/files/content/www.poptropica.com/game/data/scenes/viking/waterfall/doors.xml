@@ -1,0 +1,28 @@
+<doors>
+	<door id="doorPeak">
+		<scene>game.scenes.viking.peak.Peak</scene>
+			<x>1400</x>
+			<y>1150</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>20</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorMap">
+		<scene>game.scenes.viking.waterfall.Waterfall</scene>
+		<x>2960</x>
+		<y>1475</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

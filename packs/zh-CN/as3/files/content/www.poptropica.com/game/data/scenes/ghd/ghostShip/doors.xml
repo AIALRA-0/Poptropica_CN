@@ -1,0 +1,16 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.ghd.neonWiener.NeonWiener</scene>
+		<x>560</x>
+		<y>600</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

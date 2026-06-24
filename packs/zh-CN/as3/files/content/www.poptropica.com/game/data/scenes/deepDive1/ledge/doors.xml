@@ -1,0 +1,45 @@
+<doors>
+	<door id="doorReef">
+		<scene>game.scenes.deepDive1.adMixed1.AdMixed1</scene>
+		<x>1870</x>
+		<y>1045</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive1.reef.Reef</scene>
+				<x>3403</x>
+				<y>2232</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive1.ledge.Ledge</scene>
+				<x>250</x>
+				<y>620</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorDepths">
+		<scene>game.scenes.deepDive1.deepestOcean.DeepestOcean</scene>
+		<x>250</x>
+		<y>125</y>
+		<direction>right</direction>
+		<openOnHit>true</openOnHit>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

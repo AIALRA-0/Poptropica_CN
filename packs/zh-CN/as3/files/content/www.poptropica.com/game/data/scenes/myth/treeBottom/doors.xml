@@ -1,0 +1,70 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.myth.adGroundH9.AdGroundH9</scene>
+		<x>60</x>
+		<y>600</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.myth.treeBottom.TreeBottom</scene>
+				<x>4690</x>
+				<y>1318</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.myth.mainStreet.MainStreet</scene>
+				<x>56</x>
+				<y>1318</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorTreeTop">
+		<scene>game.scenes.myth.treeTop.TreeTop</scene>
+		<x>837</x>
+		<y>2789</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorSphinx">
+		<scene>game.scenes.myth.adStreet.AdStreet</scene>
+		<x>920</x>
+		<y>540</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.myth.sphinx.Sphinx</scene>
+				<x>2550</x>
+				<y>2249</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.myth.treeBottom.TreeBottom</scene>
+				<x>55</x>
+				<y>1148</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

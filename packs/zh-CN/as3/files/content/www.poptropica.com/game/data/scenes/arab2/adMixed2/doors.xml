@@ -1,0 +1,30 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.arab2.treasureKeep.TreasureKeep</scene>
+		<x>2800</x>
+		<y>1150</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.arab2.sanctum.Sanctum</scene>
+		<x>50</x>
+		<y>1000</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

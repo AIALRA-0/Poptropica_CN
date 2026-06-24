@@ -1,0 +1,70 @@
+<dialogs>
+	<character id="npc1">
+		<statement>看好你的贵重物品！附近有小偷出没。</statement>
+
+
+	</character>
+	<character id="npc2">
+		<statement>苏丹带着他的财宝躲在宫殿里，而人民却被四十大盗吓得心惊胆战！</statement>
+
+
+	</character>
+	<character id="npc3">
+		<statement>我试过溜进宫殿，但守卫动作太快了。</statement>
+
+
+	</character>
+	<character id="npc4">
+		<statement>从山顶看风景太棒了！整个沙漠尽收眼底。</statement>
+
+
+	</character>
+	<character id="trader1">
+		<statement id="comment">你眼光真不错！这确实是盏神灯。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader1">来交易吧！</statement>
+
+
+
+	</character>
+	<character id="trader2">
+		<statement id="comment">我的望远镜能让你看到意想不到的东西。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader2">来交易吧！</statement>
+
+
+
+	</character>
+	<character id="trader3">
+		<statement id="comment">这难道不是你见过最美的骆驼吗？可惜它爱咬人……</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader3">来交易吧！</statement>
+		<statement id="gave_camel_harness">如果你能驯服它，这头骆驼会跟着你去任何地方。</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="smoke_bomb_left">他们好像落下了什么东西。</statement>
+		<statement id="camel_taken">原来他们的藏身处在那儿！</statement>
+		<statement id="need_spy_glass">看起来这是用来放望远镜的。</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

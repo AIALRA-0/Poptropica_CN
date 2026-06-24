@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorBase">
+		<scene>game.scenes.ghd.adMixed2.AdMixed2</scene>
+		<x>1850</x>
+		<y>1010</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.ghd.mushroom1.Mushroom1</scene>
+				<x>1800</x>
+				<y>270</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.ghd.mushroom2.Mushroom2</scene>
+				<x>100</x>
+				<y>2850</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

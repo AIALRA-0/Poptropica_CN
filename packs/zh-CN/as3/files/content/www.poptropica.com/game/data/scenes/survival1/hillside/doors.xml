@@ -1,0 +1,43 @@
+<doors>
+	<door id="doorWoods">
+		<scene>game.scenes.survival1.adStreet3.AdStreet3</scene>
+		<x>1874</x>
+		<y>1045</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival1.knollside.Knollside</scene>
+				<x>2350</x>
+				<y>1750</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival1.hillside.Hillside</scene>
+				<x>180</x>
+				<y>55</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorCave">
+		<scene>game.scenes.survival1.cave.Cave</scene>
+		<x>220</x>
+		<y>850</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,28 @@
+<doors>
+	<door id="doorPit">
+		<scene>game.scenes.myth.hadesPit2.HadesPit2</scene>
+		<x>258</x>
+		<y>1360</y>
+		<label>
+			<text>返回</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorThrone">
+		<scene>game.scenes.myth.hadesThrone.HadesThrone</scene>
+		<x>353</x>
+		<y>514</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

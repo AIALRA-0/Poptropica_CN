@@ -1,0 +1,12 @@
+<doors>
+	<door id="doorAtrium">
+		<scene>game.scenes.arab3.atrium.Atrium</scene>
+		<x>2600</x>
+		<y>920</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

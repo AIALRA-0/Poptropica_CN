@@ -1,0 +1,15 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="dont_use_pop">那个作家说他想要杯汽水。</statement>
+		<statement triggeredByEvent="wrong_cake_use">我现在不想吃蛋糕。</statement>
+		<statement triggeredByEvent="wrong_axe_use">有人用这东西能造成真正的破坏。</statement>
+		<statement triggeredByEvent="wrong_coin_use">除了没用的虚拟货币啥也没有。</statement>
+
+
+
+
+
+		</character>
+
+
+</dialogs>

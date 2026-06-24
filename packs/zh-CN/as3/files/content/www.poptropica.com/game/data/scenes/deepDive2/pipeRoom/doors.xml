@@ -1,0 +1,43 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.deepDive2.adStreet3.AdStreet3</scene>
+		<x>1630</x>
+		<y>1125</y>
+		<direction>up</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>-150</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+				<x>2020</x>
+				<y>1150</y>
+				<direction>up</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive2.pipeRoom.PipeRoom</scene>
+				<x>440</x>
+				<y>150</y>
+				<direction>down</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.deepDive2.medusaArea.MedusaArea</scene>
+		<x>1970</x>
+		<y>1630</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

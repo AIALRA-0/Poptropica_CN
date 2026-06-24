@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.timmy.adMixed1.AdMixed1</scene>
+		<x>1274</x>
+		<y>940</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>100</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+				<x>5425</x>
+				<y>1558</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.zoo.Zoo</scene>
+				<x>50</x>
+				<y>830</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

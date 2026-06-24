@@ -1,0 +1,17 @@
+<dialogs>
+	<character id="player">
+		<statement id="wake_up">怎么回事？我头好痛！</statement>
+		<statement id="door_locked">我得想办法离开这里！</statement>
+		<statement id="window_bars">安全栅栏——这里到底发生了什么？</statement>
+		<statement id="code">安全密码！但“M. M. ”是谁？</statement>
+		<statement id="picked_lock">锁坏了，不过至少我能出去了！</statement>
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

@@ -1,0 +1,11 @@
+<doors>
+	<door id="doorAtrium">
+		<scene>game.scenes.arab3.atrium.Atrium</scene>
+		<x>3223</x>
+		<y>614</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+		</label>
+	</door>
+</doors>

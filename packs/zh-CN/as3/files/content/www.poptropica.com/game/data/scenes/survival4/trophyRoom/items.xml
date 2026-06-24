@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>nightVision</id>
+		<asset>nightVision.swf</asset>
+		<x>2720</x>
+		<y>765</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>voiceRecording</id>
+		<asset>sound_recording.swf</asset>
+		<x>2100</x>
+		<y>925</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

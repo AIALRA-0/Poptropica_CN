@@ -1,0 +1,28 @@
+<doors>
+	<door id="doorTemple">
+		<scene>game.scenes.myth.poseidonTemple.PoseidonTemple</scene>
+		<x>2313</x>
+		<y>854</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorOcean">
+		<scene>game.scenes.myth.poseidonWater.PoseidonWater</scene>
+		<x>259</x>
+		<y>10</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorLabyrinth">
+		<scene>game.scenes.myth.labyrinth.Labyrinth</scene>
+		<x>3816</x>
+		<y>2012</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorLabyrinthRoom">
+		<scene>game.scenes.myth.labyrinthRoom.LabyrinthRoom</scene>
+		<x>485</x>
+		<y>524</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

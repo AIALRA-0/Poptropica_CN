@@ -1,0 +1,56 @@
+<dialogs>
+	<character id="bucketBot">
+		<conversation>
+			<exchange>
+				<question>你是超级格斗机器人之一吗？</question>
+				<answer>超级？我？哈！我是桶桶机器人——每次有新玩家注册，他们就把我这堆废铁派出来。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你见过一个叫马克·赫兹的人吗？</question>
+				<answer>赫兹上校？！就是他一直揍我，好让新玩家掏钱升级。他坏透了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我们联手去对付他怎么样？</question>
+				<answer>为什么不呢？反正我已经够惨了。用超级定制控制台开始吧。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+		</character>
+	<character id="hertz">
+		<statement id="monster" link="but_why" linkEntityId="player">我变成了什么？微交易……成就……我成了怪物！</statement>
+		<statement id="bonus_quests" link="dat_att" linkEntityId="player">我再也受不了那些半吊子奖励任务了。但你让我认识到了错误。这些奖励任务完全值得会员价。真的很划算。</statement>
+		<statement id="lets_go" triggerEvent="triggerEvent" triggerEventArgs="hertz_rejoined, true">我们走吧。我觉得桶桶机器人能搞定这里。</statement>
+
+
+
+
+		</character>
+	<character id="player">
+		<statement id="but_why" link="bonus_quests" linkEntityId="hertz">赫兹，你为什么这么做？为什么要背叛Poptropica？</statement>
+		<statement id="dat_att" link="lets_go" linkEntityId="hertz">Poptropica总部正需要这种态度。</statement>
+
+
+
+		</character>
+
+
+
+
+
+
+
+</dialogs>

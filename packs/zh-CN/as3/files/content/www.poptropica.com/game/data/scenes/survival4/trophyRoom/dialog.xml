@@ -1,0 +1,73 @@
+<dialogs>
+	<character id="van buren">
+		<statement id="trophies" link="rhino" triggerEvent="triggerEvent" triggerEventArgs="trophy_lit_1">这些都是我最辉煌的狩猎战利品。</statement>
+		<statement id="rhino" link="gorilla" triggerEvent="triggerEvent" triggerEventArgs="trophy_lit_2">这头非洲犀牛差点把我顶穿。</statement>
+		<statement id="gorilla" link="of course">银背大猩猩确实是个狡猾的对手，但我还是赢了。</statement>
+		<statement id="of course" link="no you didnt" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="trophy_lit_3">当然，这跟我最伟大的成就比起来不算什么。</statement>
+		<statement id="oh yes" triggerEvent="triggerEvent" triggerEventArgs="meet_winston">哦对——没什么比找到好帮手更难了。</statement>
+		<statement id="meet winston" link="charmed" linkEntityId="winston">请见见我的仆人温斯顿。你再也找不到比他更忠心的了。</statement>
+		<statement id="forgive me" triggerEvent="triggerEvent" triggerEventArgs="tour_complete_2, true">请原谅我有点自夸。这座我的半身像里，完美复刻了我喊范布伦家族口号的声音。</statement>
+		<statement id="taxidermist" link="ready supper">又是我的标本师干的糙活。我该把他的头挂上去，哈哈。</statement>
+		<statement id="ready supper" link="at once" linkEntityId="winston">温斯顿，请通知厨师我们准备用晚餐了，然后为我们的客人准备今晚的客房。</statement>
+		<statement id="meet me">至于你，亲爱的朋友，来宴会厅和我共进晚餐吧，别磨蹭。</statement>
+		<statement id="you shall not pass">别急着参观嘛。</statement>
+		<statement id="dont tarry">我说了，别磨蹭。</statement>
+		<statement id="no tomfoolery">奖杯室里不许胡闹。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="winston">
+		<statement id="droll" link="meet winston" linkEntityId="van buren">真有趣，先生。</statement>
+		<statement id="charmed" triggerEvent="triggerEvent" triggerEventArgs="tour_complete_1, true">幸会。</statement>
+		<statement id="charmed2">幸会。</statement>
+		<statement id="at once" triggerEvent="triggerEvent" triggerEventArgs="tour_complete_3, true">马上就来，大人。</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="not now">我还是先离开吧。</statement>
+		<statement id="no you didnt" link="oh yes" linkEntityId="van buren">你不会是说……!</statement>
+
+
+
+	</character>
+	<character id="statue">
+		<statement>出发！</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+
+</dialogs>

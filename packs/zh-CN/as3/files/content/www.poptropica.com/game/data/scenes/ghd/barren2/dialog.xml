@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="dagger">
+		<statement id="trapped">我被困在这个脏兮兮的山洞里了！快救我出去！</statement>
+		<statement id="escaped">自由了！我们赶紧离开这个破地方！</statement>
+
+
+
+		</character>
+
+
+</dialogs>

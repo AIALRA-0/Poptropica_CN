@@ -1,0 +1,97 @@
+
+<dialogs>
+    <character id="player">
+	<statement id="fireHot">shared.text3</statement>
+    </character>
+	<character id="char1">
+		<conversation>
+			<exchange>
+				<question>shared.text1</question>
+				<answer>text1</answer>
+			</exchange>
+			<exchange>
+				<question>shared.text4</question>
+				<answer>text2</answer>
+			</exchange>
+			<exchange>
+				<question>text3</question>
+				<!-- goldenVase by default-->
+				<answer>text4</answer>
+			</exchange>
+		</conversation>
+		<conversation event="returned_goldenVase">
+			<exchange>
+				<question>shared.text1</question>
+				<answer>text1</answer>
+			</exchange>
+			<exchange>
+				<question>shared.text4</question>
+				<answer>text5</answer>
+			</exchange>
+			<exchange>
+				<question>text6</question>
+				<!-- goldenVase by default-->
+				<!--<answer>text4</answer>-->
+				<answer>哎呀，我破产了。</answer>
+			</exchange>
+		</conversation>
+<!-- 		<statement id="hasItem_goldenVase">I see our golden vase inside a sealed cave that must be blown open.</statement> -->
+		<!--<statement id="hasItem_amulet">text7</statement>
+		<statement id="hasItem_saltRocks">text8</statement>
+		<statement id="hasItem_notebook">text9</statement>
+		<statement id="hasItem_sunstone">text10</statement>
+		<statement id="hasItem_stoneBowl">text11</statement>
+		<statement id="hasItem_declaration">text12</statement>
+		<statement id="hasItem_silverMedal">text13</statement>
+		<statement id="hasItem_phonograph">text14</statement>
+		<statement id="hasItem_statuette">text15</statement>
+		<statement id="hasItem_goggles">text16</statement>
+		<statement id="hasItem_medalTime">text17</statement>-->
+
+
+<!-- 		<statement id="hasItem_goldenVaseR">I see our golden vase inside a sealed cave that must be blown open.</statement> -->
+		<statement id="hasItem_amuletR">text7</statement>
+		<statement id="hasItem_saltRocksR">text8</statement>
+		<statement id="hasItem_notebookR">text9</statement>
+		<statement id="hasItem_sunstoneR">text10</statement>
+		<statement id="hasItem_stoneBowlR">text11</statement>
+		<statement id="hasItem_declarationR">text12</statement>
+		<statement id="hasItem_silverMedalR">text13</statement>
+		<statement id="hasItem_phonographR">text14</statement>
+		<statement id="hasItem_statuetteR">text15</statement>
+		<statement id="hasItem_gogglesR">text16</statement>
+		<statement id="hasItem_medalTimeR">text17</statement>
+
+<!-- 		<statement id="returned_goldenVase">I see a barrel of explosive powder near a great stone wall.</statement> -->
+		<statement id="returned_amulet">text18</statement>
+		<statement id="returned_saltRocks">text19</statement>
+		<statement id="returned_notebook">text20</statement>
+		<statement id="returned_sunstone">text21</statement>
+		<statement id="returned_stoneBowl">text22</statement>
+		<statement id="returned_declaration">text23</statement>
+		<statement id="returned_silverMedal">text24</statement>
+		<statement id="returned_phonograph">text25</statement>
+		<statement id="returned_statuette">text26</statement>
+		<statement id="returned_goggles">text27</statement>
+		<statement id="time_repaired">text28</statement>
+
+<!-- 		<statement id="returned_goldenVaseR">I see a barrel of explosive powder near a great stone wall.</statement> -->
+		<statement id="returned_amuletR">text18</statement>
+		<statement id="returned_saltRocksR">text19</statement>
+		<statement id="returned_notebookR">text20</statement>
+		<statement id="returned_sunstoneR">text21</statement>
+		<statement id="returned_stoneBowlR">text22</statement>
+		<statement id="returned_declarationR">text23</statement>
+		<statement id="returned_silverMedalR">text24</statement>
+		<statement id="returned_phonographR">text25</statement>
+		<statement id="returned_statuetteR">text26</statement>
+		<statement id="returned_gogglesR">text27</statement>
+		<statement id="time_repairedR">text28</statement>
+
+		<statement id="undefined">text27</statement>
+		<statement id="null">text27</statement>
+
+		<statement id="undefinedR">text27</statement>
+		<statement id="nullR">text27</statement>
+    </character>
+</dialogs>

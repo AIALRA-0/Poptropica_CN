@@ -1,0 +1,30 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.con3.hq.Hq</scene>
+		<x>1200</x>
+		<y>50</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.con3.processing.Processing</scene>
+		<x>180</x>
+		<y>490</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

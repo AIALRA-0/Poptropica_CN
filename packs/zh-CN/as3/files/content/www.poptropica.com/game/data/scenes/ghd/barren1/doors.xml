@@ -1,0 +1,44 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.ghd.neonWiener.NeonWiener</scene>
+		<x>500</x>
+		<y>1000</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.ghd.adStreet2.AdStreet2</scene>
+		<x>150</x>
+		<y>1040</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.ghd.barren1.Barren1</scene>
+				<x>2950</x>
+				<y>855</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.ghd.barren2.Barren2</scene>
+				<x>150</x>
+				<y>1200</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

@@ -1,0 +1,28 @@
+<doors>
+  <door id="mainExit">
+    <scene>game.scenes.virusHunter.cityLeft.CityLeft</scene>
+    <x>1850</x>
+    <y>1184</y>
+    <label>
+      <text>退出</text>
+      <asset>exitPointer3D.swf</asset>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+  <door id="condoExit">
+    <scene>game.scenes.virusHunter.joesCondo.JoesCondo</scene>
+    <x>122</x>
+    <y>445</y>
+    <label>
+      <text>退出</text>
+      <asset>exitPointer3D.swf</asset>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+</doors>

@@ -1,0 +1,30 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.con2.expo.Expo</scene>
+		<x>3800</x>
+		<y>950</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.con2.lobby.Lobby</scene>
+		<x>1496</x>
+		<y>950</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

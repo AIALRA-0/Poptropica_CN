@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorOcean">
+		<scene>game.scenes.myth.poseidonWater.PoseidonWater</scene>
+		<x>170</x>
+		<y>2750</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

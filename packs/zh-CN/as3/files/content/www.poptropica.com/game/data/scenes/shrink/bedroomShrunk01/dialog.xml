@@ -1,0 +1,29 @@
+<dialogs>
+	<character id="player">
+		<statement id="password_check">嗯……我觉得名字没错。可能还有别的线索我没发现。</statement>
+		<statement id="already_copied">我已经把内容复制到笔记本电脑上了。</statement>
+		<statement id="copied">看起来内容已经复制到笔记本电脑上了。</statement>
+		<statement id="not_logged_on">除非我能登录，否则什么都上传不了。</statement>
+		<statement id="diary_locked">看起来日记本锁住了。</statement>
+		<statement id="page_torn">这一页被撕掉了。</statement>
+		<statement id="already_open">我已经打开日记本了。</statement>
+		<statement id="scrap_from_diary">这可能是日记本里的纸片，但看起来锁住了。</statement>
+		<statement id="wat_do_do">我不知道该怎么处理这张纸。</statement>
+		<statement id="dont_jump_yet">从这个斜坡跳下去，我就能直接飞出窗外。除非有特别好的理由，不然我可不会做这种疯狂的事。</statement>
+		<statement id="book_block">有一摞书挡住了路。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

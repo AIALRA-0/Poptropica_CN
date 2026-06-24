@@ -1,0 +1,41 @@
+<doors>
+	<door id="doorBeach">
+		<scene>game.scenes.myth.poseidonBeach.PoseidonBeach</scene>
+		<x>545</x>
+		<y>888</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorHydra">
+		<scene>game.scenes.myth.hydra.Hydra</scene>
+		<x>1800</x>
+		<y>1100</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorThrone">
+		<scene>game.scenes.myth.poseidonThrone.PoseidonThrone</scene>
+		<x>149</x>
+		<y>675</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

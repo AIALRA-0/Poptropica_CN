@@ -1,0 +1,85 @@
+<dialogs>
+	<character id="ferrisWheel">
+		<statement>下次来镇上，我的摩天轮免费让你坐。</statement>
+
+
+	</character>
+	<character id="foodStand">
+		<statement>你拯救了今天。</statement>
+
+
+	</character>
+	<character id="man">
+		<statement link="nice" linkEntityId="woman">真不敢相信，马戏团长就是当年被我们赶出镇的那个孩子。这概率也太小了吧。</statement>
+		<statement event="gotItem_medal_carnival" link="years" linkEntityId="woman">谢天谢地，一切终于恢复正常了。</statement>
+
+
+
+
+	</character>
+	<character id="woman">
+		<statement id="nice">我们以后得对人好点，免得他们报复整个镇子。或者，就当是应该做的吧。</statement>
+		<statement>我们以后得对人好点，免得他们报复整个镇子。或者，就当是应该做的吧。</statement>
+		<statement id="years" triggerEvent="triggerEvent" triggerEventArgs="introduce_day_2,true">希望下次嘉年华不用再等20年。</statement>
+
+
+
+
+	</character>
+	<character id="marnie">
+		<statement event="started_bonus_quest">快去森林里找丹博士。</statement>
+		<statement event="blocked_from_bonus" link="not" linkEntityId="player">丹博士不见了。你见过他吗。</statement>
+		<statement id="day2" link="not" linkEntityId="player">丹博士不见了。你见过他吗。</statement>
+		<statement id="woods" link="look">他喜欢早上在树林里散步，但通常这时候该回来了。我担心他可能受伤了。</statement>
+		<statement id="look" link="sure" linkEntityId="player">你能帮我找找他吗？</statement>
+
+
+
+
+
+
+	</character>
+	<character id="sissy">
+		<statement>巴比本来要给我赢个泰迪熊的！</statement>
+
+
+	</character>
+	<character id="edgar">
+		<statement link="fun">终于不用再受马戏团长的魔法控制了，感觉真好。</statement>
+		<statement id="fun" link="what" linkEntityId="player">经营马戏团有趣多了，再也不用担心每晚变成怪物了！</statement>
+		<statement id="road" triggerEvent="triggerEvent" triggerEventArgs="reveal_chicken_man">我们马戏团的生活就是这样。我们要上路巡演了，而且还有个全新的游乐项目！</statement>
+		<statement id="nexttime" triggerEvent="giveItem" triggerEventArgs="medal_carnival">说不定下次来镇上还能见到你。对了，这个奖章给你——以后都不用买票了！</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="what" link="road" linkEntityId="edgar">现在怎么办？</statement>
+		<statement id="not" link="woods" linkEntityId="marnie">从昨晚开始就没见过了。</statement>
+		<statement id="sure" triggerEvent="triggerEvent" triggerEventArgs="agree_to_day_2">好，我去找他。</statement>
+
+
+
+
+
+	</character>
+	<character id="ringmaster">
+		<statement>咯咯，咯咯！</statement>
+		<statement id="cluck" link="nexttime" linkEntityId="edgar">咯咯，咯咯！</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

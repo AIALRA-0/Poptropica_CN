@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="jetpack_wrong">我得把这个交给排队等厕所的女孩。</statement>
+		<statement id="no_use">这里用不上这个。</statement>
+
+
+
+	</character>
+
+
+</dialogs>

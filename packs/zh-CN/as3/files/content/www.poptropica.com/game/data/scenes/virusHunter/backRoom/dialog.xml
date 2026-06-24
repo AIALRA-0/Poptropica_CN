@@ -1,0 +1,43 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="talkedToLange" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange2">你要怎么做？</statement>
+		<statement triggeredByEvent="startSequence2" triggerEvent="triggerEvent" triggerEventArgs="startSequence3">呃，这东西安全吗？</statement>
+		<statement triggeredByEvent="startSequence5" triggerEvent="triggerEvent" triggerEventArgs="startSequence6">但我还是不太放心。</statement>
+		<statement triggeredByEvent="beamFired" triggerEvent="triggerEvent" triggerEventArgs="beamFired2">噢，有点麻！</statement>
+		<statement triggeredByEvent="beamFired2" triggerEvent="triggerEvent" triggerEventArgs="beamFired3">哇，世界好像在变大！</statement>
+		<statement triggeredByEvent="beamFired3" triggerEvent="triggerEvent" triggerEventArgs="beamFired4">...</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="npc">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="talkedToLange">我们唯一的希望，就是在乔不知情的情况下，从他体内分离出病毒。</statement>
+		<statement triggeredByEvent="talkedToLange2" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange3">派一位纳米科学家进入他的血液。</statement>
+		<statement triggeredByEvent="talkedToLange3" triggerEvent="triggerEvent" triggerEventArgs="padReady">我们需要你来当这位科学家。站到平台上吧。</statement>
+		<statement triggeredByEvent="startSequence" triggerEvent="triggerEvent" triggerEventArgs="startSequence2">启动纳米成像序列……</statement>
+		<statement triggeredByEvent="startSequence3" triggerEvent="triggerEvent" triggerEventArgs="startSequence4">当然安全。我们有99%的成功率。</statement>
+		<statement triggeredByEvent="startSequence4" triggerEvent="triggerEvent" triggerEventArgs="startSequence5">激光系统正在充能……</statement>
+		<statement triggeredByEvent="startSequence6" triggerEvent="triggerEvent" triggerEventArgs="startSequence7">放松，一点都不会疼……</statement>
+		<statement event="completed_tutorial" link="completedTutorial">干得漂亮。你很有天赋！不过现在我们有更大的麻烦要解决。</statement>
+		<statement id="completedTutorial" triggerEvent="triggerEvent" triggerEventArgs="loadJoesCondo">我们等乔今晚回家就送你进去。剩下的就看你的了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

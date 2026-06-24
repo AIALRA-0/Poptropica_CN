@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorKitchenShrunk01A">
+		<scene>game.scenes.shrink.kitchenShrunk01.KitchenShrunk01</scene>
+		<x>2700</x>
+		<y>1170</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>100</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorKitchenShrunk01B">
+		<scene>game.scenes.shrink.kitchenShrunk01.KitchenShrunk01</scene>
+		<x>2700</x>
+		<y>1700</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>100</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,26 @@
+<doors>
+	<door id="doorBazaar">
+		<scene>game.scenes.arab3.adMixed1.AdMixed1</scene>
+		<x>1830</x>
+		<y>1440</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab3.bazaar.Bazaar</scene>
+				<x>3400</x>
+				<y>1550</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab3.desert.Desert</scene>
+				<x>120</x>
+				<y>1440</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

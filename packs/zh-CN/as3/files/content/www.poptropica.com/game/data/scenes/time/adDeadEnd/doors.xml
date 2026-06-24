@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.time.mainStreet.MainStreet</scene>
+		<x>30</x>
+		<y>2050</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

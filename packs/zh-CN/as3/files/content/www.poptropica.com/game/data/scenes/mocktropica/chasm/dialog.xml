@@ -1,0 +1,64 @@
+<dialogs>
+	<character id="player">
+		<statement id="cannotCross">我绝对过不去那道深渊！</statement>
+
+
+		</character>
+	<character id="pet">
+		<statement>纳夫，纳夫，纳夫，纳夫！</statement>
+
+
+		</character>
+	<character id="boy">
+		<statement>谁能帮我摆脱这些烦人的纳夫？</statement>
+		<statement event="narf_wall_complete">哇，太感谢了！那些宠物差点把我也逼疯了！</statement>
+
+
+
+		</character>
+	<character id="npc">
+		<conversation>
+			<exchange>
+				<question>为什么我不能过去？</question>
+				<answer>太危险了。你会掉下去摔死的！或者擦破膝盖！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>但那边看起来超有趣！</question>
+				<answer>那边可好玩了！你可能会玩得超开心。但你不能去。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="completeEvent" triggerEventArgs="spoke_with_safety_inspector_chasm">但求你了……！</question>
+				<answer>我说了……你休想通过！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="halt">站住！</statement>
+		<statement event="spoke_with_safety_inspector_chasm">我说了……你休想通过！</statement>
+		<statement event="narf_wall_complete">嗯。好吧，我想你可以过去了。那些毛茸茸的宠物看起来挺安全的。</statement>
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

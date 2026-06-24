@@ -1,0 +1,35 @@
+<dialogs>
+	<character id="player">
+		<statement id="get_hat">肯定有办法把它弄出来。</statement>
+		<statement id="clickradio">无线电！这或许能帮我离开这里！</statement>
+		<statement id="get_radio">我得想办法拿到那台无线电！</statement>
+		<statement id="gotradio">无线电看起来完好，但没有电源。</statement>
+		<statement triggeredByEvent="use_cork">这工具不对。</statement>
+		<statement id="no_use">这工具不对。</statement>
+		<statement id="not_here">我应该等箱子再升高一点。</statement>
+		<statement id="on_tight">螺丝拧得很紧。</statement>
+		<statement id="crate_sealed">箱子封得很严实！</statement>
+		<statement id="mayday">求救！求救！我需要救援！</statement>
+		<statement id="thanks">谢谢！你是谁？</statement>
+		<statement id="mvb">迈伦·范布伦……MVB？</statement>
+		<statement id="radio_wrong">这里的信号不够强！</statement>
+		<statement id="cut_tree">看起来用合适的工具就能砍断。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

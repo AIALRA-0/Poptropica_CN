@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>shovel</id>
+		<asset>shovel.swf</asset>
+		<x>1873</x>
+		<y>825</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>gunpowder</id>
+		<asset>gunpowder.swf</asset>
+		<x>838</x>
+		<y>834</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

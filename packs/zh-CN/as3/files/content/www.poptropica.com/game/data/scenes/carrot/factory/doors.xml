@@ -1,0 +1,44 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.adGroundH3R.AdGroundH3R</scene>
+		<x>900</x>
+		<y>900</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>200</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+				<x>4030</x>
+				<y>940</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.carrot.factory.Factory</scene>
+				<x>160</x>
+				<y>1669</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorSewer">
+		<scene>game.scenes.carrot.sewer.Sewer</scene>
+		<x>1800</x>
+		<y>1157</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>40</x>
+				<y>40</y>
+			</offset>
+		</label>
+	</door>
+</doors>

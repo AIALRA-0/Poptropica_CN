@@ -1,0 +1,22 @@
+<dialogs>
+	<character id="cam">
+		<statement id="missingPieces1">看来还缺最后一块，快去找找！</statement>
+		<statement id="missingPieces2">这东西好像还缺几块，去找找看！</statement>
+		<statement id="filmTooFar">太远了，再靠近点！</statement>
+		<statement id="startFilm">稳住……</statement>
+		<statement id="sucessFilm">搞定。</statement>
+		<statement id="failedFilm">符文没拍进去，再试一次。</statement>
+		<statement id="alreadyFilmed">这个符文已经拍过了。</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

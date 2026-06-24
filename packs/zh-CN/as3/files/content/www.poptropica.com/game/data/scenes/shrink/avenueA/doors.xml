@@ -1,0 +1,44 @@
+<doors>
+	<door id="doorAdGroundH15">
+		<scene>game.scenes.shrink.adStreet2.AdStreet2</scene>
+		<x>700</x>
+		<y>1454</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>100</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+				<x>5400</x>
+				<y>1454</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.avenueA.AvenueA</scene>
+				<x>50</x>
+				<y>1135</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorApartmentNormal">
+		<scene>game.scenes.shrink.apartmentNormal.ApartmentNormal</scene>
+		<x>1380</x>
+		<y>510</y>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

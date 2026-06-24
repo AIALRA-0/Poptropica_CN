@@ -1,0 +1,150 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="talkToLange" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange">嗨，我是免疫病-免疫病理-呃，那个--</statement>
+		<statement triggeredByEvent="talkedToLange2" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange3">你怎么知道的？</statement>
+		<statement triggeredByEvent="talkedToLange7" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange8">如果我说不呢？</statement>
+		<statement triggeredByEvent="talkedToLange9" triggerEvent="triggerEvent" triggerEventArgs="playerAgrees">我加入！</statement>
+		<statement triggeredByEvent="showBriefing3" triggerEvent="triggerEvent" triggerEventArgs="showBriefing4">我们该怎么做？</statement>
+		<statement triggeredByEvent="talkAboutJoe4" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe5">为什么不直接告诉他生病了，让他来检测呢？</statement>
+		<statement triggeredByEvent="talkAboutJoe7" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe8">那我们到底该怎么做？</statement>
+		<statement id="hereIsPhoto">照片在这里。</statement>
+		<statement id="borrow_ship" link="tech" linkEntityId="npc3">我能再借用一下飞船吗？外面有只生病的狗需要帮助。</statement>
+		<statement id="ate_something" link="heart_worm" linkEntityId="npc3" triggerEvent="takeItem" triggerEventArgs="petriDish">那只狗吃了印有你们标志的东西。</statement>
+		<statement id="does_that_mean" link="contain_dog" linkEntityId="npc3">这是什么意思？</statement>
+		<statement id="bringPhotoToLange">我得把这个带给兰格博士。</statement>
+		<statement id="alreadyUsedPhoto">我已经把照片给兰格博士看过了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="npc">
+		<statement link="workAroundClock">终于有援兵了！</statement>
+		<statement id="workAroundClock">我们一直在连轴转。</statement>
+		<statement event="findingJoe" link="getToWork">兰格博士真好，没追究你伪造证件的事。</statement>
+		<statement id="getToWork">话虽如此，你最好赶紧开工。</statement>
+		<statement event="lange_in_back_room">如果你要找兰格博士，她正在里屋研究设备。</statement>
+		<statement event="completed_tutorial">你真是个病毒猎手。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="npc2">
+		<statement link="checkIn">你一定是我们在等的免疫病理学家吧。</statement>
+		<statement id="checkIn">去跟我们的项目负责人兰格博士报到吧。</statement>
+		<statement event="findingJoe" link="foggyGlasses">嗯，你的证件我看着挺真的。</statement>
+		<statement id="foggyGlasses">不过，我的眼镜有点起雾了。</statement>
+		<statement event="lange_in_back_room" link="getToBackRoom">兰格博士正在里屋等你。</statement>
+		<statement id="getToBackRoom">从你身后的门进去。</statement>
+		<statement event="completed_tutorial">干得漂亮，你很有天赋。</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="npc3">
+		<statement triggeredByEvent="talkedToLange" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange2">拜托，我一眼就能看出假证件。</statement>
+		<statement triggeredByEvent="talkedToLange3" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange4">你的证件是用蜡笔写的。</statement>
+		<statement triggeredByEvent="talkedToLange4" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange5">不过今天你走运了。</statement>
+		<statement triggeredByEvent="talkedToLange5" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange6">正好，我需要一位志愿者——</statement>
+		<statement triggeredByEvent="talkedToLange6" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange7">要勇敢，甚至有点莽撞的那种。</statement>
+		<statement triggeredByEvent="talkedToLange8" triggerEvent="triggerEvent" triggerEventArgs="talkedToLange9">你觉得在联邦监狱蹲个5到10年怎么样？</statement>
+		<statement triggeredByEvent="pullUpBriefing" triggerEvent="triggerEvent" triggerEventArgs="showBriefing">这份简报会告诉你我们面对的是什么。</statement>
+		<statement triggeredByEvent="shownBriefing" triggerEvent="triggerEvent" triggerEventArgs="showBriefing2">这就是最新的情况。</statement>
+		<statement triggeredByEvent="showBriefing2" triggerEvent="triggerEvent" triggerEventArgs="showBriefing3">镇上有人携带一种新病毒——一种能引发全球疫情的“超级病菌”。</statement>
+		<statement triggeredByEvent="showBriefing4" triggerEvent="triggerEvent" triggerEventArgs="giveDossier">我们必须找出这个人。</statement>
+		<statement triggeredByEvent="giveDossier" triggerEvent="giveItem" triggerEventArgs="dossier" link="giveDossier2">我们掌握了一些信息，拿着这份档案。</statement>
+		<statement triggeredByEvent="giveDossier2" triggerEvent="triggerEvent" triggerEventArgs="giveDossier3">找到这个人——零号病人——后，千万不要与他接触。</statement>
+		<statement triggeredByEvent="giveDossier3" triggerEvent="triggerEvent" triggerEventArgs="findingJoe">拍下他的照片，然后立刻回来。</statement>
+		<statement triggeredByEvent="findingJoe" triggerEvent="giveItem" triggerEventArgs="camera">给，你还需要这个。</statement>
+		<statement triggeredByEvent="findJoe" triggerEvent="triggerEvent" triggerEventArgs="findJoe2">你怎么还在这儿？</statement>
+		<statement triggeredByEvent="findJoe2">找到零号病人——这关系到人命。</statement>
+		<statement triggeredByEvent="talkAboutJoe" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe2">这就是我们的零号病人：乔·斯托克曼。</statement>
+		<statement triggeredByEvent="talkAboutJoe2" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe3">乔没有症状。</statement>
+		<statement triggeredByEvent="talkAboutJoe3" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe4">他自己不知道，但他携带了病毒——这意味着他会传播。</statement>
+		<statement triggeredByEvent="talkAboutJoe5" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe6">太冒险了，他可能会惊慌失措，做出不理智的事。</statement>
+		<statement triggeredByEvent="talkAboutJoe6" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe7">找到解药的最好办法是让他保持平静，毫不知情。</statement>
+		<statement triggeredByEvent="talkAboutJoe8" triggerEvent="triggerEvent" triggerEventArgs="talkAboutJoe9">我们站在医学科学的最前沿。</statement>
+		<statement triggeredByEvent="talkAboutJoe9" triggerEvent="triggerEvent" triggerEventArgs="talkedAboutJoe">跟我来。</statement>
+		<statement id="tech" link="ate_something" linkEntityId="player">切，我们不能把秘密的数十亿技术用在宠物身上。这跟我们有什么关系？</statement>
+		<statement id="heart_worm" link="does_that_mean" linkEntityId="player">糟了，是我们的武器化心丝虫！那只狗现在是个定时炸弹。</statement>
+		<statement id="contain_dog" triggerEvent="triggerEvent" triggerEventArgs="talked_to_lange_d2,true">没时间浪费了。你必须在心丝虫扩散前消灭它。控制住那只狗。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="npc4">
+		<statement>坐电梯下去，找兰格博士谈谈。</statement>
+		<statement event="completed_tutorial">真希望他们能让我上船。</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

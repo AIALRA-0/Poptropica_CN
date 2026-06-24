@@ -1,0 +1,21 @@
+<dialogs>
+	<character id="player">
+		<statement id="rocks">我力气不够，搬不动这些石头。</statement>
+		<statement id="post">哇！好大的山崩！</statement>
+		<statement id="lens">我可不能直接点火药，眉毛会被炸飞的。</statement>
+		<statement id="bomb">我得找个办法引爆它……</statement>
+		<statement id="fuse">现在只需要点燃绳子这头就行了。</statement>
+		<statement id="nothing">没有合适的东西来用这个。</statement>
+		<statement id="done">这里没什么可做的了。</statement>
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

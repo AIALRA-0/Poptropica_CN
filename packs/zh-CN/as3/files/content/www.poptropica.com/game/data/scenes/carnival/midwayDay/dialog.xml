@@ -1,0 +1,76 @@
+<dialogs>
+	<character id="player">
+		<statement id="askSugarHelp">需要帮忙吗？</statement>
+		<statement id="askDuckHelp">遇到麻烦了吗？</statement>
+		<statement id="waterSpigot">嗯……也许我该找根水管</statement>
+		<statement id="needIn">我得进去看看！</statement>
+
+
+
+
+
+	</character>
+	<character id="ralph">
+		<statement>抱歉，现在没空聊天。我们得为今晚的嘉年华做准备，进度已经落后太多了。</statement>
+
+
+	</character>
+	<character id="maccchio">
+		<statement>晚点再来吧。</statement>
+
+
+	</character>
+	<character id="bubby">
+		<statement>妈妈让我看好茜茜。她最好别在镜子迷宫里走丢。</statement>
+
+
+		</character>
+	<character id="sissy">
+		<statement>巴比会给我赢一个泰迪熊！妈妈说的！</statement>
+
+
+	</character>
+	<character id="edgar">
+		<statement>真希望你能帮上忙。要是今晚一切顺利，他们就会让我成为正式的马戏团成员了！</statement>
+		<statement id="startCarnival">你做到了！我们可以开园了！</statement>
+		<statement id="friedDoughReady">那些油炸面团好了没？我超爱那玩意儿！</statement>
+
+
+
+
+	</character>
+	<character id="foodstandWorker">
+		<statement id="outSugar">可恶，那个埃德加！他总吃不够我的油炸面团，现在糖都用完了！</statement>
+		<statement id="needSugarHelp">我需要一些糖粉，但不要商店买的那种。这是配方。看看你能不能找个化学套装做一批出来。</statement>
+		<statement id="findSugar">找个化学套装，做一批糖粉出来！</statement>
+		<statement id="giveSugar">你真是救星。谢了，小家伙。这顿我请。</statement>
+		<statement id="backToWork">回去干活吧，实习生！</statement>
+		<statement id="thanksSugarHelp">谢谢你帮我弄到糖。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="duckGameWorker">
+		<statement id="duckDisaster">真是场灾难。</statement>
+		<statement id="needDuckHelp">我的鸭子游戏没水了。看看你能不能找到根水管。</statement>
+		<statement id="ducksSwim" triggerEvent="triggerEvent" triggerEventArgs="ducksSwimming">我的小鸭子们能游泳了！</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

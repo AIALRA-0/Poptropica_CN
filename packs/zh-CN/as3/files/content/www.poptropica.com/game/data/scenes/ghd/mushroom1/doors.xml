@@ -1,0 +1,45 @@
+<doors>
+	<door id="doorShip">
+		<scene>game.scenes.ghd.neonWiener.NeonWiener</scene>
+		<x>560</x>
+		<y>600</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorSummit">
+		<scene>game.scenes.ghd.adMixed2.AdMixed2</scene>
+		<x>110</x>
+		<y>1010</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.ghd.mushroom1.Mushroom1</scene>
+				<x>1800</x>
+				<y>270</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.ghd.mushroom2.Mushroom2</scene>
+				<x>100</x>
+				<y>2850</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

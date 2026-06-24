@@ -1,0 +1,30 @@
+<doors>
+
+	<door id="doorBloodStream1">
+		<scene>game.scenes.virusHunter.bloodStream.BloodStream</scene>
+		<x>500</x>
+		<y>500</y>
+		<label>
+			<text>退出</text>
+			<asset>exitPointer3D.swf</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorBloodStream2">
+		<scene>game.scenes.virusHunter.lungs.Lungs</scene>
+		<x>4740</x>
+		<y>4160</y>
+		<label>
+			<text>退出</text>
+			<asset>exitPointerRight.swf</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

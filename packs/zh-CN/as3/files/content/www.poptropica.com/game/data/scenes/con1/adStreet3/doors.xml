@@ -1,0 +1,38 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.con1.bathrooms.Bathrooms</scene>
+		<x>2200</x>
+		<y>1050</y>
+		<direction>left</direction>
+		<minDistance>
+			<x>260</x>
+			<y>150</y>
+		</minDistance>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.con1.parking.Parking</scene>
+		<x>520</x>
+		<y>1430</y>
+		<direction>right</direction>
+		<minDistance>
+			<x>260</x>
+			<y>150</y>
+		</minDistance>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

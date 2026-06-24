@@ -1,0 +1,58 @@
+<doors>
+	<door id="doorMainStreet">
+	<scene>game.scenes.prison.adStreet1.AdStreet1</scene>
+		<x>1900</x>
+		<y>1620</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+		<door id="doorLeft">
+			<scene>game.scenes.prison.mainStreet.MainStreet</scene>
+			<x>5100</x>
+			<y>1693</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.prison.hill.Hill</scene>
+						<x>20</x>
+						<y>2965</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorTower">
+		<scene>game.scenes.prison.tower.Tower</scene>
+		<x>630</x>
+		<y>2693</y>
+		<direction>right</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorWarehouse">
+		<scene>game.scenes.prison.hill.Hill</scene>
+		<x>20</x>
+		<y>2965</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

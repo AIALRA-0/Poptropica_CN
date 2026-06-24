@@ -1,0 +1,35 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.time.everest.Everest</scene>
+		<x>2667</x>
+		<y>130</y>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>-100</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.time.everest3.Everest3</scene>
+		<x>1366</x>
+		<y>2294</y>
+		<direction>left</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>100</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door3">
+		<scene>game.scenes.time.everest.Everest</scene>
+		<openOnHit>true</openOnHit>
+		<x>2667</x>
+		<y>130</y>
+	</door>
+</doors>

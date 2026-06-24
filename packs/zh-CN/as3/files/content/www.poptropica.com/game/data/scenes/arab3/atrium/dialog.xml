@@ -1,0 +1,30 @@
+<dialogs>
+	<character id="player">
+		<statement id="hide" link="think" linkEntityId="genie">这下没地方躲了。</statement>
+		<statement id="key">锁住了。看来需要一把钥匙。</statement>
+		<statement id="lamp">他往神灯房间去了！</statement>
+		<statement id="portrait1">真奇怪……苏丹和灯神以前肯定见过面。</statement>
+		<statement id="portrait2">那是谁？她为什么看起来这么伤心？</statement>
+		<statement id="portrait3">看来愿望真的能实现。</statement>
+		<statement id="portrait4">苏丹给自己画了好多肖像。真自恋！</statement>
+		<statement id="portrait5">一看就是喜欢数金币的人。</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="genie">
+		<statement id="think" triggerEvent="triggerEvent" triggerEventArgs="genie_run">你想得美！</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

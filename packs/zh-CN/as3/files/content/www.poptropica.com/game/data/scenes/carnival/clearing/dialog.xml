@@ -1,0 +1,17 @@
+<dialogs>
+	<character id="player">
+		<statement id="seeCarnies">找到他们了，可他们怎么都跑到这儿来了？</statement>
+		<statement id="seeCarnieMonsters">我得赶紧离开这儿！</statement>
+
+
+
+		</character>
+	<character id="shadow">
+		<statement id="speech">时机已到，我的孩子们！展现你们的真面目，为我效忠吧！</statement>
+
+
+		</character>
+
+
+
+</dialogs>

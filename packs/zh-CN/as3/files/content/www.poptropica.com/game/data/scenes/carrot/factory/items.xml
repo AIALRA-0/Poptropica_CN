@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>ventBlueprints</id>
+		<asset>ventBlueprints.swf</asset>
+		<x>2383</x>
+		<y>658</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

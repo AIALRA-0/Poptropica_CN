@@ -1,0 +1,15 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="gotItem_white_robe">这看起来和盗贼的衣服一模一样，只是不是黑色的。</statement>
+		<statement triggeredByEvent="use_robe_wrong">这看起来和盗贼的衣服一模一样，只是不是黑色的。</statement>
+		<statement triggeredByEvent="gotItem_thieves_garb">看起来和盗贼的衣服一模一样。</statement>
+		<statement triggeredByEvent="player_disguised">穿上这身黑衣就能骗过守卫了。</statement>
+
+
+
+
+
+		</character>
+
+
+</dialogs>

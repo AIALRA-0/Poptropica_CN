@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.myth.mainStreet.MainStreet</scene>
+		<x>3050</x>
+		<y>1110</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorOlympus">
+		<scene>game.scenes.myth.mountOlympus2.MountOlympus2</scene>
+		<x>336</x>
+		<y>1140</y>
+		<direction>right</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>20</y>
+			</offset>
+		</label>
+	</door>
+</doors>

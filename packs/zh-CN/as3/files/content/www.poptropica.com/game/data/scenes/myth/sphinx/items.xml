@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>pomegranates</id>
+		<asset>pomegranates.swf</asset>
+		<x>1210</x>
+		<y>1457</y>
+		<label>
+			<text>使用</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

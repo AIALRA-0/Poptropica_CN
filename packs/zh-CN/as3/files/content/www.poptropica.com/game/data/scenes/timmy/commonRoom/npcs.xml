@@ -1,0 +1,527 @@
+<script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener(&apos;DOMContentLoaded&apos;,function(){var v=archive_analytics.values;v.service=&apos;wb&apos;;v.server_name=&apos;wwwb-app213.us.archive.org&apos;;v.server_ms=377;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init(&quot;https://web.archive.org/web&quot;);
+  __wm.wombat(&quot;https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml&quot;,&quot;20200129002414&quot;,&quot;https://web.archive.org/&quot;,&quot;web&quot;,&quot;/_static/&quot;,
+	      &quot;1580257454&quot;);
+</script>
+<script>__wm.rw(0);</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt"></link>
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ"></link>
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+	<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+		<div id="donato" style="position:relative;width:100%;">
+			<div id="donato-base">
+				<iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&amp;platform=wb&amp;referer=https%3A//web.archive.org/web/20200129002414/https%3A//www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+
+
+
+
+						</div>
+
+
+
+
+				</div>
+		<div id="wm-ipp-inside">
+			<div id="wm-toolbar" style="position:relative;display:flex;flex-flow:row nowrap;justify-content:space-between;">
+				<div id="wm-logo" style="/*width:110px;*/padding-top:12px;">
+					<a href="/web/" title="Wayback Machine home page">
+						<img src="/_static/images/toolbar/wayback-toolbar-logo-200.png" srcset="/_static/images/toolbar/wayback-toolbar-logo-100.png, /_static/images/toolbar/wayback-toolbar-logo-150.png 1.5x, /_static/images/toolbar/wayback-toolbar-logo-200.png 2x" alt="Wayback Machine" style="width:100px" border="0"></img>
+
+
+										</a>
+
+
+
+
+								</div>
+				<div class="c" style="display:flex;flex-flow:column nowrap;justify-content:space-between;flex:1;">
+					<form class="u" style="display:flex;flex-direction:row;flex-wrap:nowrap;" target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb">
+						<input type="text" name="url" id="wmtbURL" value="https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" onfocus="this.focus();this.select();" style="flex:1;"></input>
+						<input type="hidden" name="type" value="重玩"></input>
+						<input type="hidden" name="date" value="20200129002414"></input>
+						<input type="submit" value="前往"></input>
+
+
+
+
+
+
+										</form>
+					<div style="display:flex;flex-flow:row nowrap;align-items:flex-end;">
+						<div class="s" id="wm-nav-captures" style="flex:1;">
+							<a class="t" href="/web/20200129002414*/https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" title="查看此 URL 的所有存档列表">1 capture</a>
+							<div class="r" title="此 URL 存档的时间范围">29 Jan 2020</div>
+
+
+
+
+
+
+													</div>
+						<div class="k">
+							<a href="" id="wm-graph-anchor">
+								<div id="wm-ipp-sparkline" title="探索此 URL 的存档" style="position: relative">
+									<canvas id="wm-sparkline-canvas" width="675" height="27" border="0"></canvas>
+
+
+
+
+																	</div>
+
+
+
+
+															</a>
+
+
+
+
+													</div>
+
+
+
+
+
+
+										</div>
+
+
+
+
+
+
+								</div>
+				<div class="n">
+					<table>
+						<tbody>
+							<tr class="m">
+								<td class="b" nowrap="nowrap">12月</td>
+								<td class="c" id="displayMonthEl" title="当前位置：2020年1月29日 00:24:14">1月</td>
+								<td class="f" nowrap="nowrap">2月</td>
+
+
+
+
+
+
+
+
+															</tr>
+							<tr class="d">
+								<td class="b" nowrap="nowrap">
+									<img src="/_static/images/toolbar/wm_tb_prv_off.png" alt="Previous capture" width="14" height="16" border="0"></img>
+
+
+																</td>
+								<td class="c" id="displayDayEl" style="width:34px;font-size:22px;white-space:nowrap;" title="当前位置：2020年1月29日 00:24:14">29</td>
+								<td class="f" nowrap="nowrap">
+									<img src="/_static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0"></img>
+
+
+																</td>
+
+
+
+
+
+
+
+
+															</tr>
+							<tr class="y">
+								<td class="b" nowrap="nowrap">2019</td>
+								<td class="c" id="displayYearEl" title="当前位置：2020年1月29日 00:24:14">2020</td>
+								<td class="f" nowrap="nowrap">2021</td>
+
+
+
+
+
+
+
+
+															</tr>
+
+
+
+
+
+
+
+
+
+
+
+													</tbody>
+
+
+
+
+										</table>
+
+
+
+
+								</div>
+				<div class="r" style="display:flex;flex-flow:column nowrap;align-items:flex-end;justify-content:space-between;">
+					<div id="wm-btns" style="text-align:right;height:23px;">
+						<span class="xxs">
+							<div id="wm-save-snapshot-success">成功</div>
+							<div id="wm-save-snapshot-fail">失败</div>
+							<a id="wm-save-snapshot-open" href="#" title="通过我的网络档案馆分享">
+								<span class="iconochive-web"></span>
+
+
+
+
+														</a>
+							<a href="https://archive.org/account/login.php" title="登录" id="wm-sign-in">
+								<span class="iconochive-person"></span>
+
+
+
+
+														</a>
+							<span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+
+
+
+
+
+
+
+
+
+
+
+
+													</span>
+						<a class="xxs" href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;">
+							<span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span>
+
+
+												</a>
+						<a id="wm-tb-close" href="#close" style="top:-2px;" title="关闭工具栏">
+							<span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span>
+
+
+												</a>
+
+
+
+
+
+
+
+
+										</div>
+					<div id="wm-share" class="xxs">
+						<a href="/web/20200129002414/http://web.archive.org/screenshot/https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" id="wm-screenshot" title="截图">
+							<span class="wm-icon-screen-shot"></span>
+
+
+
+
+												</a>
+						<a href="#" id="wm-video" title="视频">
+							<span class="iconochive-movies"></span>
+
+
+
+
+												</a>
+						<a id="wm-share-facebook" href="#" data-url="https://web.archive.org/web/20200129002414/https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" title="分享到脸书" style="margin-right:5px;" target="_blank">
+							<span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span>
+
+
+												</a>
+						<a id="wm-share-twitter" href="#" data-url="https://web.archive.org/web/20200129002414/https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml" title="分享到推特" style="margin-right:5px;" target="_blank">
+							<span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span>
+
+
+												</a>
+
+
+
+
+
+
+
+
+
+
+										</div>
+					<div style="padding-right:2px;text-align:right;white-space:nowrap;">
+						<a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;">
+							<span id="wm-expand-icon" class="iconochive-down-solid"></span>
+							<span class="xxs" style="font-size:80%;">关于此存档</span>
+
+
+
+												</a>
+
+
+
+
+										</div>
+
+
+
+
+
+
+
+
+								</div>
+
+
+
+
+
+
+
+
+
+
+						</div>
+			<div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+				<div id="wm-capinfo-collected-by">
+					<div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">存档来源</div>
+					<div style="padding:3px;position:relative" id="wm-collected-by-content">
+						<div style="display:inline-block;vertical-align:top;width:50%;">
+							<span class="c-logo" style="background-image:url(https://archive.org/services/img/webwidecrawl);"></span>
+							<a style="color:#33f;" href="https://archive.org/details/webwidecrawl" target="_new">
+								<span class="wm-title">互联网档案馆</span>
+
+
+														</a>
+							<div style="max-height:75px;overflow:hidden;position:relative;">
+								<div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+								<a href="http://archive.org/web/web.php">Wayback Machine</a>
+
+
+
+互联网档案馆通过多种网络爬虫发现并捕获网页。在任何时候，都有多个不同的爬虫在运行，有些持续数月，有些每天或更长时间运行。通过。查看网络存档。														</div>
+
+
+
+
+机构：												</div>
+						<div style="display:inline-block;vertical-align:top;width:49%;">
+							<span class="c-logo" style="background-image:url(https://archive.org/services/img/liveweb)"></span>
+							<div>
+								<a style="color:#33f;" href="https://archive.org/details/liveweb" target="_new">
+									<span class="wm-title">实时网页代理抓取</span>
+
+
+																</a>
+
+
+收藏：														</div>
+							<div style="max-height:75px;overflow:hidden;position:relative;">
+								<div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+								<a href="http://archive.org/web/web.php">Wayback Machine</a>
+								<br>
+									<br>
+										<br>
+	</br>
+
+
+
+Liveweb proxy is a component of Internet Archive’s wayback machine project. The liveweb proxy captures the content of a web page in real time, archives it into a ARC or WARC file and returns the ARC/WARC record back to the wayback machine to process. The recorded ARC/WARC file becomes part of the wayback machine in due course of time.
+
+																			</br>
+
+
+
+																</br>
+
+
+
+
+
+
+	  Content crawled via the  Live Proxy mostly by the Save Page Now feature on web.archive.org.
+
+														</div>
+							<div id="wm-capinfo-timestamps">
+								<div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+								<div>
+									<div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+									<div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none">
+										<img src="/_static/images/loading.gif" alt="loading"></img>
+
+
+																		</div>
+
+
+
+
+
+
+																</div>
+
+
+
+
+
+
+														</div>
+
+
+
+
+
+
+
+
+
+
+												</div>
+
+
+
+
+
+										</div>
+
+
+
+
+
+								</div>
+
+
+
+						</div>
+			<div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20200129002414/https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml</div>
+			<script type="text/javascript">//
+__wm.bt(675,27,25,2,&quot;web&quot;,&quot;https://www.poptropica.com/game/data/scenes/timmy/commonRoom/npcs.xml&quot;,&quot;20200129002414&quot;,1996,&quot;/_static/&quot;,[&quot;/_static/css/banner-styles.css?v=S1zqJCYt&quot;,&quot;/_static/css/iconochive.css?v=qtvMKcIJ&quot;], false);
+  __wm.rw(1);
+//</script>
+			<npcs>
+				<npc id="npc">
+					<skin>
+						<gender>male</gender>
+						<skincolor>12025416</skincolor>
+						<haircolor>4860951</haircolor>
+						<eyes></eyes>
+						<mouth></mouth>
+						<marks></marks>
+						<facial></facial>
+						<hair></hair>
+						<shirt></shirt>
+						<pants></pants>
+						<pack></pack>
+						<item></item>
+						<overshirt></overshirt>
+						<overpants></overpants>
+						<linecolor></linecolor>
+						<eyestate></eyestate>
+						<linewidth></linewidth>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												</skin>
+					<position>
+						<x>1100</x>
+						<y>920</y>
+
+
+
+
+
+
+												</position>
+					<range>
+						<x>0</x>
+						<y>0</y>
+
+
+
+
+
+
+												</range>
+					<direction>left</direction>
+
+
+
+
+
+
+
+
+
+
+									</npc>
+
+
+
+
+						</npcs>
+
+
+
+
+
+
+
+
+
+
+				</div>
+
+
+
+
+		</div>
+
+
+
+</div>

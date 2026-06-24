@@ -1,0 +1,59 @@
+<doors>
+	<door id="doorTownhall">
+		<scene>game.scenes.hub.townhall.Townhall</scene>
+		<x>1195</x>
+		<y>1450</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorSaloon">
+		<scene>game.scenes.hub.saloon.Saloon</scene>
+		<x>620</x>
+		<y>973</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorAvatarShop">
+		<scene>game.scenes.hub.avatarShop.AvatarShop</scene>
+		<x>1355</x>
+		<y>610</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorShop">
+		<scene>game.scenes.hub.bundleShop.BundleShop</scene>
+		<x>483</x>
+		<y>600</y>
+		<label>
+			<text>商店</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

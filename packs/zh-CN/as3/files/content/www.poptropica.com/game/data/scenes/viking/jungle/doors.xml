@@ -1,0 +1,55 @@
+<doors>
+	<door id="doorMap">
+		<scene>game.scenes.viking.jungle.Jungle</scene>
+		<x>1655</x>
+		<y>1032</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorBeach">
+		<scene>game.scenes.viking.adStreet1.AdStreet1</scene>
+		<x>50</x>
+		<y>1034</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.viking.jungle.Jungle</scene>
+				<x>3800</x>
+				<y>1025</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+					<scene>game.scenes.viking.beach.Beach</scene>
+					<x>50</x>
+					<y>1034</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+	    <x>0</x>
+	    <y>0</y>
+	    <label>
+	      <text>旅行</text>
+	      <asset>exitUp</asset>
+	      <offset>
+	        <x>0</x>
+	        <y>0</y>
+	      </offset>
+	    </label>
+	</door>
+</doors>

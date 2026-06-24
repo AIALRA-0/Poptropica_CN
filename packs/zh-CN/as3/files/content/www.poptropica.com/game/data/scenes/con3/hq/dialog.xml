@@ -1,0 +1,271 @@
+<dialogs>
+	<character id="player">
+		<statement id="happen">发生什么事了？</statement>
+		<statement id="night">真是场噩梦！</statement>
+		<statement id="defeat" link="duh" linkEntityId="fan">超级行动队是怎么打败奥米伽的？</statement>
+		<statement id="what" link="comic" linkEntityId="fan">呃……那我们该怎么办？</statement>
+		<statement id="weapons">就是这里了。</statement>
+		<statement id="yes">毫无疑问。这些就是超级行动队的全部武器。</statement>
+		<statement id="months">你怎么能这样？</statement>
+		<statement id="offer">现在会怎样？奥米伽跟你做了什么交易？</statement>
+		<statement id="doom">我们完蛋了！</statement>
+		<statement id="where">奥米伽水晶在哪里能找到？</statement>
+		<statement id="noble">这可不像你，居然这么高尚。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="leader">
+		<statement id="intro">我们还以为你醒不过来了！</statement>
+		<statement id="taken">欧米伽已经占领了展会。这个地下室是人类抵抗军仅存的据点。</statement>
+		<statement id="sadly">可惜，这一切都是真的。</statement>
+		<statement id="bearings">先熟悉一下环境，准备好了再来找我……</statement>
+		<statement id="sure">你确定？就这些了？</statement>
+		<statement id="betray">既然如此……我们来了，大人！</statement>
+		<statement id="sorry">对不起。这是唯一的办法。</statement>
+		<statement id="time">几个月来我们一直躲在地下，勉强维生。欧米伽迟早也会找到我们！</statement>
+		<statement id="power">作为交出抵抗军的交换，他答应给我阿尔法昂的力量。欧米伽……我准备好了！</statement>
+		<statement id="no">什么？不！我照你说的都做了！</statement>
+		<conversation>
+			<exchange>
+				<question>告诉我你有计划。</question>
+				<answer>如果我们集齐超级行动队的武器，就有机会打败奥米伽。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>什么是超级行动队武器？</question>
+				<answer>有三件：精灵射手的弓、金面侠的电子脉冲、世界侠的盾牌。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我怎么认出它们？</question>
+				<answer>我的副手会给你一页漫画，应该能帮上忙。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="fan">
+		<statement link="defeat" linkEntityId="player">这简直和172到178期的“欧米伽统治”篇一模一样！</statement>
+		<statement id="duh" link="what" linkEntityId="player">废话——他们召唤了阿尔法昂。</statement>
+		<statement id="comic" triggerEvent="triggerEvent" triggerEventArgs="show_comic178">你什么都不懂吗？全在这里！</statement>
+		<statement event="gotItem_comic178">漫画里都解释了。自己去琢磨吧。</statement>
+		<statement id="alphaon">阿尔法昂，我们来了！</statement>
+		<statement id="ripoff">等等，漫画里不是这样的。太坑人了！</statement>
+		<statement id="crystal" triggerEvent="triggerEvent" triggerEventArgs="show_comic367">别急。在第367期，超级行动队通过超载欧米伽水晶把欧米伽送回了他的维度。看看吧！</statement>
+		<statement id="throne">在欧米伽的王座室里。你去。我来拖住他们！</statement>
+		<statement id="heroic">英雄式的牺牲——斯坦·迪特科会希望这样的。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="omegon">
+		<statement id="futile">抵抗是徒劳的。</statement>
+		<statement id="plant">把她带到处理厂去。</statement>
+		<statement id="reign">欧米伽的时代已经降临。欢迎来到你的末日。</statement>
+
+
+
+
+	</character>
+	<character id="survivor1">
+		<statement>我甚至记不起欧米伽之前的生活了。</statement>
+		<statement event="starter_deck" link="play">我甚至记不起欧米伽之前的生活了。现在我只玩MAF卡牌。</statement>
+		<conversation id="play">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="play_hippie">来玩吧！</question>
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+
+	</character>
+	<character id="survivor2">
+		<statement>玩《强力行动队》卡牌游戏是我仅存的乐趣了。</statement>
+		<statement event="starter_deck" link="play">玩《强力行动队》卡牌游戏是我仅存的乐趣了。</statement>
+		<conversation id="play">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="play_card2">来玩吧！</question>
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+	</character>
+	<character id="goldFace">
+		<statement event="hasItem_gauntlets">伙计，我以为那些金面狂热粉已经够疯了。这个欧米伽简直是另一个级别！</statement>
+		<statement link="give_gaunts">伙计，我以为那些金面狂热粉已经够疯了。这个欧米伽简直是另一个级别！</statement>
+		<statement id="give_gaunts" triggerEvent="giveItem" triggerEventArgs="gauntlets, goldface">我的电子脉冲护手给你吧。要不是充电电池没电了，它们还能射出火花呢。</statement>
+		<statement id="again">又来了！</statement>
+
+
+
+
+
+	</character>
+	<character id="elfArcher">
+		<statement event="hasItem_bow">我试着解释，电影里我连一箭都没射过。都是我的替身干的！</statement>
+		<statement link="give_bow">我试着解释，电影里我连一箭都没射过。都是我的替身干的！</statement>
+		<statement id="give_bow" triggerEvent="giveItem" triggerEventArgs="bow, elfArcher">这把精灵弓箭复制品你拿去吧。反正我也不知道怎么射箭。</statement>
+
+
+
+
+	</character>
+	<character id="worldGuy">
+		<statement event="hasItem_shield">明星生活不全是豪车和享乐。有时你还会被来自另一个维度的机器人绑架。</statement>
+		<statement link="give_shield">明星生活不全是豪车和享乐。有时你还会被来自另一个维度的机器人绑架。</statement>
+		<statement id="give_shield" triggerEvent="giveItem" triggerEventArgs="shield, worldGuy">喏，我的盾牌给你。当镜子照照头发挺好用的。</statement>
+
+
+
+
+	</character>
+	<character id="dealer">
+		<statement link="try_game">展会剩下的只有《强力行动部队》新手包了。还要再来一个吗？</statement>
+		<statement id="give_starter" triggerEvent="triggerEvent" triggerEventArgs="give_deck">给你一个新手包。希望它能让你暂时忘掉我们日常的烦恼。</statement>
+		<statement id="dealer_teach" triggerEvent="triggerEvent" triggerEventArgs="play_dealer">我来教你玩。</statement>
+		<statement event="starter_deck" link="replay">想再玩一次吗？</statement>
+		<statement id="won_card" link="explain_deck">玩得不错！这张卡牌应该能增强你的牌组。</statement>
+		<statement id="explain_deck" triggerEvent="triggerEvent" triggerEventArgs="open_deck">你可以用卡牌组道具重新整理卡牌。试试把刚赢的卡牌换进去。</statement>
+		<statement id="deck_closed">记得拿到新卡牌后更新你的牌组</statement>
+		<conversation id="try_game">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="check_if_played">没问题！</question>
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+		<conversation id="replay">
+			<exchange>
+				<question>好啊，为什么不呢。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_dealer">太好了，我们开始吧。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,139 @@
+<dialogs>
+	<character id="sasha">
+		<conversation>
+			<exchange>
+				<question>打扰一下，你是萨莎·卡彭吗？</question>
+				<answer>也许吧。谁在打听？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>有人想买欧米伽的照片。听说你有一张。</question>
+				<answer>你消息挺灵通嘛，伙计。你打算拿什么来换？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我或许能凑点零钱……</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="sasha_card, sasha">等你拿出真东西来，再联系我。这是我的名片。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="preview" triggerEvent="triggerEvent" triggerEventArgs="sasha_left_lobby, true">内部预映要开始了？我这就去！</statement>
+		<statement id="okay" triggerEvent="triggerEvent" triggerEventArgs="phone_in_box, true">好吧，给你。</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="noSignal">没信号！</statement>
+		<statement id="noPhone">没手机怎么打电话！</statement>
+		<statement id="gotPhoto">搞定！我把这张照片发给自己。</statement>
+		<statement id="noTouch">我不知道哪部手机是萨莎的。</statement>
+		<statement id="noTouch2">我已经从她手机里拿到照片了。</statement>
+		<statement id="noTouch3">全是手机，谁能想到呢？</statement>
+		<statement id="okaythen">哇，有些人真是入戏太深……</statement>
+
+
+
+
+
+
+
+
+		</character>
+	<character id="guard">
+		<statement id="phonePlease" link="okay" linkEntityId="sasha">进去前把手机放进箱子里。</statement>
+		<statement id="noEntry">喂！记者会员专用，别挡道。</statement>
+		<statement id="guardNoSignal">我这儿没信号。一点信号都没有，烂网络！</statement>
+		<statement id="whatSignal">嘿，居然有人在这儿有信号，太神奇了！</statement>
+		<statement>走廊那头就是全新的科技休息室，我却困在这儿守着箱子，还没信号！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="wizard">
+		<statement>我的饮料卡住了！我讨厌这些机器！</statement>
+		<statement id="soda">那不是我的汽水！</statement>
+		<statement event="tipped_soda_machine">这机器还是坏的！</statement>
+
+
+
+
+		</character>
+	<character id="computer">
+		<statement>整栋楼就这儿有信号！</statement>
+
+
+		</character>
+	<character id="pinataMan">
+		<statement id="pin0" link="okaythen" linkEntityId="player">皮纳塔侠时刻保持警惕！</statement>
+		<statement id="pin1" link="okaythen" linkEntityId="player">没有什么能逃过皮纳塔侠的眼睛。</statement>
+		<statement id="pin2" link="okaythen" linkEntityId="player">别担心，市民，皮纳塔侠在此！</statement>
+
+
+
+
+		</character>
+	<character id="card2">
+		<statement event="starter_deck" link="question">你也是《超能行动队》的粉丝？想玩一局吗？</statement>
+		<statement link="action">你听说过《超能行动队》集换式卡牌游戏吗？超棒的！</statement>
+		<statement id="action">演示厅在免费发放新手卡组，你应该去试试！</statement>
+		<statement triggeredByEvent="lose">下次好运。</statement>
+		<statement triggeredByEvent="win">真不敢相信我居然输了！</statement>
+		<conversation id="question">
+			<exchange>
+				<question>当然。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_card2">来玩吧！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>不用了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

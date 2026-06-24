@@ -1,0 +1,288 @@
+<dialogs>
+	<character id="player">
+		<statement id="job">我怎样才能在厨房找到工作？</statement>
+		<statement id="eggs" triggerEvent="triggerEvent" triggerEventArgs="need_eggs, true">那就来三个散养鸡蛋。</statement>
+		<statement id="give_eggs">三个散养鸡蛋，按你的要求。</statement>
+		<statement id="yuck">呸，这食物真难吃。</statement>
+		<statement id="spoon">没勺子吃不了这个。</statement>
+		<statement id="gum">给你三块口香糖，现在怎么弄到勺子？</statement>
+		<statement id="block">这些土豆硬得像石膏，也许我能把它们刻成有用的东西。</statement>
+		<statement id="pasta">这种意面看起来像钻头。</statement>
+		<statement id="stealMixer">怎么才能让弗拉姆贝放下那个搅拌器？</statement>
+		<statement id="mishap">上次搞砸之后，我最好别再碰土豆了。</statement>
+		<statement id="no_taters">空锅可没法搅拌。</statement>
+		<statement id="blockPlaster">我觉得弗拉姆贝不会让我第二次搞砸土豆的！</statement>
+		<statement id="plate">这看起来通向屋顶！不知道能不能钻开这些生锈的螺丝。</statement>
+		<statement id="what">你在这儿干嘛？</statement>
+		<statement id="mean">什么意思？</statement>
+		<statement id="escape">那我们明晚就逃！</statement>
+		<statement id="okay">好的！</statement>
+		<statement id="stuck">管道炸了，我过不去！</statement>
+		<statement id="vents1">一号桌子上方的通风口打开了。</statement>
+		<statement id="vents2">二号桌子上方的通风口打开了。</statement>
+		<statement id="vents3">三号桌子上方的通风口打开了，那是弗洛里安最喜欢的位置。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="nightingale">
+		<conversation event="mess_day_1_complete">
+			<exchange>
+				<question>算了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question>我吃完了。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="done_for_day">好的，把勺子还回来。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation event="spoon_distraction">
+			<exchange>
+				<question>现在能给我勺子了吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="second_spoon">当然，给你勺子。用完记得还回来。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement>好好享用你的餐点，没有第二份。</statement>
+
+
+
+
+	</character>
+	<character id="ratchet">
+		<statement id="take_over">那边有骚动。夜莺，你来替我一下。</statement>
+		<statement id="what">你这老家伙有什么问题？</statement>
+		<statement id="return">你没病！再这样闹事，今晚就关你禁闭。</statement>
+		<statement event="spoon_distraction">现在不行。</statement>
+		<statement id="spoon">这是你的勺子。吃完记得还回来。</statement>
+		<statement event="hasItem_cafe_spoon">每个囚犯只能拿一把勺子。快去喝你的粥吧。</statement>
+		<statement triggerEvent="giveItem" triggerEventArgs="cafe_spoon">这是你的勺子。吃完记得还回来。</statement>
+		<statement id="sit">坐下，自恋狂！</statement>
+		<statement id="cage">够了。全体禁闭！</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="florian">
+		<statement>这可是全场最佳座位。所有人都能看见我！</statement>
+		<statement id="reject">我们可不是朋友，靴子强盗，去别处坐。</statement>
+		<statement id="dead">我美丽的头发！有人要为此付出代价！</statement>
+		<statement id="make">来啊！</statement>
+		<statement id="hole">我知道是你陷害我，靴子强盗！等我从禁闭室出来，你就完了！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="flambe">
+		<statement id="back_off">退后！只有专业厨师才能碰。</statement>
+		<statement id="back_off2">我说了只要训练有素的厨师！</statement>
+		<statement id="two_ways">有两种方法：要么去巴黎蓝带厨艺学校接受培训……</statement>
+		<statement id="omelette">……要么给我找三个鸡蛋来做我的招牌煎蛋卷。这些农场货可不行。</statement>
+		<statement id="take_eggs">你找到三个散养鸡蛋了吗？</statement>
+		<statement id="take_eggs2">终于能做像样的煎蛋卷了！好吧，你可以当我的副厨了。</statement>
+		<statement id="start_work">你还是新手，我只放心让你搅拌土豆泥。</statement>
+		<statement id="mixer">记住，好的土豆泥要顺滑绵密。全是土豆，不加料！</statement>
+		<statement id="rock">这根本没法吃！硬得像大理石！我的米其林星没戏了。</statement>
+		<statement id="good">顺滑绵密，适合人类食用。干得不错。</statement>
+		<statement id="waste">监狱规定不能给第二份！你想让典狱长找我们麻烦吗？</statement>
+		<statement id="sweat">他们怎么能这样对待我的料理？我可是倾注了心血！</statement>
+		<statement id="literally">当然，不是字面意思。</statement>
+		<statement id="stop">我得阻止他们！</statement>
+		<statement id="save">求求你……救救我的搅拌机……</statement>
+		<statement event="started_food_fight">求求你……救救我的搅拌机……</statement>
+		<statement id="prize">我从没见过这么投入的副厨。你可以保留我的宝贝了。</statement>
+		<statement id="child">要像对待自己的孩子一样对待它！</statement>
+		<statement event="gotItem_mixer">照顾好我的宝贝搅拌机。</statement>
+		<statement event="drilled_plate">我快刑满释放了。每天我都梦想着在纳帕开一家法式餐厅。</statement>
+		<conversation event="traded_eggs">
+			<exchange>
+				<question>土豆泥要怎么搅拌？</question>
+				<answer link="mixer">贾斯塔克，去搅拌那边的大锅，别往里面加奇怪的东西。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>嘿，我能借一下那个搅拌机吗？</question>
+				<answer link="stealMixer" linkEntityId="player">搅拌机从不离身。我打仗都要带着它！</answer>
+
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="patches">
+		<statement id="seconds">嘿！再来一份！</statement>
+		<statement id="metal">你只需要金属的东西。给我三块口香糖，我就帮你弄到&apos;第二份&apos;。</statement>
+		<statement>吃饭时间是一天中最棒的时光！</statement>
+		<statement event="mess_day_1_complete">给我三块口香糖，我就帮你弄到&apos;第二份&apos;。</statement>
+		<statement id="help2">有口香糖给我了吗？</statement>
+		<statement id="help">我来制造混乱，你快去做你该做的事！</statement>
+		<statement id="fake">哦不，我肚子疼！警卫快来帮忙！</statement>
+		<statement id="fake2">好疼啊！</statement>
+		<statement event="smuggled_spoon">这些食物看起来都一样，好几年都这样了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="marion">
+		<statement event="started_food_fight">那边乱成一团了！</statement>
+		<statement>我看弗朗贝根本没在巴黎蓝带厨艺学校培训过。这食物太难吃了。</statement>
+
+
+
+	</character>
+	<character id="les">
+		<statement id="walls">这些墙都快塌了。</statement>
+		<statement>晚餐又是伪装得很巧妙的土豆……</statement>
+		<statement id="seconds">看，餐桌服务！</statement>
+		<statement id="foodfight">食物大战！！</statement>
+		<statement id="swing">不是只有你会挥舞勺子。</statement>
+		<statement id="raft">我们一直在做木筏和救生衣。</statement>
+		<statement id="bust">是时候越狱了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="sal">
+		<statement id="crumbling">快塌了！不小心的话，有人都能凿墙逃出去。</statement>
+		<statement>我今天到底在吃什么？</statement>
+		<statement id="seconds">现在这是一星级餐厅吗？</statement>
+		<statement id="foodfight">食物大战！！</statement>
+		<statement id="outside">但外面世界需要更多准备。我们可以帮忙。</statement>
+		<statement id="night">但我们还需要一晚才能完成。</statement>
+		<statement id="first">我们先走，去准备木筏。</statement>
+		<statement id="toobad">你得另找办法，我们在水边会合。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

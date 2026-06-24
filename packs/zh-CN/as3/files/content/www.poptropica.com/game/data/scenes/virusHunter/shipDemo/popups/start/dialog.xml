@@ -1,0 +1,13 @@
+<dialogs>
+	<character id="drLang">
+		<statement forceOnScreen="true" id="intro">开始你的训练吧！飞船还没完全调试好，但科学实验哪有不冒点风险的？……开个玩笑。</statement>
+		<statement forceOnScreen="true" id="ready">万能号原型机可以发射基础弹丸，还能使用方便的激光手术刀。沿途我们也会测试一些升级功能。</statement>
+		<statement forceOnScreen="true" id="launch">我们的预算可不够支付克隆费用，万一你出了什么事——所以系好安全带，祝你好运！</statement>
+
+
+
+
+	</character>
+
+
+</dialogs>

@@ -1,0 +1,433 @@
+<dialogs>
+	<character id="player">
+		<statement id="wait">听着，我——</statement>
+		<statement id="not_bb" linkEntityId="bigTuna" link="watch_your_back">但我不是——</statement>
+		<statement id="you_do" linkEntityId="florian" link="size">真的吗？</statement>
+		<statement id="last_time">这可能是我们最后一次说话了。</statement>
+		<statement id="bird_too">我会想你的。还有那只鸟。</statement>
+		<statement id="help_seeds">嘿，帕奇斯，有鸟食吗？</statement>
+		<statement id="not_planted">这块地也许真能种出东西。</statement>
+		<statement id="need_water">阳光应该够了，但还不够……</statement>
+		<statement id="already_watered">我不想浇太多水。</statement>
+		<statement id="sunflower_not_ready">植物还没完全开花。我应该再浇点水。</statement>
+		<statement id="correct_gum_marion" link="gave_gum" linkEntityId="marion">给你。</statement>
+		<statement id="wrong_gum_marion" link="more_gum" linkEntityId="marion">我的口香糖不够。</statement>
+		<statement id="wrong_gum_head">我最好再弄点口香糖。</statement>
+		<statement id="wrong_gum_noodle">我需要更多口香糖。</statement>
+		<statement id="gum_for_noodle" link="gum_for_noodle" linkEntityId="nostrand">有点贵，但给你吧。</statement>
+		<statement id="bust_description">&apos;一直盯着看？ &apos; 这完全不吓人。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="nostrand">
+		<statement event="hasItem_painting">有什么绘画需求我都能帮你。</statement>
+		<statement event="give_tonight">给我一晚时间画好它。</statement>
+		<statement id="gum_for_head" triggerEvent="triggerEvent" triggerEventArgs="give_tonight, truet">只要一晚就能画好。明天给你。</statement>
+		<statement event="give_painted_head_back" triggerEvent="giveItem" triggerEventArgs="painted_dummy_head">肤色调得刚刚好。</statement>
+		<statement id="gum_for_noodle" triggerEvent="triggerEvent" triggerEventArgs="give_tonight, true">给我一晚时间画好它。</statement>
+		<statement event="give_painted_pasta_back" triggerEvent="giveItem" triggerEventArgs="painted_pasta" link="lead_based">喏，给你一根银色的螺旋意面。</statement>
+		<statement id="lead_based" triggerEvent="triggerEvent" triggerEventArgs="busted">对了，这是含铅的颜料，可别吃下去。</statement>
+		<statement id="short_shirt" linkEntityId="warden" link="rules">我的囚服太短了，根本塞不进去。</statement>
+		<statement id="you_cant" triggerEvent="triggerEvent" triggerEventArgs="steal_paint">不行！画画是我唯一的寄托了。</statement>
+		<statement event="take_away_paint">这下我的假释听证会可要泡汤了。</statement>
+		<statement event="parole_next_day_nostrand">祝我好运！明天我就要去假释委员会了。</statement>
+		<statement event="parole_passed_nostrand">也许我可以试试雕塑……</statement>
+		<conversation event="no_intro_yard">
+			<exchange>
+				<question forceOnScreen="true">你是谁？</question>
+				<answer>我叫范·诺斯特兰德。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>你在这里多久了？</question>
+				<answer>哦，好多年了。我都数不清了。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>我想还有更糟的地方。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spoke_to_nostrand">开玩笑吗？多亏了海风，这地方都快散架了。</answer>
+
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+		<conversation event="yard_intro_shown">
+			<exchange>
+				<question forceOnScreen="true">你在画什么？</question>
+				<answer>城市天际线，一如既往。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>画得不错。</question>
+				<answer>谢谢，但我更想画点别的。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>比如什么？</question>
+				<answer>画点有生命的东西，比如静物花卉。</answer>
+
+
+
+						</exchange>
+
+
+
+
+			</conversation>
+		<conversation id="give_sunflower">
+			<exchange>
+				<question triggerEvent="takeItem" triggerEventArgs="sunflower,nostrand">虽然不是花束，但你可以画这朵花！</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="painting" link="hasItem_painting">哇，谢谢！我画这地平线都画了二十年了！这是我早期的作品。</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+		<conversation id="try_dummy_head">
+			<exchange>
+				<question triggerEvent="takeItem" triggerEventArgs="dummy_head,nostrand">你能把它画成我的样子吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gum_paint_head">五块口香糖就行。</answer>
+
+
+
+					</exchange>
+
+
+				</conversation>
+		<conversation id="try_pasta">
+			<exchange>
+				<question triggerEvent="takeItem" triggerEventArgs="uncooked_pasta,nostrand">你能把它涂成银色吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gum_paint_noodle">简单。七块口香糖。</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+		<randomSet id="already_painting">
+			<statement>耐心是美德。</statement>
+			<statement>我一晚只能完成一个项目。</statement>
+			<statement>先收好你的口香糖，我一晚只能画完一幅画。</statement>
+
+
+
+
+			</randomSet>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="patches">
+		<conversation event="no_intro_yard">
+			<exchange>
+				<question>你好。</question>
+				<answer>你好，我是帕奇斯。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>那是你的鸟吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spoke_to_patches">是啊，我捡到它时翅膀断了。现在伤好了，却忘了怎么飞。</answer>
+
+
+
+					</exchange>
+
+
+
+			</conversation>
+		<conversation event="yard_intro_shown">
+			<exchange>
+				<question>你在干什么？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="already_fed">喂喂鸟而已。</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+		<conversation event="already_fed">
+			<exchange>
+				<question>你还会再喂它们吗？</question>
+				<answer>今天不行，它们已经吃饱了。</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+		<statement id="meet_warden">糟了，典狱长来了。没事别乱说话。</statement>
+		<statement event="eggs_collected_3">我的假释听证会快到了。希望这次能出去。</statement>
+		<statement event="all_eggs_parole_next">明天又要开假释听证会了。开了这么多次，我都忘了该怎么撒谎了。</statement>
+		<statement event="all_eggs_parole_passed">又得在这儿待十年了，如果运气好的话。</statement>
+		<statement id="help">当然可以。</statement>
+		<statement id="hope">认识你真好。你让我相信高墙外还有生活。</statement>
+		<statement id="mutual">是啊，它也会想你的。也许我能说服它跟你一起飞走。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="florian">
+		<conversation event="no_intro_yard">
+			<exchange>
+				<question forceOnScreen="true">你是谁？</question>
+				<answer>别装不认识我，靴子大盗！</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>我不是靴子大盗！</question>
+				<answer>当然，我也不是什么闪电弗洛里安·福斯伯里。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>所以……你就是闪电福斯伯里？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spoke_to_florian">我当然是啊！而且我可没忘你偷了我的保险箱，小心点。</answer>
+
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+		<conversation event="yard_intro_shown">
+			<exchange>
+				<question>你锻炼得可真不少。</question>
+				<answer linkEntityId="player" link="you_do">你以为保持这样的身材容易吗？我的尺寸和二十年前一模一样！</answer>
+
+
+
+					</exchange>
+
+
+				</conversation>
+		<statement id="size" link="florian_size">26-34-30!</statement>
+		<statement event="florian_size" triggerEvent="triggerEvent" triggerEventArgs="florian_size, true">虽然这身囚服也没给我加分……</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="marion">
+		<conversation event="no_intro_yard">
+			<exchange>
+				<question forceOnScreen="true">你好。</question>
+				<answer>你好，我叫马里恩。你今天上头条了，知道吗？</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>等等，你说“头条”是什么意思？</question>
+				<answer>哦，就是今天的报纸。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>我不知道这里还能看到最新新闻。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spoke_to_marion">在这里，只要找对人，什么都能弄到。</answer>
+
+
+
+					</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="ask_for_prison_files">
+			<exchange>
+				<question>那些囚犯档案要多少钱？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gum_marion">三块口香糖。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement id="gave_gum" triggerEvent="giveItem" triggerEventArgs="prison_files">希望这些档案能帮到你。</statement>
+		<statement id="more_gum">那你最好去多做点车牌！</statement>
+		<statement event="hasItem_prison_files">别让警卫看到那些档案。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="warden">
+		<statement id="statue">这真让典狱长暖心；所有罪犯都在我们这所优秀机构的秩序象征旁偿还社会债务。</statement>
+		<statement id="new_guest" linkEntityId="player" link="wait">这位就是新来的客人吧？</statement>
+		<statement id="keep_it_up" triggerEvent="triggerEvent" triggerEventArgs="look_to_wall">再敢这么无礼，直接关禁闭。</statement>
+		<statement id="dat_wall">我看你在盯着那堵墙。你眼里还闪着希望的光。</statement>
+		<statement id="assure" triggerEvent="triggerEvent" triggerEventArgs="triggerBigTuna">但我保证，越狱是不可能的。就算是你，靴子大盗。</statement>
+		<statement id="wrap_up">好了，现在你知道不守规矩的下场了。继续吧。</statement>
+		<statement id="busted">啊哈！当场抓获。</statement>
+		<statement id="shirt" linkEntityId="nostrand" link="short_shirt">我说过，再让我逮到你衬衫没塞好，就取消你的画画资格。</statement>
+		<statement id="rules" linkEntityId="nostrand" link="you_cant">规矩就是规矩。你不能再画画了。</statement>
+		<statement id="lesson">让这给你们其他人一个教训。我绝不容忍违规行为。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="ratchet">
+		<statement event="no_intro_yard">去和其他人聊聊吧。</statement>
+		<statement id="try_day1">别白费力气了。趁还有自由时间，去和别人说说话。</statement>
+		<statement event="yard_intro_shown" link="leave">准备好去工作了吗？</statement>
+		<statement id="line_up">好了，你知道规矩。排队站好。</statement>
+		<statement id="nice_try">想得美。</statement>
+		<statement id="silence" linkEntityId="warden" link="keep_it_up">安静！不准和夏普典狱长说话。</statement>
+		<conversation id="leave">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="leave_for_work, false">是。</question>
+
+
+					</exchange>
+			<exchange>
+				<question>不。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="bigTuna">
+		<statement id="grunt" link="stay_away" linkEntityId="player">吼——</statement>
+		<statement id="set_me_up">靴子大盗？！是你陷害我！</statement>
+		<statement id="watch_your_back">小心点，靴子大盗！给我小心点！</statement>
+		<statement id="got_you_now">这下你逃不掉了，靴子大盗！</statement>
+		<statement id="cant_stop">鸟食可拦不住我们！</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorBaseCamp">
+		<scene>game.scenes.survival5.baseCamp.BaseCamp</scene>
+		<x>1550</x>
+		<y>1620</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>1537</x>
+				<y>1580</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorLivingRoomShrunk">
+		<scene>game.scenes.shrink.livingRoomShrunk.LivingRoomShrunk</scene>
+		<x>3825</x>
+		<y>1780</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

@@ -1,0 +1,73 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.deepDive1.adMixed2.AdMixed2</scene>
+		<x>1870</x>
+		<y>1045</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>20</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive1.maze.Maze</scene>
+				<x>2700</x>
+				<y>447</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive1.reef.Reef</scene>
+				<x>202</x>
+				<y>1024</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorLedge">
+		<scene>game.scenes.deepDive1.adMixed1.AdMixed1</scene>
+		<x>50</x>
+		<y>1045</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive1.reef.Reef</scene>
+				<x>3403</x>
+				<y>2232</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive1.ledge.Ledge</scene>
+				<x>250</x>
+				<y>620</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorShip">
+		<scene>game.scenes.deepDive1.shipUnderside.ShipUnderside</scene>
+		<x>1000</x>
+		<y>1500</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<openOnHit>true</openOnHit>
+	</door>
+</doors>

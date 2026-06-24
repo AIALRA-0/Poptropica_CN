@@ -1,0 +1,30 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.viking.waterfall.Waterfall</scene>
+		<x>1805</x>
+		<y>104</y>
+		<openOnHit>true</openOnHit>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door1" event="peak_exploded">
+		<scene>game.scenes.viking.waterfall2.Waterfall2</scene>
+		<x>1805</x>
+		<y>104</y>
+		<openOnHit>true</openOnHit>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

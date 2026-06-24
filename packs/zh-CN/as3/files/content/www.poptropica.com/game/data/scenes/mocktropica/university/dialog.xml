@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="adManager">
+		<statement id="obtrusiveAd" link="intro" linkEntityId="player">我做到了！我创造了史上最烦人的广告。我们的CPM要飙升了！</statement>
+		<statement id="replaceAd" triggerEvent="triggerEvent" triggerEventArgs="salesMangagerLeave">如果你不喜欢，欢迎你用自己不那么烦人的广告来替换。攒够波普币后来找我。</statement>
+
+
+
+	</character>
+	<character id="player">
+		<statement id="intro" link="replaceAd" linkEntityId="adManager">太荒唐了！我什么都做不了！</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

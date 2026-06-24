@@ -1,0 +1,162 @@
+<dialogs>
+	<character id="spFan">
+		<statement id="no cutting">嘿！不许插队！</statement>
+		<statement id="spFan_quest_complete" event="spFan_quest_complete">冲上云霄！</statement>
+		<conversation>
+			<exchange>
+				<question>我能排到你前面吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spFan_quest_accepted, true">要是你能修好我的坏掉的喷气背包，我就让你插队。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="sfFan">
+		<statement id="no cutting">喂！不许插队！</statement>
+		<statement id="sfFan_quest_complete" event="sfFan_quest_complete" link="idk" linkEntityId="player">愿你的扎兹布拉克斯源源不断。</statement>
+		<conversation>
+			<exchange>
+				<question>打扰一下，我能跟你换个位置吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="sfFan_quest_accepted, true">如果你能把摊位上的弗雷穆隆面具换给我，我就把位置让给你。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="shFan">
+		<statement id="no cutting">喂！不许插队！</statement>
+		<statement id="cheetah" triggerEvent="triggerEvent" triggerEventArgs="shFan_quest_accepted, true">当然在猎豹大盗那里！</statement>
+		<statement id="shFan_quest_complete" event="shFan_quest_complete" triggerEvent="triggerEvent" triggerEventArgs="shFan_passed, true">你果然厉害！我让位给你。</statement>
+		<conversation>
+			<exchange>
+				<question>我真的很急。能让我插个队吗？</question>
+				<answer link="where" linkEntityId="player">只有持有力量护符的人才能让我让位！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+
+	</character>
+	<character id="viking1">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="viking1_quest_accepted, true">如果你能打听到角色扮演比赛的时间，我就把位置让给你。</statement>
+		<statement id="no cutting">喂！不许插队！</statement>
+		<conversation event="viking1_quest_complete">
+			<exchange>
+				<question>比赛中午开始。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="viking1_passed, true">谢了！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="viking2">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="viking2_quest_accepted, true">我绞尽脑汁也想不起那部老维京电影里谁演了雷神。提醒我一下，我就跟你换位置。</statement>
+		<statement id="no cutting">喂！不许插队！</statement>
+		<conversation event="viking2_quest_complete">
+			<exchange>
+				<question>巴基·卢卡斯演过雷神。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="viking2_passed, true">对！我不知怎么总想到柯克·斯特雷耶。多谢。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="friend">
+		<statement>嘿伙计，插队可不礼貌哦。</statement>
+		<statement id="no cutting">嘿！洗手间排队在这边。</statement>
+		<statement id="cutter" link="ditto" linkEntityId="player">你怎么跑到队伍前面来的？</statement>
+		<statement id="enjoy" triggerEvent="triggerEvent" triggerEventArgs="jerk_leaves_bathrooms, true">好吧，在里面好好享受。我特意给你暖好了。</statement>
+		<conversation id="friend_quest_complete" event="friend_quest_complete">
+			<exchange>
+				<question>嘿，你是帮朋友拿东西吗？</question>
+				<answer link="in the bathroom">我进洗手间时还带着，肯定是落在那儿了。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation id="in the bathroom">
+			<exchange>
+				<question>你说在洗手间里。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="friend_passed, true">现在队伍这么长！算了，我回家了。对了，你这身装扮不错。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="where" link="cheetah" linkEntityId="shFan">能量护符在哪？</statement>
+		<statement id="idk">我还是不知道扎兹布拉克斯是什么。</statement>
+		<statement id="darn">真希望我也想到了。</statement>
+		<statement id="ditto" link="enjoy" linkEntityId="friend">我也正想问你呢。</statement>
+		<statement id="never">我再也不想进去了！</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,216 @@
+<dialogs>
+	<character id="player">
+		<statement id="what">发生什么事了？</statement>
+		<statement id="where">盗贼们去哪儿了？</statement>
+		<statement id="genie">那精灵呢？</statement>
+		<statement id="break">你愿意帮我打碎这个吗？</statement>
+		<statement id="need">看来他不需要这个了。</statement>
+		<statement id="need_both">没有魔法容器和精灵的真名，我可抓不住他。</statement>
+		<statement id="need_name">不知道精灵的真名，我还是抓不住他。</statement>
+		<statement id="need_lamp">没有魔法容器，我还是抓不住精灵。</statement>
+		<statement id="have_lamp_name">神灯和真名都在我手里，这次他跑不掉了。</statement>
+		<statement id="up">我得先上去。</statement>
+		<statement id="ready">这下你跑不掉了，萨姆哈尔，别再耍花招了！</statement>
+		<statement id="time">这次他又躲到哪儿去了？</statement>
+		<statement id="cliff">盗贼的藏身处已经什么都不剩了。</statement>
+		<statement id="father">父亲？</statement>
+		<statement id="right">我应该试着弥补这一切。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="genie">
+		<statement id="rage">够了！我要去一个你永远找不到的地方。</statement>
+		<statement id="taunt">你永远都追不上我。</statement>
+		<statement id="wish">想得美，先找到我再说吧。</statement>
+
+
+
+
+		</character>
+	<character id="genieHuman">
+		<statement id="again">他又来了。也许你有办法让他看清真相。</statement>
+		<statement>也许你有办法让他看清真相。</statement>
+		<statement id="back">我觉得你已经有了纠正一切所需的东西。</statement>
+
+
+
+
+		</character>
+	<character id="genieThief">
+		<statement id="souls">我从这个祭坛偷了不少宝贝……现在连你的灵魂也要收下。</statement>
+		<statement id="please">求你了，父亲，放我走吧。</statement>
+		<statement id="everything">并非所有……</statement>
+		<statement id="command">你的愿望就是我的命令……</statement>
+		<statement id="princess">我从没想过要当公主，我只想要这一切发生之前的生活。</statement>
+		<statement id="life">那时我们生活简朴，但很快乐。</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="sultan">
+		<statement id="understand">除了权力和财富，她还能想要什么？我真不明白。</statement>
+		<statement id="stop">山鲁佐德。住手。</statement>
+		<statement id="treasure">山鲁佐德，你都干了什么？我们的财宝全没了。我们明明应有尽有。</statement>
+		<statement id="riches">我们能拿回来的。没错，你有能力把财富夺回来。</statement>
+		<statement id="what">你为什么给我看这个？</statement>
+		<statement id="nothing">你什么都没给我看啊！</statement>
+		<statement id="drawing">这是什么？</statement>
+		<statement id="blind">哦，我真是瞎了眼！</statement>
+		<statement id="sorry">谢赫拉莎德，对不起。我太愚蠢了。但现在我知道怎么弥补一切了。</statement>
+		<statement id="thank" link="wishes">谢谢你， [PLAYER_NAME]. 在我许愿之前，你想许一个吗？为了感谢你的所有帮助。</statement>
+		<statement id="fine" link="lamp">不错的选择。至于我……</statement>
+		<statement id="lamp" triggerEvent="triggerEvent" triggerEventArgs="make_wish">贪婪让我忘记了真正宝贵的东西。我真希望当初没找到那盏神灯。</statement>
+		<conversation id="wishes">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="wish_robots">我想要一支机器人管家大军。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="wish_animals">我想要能和动物说话。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="wish_banjo">我想成为世界第一的班卓琴手。</question>
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="old">
+		<statement id="goner">我以为你肯定没救了！我刚把你救出来，整个洞穴系统就塌了。</statement>
+		<statement id="scattered">他们像火炬光下的圣甲虫一样四散奔逃。</statement>
+		<statement id="sultan">全镇都得了精灵热！也许苏丹知道该怎么办。</statement>
+		<statement>要是我再年轻点，我也会去找那个精灵！</statement>
+		<conversation event="genie_in_desert">
+			<exchange>
+				<question>你怎么了？</question>
+				<answer>我许愿变年轻。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>好吧，看来你的愿望实现了……</question>
+				<answer>你可能会以为，凭我辛苦得来的智慧，能预见到这种讽刺的结果。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+		</character>
+	<character id="turban">
+		<statement>据说这个指南针指向精灵。不管他藏在哪里，我都要找到他！</statement>
+		<statement event="genie_in_desert">这指南针没用。它转得像个陀螺！</statement>
+		<statement id="waste">这完全是浪费时间。我要回去研究代数了。</statement>
+
+
+
+
+		</character>
+	<character id="enforcer">
+		<conversation>
+			<exchange>
+				<question>嘿，你是那个大块头打手。</question>
+				<answer>不再是了。那个大盗把我赶出来了。说我现在没用了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>为什么？</question>
+				<answer>我碰什么什么就坏！现在连个火腿三明治都搞不定。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你在这儿干嘛？</question>
+				<answer>我在沙漠里就安全了。沙子总不会弄坏吧？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="useful">终于又有用武之地了！</statement>
+		<statement id="else">如果还有什么需要砸碎的，尽管找我。</statement>
+
+
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

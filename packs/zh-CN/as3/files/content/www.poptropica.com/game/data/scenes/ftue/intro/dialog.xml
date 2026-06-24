@@ -1,0 +1,125 @@
+<dialogs>
+	<character id="player">
+		<statement id="intro3">我没带！</statement>
+		<statement id="late2">哇，这些飞行器和服装太酷了！</statement>
+		<statement id="changeMind" triggerEvent="triggerEvent" triggerEventArgs="leave_tutorial_canceled, true">我改变主意了！</statement>
+		<statement id="exciting">哇！开局真棒！</statement>
+		<statement id="baron2">红男爵夫人？</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="pilot">
+		<statement id="intro1">欢迎登机， [Player Name]。</statement>
+		<statement id="late1b" triggerEvent="triggerEvent" triggerEventArgs="race_enter, true">我们出发吧！</statement>
+		<statement id="late1c" triggerEvent="triggerEvent" triggerEventArgs="race_enter, true">那个可以晚点弄，我们得抓紧时间！</statement>
+		<statement id="costumize" triggerEvent="triggerEvent" triggerEventArgs="showHowToCostumize">我来教你！</statement>
+		<statement id="costumized" triggerEvent="triggerEvent" triggerEventArgs="costumized">真不错！</statement>
+		<statement id="start2">抓紧了！</statement>
+		<statement id="baron1">糟了！是红男爵夫人！</statement>
+		<statement id="goingDown">不好！我们要坠落了！</statement>
+		<statement id="save" link="confirmSave">可能会遇到风暴。我们得保存游戏！要我教你吗？</statement>
+		<conversation id="question">
+			<exchange>
+				<question>我们在哪？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="ask_where_are_we, true">在Poptropica上空，准备比赛！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="race_enter, true">出发吧！</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="confirmSave">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="show_save_tutorial, true">好啊！</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="skipped_save_tutorial, true">不用了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="baron">
+		<statement id="baron3">抱歉搅了你们的计划！</statement>
+
+
+	</character>
+	<character id="officiate">
+		<statement id="race1">欢迎各位赛车手！</statement>
+		<statement id="race2">赢得比赛，获取积分和这枚奖章。</statement>
+		<statement id="race3">大家都准备好了吗？</statement>
+		<statement id="start1">预备……</statement>
+		<statement id="start2">出发！</statement>
+		<statement id="credits" link="raceReady">完成岛或活动，比如这个，就能获得积分！</statement>
+		<conversation id="raceReady">
+			<exchange>
+				<question forceOnScreen="true" triggerEvent="triggerEvent" triggerEventArgs="raceMusic">我们准备好了！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="race_start">各就各位……</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question forceOnScreen="true" triggerEvent="triggerEvent" triggerEventArgs="race_ask_costumes, true">怎么获得酷炫服装？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="showCostumize">通过换装！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question forceOnScreen="true">我能去别的地方吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="leave_tutorial, true">是的，你想回家吗？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+</dialogs>

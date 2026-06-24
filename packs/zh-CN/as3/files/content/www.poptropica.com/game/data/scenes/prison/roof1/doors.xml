@@ -1,0 +1,16 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.prison.roof2.Roof2</scene>
+		<x>100</x>
+		<y>710</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

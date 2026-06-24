@@ -1,0 +1,20 @@
+<dialogs>
+	<character id="guard">
+		<statement event="">快走开！谁也别想过去。</statement>
+		<statement id="beat_it">我说了快滚！</statement>
+		<statement event="is_happy">我突然感觉不一样了。我好像变得……友善了！甚至有点热情好客！</statement>
+
+
+
+
+	</character>
+	<character id="boy">
+		<statement id="boy_multiplying" triggerEvent="completeEvent" triggerEventArgs="boy_left_cheese_exterior">这些宠物吃个不停！它们还在繁殖！</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

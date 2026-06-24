@@ -1,0 +1,27 @@
+<doors>
+	<door id="doorChasm">
+		<scene>game.scenes.mocktropica.chasm.Chasm</scene>
+		<x>100</x>
+		<y>1086</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorLift">
+		<scene>game.scenes.mocktropica.chasm.Chasm</scene>
+		<x>100</x>
+		<y>1086</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+		</label>
+	</door>
+</doors>

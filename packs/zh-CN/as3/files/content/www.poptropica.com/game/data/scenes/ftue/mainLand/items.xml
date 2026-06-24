@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>canvas</id>
+		<asset>canvas.swf</asset>
+		<x>1066</x>
+		<y>755</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

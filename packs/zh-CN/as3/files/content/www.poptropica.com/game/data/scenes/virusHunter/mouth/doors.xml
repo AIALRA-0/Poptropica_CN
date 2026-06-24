@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorStomach">
+		<scene>game.scenes.virusHunter.stomach.Stomach</scene>
+		<x>1120</x>
+		<y>180</y>
+		<label>
+			<text>退出</text>
+			<asset>exitPointerLeft.swf</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

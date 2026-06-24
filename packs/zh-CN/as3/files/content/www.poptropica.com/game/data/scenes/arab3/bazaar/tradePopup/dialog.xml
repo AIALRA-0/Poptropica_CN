@@ -1,0 +1,59 @@
+<dialogs>
+	<character id="trade_trader1">
+		<statement forceOnScreen="true" id="burlap">抓魔法生物，粗麻袋最管用了！成交吗？</statement>
+		<statement forceOnScreen="true" id="sesame">芝麻油可是很多魔法药水的基础原料！这个我给你算便宜点。</statement>
+		<statement forceOnScreen="true" id="moon">这比月长石还稀罕！你愿意拿它来换这个吗？</statement>
+		<statement forceOnScreen="true" id="bone">这根许愿骨里存着一点魔法许愿之力，我可不是随便拿出来的！</statement>
+		<statement forceOnScreen="true" id="other">行，我愿意用你的ITEM_Y换这个TRADEI。</statement>
+		<statement forceOnScreen="true" id="nothing">不，我不愿意拿任何东西换那个ITEM_N。</statement>
+		<statement forceOnScreen="true" id="comeback">等你有了能交易的东西再来吧。</statement>
+
+
+
+
+
+
+
+
+		</character>
+	<character id="trade_trader2">
+		<statement forceOnScreen="true" id="burlap">抓魔法生物，粗麻袋最管用了！成交吗？</statement>
+		<statement forceOnScreen="true" id="sesame">芝麻油可是很多魔法药水的基础原料！这个我给你算便宜点。</statement>
+		<statement forceOnScreen="true" id="moon">这比月石还稀有！你愿意用它换这个吗？</statement>
+		<statement forceOnScreen="true" id="bone">这根许愿骨蕴含少量魔法许愿之力，我可不会轻易拿出来！</statement>
+		<statement forceOnScreen="true" id="other">是的，我愿意用你的ITEM_Y换这个TRADEI。</statement>
+		<statement forceOnScreen="true" id="nothing">不，我不愿意用任何东西换那个ITEM_N。</statement>
+		<statement forceOnScreen="true" id="comeback">等你有了能交易的东西再来吧。</statement>
+
+
+
+
+
+
+
+
+		</character>
+	<character id="trade_trader3">
+		<statement forceOnScreen="true" id="burlap">粗麻袋最适合捕捉魔法生物了！成交吗？</statement>
+		<statement forceOnScreen="true" id="sesame">芝麻油可是很多魔法药水的基础原料！这个我给你算便宜点。</statement>
+		<statement forceOnScreen="true" id="moon">这比月石还稀有！你愿意用它换这个吗？</statement>
+		<statement forceOnScreen="true" id="bone">这根许愿骨蕴含少量魔法许愿之力，我可不会轻易拿出来！</statement>
+		<statement forceOnScreen="true" id="other">是的，我愿意用你的ITEM_Y换这个TRADEI。</statement>
+		<statement forceOnScreen="true" id="nothing">不，我不愿意用任何东西换那个ITEM_N。</statement>
+		<statement forceOnScreen="true" id="comeback">等你有了能交易的东西再来吧。</statement>
+
+
+
+
+
+
+
+
+		</character>
+
+
+
+
+
+
+</dialogs>

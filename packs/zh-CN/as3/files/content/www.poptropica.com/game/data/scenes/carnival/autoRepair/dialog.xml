@@ -1,0 +1,146 @@
+<dialogs>
+	<character id="player">
+		<statement id="clickCarParts">我不需要汽车零件。</statement>
+		<statement id="clickVentClosed">通风口被汽车挡住了。</statement>
+		<statement id="clickVentOpen">通风口现在打开了。</statement>
+		<statement id="clickBevelMachine">这是用来打磨和矫直金属的。真不错。</statement>
+		<statement id="askForHose">呃，是的。这是我的</statement>
+		<statement id="stillWorking" link="hateCarnivals" linkEntityId="marnie">你还在工作？</statement>
+		<statement id="newspapersBlocking" triggerEvent="triggerEvent" triggerEventArgs="openNewspaperPopup">这些旧报纸挡路了。</statement>
+		<statement id="newspapersClosed">真是个奇怪的故事。不知道那个男孩后来怎么样了。</statement>
+		<statement id="carTroubleAnswer" triggerEvent="triggerEvent" triggerEventArgs="continue_scene">呃，是的。是我的……</statement>
+		<statement id="clickMotorOil">看起来是机油。</statement>
+		<statement id="hosePermission">未经允许我不能拿这个。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="marnie">
+		<conversation>
+			<exchange>
+				<question>你是诚实盖比吗？</question>
+				<answer>噗。 &quot;诚实&quot;盖比因为欺诈顾客正在服五年刑。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>他干了什么？</question>
+				<answer>掺水的汽油，编造根本不存在的维修项目……他还有什么没干过？这家伙就是个骗子。至少我低价买下了他的店。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>那为什么不改个名字呢？</question>
+				<answer>嘿，品牌响亮就是响亮。 </answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="info">
+			<exchange>
+				<question>你是诚实盖比吗？</question>
+				<answer>噗。 &quot;诚实&quot;盖比因为欺诈顾客正在服五年刑。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>他干了什么？</question>
+				<answer>掺水的汽油，编造根本不存在的维修项目……他还有什么没干过？这家伙就是个骗子。至少我低价买下了他的店。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>那为什么不改个名字呢？</question>
+				<answer>嘿，品牌响亮就是响亮。 </answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="hoseConversation">
+			<exchange>
+				<question>气动软管</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="ask_hose_wrong">那不是汽车零件！别浪费我时间。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>散热器软管</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="ask_hose_right">有司机因为缺散热器软管被困住了？！？ ! 这是紧急情况。拜托，直接从架子上拿一个吧。你可以晚点付钱。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>花园软管</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="ask_hose_wrong">那不是汽车零件！别浪费我时间。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="set_night">
+			<exchange>
+				<question>你还在工作？</question>
+				<answer>嘉年华让我浑身起鸡皮疙瘩。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement id="useLiftWhenCarPresent">别碰！我还在修那辆车。</statement>
+		<statement id="notCarPart">那不是汽车零件！别浪费我时间。</statement>
+		<statement id="giveHose">有司机因为缺散热器软管被困住了？！？ ! 这是紧急情况。拜托，直接从架子上拿一个吧。你可以晚点付钱。</statement>
+		<statement id="tryFryOil">你买不起好的。应急的话我推荐炸锅油。一半的价格，双倍的油腻！</statement>
+		<statement id="hateCarnivals">游乐场让我浑身不自在。</statement>
+		<statement id="carTrouble">车出问题了？</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

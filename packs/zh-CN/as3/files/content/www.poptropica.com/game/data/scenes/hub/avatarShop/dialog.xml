@@ -1,0 +1,74 @@
+<dialogs>
+	<character id="barber">
+		<conversation>
+			<exchange>
+				<question>这里能做什么？</question>
+				<answer>需要打理一下吗？色彩调配器应该还能用。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>色彩调配器是什么？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="point_to_colorizer">色彩调配器可以改变你的头发和肤色——就在那边。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>知道什么好笑话吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="tell_joke">那这个怎么样……</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="recognize">我差点认不出你了！</statement>
+		<statement id="bad_joke_1" link="bad_joke_punchline_1">生气的马戏团老板和罗马理发师有什么区别？</statement>
+		<statement id="bad_joke_2" link="bad_joke_punchline_2">怎么确定你该换个理发师了？</statement>
+		<statement id="bad_joke_3" link="bad_joke_punchline_3">一个Poptropica人走进理发店……</statement>
+		<statement id="bad_joke_4" triggerEvent="triggerEvent" triggerEventArgs="laugh">来剪头发吗？</statement>
+		<statement id="bad_joke_punchline_1" triggerEvent="triggerEvent" triggerEventArgs="laugh">一个是狂热的表演家，另一个是刮胡子的罗马人！</statement>
+		<statement id="bad_joke_punchline_2" triggerEvent="triggerEvent" triggerEventArgs="laugh">墙角那堆扫起来的耳朵！</statement>
+		<statement id="bad_joke_punchline_3">其实，这个笑话等你长大点再告诉你。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="tailor">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="combinations">有新穿搭灵感吗？拉一下那个拉杆，让我瞧瞧！</statement>
+		<statement event="combinations">嗯？继续拉杆就能看到新搭配。所有东西都能混搭！</statement>
+		<statement id="new_outfit">想找新衣服？架子上多的是。</statement>
+		<statement id="hello_again">哦，又见面啦！</statement>
+		<statement id="curtain1" triggerEvent="triggerEvent" triggerEventArgs="proud">太棒了！好样的！</statement>
+		<statement id="curtain2">我可想不到这么搭，你真有品味！</statement>
+		<statement id="curtain3" triggerEvent="triggerEvent" triggerEventArgs="think">嗯……在合适的光线下，也许还行。</statement>
+		<statement id="curtain4">我想，时尚总是会轮回的。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+</dialogs>

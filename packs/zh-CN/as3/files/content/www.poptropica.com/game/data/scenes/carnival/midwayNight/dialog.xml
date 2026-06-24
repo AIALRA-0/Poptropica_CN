@@ -1,0 +1,27 @@
+<dialogs>
+	<character id="edgar">
+		<statement id="giveCompound">你做到了！马戏团长需要看看这个！</statement>
+
+
+
+	</character>
+	<character id="guesser">
+		<statement id="secretMessage">我最受不了的就是黏糊糊的糖果。</statement>
+		<statement id="ferrisWheelStopped">摩天轮可是个大热门，这可不是随便说说的。</statement>
+		<statement id="haveSecretMessage">怪物挡路时，用光照它就行。</statement>
+		<statement id="haveBlacklight">找到新的照明方法，一切都会顺利的。</statement>
+		<statement id="hypnotizeFormula">一扇门锁了，你可能得另辟蹊径。</statement>
+		<statement id="hypnotizePowder">真相会让你自由。</statement>
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

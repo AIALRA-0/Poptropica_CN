@@ -1,0 +1,75 @@
+<dialogs>
+	<character id="thorlak">
+		<statement id="grumble">我的酒呢？那个仆人跑哪儿去了？我快渴死了！</statement>
+		<statement id="thanks">总算来了，小子。</statement>
+		<statement id="wasntMe" link="soItWasYou" linkEntityId="erik">我？可那个仆人刚才——</statement>
+		<statement id="noJudgement" link="scoundrel" linkEntityId="erik">你说过不追究的！</statement>
+
+
+
+
+
+	</character>
+	<character id="erik">
+		<statement id="listen" link="closeEyes">听着。我知道有人偷了我的酒杯。我不追究——只想把它拿回来。</statement>
+		<statement id="closeEyes" triggerEvent="triggerEvent" triggerEventArgs="turn_blind_eye">我要闭上眼睛数到10，谁拿了我的酒杯就悄悄放回去。</statement>
+		<statement id="noOne" link="closeEyes">没人承认？好吧，我们再试一次。</statement>
+		<statement id="done">10. 希望那个小偷识相点，把我的酒杯还回来。</statement>
+		<statement id="betrayMe" link="wasntMe" linkEntityId="thorlak">索拉克！你竟敢这样背叛我？</statement>
+		<statement id="soItWasYou" triggerEvent="triggerEvent" triggerEventArgs="stagger_response">闭嘴！你竟敢在我面前拿着它？</statement>
+		<statement id="scoundrel" triggerEvent="triggerEvent" triggerEventArgs="flip_a_lid">我说到做到，你这个无赖！给我滚出去！</statement>
+		<statement id="thorlak_framed">我最信任的人怎么会偷我的东西？偷我的？！</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="underling_3">
+		<statement id="grumble">他每次找不到东西都这样。</statement>
+		<statement id="thanks">埃里克出了名的脾气暴躁，从不留情。</statement>
+		<statement id="not_that_one">我要是你，就不会拿着那个。</statement>
+
+
+
+
+	</character>
+	<character id="underling_2">
+		<statement id="grumble">你说会不会在要塞外面？</statement>
+		<statement id="thanks">好孩子，这饮料正好解渴。</statement>
+		<statement id="not_that_one">咳死我了，但我还是想保住脑袋。</statement>
+
+
+
+
+	</character>
+	<character id="underling_1">
+		<statement id="grumble">希-希望他别以为是我-我干的……</statement>
+		<statement id="thanks">谢谢，这个能让我冷静一下。</statement>
+		<statement id="not_that_one">那-那个……千万别让埃里克看见你拿着它！</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="dont_get_caught">我可不想被抓到拿着这个，但也许能想办法偷偷塞给别人。</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+</dialogs>

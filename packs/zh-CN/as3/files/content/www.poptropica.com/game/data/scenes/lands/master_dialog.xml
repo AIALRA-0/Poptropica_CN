@@ -1,0 +1,37 @@
+<dialogs>
+	<character id="masterBuilder">
+		<statement id="theHammer" triggerEvent="triggerEvent" triggerEventArgs="firstLineOver">这把神锤蕴含着强大的力量。听从我的指引，我将引领你成为真正的创世大师。</statement>
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我是建造阿斯加德城墙的创世大师。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这是哪儿？</question>
+				<answer>你已踏入古老的阿斯加德国度。这里有无数个世界等待探索。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我该怎么做？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="master_fade_out">挥舞神锤的力量去探索、摧毁与创造。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+		</character>
+
+
+</dialogs>

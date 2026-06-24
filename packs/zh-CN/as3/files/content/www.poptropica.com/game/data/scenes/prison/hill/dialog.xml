@@ -1,0 +1,97 @@
+<dialogs>
+	<character id="player">
+		<statement id="money" triggerEvent="triggerEvent" triggerEventArgs="betrayal">这么多钱……但小偷跑哪儿去了？</statement>
+		<statement id="not_booted" link="always_knew" linkEntityId="tex">我不是靴子大盗！</statement>
+		<statement id="framed" link="save_it" linkEntityId="tex">什么？我被陷害了！</statement>
+		<statement id="tower">我得去那座塔上。那里一定有能帮我洗清罪名的东西！</statement>
+		<statement id="no_enter">真希望再也不用回那儿去……太吓人了！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="bandit">
+		<statement id="odds" link="double" triggerEvent="triggerEvent" triggerEventArgs="remove_mask">真是巧了？你简直是完美的替罪羊——</statement>
+		<statement id="double" triggerEvent="triggerEvent" triggerEventArgs="double">——跟我长得一模一样！</statement>
+		<statement id="enjoy" triggerEvent="triggerEvent" triggerEventArgs="bandit_out">旅途愉快。塔里的宝藏我回头再来拿！</statement>
+
+
+
+
+	</character>
+	<character id="tex">
+		<statement id="fan_out" triggerEvent="triggerEvent" triggerEventArgs="fan_out">散开，伙计们。这次这只小鸡可逃不掉了。</statement>
+		<statement id="got_you" link="not_booted" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="stand_up">又见面了，靴子大盗！</statement>
+		<statement id="got_you" link="framed" linkEntityId="player">我就知道你会回到这里。</statement>
+		<statement id="save_it" triggerEvent="triggerEvent" triggerEventArgs="capture">留着跟鹈鹕岩监狱的典狱长说吧。你的大块头朋友肯定很乐意在那儿见到你。</statement>
+		<statement id="listen_up" link="gee" linkEntityId="p2">都给我听好了，伙计们！昨晚鹈鹕岩监狱有人越狱了。那个穿靴子的强盗肯定会回到犯罪现场。</statement>
+		<statement id="score" triggerEvent="triggerEvent" triggerEventArgs="manhunt">因为他们把一辈子都花不完的财宝藏在了这座山上！我们要抢先一步把它弄到手。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="p1">
+		<statement id="stop">站住别动！</statement>
+
+
+	</character>
+	<character id="p2">
+		<statement id="stop">站住别动！</statement>
+		<statement id="gee" link="score" linkEntityId="tex">哎呀，警长。他们为什么要做这种事呢？</statement>
+
+
+
+	</character>
+	<character id="p3">
+		<statement id="stop">站住别动！</statement>
+
+
+	</character>
+	<character id="p4">
+		<statement id="stop">站住别动！</statement>
+
+
+	</character>
+	<character id="p5">
+		<statement id="stop">站住别动！</statement>
+
+
+	</character>
+	<character id="p6">
+		<statement id="stop">站住别动！</statement>
+
+
+	</character>
+	<character id="les">
+		<statement id="vamoose" link="now_on" linkEntityId="sal">玩得挺开心，不过我们该溜了。</statement>
+		<statement id="seed_money" link="knock_over" linkEntityId="sal">只是需要一点启动资金。</statement>
+
+
+
+	</character>
+	<character id="sal">
+		<statement id="now_on" link="seed_money" linkEntityId="les">从今往后，我们要走正道了。</statement>
+		<statement id="knock_over" triggerEvent="triggerEvent" triggerEventArgs="sal_les_out">好吧，我们就抢一次海湾城银行，下不为例！</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

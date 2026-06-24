@@ -1,0 +1,22 @@
+<doors>
+	<door id="doorMidway" event="set_evening">
+		<scene>game.scenes.carnival.midwayEvening.MidwayEvening</scene>
+		<x>4378</x>
+		<y>1825</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+	<door id="doorMidway" event="set_night">
+		<scene>game.scenes.carnival.midwayNight.MidwayNight</scene>
+		<x>4378</x>
+		<y>1825</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

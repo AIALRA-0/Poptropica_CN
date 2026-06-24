@@ -1,0 +1,61 @@
+<doors>
+	<door id="doorKitchenShrunk02A">
+		<scene>game.scenes.shrink.kitchenShrunk02.KitchenShrunk02</scene>
+		<x>50</x>
+		<y>1040</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-80</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+
+	<door id="doorKitchenShrunk02B">
+		<scene>game.scenes.shrink.kitchenShrunk02.KitchenShrunk02</scene>
+		<x>50</x>
+		<y>1690</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-80</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+
+	<door id="doorLivingRoomShrunk">
+		<scene>game.scenes.shrink.livingRoomShrunk.LivingRoomShrunk</scene>
+		<x>4330</x>
+		<y>1780</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>50</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorTrashCan">
+		<scene>game.scenes.shrink.trashCan.TrashCan</scene>
+		<x>555</x>
+		<y>174</y>
+		<label>
+			<text>进入</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

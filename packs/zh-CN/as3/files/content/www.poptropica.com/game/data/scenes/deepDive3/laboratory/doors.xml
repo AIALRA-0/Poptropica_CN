@@ -1,0 +1,57 @@
+<doors>
+	<door id="livingDoor">
+	<scene>game.scenes.deepDive3.adStreet3.AdStreet3</scene>
+		<x>63</x>
+		<y>1155</y>
+		<direction>down</direction>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+			<connectingSceneDoors>
+			<door id="doorLeft">
+			<scene>game.scenes.deepDive3.laboratory.Laboratory</scene>
+				<x>850</x>
+				<y>200</y>
+				<direction>down</direction>
+			</door>
+			<door id="doorRight">
+			<scene>game.scenes.deepDive3.livingQuarters.LivingQuarters</scene>
+				<x>648</x>
+				<y>2400</y>
+				<direction>up</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+		<door id="mainDoor">
+		<scene>game.scenes.deepDive3.adMixed2.AdMixed2</scene>
+		<x>1734</x>
+		<y>1155</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+			<scene>game.scenes.deepDive3.mainDeck.MainDeck</scene>
+				<x>1530</x>
+				<y>2620</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+			<scene>game.scenes.deepDive3.laboratory.Laboratory</scene>
+				<x>300</x>
+				<y>2500</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

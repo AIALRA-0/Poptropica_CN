@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorMouth">
+		<scene>game.scenes.virusHunter.day2Mouth.Day2Mouth</scene>
+		<x>4485</x>
+		<y>2265</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>1500</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorHeart">
+		<scene>game.scenes.virusHunter.day2Heart.Day2Heart</scene>
+		<x>755</x>
+		<y>0</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

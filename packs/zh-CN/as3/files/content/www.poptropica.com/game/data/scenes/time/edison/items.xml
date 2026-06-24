@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>sunstone</id>
+		<asset>sunstone.swf</asset>
+		<x>957</x>
+		<y>521</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

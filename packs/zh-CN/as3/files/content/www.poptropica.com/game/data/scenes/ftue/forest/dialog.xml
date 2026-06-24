@@ -1,0 +1,111 @@
+<dialogs>
+	<character id="amelia">
+		<statement id="help" link="landing">又一次完美着陆！</statement>
+		<statement id="landing" link="come_on" linkEntityId="monkey">嗯，几乎完美。你能帮我下来吗？</statement>
+		<statement id="any_day_now">你能找到其他上来这里的路吗？</statement>
+		<statement id="onto_something">我觉得它发现了什么。</statement>
+		<statement id="almost">继续跳！</statement>
+		<statement id="one_more">再跳一次应该就行了！</statement>
+		<statement link="tool" id="thanks" triggerEvent="triggerEvent" triggerEventArgs="saved_amelia, true">终于自由了！</statement>
+		<statement link="follow_me" linkEntityId="monkey" id="tool">我们只需要合适的工具来修好这架飞机……</statement>
+		<statement triggerFirst="true" id="fix" link="want_help" triggerEvent="triggerEvent" triggerEventArgs="amelia_sees_you_found_wrench">你找到了一把扳手！</statement>
+		<statement id="want_help" link="need_help">要我教你怎么用吗？</statement>
+		<statement id="thats_it">就是这样！</statement>
+		<statement id="fly">我们来试试看！</statement>
+		<statement id="up_and_away">起飞，升空，出发！</statement>
+		<statement id="grounded">可能不只是螺旋桨的问题……</statement>
+		<statement id="follow_monkey">肯定有其他办法离开这座岛。</statement>
+		<conversation event="saved_amelia">
+			<exchange>
+				<question>情况有多糟？</question>
+				<answer>还好！只是螺旋桨松了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我们能修好吗？</question>
+				<answer>小菜一碟。我们只需要一把扳手。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>哪儿能找到扳手？</question>
+				<answer>也许那只猴子知道。它跑哪儿去了？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="need_help">
+			<exchange>
+				<question>好的，请演示给我看。</question>
+				<answer id="tut" triggerEvent="triggerEvent" triggerEventArgs="used_item_tutorial, true">很简单！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>不用了，我自己能搞定。</question>
+				<answer>好的，需要帮助随时问我。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="monkey">
+		<statement>呜咦咦！</statement>
+		<statement id="look_up_here" link="help" linkEntityId="amelia">呜咦咦！</statement>
+		<statement id="come_on">哦啊啊啊！</statement>
+		<statement id="you_can_do_it">啊啊啊啊！</statement>
+		<statement id="try_this">哦哦哦哦！</statement>
+		<statement id="follow_me">咦咦咦咦！</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="too_high">岩架太高了。</statement>
+		<statement id="another_way">太高了。</statement>
+		<statement id="no_use_now">现在没什么用。</statement>
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

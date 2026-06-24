@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorOlympus">
+		<scene>game.scenes.myth.mountOlympus.MountOlympus</scene>
+		<x>2116</x>
+		<y>100</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

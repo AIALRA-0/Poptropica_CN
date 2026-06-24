@@ -1,0 +1,54 @@
+<doors>
+	<door id="doorTreasureKeep">
+		<!--<scene>game.scenes.arab2.treasureKeep.TreasureKeep</scene>
+		<x>650</x>
+		<y>260</y>
+		<label>
+			<text>Go Down</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>-->
+		<scene>game.scenes.arab2.adMixed1.AdMixed1</scene>
+		<x>200</x>
+		<y>100</y>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>-50</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab2.entrance.Entrance</scene>
+				<x>725</x>
+				<y>2300</y>
+				<direction>right</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab2.treasureKeep.TreasureKeep</scene>
+				<x>750</x>
+				<y>150</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<!-- <door id="doorCommonRoom">
+		<scene>Arab2Common</scene>
+		<x>635</x>
+		<y>839</y>
+		<label>
+			<text>COMMON ROOM</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door> -->
+</doors>

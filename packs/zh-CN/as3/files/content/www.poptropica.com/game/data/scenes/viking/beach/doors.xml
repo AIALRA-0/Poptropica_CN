@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorJungle">
+		<scene>game.scenes.viking.adStreet1.AdStreet1</scene>
+		<x>1307</x>
+		<y>1034</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>50</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.viking.jungle.Jungle</scene>
+				<x>3800</x>
+				<y>1025</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+					<scene>game.scenes.viking.beach.Beach</scene>
+					<x>50</x>
+					<y>1034</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

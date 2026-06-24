@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="fan_off">听起来通风扇刚刚关掉了。</statement>
+		<statement id="fan_on">听起来风扇又开了。</statement>
+
+
+
+		</character>
+
+
+</dialogs>

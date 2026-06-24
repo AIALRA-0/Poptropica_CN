@@ -1,0 +1,78 @@
+<dialogs>
+	<character id="nightingale">
+		<statement id="start_intro" link="privilege" linkEntityId="ratchet">你将享有食物、衣物和住所。</statement>
+		<statement id="rules" link="rules" linkEntityId="ratchet">俗话说得好：违反规则，就得进监狱。</statement>
+		<statement id="noise" link="threat" linkEntityId="ratchet">小声点。</statement>
+		<statement id="lights_out" forceOnScreen="true">熄灯了！</statement>
+		<statement id="caught" link="caught2">你在干什么？</statement>
+		<statement id="caught2">不想我告诉狱长的话，就拿口香糖来。</statement>
+		<statement id="painted_head">啊，看到犯人们都睡了真好。</statement>
+		<statement>熄灯了！快去睡觉，犯人！</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="ratchet">
+		<statement id="privilege" link="rules" linkEntityId="nightingale">其他东西都是特权！</statement>
+		<statement id="rules" link="noise" linkEntityId="nightingale">违反监狱规定，你就得来这儿。</statement>
+		<statement id="threat" triggerEvent="triggerEvent" triggerEventArgs="lock_up">不然我们就帮你安静下来。</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="no_spoon">后面有地方可以活动……但通风口能过去吗？</statement>
+		<statement id="regular_spoon">这把勺子过不去。也许我能把它磨尖。</statement>
+		<statement id="guard_here">狱警还在，这么做太可疑了。</statement>
+		<statement id="finished_chisel">我过来了！</statement>
+		<statement id="dummy_head">除非把它涂成我的样子，否则没用。</statement>
+		<statement id="vent_locked">狱警看着，我爬不过去！</statement>
+		<statement id="door_locked">我不该离开，狱警快回来了。</statement>
+		<statement id="back_to_bed">我最好回床上！</statement>
+		<statement id="plaster">这石膏能用吗？我需要东西装它。</statement>
+		<statement id="busting_out">没时间睡觉了——我今晚就要越狱！</statement>
+		<conversation id="sleep">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="goto_sleep">最好睡一会儿。</question>
+
+
+					</exchange>
+			<exchange>
+				<question>我还想四处看看。</question>
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

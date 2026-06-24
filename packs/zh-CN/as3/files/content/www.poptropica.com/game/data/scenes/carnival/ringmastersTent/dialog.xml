@@ -1,0 +1,63 @@
+<dialogs>
+	<character id="player">
+		<statement id="questionMaster">&quot;主人？ &quot;</statement>
+		<statement id="whyHypnotize">可是为什么？</statement>
+		<statement id="yourWrong">这不对！</statement>
+		<statement id="screamNo">不！</statement>
+		<statement id="edgarApproach">埃德加，是我啊！你不记得我了吗？唉，我该怎么做才能让他想起来？</statement>
+		<statement id="whatHappened">你被催眠了！</statement>
+		<statement id="whatShow" link="magicalShow" linkEntityId="ringmaster">是什么样的表演？</statement>
+		<statement id="whereFormula">配方在哪儿？</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="edgar">
+		<statement id="broughtCompound">我把您要的东西带来了……主人。</statement>
+		<statement id="gotFriedDough">嗯，炸面团……咦？发生什么事了？我在哪儿？</statement>
+		<statement id="edgarHypnotized">马戏团长能用那种化合物催眠任何人。我们必须阻止他！</statement>
+		<statement id="turnedMonsters">团长，太可怕了！他们都变成怪物了！</statement>
+		<statement id="toWheel">快去摩天轮！</statement>
+
+
+
+
+
+
+		</character>
+	<character id="ringmaster">
+		<statement id="seizeHim">埃德加，抓住这个捣蛋鬼！</statement>
+		<statement id="confirmMaster">你带来的硫喷妥钠足够催眠所有人了！很快我就能控制整个镇子！</statement>
+		<statement id="forRevenge">我只想和这些人一起生活，他们却把我赶走。没人要的孩子……我再也不会孤单了！</statement>
+		<statement id="takeOver">我来决定什么是对的！我要把他们全变成我的怪物宠物，就从……你开始！</statement>
+		<statement id="letsBegin">埃德加，我们开始吧！</statement>
+		<statement id="stopRingmaster">你得先抓住我！</statement>
+		<statement link="whatShow" linkEntityId="player">啊！你来早了。演出要到午夜才开始。</statement>
+		<statement id="magicalShow">一场你从未见过的神奇表演！晚点再来。我保证给你留个前排座位。</statement>
+		<statement id="knowNeed">我知道该怎么办。有个化学配方能逆转这种变化。</statement>
+		<statement id="ferrisMonster">配方在摩天轮管理员的口袋里。快！没时间了。</statement>
+		<statement id="hurryFerris">快赶去摩天轮，没时间了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

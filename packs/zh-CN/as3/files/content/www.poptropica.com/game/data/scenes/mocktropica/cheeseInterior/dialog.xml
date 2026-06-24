@@ -1,0 +1,51 @@
+<dialogs>
+	<character id="player">
+		<statement id="machineBroke2">也许你现在该回去干老本行了。只是提个建议！</statement>
+		<statement id="no_use_axe">我拿它有什么用？</statement>
+
+
+
+	</character>
+	<character id="designer">
+		<conversation>
+			<exchange>
+				<question>你就是Poptropica的设计师兰斯·皮彻吗？</question>
+				<answer>哎呀，这名字我可好久没听人提起了！不过没错，就是我。</answer>
+
+
+
+			</exchange>
+			<exchange>
+				<question>Poptropica全球总部需要你回去。没有你，他们没法完成这个岛！</question>
+				<answer>不可能。我的新工作轻松多了。而且还有免费奶酪凝乳吃！</answer>
+
+
+
+			</exchange>
+			<exchange>
+				<question>有什么办法能让你回去吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="enableCurds">我看不必。只要管道里还出奶酪凝乳，我就有份心爱的工作！</answer>
+
+
+
+			</exchange>
+
+
+
+
+		</conversation>
+		<statement id="freecurds">抱歉我帮不上更多忙。来，这盒奶酪凝乳送你了。</statement>
+		<statement id="dont_touch">嘿！别碰那个！你没受过奶酪凝乳机械操作的正规培训！</statement>
+		<statement id="machineBroke1">不！我的奶酪凝乳！不——！</statement>
+		<statement id="machineBroke3">我怀着沉重的心情同意返回Poptropica全球总部。这里已经没什么值得我留恋的了。</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

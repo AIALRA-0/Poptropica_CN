@@ -1,0 +1,39 @@
+<dialogs>
+	<character id="maxDialog">
+		<statement id="got_you" forceOnScreen="true">总算逮到你了，你这头猪。</statement>
+
+
+		</character>
+	<character id="max">
+		<statement event="ready_to_fight">太好了。把这些装备带到锯木厂，给范布伦设个陷阱。</statement>
+		<statement id="not_vanBuren" linkEntityId="player" link="who_are_you">等等——你不是范布伦。</statement>
+		<statement id="max_mcgullicutty" linkEntityId="player" link="clues">麦克斯·麦古利卡蒂，随时为您效劳。</statement>
+		<statement id="on_the_run" link="survival" triggerEvent="triggerEvent" triggerEventArgs="reset_zoom">没错。我已经躲避范布伦追捕一年多了，一直在等你这样的人出现。</statement>
+		<statement id="survival" linkEntityId="player" link="what_now">我拖着这条伤腿，一直在地下躲藏——但有了你的帮助，我们就能反将范布伦一军！</statement>
+		<statement id="sawmill" triggerEvent="triggerEvent" triggerEventArgs="return_control">旧锯木厂是设陷阱的绝佳地点。我们需要一根绳子、一个齿轮和一只哨子。拿到这些，我们就能抓住范布伦！</statement>
+		<statement>旧锯木厂是设陷阱的绝佳地点。我们需要一根绳子、一个齿轮和一只哨子。拿到这些，我们就能抓住范布伦！</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="who_are_you" triggerEvent="triggerEvent" triggerEventArgs="introduce_myself">你是谁？</statement>
+		<statement id="clues" linkEntityId="max" link="on_the_run">原来那些线索都是你留下的！</statement>
+		<statement id="what_now" linkEntityId="max" link="sawmill">我求之不得。我们该怎么做？</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

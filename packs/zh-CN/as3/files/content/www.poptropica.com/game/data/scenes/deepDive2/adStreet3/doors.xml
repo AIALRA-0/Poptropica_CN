@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+		<x>2020</x>
+		<y>1150</y>
+		<direction>up</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>-150</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorRight">
+		<scene>game.scenes.deepDive2.pipeRoom.PipeRoom</scene>
+		<x>440</x>
+		<y>150</y>
+		<direction>down</direction>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>150</y>
+			</offset>
+		</label>
+	</door>
+</doors>

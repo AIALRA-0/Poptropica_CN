@@ -1,0 +1,183 @@
+<dialogs>
+	<character id="dj">
+		<statement id="join">嘿，快来加入派对！在这里你可以和其他玩家聊天、交换服装、一起玩游戏！</statement>
+		<statement id="versus_games">你会和来自世界各地的玩家匹配！</statement>
+		<conversation id="dj_questions">
+			<exchange>
+				<question>我能遇到其他玩家吗？</question>
+				<answer>当然可以！进去后点击其他玩家就能开始聊天了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>有游戏可以玩吗？</question>
+				<answer link="versus_games">进去后，只要点击街机就能开始游戏。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我能获得新的服装部件吗？</question>
+				<answer>我最酷的造型都是从其他玩家那儿学来的。里面有些服装简直帅呆了！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="amelia">
+		<statement id="island_popup_closed" link="good_luck">嗯，我觉得你准备好开始下一次冒险了。登上你的飞艇，随风而行吧！</statement>
+		<statement id="custom_looks" link="anything_else_no_look">有成千上万的部件可选，可能性无穷无尽。</statement>
+		<statement id="anything_else_no_look" link="else_no_look">还有其他想了解的吗？</statement>
+		<statement id="common_room" triggerEvent="triggerEvent" triggerEventArgs="show_arcade">其实街那头就有一个。</statement>
+		<statement id="arcade_shown" link="anything_else_no_common">在那里你可以聊天、玩游戏，并和其他玩家交朋友。</statement>
+		<statement id="anything_else_no_common" link="else_no_common">还有什么想知道的？</statement>
+		<statement id="shop_shown" link="anything_else_no_shop">商店总有新物品，很多还是免费的！</statement>
+		<statement id="anything_else_no_shop" link="else_no_shop">还有什么需要帮忙的吗？</statement>
+		<conversation id="what_else">
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！打造新造型本身就是乐趣。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">没错，街机是找到它们的最佳地点。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>哪里能获得物品？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="show_shop">探索岛屿时会收集物品，但特殊物品在商店里。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="else_no_look">
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">没错，街机是找到它们的最佳地点。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>哪里能获得物品？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="show_shop">探索岛屿时会收集物品，但特殊物品在商店里。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="else_no_common">
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！自定义造型本身就是乐趣，而且选择很多。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>哪里能获得物品？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="show_shop">探索岛屿时会收集物品，但特殊物品在商店里。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="else_no_shop">
+			<exchange>
+				<question>还有其他玩家吗？</question>
+				<answer link="common_room">没错，街机是找到它们的最佳地点。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我能改变造型吗？</question>
+				<answer link="custom_looks">当然！自定义造型是乐趣的一半，你有很多选择。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>再跟我讲讲Poptropica吧，它到底是什么样的？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="say_pop_is">Poptropica就是冒险的乐园，你能想到的冒险这里几乎都有！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+
+
+
+</dialogs>

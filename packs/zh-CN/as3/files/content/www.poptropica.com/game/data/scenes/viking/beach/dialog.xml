@@ -1,0 +1,85 @@
+<dialogs>
+	<character id="player">
+		<statement id="bareHands">沙子太多了，光用手可挖不完。</statement>
+		<statement id="whatsThis" triggerEvent="triggerEvent" triggerEventArgs="get_axe">这是什么？</statement>
+		<statement id="farEnough" link="thinkNot" linkEntityId="octavian">够了，奥克塔维安！</statement>
+		<statement id="ownAdventures" link="takeThis" linkEntityId="mya">我还有自己的冒险等着呢。</statement>
+		<statement id="catch">嘿，接住！</statement>
+		<statement id="stopOctavian">我得想办法阻止奥克塔维安！</statement>
+		<statement id="hungry">它们好像又饿了！</statement>
+		<statement id="block_map">现在可不是看这个的时候。</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="octavian">
+		<statement id="thinkNot" link="trapped" linkEntityId="mya">想得美。我要离开这个穷乡僻壤的岛了，你们谁也拦不住我！</statement>
+		<statement id="myConcern" triggerEvent="triggerEvent" triggerEventArgs="inconvenient">不关我的事。哦看啊……你们大呼小叫把本地居民都引来了。</statement>
+		<statement id="inconvenient" link="distractDodos" linkEntityId="oliver">呃……这下麻烦了。</statement>
+		<statement id="aiee" link="lastBit" linkEntityId="jorge">哎呀呀！</statement>
+		<statement>这些鸟到处都是！</statement>
+		<statement id="gross" link="getAway">恶心……已经有人咬过一口了。</statement>
+		<statement id="getAway" triggerEvent="triggerEvent" triggerEventArgs="get_away">走开！嘘！</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="mya">
+		<statement id="trapped" triggerEvent="triggerEvent" triggerEventArgs="octavian_laugh">我们要永远困在这里了！</statement>
+		<statement id="droppedMap" link="backHome" linkEntityId="oliver" triggerEvent="triggerEvent" triggerEventArgs="pick_up_map">看！他把地图弄掉了！</statement>
+		<statement id="takeThis" triggerEvent="triggerEvent" triggerEventArgs="give_medal">以防我们再也见不到你，拿上这个。</statement>
+		<statement id="postMedal">多谢你的帮助。</statement>
+		<statement>一定有办法阻止屋大维。</statement>
+		<statement id="tryAgain">你再找找看。肯定有我们能用的东西。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="oliver">
+		<statement id="distractDodos" triggerEvent="triggerEvent" triggerEventArgs="let_player_use_candy">想办法阻止屋大维。</statement>
+		<statement id="backHome" triggerEvent="triggerEvent" triggerEventArgs="player_turn">也许现在我们可以找到回家的路了。</statement>
+		<statement id="postMedal">也许现在我们可以找到回家的路了。</statement>
+		<statement>想办法阻止屋大维。</statement>
+		<statement id="wrongItem">我觉得那阻止不了屋大维。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="jorge">
+		<statement id="lastBit" link="droppedMap" linkEntityId="mya">那是我们最后一点食物了……</statement>
+		<statement id="comeWithUs" link="ownAdventures" linkEntityId="player">你要和我们一起走吗。</statement>
+		<statement id="postMedal">你确定不和我们一起走吗。</statement>
+		<statement>我们必须阻止他。</statement>
+		<statement id="noItem">我们完蛋了。现在什么都救不了我们。</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

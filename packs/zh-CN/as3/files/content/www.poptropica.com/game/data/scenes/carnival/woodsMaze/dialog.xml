@@ -1,0 +1,13 @@
+<dialogs>
+	<character id="player">
+		<statement id="clue1">肯定是有人穿过树林时不小心掉在这儿的。</statement>
+		<statement id="clue2">这地方可真奇怪，怎么会有人把东西落在这儿。</statement>
+		<statement id="clue3">人们总是到处乱丢东西。</statement>
+
+
+
+
+		</character>
+
+
+</dialogs>

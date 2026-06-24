@@ -1,0 +1,21 @@
+<doors>
+	<door id="doorStomach">
+		<scene>game.scenes.virusHunter.stomach.Stomach</scene>
+		<x>704</x>
+		<y>2500</y>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+		</label>
+	</door>
+
+	<door id="doorIntestineBattle">
+		<scene>game.scenes.virusHunter.intestineBattle.IntestineBattle</scene>
+		<x>280</x>
+		<y>60</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+		</label>
+	</door>
+</doors>

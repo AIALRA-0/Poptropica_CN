@@ -1,0 +1,22 @@
+<dialogs>
+	<character id="thief">
+		<statement id="huh">嗯？谁在那儿？</statement>
+		<statement id="you_there">是你！你怎么进来的？</statement>
+		<statement id="out_of_my_way">别挡我的路，除非你想再当一次烟花表演的主角！</statement>
+
+
+
+
+		</character>
+	<character id="player">
+		<statement id="cant_open_diary">锁住了。</statement>
+		<statement id="jinn_name">那就是灯神的真名吗？ &quot;萨姆哈尔？ &quot;</statement>
+
+
+
+		</character>
+
+
+
+
+</dialogs>

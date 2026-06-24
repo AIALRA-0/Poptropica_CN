@@ -1,0 +1,88 @@
+<dialogs>
+	<character id="clerk">
+		<statement event="gotItem_car_key">跳舞的熊……好吧，这下我算是开眼了。</statement>
+		<statement>走开！我可不会让你这样的小孩独自进这条巷子。</statement>
+		<statement id="block">走开！我可不会让你这样的小孩独自进这条巷子。</statement>
+		<statement id="dance">哇，那只熊居然会跳舞！</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="cat">猫在那儿，可我怎么把它弄出来呢？</statement>
+		<statement id="candy">它只收零钱，不过那些糖果看起来真不错。</statement>
+		<statement id="empty">我觉得我不需要更多垃圾食品了。</statement>
+		<statement id="nochange">它只收零钱。</statement>
+		<statement id="bonbons">我打赌托托看到这些糖果会疯掉的。</statement>
+		<statement id="excuse" link="best" linkEntityId="crispin">打扰一下？</statement>
+		<statement id="beat" link="keys" linkEntityId="crispin">我肯定能赢你。</statement>
+		<statement id="win">就是这里！我能拿回Timmy的裤子，拯救这一天！</statement>
+		<statement id="arcade">永远比不上《街头保龄球II》. 那才是经典。</statement>
+		<statement id="sneak">她太警觉了，我溜不过去，也许小全能能帮我引开她。</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="crispin">
+		<statement>现在别烦我，小子，我正在刷新最高分。想玩的话晚点再来。</statement>
+		<statement event="saw_timmy_on_tower" link="excuse" linkEntityId="player">想来挑战王者，嗯？</statement>
+		<statement id="best" link="beat" linkEntityId="player">我是镇上最棒的保龄球手！没人能否认这一点。</statement>
+		<statement id="keys" link="on">哈！你要是能打出比我更好的成绩，我就把车钥匙给你。</statement>
+		<statement id="lose" link="get_keys">真不敢相信你打破了我的记录！</statement>
+		<statement id="lose_perfect" link="get_keys">你打出了完美一局！看来你才是真正的火鸡！</statement>
+		<statement id="get_keys" link="win" linkEntityId="player" triggerEvent="giveItem" triggerEventArgs="car_key">好吧，拿去吧，我的车钥匙，车停在外面，别刮到漆。</statement>
+		<statement event="gotItem_car_key" link="on">你上次赢只是运气好，我打赌你做不到第二次。</statement>
+		<statement id="lose2">真不敢相信你又打破了我的记录！</statement>
+		<statement id="lose_perfect2">你打出了完美一局！看来你才是真正的火鸡！</statement>
+		<statement id="fail">不错嘛小子，但我才是王者！</statement>
+		<statement event="attempted_bowling_game" link="on">又来碰运气了，小子？我再给你一次机会。</statement>
+		<conversation id="on">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="lets_bowl">一言为定！</question>
+
+
+						</exchange>
+			<exchange>
+				<question>下次吧。</question>
+				<answer>我会在这儿的，我一直都在！</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

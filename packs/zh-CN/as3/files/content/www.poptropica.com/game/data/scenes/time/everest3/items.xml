@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>statuette</id>
+		<asset>statuette.swf</asset>
+		<x>871</x>
+		<y>812</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

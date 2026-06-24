@@ -1,0 +1,57 @@
+<dialogs>
+	<character id="brokeMerchant">
+		<conversation>
+			<exchange>
+				<question>这里发生什么事了？</question>
+				<answer>这里原本是集市，但四十大盗老是来抢劫，我们就搬到镇子另一边去了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>听起来这些盗贼胆子不小啊。</question>
+				<answer>可不是嘛——你要是在这个石台上放点值钱的东西，一转身就被他们偷走了！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你觉得四十大盗的老巢在哪儿？</question>
+				<answer>他们肯定藏在山洞里，只有那里说得通。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="whereGo2" link="whereGo3" linkEntityId="brokeMerchant">肯定是那些盗贼干的！</statement>
+		<statement id="whereGo3">也许你可以从别的地方监视他们。</statement>
+		<statement id="warn1">那东西看起来挺容易丢的。</statement>
+		<statement id="warn2">你没听说过有40个理由不该把那东西放那儿吗？</statement>
+		<statement id="warn3">小孩子啊……从来不听劝。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="whatDias">看起来这里可以放东西。</statement>
+		<statement id="openSesame">芝麻开门！</statement>
+		<statement id="notMoving">他好像不想动。</statement>
+		<statement id="whereGo" link="whereGo2" linkEntityId="brokeMerchant">那东西去哪儿了？</statement>
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

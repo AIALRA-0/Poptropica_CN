@@ -1,0 +1,44 @@
+<dialogs>
+	<character id="char1">
+		<statement>如果你要找科技展，它在学校那边。</statement>
+		<statement event="got_shrink_medallion">听说科技展上有个超棒的新项目！</statement>
+		<conversation event="got_address">
+			<exchange>
+				<question>你见过C. J. 吗？</question>
+				<answer>我在这儿待了一整天了。我看到C. J. 出去了，但没见她回来。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="char2">
+		<statement>今年的科技展肯定超精彩！</statement>
+		<statement event="got_shrink_medallion">太好了， C. J. 没事就好！</statement>
+		<conversation event="got_address">
+			<exchange>
+				<question>C. J. 在她公寓里吗？</question>
+				<answer>我之前好像看到C. J. 的公寓里有人，但敲门没人应！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

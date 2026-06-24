@@ -1,0 +1,31 @@
+<dialogs>
+	<character id="player">
+		<statement id="wayIn">既然有路出去，说不定也有路进来……</statement>
+		<statement id="nothingToChop">这里没什么可砍的。</statement>
+		<statement id="outOfHere">我们快离开这儿吧！</statement>
+		<statement id="getUpThere">我得想办法上去。</statement>
+		<statement id="wontBudge">它纹丝不动。</statement>
+		<statement id="hope">那个地方我可再也不想去了。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="viking">
+		<statement>快滚，除非你也想被关进围栏里跟其他小孩作伴。</statement>
+
+
+	</character>
+	<character id="talkTarg">
+		<statement id="outOfHere">我们快离开这儿。</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

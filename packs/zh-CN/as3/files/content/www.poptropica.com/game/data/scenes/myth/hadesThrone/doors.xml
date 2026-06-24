@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorCerberus">
+		<scene>game.scenes.myth.cerberus.Cerberus</scene>
+		<x>2180</x>
+		<y>440.45</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

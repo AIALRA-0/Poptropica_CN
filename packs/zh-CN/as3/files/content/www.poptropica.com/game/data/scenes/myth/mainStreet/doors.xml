@@ -1,0 +1,128 @@
+<doors>
+	<door id="doorTreeBottom">
+		<scene>game.scenes.myth.adGroundH9.AdGroundH9</scene>
+		<x>920</x>
+		<y>600</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.myth.treeBottom.TreeBottom</scene>
+				<x>4690</x>
+				<y>1318</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.myth.mainStreet.MainStreet</scene>
+				<x>56</x>
+				<y>1318</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorOlympusMuseum">
+		<scene>game.scenes.myth.olympusMuseum.OlympusMuseum</scene>
+		<x>152</x>
+		<y>1060</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>旅行</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorHercsHut">
+		<scene>game.scenes.myth.hercsHut.HercsHut</scene>
+		<x>1270</x>
+		<y>480</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMountOlympus1">
+		<scene>game.scenes.myth.mountOlympus.MountOlympus</scene>
+		<x>30</x>
+		<y>2230</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMidasGym">
+		<!-- scene>game.scenes.myth.midasGym.MidasGym</scene -->
+		<scene>MidasGym</scene>
+		<x>618</x>
+		<y>815</y>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorAdGroundH9">
+		<scene>game.scenes.myth.adGroundH9R.AdGroundH9R</scene>
+		<x>60</x>
+		<y>600</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.myth.mainStreet.MainStreet</scene>
+				<x>5530</x>
+				<y>1110</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.myth.grove.Grove</scene>
+				<x>20</x>
+				<y>890</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

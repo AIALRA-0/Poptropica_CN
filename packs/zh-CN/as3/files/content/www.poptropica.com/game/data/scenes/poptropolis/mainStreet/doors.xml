@@ -1,0 +1,40 @@
+<doors>
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>旅行</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorCommon">
+		<scene>game.scenes.poptropolis.common.Common</scene>
+		<x>650</x>
+		<y>930</y>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+
+	<door id="doorAdGroundH22">
+		<scene>game.scenes.poptropolis.adGroundH22.AdGroundH22</scene>
+		<x>30</x>
+		<y>1288</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

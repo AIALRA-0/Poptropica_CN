@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>shoelace1</id>
+		<asset>shoelace1.swf</asset>
+		<x>2558</x>
+		<y>1272</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

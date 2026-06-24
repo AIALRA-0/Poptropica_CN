@@ -1,0 +1,13 @@
+<items>
+	<item>
+		<id>shield</id>
+		<asset>shield.swf</asset>
+		<x>2995</x>
+		<y>760</y>
+		<rotation>32</rotation>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

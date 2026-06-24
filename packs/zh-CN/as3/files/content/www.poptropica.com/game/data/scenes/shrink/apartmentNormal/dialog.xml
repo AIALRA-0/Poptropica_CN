@@ -1,0 +1,30 @@
+<dialogs>
+	<character id="player">
+		<statement id="cat_is_inside" triggerEvent="triggerEvent" triggerEventArgs="get_cat">糟了！我把猫放进屋里了。得赶紧把它弄出去。</statement>
+		<statement id="cat_is_outside" link="cat_is_outside_pt2">奇怪，猫不见了。它是怎么跑出门的？</statement>
+		<statement id="cat_is_outside_pt2" triggerEvent="triggerEvent" triggerEventArgs="find_cj, true">不管怎样……我得在公寓里找找线索，看看C. J. 到底怎么了。</statement>
+		<statement id="clicked_microscope">我得先把那只猫弄出去再说。</statement>
+		<statement id="close_microscope" triggerEvent="triggerEvent" triggerEventArgs="snooped_too_much">往小处想？</statement>
+		<statement id="clicked_blimp">看起来像个玩具飞艇。</statement>
+		<statement id="clicked_car">现在不是玩的时候。</statement>
+		<statement id="clicked_snack">现在不是吃零食的时候。</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="char1">
+		<statement forceOnScreen="true" id="snooping" triggerEvent="triggerEvent" triggerEventArgs="chase_player">你到处乱翻得有点过分了。这就让你停下来。</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

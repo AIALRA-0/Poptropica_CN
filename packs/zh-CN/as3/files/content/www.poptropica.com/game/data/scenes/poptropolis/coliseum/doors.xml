@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.poptropolis.adGroundH22.AdGroundH22</scene>
+		<x>4100</x>
+		<y>1700</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

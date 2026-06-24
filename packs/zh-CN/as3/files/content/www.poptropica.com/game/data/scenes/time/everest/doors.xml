@@ -1,0 +1,16 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.time.everest2.Everest2</scene>
+		<x>294</x>
+		<y>1156</y>
+		<direction>right</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

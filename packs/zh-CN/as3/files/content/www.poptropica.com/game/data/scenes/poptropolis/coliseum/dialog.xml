@@ -1,0 +1,192 @@
+<dialogs>
+	<character id="player">
+		<statement id="bonus_started1" link="bonus_started2" linkEntityId="opponent1">是地震了吗？</statement>
+		<statement triggeredByEvent="bonus4" triggerEvent="triggerEvent" triggerEventArgs="bonus5">呃，那个……是我吗？</statement>
+
+
+
+	</character>
+	<character id="winner1">
+		<statement>我赢了！</statement>
+		<statement event="all_events_completed">我是冠军！</statement>
+		<statement id="bonus4">是地震吗？</statement>
+
+
+
+
+	</character>
+	<character id="winner2">
+		<statement>第二名！</statement>
+		<statement event="all_events_completed">就差一点！</statement>
+		<statement id="bonus5">是岛要沉回海里了吗！？</statement>
+
+
+
+
+	</character>
+	<character id="winner3">
+		<statement>第三名也不错。</statement>
+		<statement event="all_events_completed">第三名也不错。</statement>
+		<statement id="bonus6">是我吃坏肚子了吗？</statement>
+
+
+
+
+	</character>
+	<character id="master">
+		<statement id="congratulations">恭喜[tribe]部落，赢得了上一届比赛的胜利！</statement>
+		<statement id="first" triggerEvent="triggerEvent" triggerEventArgs="popup_events">你打算先参加哪个比赛项目？</statement>
+		<statement event="started_games" triggerEvent="triggerEvent" triggerEventArgs="popup_events">接下来你想参加哪个比赛项目？</statement>
+		<statement id="ceremony1" triggerEvent="triggerEvent" triggerEventArgs="ceremony1">女士们先生们，很荣幸欢迎你们来到百年波普特罗波利斯运动会！</statement>
+		<statement id="ceremony2" triggerEvent="triggerEvent" triggerEventArgs="ceremony2">请各部落的代表上前来。</statement>
+		<statement id="ceremony3" triggerEvent="triggerEvent" triggerEventArgs="ceremony3">让波普特罗波利斯圣火照亮这场竞赛，点燃我们对胜利的渴望！</statement>
+		<statement id="ceremony4" triggerEvent="triggerEvent" triggerEventArgs="ceremony4">比赛现在开始！</statement>
+		<statement id="ceremony5" triggerEvent="triggerEvent" triggerEventArgs="ceremony5">准备好参赛时，请来找我。</statement>
+		<statement id="finale1" triggerEvent="triggerEvent" triggerEventArgs="finale1">朋友们，各部落的冠军都已光荣地完成了比赛。现在公布最终结果。</statement>
+		<statement id="finale2" triggerEvent="triggerEvent" link="finale3">在波普特罗波利斯运动会中，只能有一位胜者。现在，我将向你们介绍整个 Poptropica 的至高冠军……</statement>
+		<statement id="finale3" triggerEvent="triggerEvent" triggerEventArgs="finale3">[tribe]部落！</statement>
+		<statement id="finale4" triggerEvent="triggerEvent" triggerEventArgs="finale4" link="finale5">[tribe]部落，我将这枚金质奖章授予你们。</statement>
+		<statement id="finale5" triggerEvent="triggerEvent" triggerEventArgs="finale5">你们的部落将保持至高荣耀，直到下一届波普特罗波利斯运动会。</statement>
+		<statement event="all_events_completed" triggerEvent="triggerEvent" triggerEventArgs="popup_game_over">你已经参加了所有比赛项目。</statement>
+		<statement event="bonus_completed">让我们向[player name]致敬：Poptropica有史以来最伟大的冠军！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="scorekeeper">
+		<statement id="scorekeeper">我是波普特罗波利斯运动会的官方记分员。想了解排名的话，随时可以来找我。</statement>
+		<statement event="started_games" triggerEvent="triggerEvent" triggerEventArgs="popup_score">这是总排名。</statement>
+
+
+
+	</character>
+	<character id="opponent1">
+		<statement>这次肯定是[tribe]赢！</statement>
+		<statement event="all_events_completed">比赛真激烈啊！</statement>
+		<statement id="bonus_started2" link="bonus_started3" linkEntityId="opponent2">难道是岛要沉回海里了！？</statement>
+
+
+
+
+	</character>
+	<character id="opponent2">
+		<statement>你根本没机会。</statement>
+		<statement event="all_events_completed">总算结束了。</statement>
+		<statement id="bonus_started3" triggerEvent="triggerEvent" triggerEventArgs="bonus3">是我吃坏东西了吗？</statement>
+
+
+
+
+	</character>
+	<character id="opponent3">
+		<statement>我要为[tribe]拿下胜利！</statement>
+		<statement event="all_events_completed">该回家啦。</statement>
+
+
+
+	</character>
+	<character id="opponent4">
+		<statement>[tribe]最棒！</statement>
+		<statement event="all_events_completed">累死我啦！</statement>
+
+
+
+	</character>
+	<character id="opponent5">
+		<statement>祝你好运，你肯定用得着。</statement>
+		<statement event="all_events_completed">干得漂亮。</statement>
+
+
+
+	</character>
+	<character id="opponent6">
+		<statement>我代表[tribe]部落。</statement>
+		<statement event="all_events_completed">趁这岛还没沉回海里，我得赶紧溜了！</statement>
+
+
+
+	</character>
+	<character id="opponent7">
+		<statement>我这一生都在为这场比赛训练。</statement>
+		<statement event="all_events_completed">这是我人生中最棒的经历！</statement>
+
+
+
+	</character>
+	<character id="warrior">
+		<statement triggeredByEvent="bonus3" triggerEvent="triggerEvent" triggerEventArgs="bonus4">谁敢自称是Poptropica的冠军？</statement>
+		<statement triggeredByEvent="bonus5" triggerEvent="triggerEvent" triggerEventArgs="bonus_started,true">骗子！我向你发起最古老的挑战：摔跤！</statement>
+		<statement id="strength" triggerEvent="giveItem" triggerEventArgs="ancient_warrior_outfit">好强的力量！你……你真的是Poptropica的冠军！</statement>
+		<conversation event="bonus_started" triggeredByEvent="bonus_started">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="popup_blocker">我接受！</question>
+				<answer>准备战斗吧。冠军只能有一个！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>还是算了吧。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="coward">果然！你是个懦夫，不配戴着你脖子上的奖章。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,36 @@
+<doors>
+	<door id="doorAtrium">
+		<scene>game.scenes.arab3.atrium.Atrium</scene>
+		<x>470</x>
+		<y>1260</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+		<direction>right</direction>
+	</door>
+	<door id="doorPalace">
+		<scene>game.scenes.arab3.adStreet3.AdStreet3</scene>
+		<x>150</x>
+		<y>1440</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab3.palaceInterior.PalaceInterior</scene>
+				<x>1800</x>
+				<y>775</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab3.palaceExterior.PalaceExterior</scene>
+				<x>800</x>
+				<y>1250</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

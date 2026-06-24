@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement id="nope">我还是别打扰他们了。</statement>
+
+
+	</character>
+
+
+</dialogs>

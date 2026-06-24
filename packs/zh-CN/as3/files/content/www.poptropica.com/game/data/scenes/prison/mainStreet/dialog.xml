@@ -1,0 +1,81 @@
+<dialogs>
+	<character id="player">
+		<statement id="stop" triggerEvent="triggerEvent" triggerEventArgs="run_off">我去拦住他们！</statement>
+		<statement id="well" link="no_no" linkEntityId="tex">警长，多谢你的帮忙。</statement>
+
+
+
+	</character>
+	<character id="lady">
+		<statement>我在这儿等靛蓝办完事。</statement>
+		<statement id="after_theif">得有人去抓那个小偷。靛蓝得保持冷静才能办事。</statement>
+		<statement id="after_medal">你长得跟那个穿靴子的坏蛋一模一样！</statement>
+
+
+
+
+	</character>
+	<character id="muscles">
+		<statement>在侦察地形，嗯？</statement>
+		<statement id="after_theif">要是那强盗敢回来，我可要好好说道说道！</statement>
+		<statement id="after_medal">希望那个穿靴子的强盗永远关在牢里！</statement>
+
+
+
+
+	</character>
+	<character id="blades">
+		<statement>没空聊天！</statement>
+		<statement id="oof" triggerEvent="triggerEvent" triggerEventArgs="blades_hit">哎哟！</statement>
+		<statement id="after_theif">我想我还是在这儿坐会儿吧……唉……</statement>
+		<statement id="after_medal">你游过了整个海湾？太厉害了！</statement>
+
+
+
+
+
+	</character>
+	<character id="tex">
+		<statement id="stop" triggerEvent="triggerEvent" triggerEventArgs="stop">站住，小偷！</statement>
+		<statement id="no_no" triggerEvent="triggerEvent" triggerEventArgs="get_medallion">不不，谢谢你！这个给你！</statement>
+		<statement id="great_job">干得漂亮！</statement>
+
+
+
+
+	</character>
+	<character id="patches">
+		<statement>我还以为永远都出不来了呢。你真是我的救命恩人。</statement>
+
+
+	</character>
+	<character id="nostrand">
+		<statement link="final_dialog">谢谢你帮我争取到假释。</statement>
+		<statement id="final_dialog">这座城市近看更美了。我有画不完的风景！</statement>
+
+
+
+	</character>
+	<character id="marion">
+		<statement link="final_dialog">谢谢你帮我争取到假释。</statement>
+		<statement id="final_dialog">是时候去看看招聘广告了！</statement>
+
+
+
+	</character>
+	<character id="flambe">
+		<statement>都说舒芙蕾塌了就救不回来，但现在我有了第二次机会，一定要证明他们是错的！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

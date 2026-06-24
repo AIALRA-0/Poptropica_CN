@@ -1,0 +1,31 @@
+<doors>
+
+	<door id="doorReef" event = "tutorial_complete" triggeredByEvent="tutorial_complete">
+		<scene>game.scenes.deepDive1.reef.Reef</scene>
+		<openOnHit>true</openOnHit>
+        <x>1400</x>
+		<y>300</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorToShip">
+		<scene>game.scenes.deepDive1.ship.Ship</scene>
+		<x>500</x>
+		<y>2050</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

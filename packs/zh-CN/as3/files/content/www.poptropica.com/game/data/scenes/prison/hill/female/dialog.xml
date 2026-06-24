@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement id="there" triggerEvent="triggerEvent" triggerEventArgs="start_run">她在那儿。</statement>
+
+
+	</character>
+
+
+</dialogs>

@@ -1,0 +1,29 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="got_shrunken" triggerEvent="triggerEvent" triggerEventArgs="look_at_blimp">怎么回事？为什么所有东西都变得这么大！？</statement>
+		<statement id="vent_clicked">这里有个暖气口，但现在好像没开。</statement>
+		<statement triggeredByEvent="got_cjs_message_02" link="message_2_pt2">C. J. 说西尔瓦先生就是小偷！我得去学校救她！</statement>
+		<statement id="message_2_pt2">那辆遥控车也许能带我去，只要我能想办法把它弄到外面。</statement>
+		<statement triggeredByEvent="got_cjs_message_01">她想让我冲掉U盘。小偷肯定要来拿它！</statement>
+		<statement id="message_1_pt2">但U盘在哪儿？</statement>
+		<statement id="cantDecipher">我看到有人在发摩斯电码。要是我能破译就好了……</statement>
+		<statement id="cantReach">我从这儿够不着。</statement>
+		<statement id="thatsHerSchool">PS 101……我想那就是学校的名字。</statement>
+		<statement id="scienceRoom">那看起来像是学校的科学教室。</statement>
+		<statement id="wrongCoordinates">没看到C. J. 我肯定坐标不对。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>goblet</id>
+		<asset>goblet.swf</asset>
+		<x>526</x>
+		<y>1221</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

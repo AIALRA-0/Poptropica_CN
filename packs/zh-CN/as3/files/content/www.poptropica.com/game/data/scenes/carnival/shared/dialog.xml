@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="dont_use">这里用不上它。</statement>
+
+
+		</character>
+
+
+</dialogs>

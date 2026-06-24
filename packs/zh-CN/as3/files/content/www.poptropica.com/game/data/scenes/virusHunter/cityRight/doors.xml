@@ -1,0 +1,56 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.virusHunter.adStreetR.AdStreetR</scene>
+		<x>920</x>
+		<y>590</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+				<x>4370</x>
+				<y>1440</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.virusHunter.cityRight.CityRight</scene>
+				<x>50</x>
+				<y>1355</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="exitVideo">
+		<scene>game.scenes.virusHunter.videoStore.VideoStore</scene>
+		<x>200</x>
+		<y>570</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitFitness">
+		<scene>game.scenes.virusHunter.gym.Gym</scene>
+		<x>2550</x>
+		<y>500</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>rope</id>
+		<asset>rope.swf</asset>
+		<x>500</x>
+		<y>1050</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

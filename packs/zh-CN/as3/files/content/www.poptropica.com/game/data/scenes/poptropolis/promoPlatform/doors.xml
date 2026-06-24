@@ -1,0 +1,41 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.poptropolis.promoDive.PromoDive</scene>
+		<x>500</x>
+		<y>100</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>TribalCommon</scene>
+		<x>500</x>
+		<y>100</y>
+		<label>
+			<text>前往公共房间</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>前往地图</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

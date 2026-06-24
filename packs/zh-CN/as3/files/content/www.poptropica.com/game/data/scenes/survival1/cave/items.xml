@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>dryKindling</id>
+		<asset>dryKindling.swf</asset>
+		<x>2145</x>
+		<y>695</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

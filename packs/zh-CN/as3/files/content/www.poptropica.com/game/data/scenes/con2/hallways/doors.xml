@@ -1,0 +1,55 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.con2.expo.Expo</scene>
+			<x>3800</x>
+			<y>950</y>
+			<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>80</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.con2.lobby.Lobby</scene>
+		<x>500</x>
+		<y>500</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door3">
+		<scene>game.scenes.con2.lobby.Lobby</scene>
+		<x>500</x>
+		<y>500</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door4">
+		<scene>game.scenes.con2.lobby.Lobby</scene>
+		<x>500</x>
+		<y>500</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

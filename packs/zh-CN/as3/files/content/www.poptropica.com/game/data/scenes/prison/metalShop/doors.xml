@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorCorridor">
+		<scene>game.scenes.prison.cellBlock.CellBlock</scene>
+		<x>80</x>
+		<y>275</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

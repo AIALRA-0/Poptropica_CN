@@ -1,0 +1,75 @@
+<dialogs>
+	<character id="player">
+		<statement id="imWithHim">我跟他一起的。</statement>
+		<statement id="noOpen">大门不给我开。</statement>
+		<statement id="noPicture">我没看到像零号病人的人。</statement>
+		<statement id="itsBucky">哇，是巴基·卢卡斯！</statement>
+		<statement id="myMistake">我搞错了。</statement>
+		<statement id="needPicture">我得拍一张零号病人的照片。</statement>
+		<statement id="havePicture">我已经拿到需要的照片了。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="joe">
+		<statement>真希望我还在度假！</statement>
+		<statement id="imJoe">哈？我叫乔。</statement>
+
+
+
+	</character>
+	<character id="walker">
+		<statement id="noPiggybacking">嘿，别搭顺风车！</statement>
+		<statement>我怎么会在格洛博化学公司？我学的是艺术史！</statement>
+
+
+
+	</character>
+	<character id="guard">
+		<statement id="no_soliciting">禁止推销！只限员工和送货人员！</statement>
+		<statement id="come_in">哦，午餐！快进来！</statement>
+
+
+
+	</character>
+	<character id="falafelGuy">
+		<statement id="delivery">法拉费外卖到了！</statement>
+
+
+	</character>
+	<character id="npc0">
+		<statement>我们的TPS报告应该用新封面。我连TPS报告是什么都不知道！</statement>
+
+
+	</character>
+	<character id="npc1">
+		<statement>我终于发现，只要不停安排会议，就永远不用干活。</statement>
+
+
+	</character>
+	<character id="npc2">
+		<statement>你是新来的实习生吗？穿得专业点。</statement>
+
+
+	</character>
+	<character id="npc3">
+		<statement>我有预感：今天就是我们实现协同效应的日子。</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

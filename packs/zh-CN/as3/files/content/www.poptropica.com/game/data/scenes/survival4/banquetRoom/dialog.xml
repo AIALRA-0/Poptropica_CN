@@ -1,0 +1,43 @@
+<dialogs>
+	<character id="vanburen">
+		<statement id="eat_up">多吃点。明天打猎可需要力气。</statement>
+
+
+	</character>
+	<character id="player">
+		<statement id="taste">这牛排味道怪怪的。里面放了什么？</statement>
+		<statement id="bad_meat">我感觉不太舒服……</statement>
+		<statement triggeredByEvent="player_scared" triggerEvent="triggerEvent" triggerEventArgs="back_to_bed">啊！</statement>
+		<statement triggeredByEvent="bloody_scared" triggerEvent="triggerEvent" triggerEventArgs="phrased_better">啊！</statement>
+		<statement triggeredByEvent="jumpy">看来我有点神经过敏了。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="cook">
+		<statement id="woken">刚才那是什么声音？</statement>
+		<statement id="nothing">看来是虚惊一场。</statement>
+		<statement id="meat" triggerEvent="takeItem" triggerEventArgs="taintedMeat, cook">还给我！</statement>
+		<statement event="open_kitchen" triggerEvent="triggerEvent" triggerEventArgs="bloody_scared">你想要几分熟？带血的？</statement>
+		<statement triggeredByEvent="phrased_better" triggerEvent="triggerEvent" triggerEventArgs="jumpy">我刚才措辞不当。晚餐还要等一会儿。我们吃牛排。</statement>
+		<statement id="goodnight" triggerEvent="triggerEvent" triggerEventArgs="player_scared">该说晚安了！</statement>
+		<statement triggeredByEvent="back_to_bed" triggerEvent="triggerEvent" triggerEventArgs="butler_popup">我会让温斯顿送你回床上。</statement>
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

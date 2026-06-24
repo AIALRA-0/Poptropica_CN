@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorMain">
+		<scene>game.scenes.hub.town.Town</scene>
+		<x>2280</x>
+		<y>895</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

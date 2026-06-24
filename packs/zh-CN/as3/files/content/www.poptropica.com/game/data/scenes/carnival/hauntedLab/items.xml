@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>fly_mask</id>
+		<asset>fly_mask.swf</asset>
+		<x>2260</x>
+		<y>300</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>black_lightbulb</id>
+		<asset>black_lightbulb.swf</asset>
+		<x>1444</x>
+		<y>124</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

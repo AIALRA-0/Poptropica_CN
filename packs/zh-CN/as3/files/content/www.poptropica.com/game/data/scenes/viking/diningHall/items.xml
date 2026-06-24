@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>drippings</id>
+		<asset>drippings.swf</asset>
+		<x>900</x>
+		<y>458</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+	<item>
+		<id>furs</id>
+		<asset>furs.swf</asset>
+		<x>1735</x>
+		<y>640</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

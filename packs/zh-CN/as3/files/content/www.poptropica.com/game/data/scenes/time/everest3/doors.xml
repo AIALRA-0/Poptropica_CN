@@ -1,0 +1,21 @@
+<doors>
+	<door id="climbDoor">
+		<scene>game.scenes.time.everest2.Everest2</scene>
+		<x>2414</x>
+		<y>130</y>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>-50</y>
+			</offset>
+		</label>
+	</door>
+	<door id="fallDoor">
+		<scene>game.scenes.time.everest2.Everest2</scene>
+		<openOnHit>true</openOnHit>
+		<x>2414</x>
+		<y>130</y>
+	</door>
+</doors>

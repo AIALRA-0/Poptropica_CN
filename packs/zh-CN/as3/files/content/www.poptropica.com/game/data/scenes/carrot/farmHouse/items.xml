@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>emptyBowl</id>
+		<asset>emptyBowl.swf</asset>
+		<x>600</x>
+		<y>990</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

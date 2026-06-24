@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="look_remote">冰箱上有个遥控器。但我得另想办法上去。</statement>
+		<statement id="not_enough_weight">我的重量不够，压不下这个把手。</statement>
+
+
+
+		</character>
+
+
+</dialogs>

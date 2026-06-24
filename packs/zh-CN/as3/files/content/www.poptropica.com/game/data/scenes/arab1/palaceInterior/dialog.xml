@@ -1,0 +1,39 @@
+<dialogs>
+	<character id="sultan">
+		<conversation id="quest">
+			<exchange>
+				<question>这里发生了什么？</question>
+				<answer>四十大盗洗劫了我的宫殿，我现在一无所有。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你是说，你破产了？</question>
+				<answer>钱财可以再赚，但他们偷走了一件无价之宝：一盏独一无二的神灯。找到它，我会给你丰厚的奖赏。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我该怎么找到那盏灯？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="questAccepted, true">我不知道。但你可以用这个开始你的任务。这是我最后的宝石，好好利用它。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="findMyLamp">找到我的神灯，我会给你丰厚的奖赏。</statement>
+		<statement id="lamp">那只是盏普通的灯。我要找的灯是独一无二的。</statement>
+
+
+
+
+	</character>
+
+
+</dialogs>

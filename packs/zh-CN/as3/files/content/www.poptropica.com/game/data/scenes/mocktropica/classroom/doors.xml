@@ -1,0 +1,22 @@
+<doors>
+	<door id="doorUniversity">
+		<scene>game.scenes.mocktropica.university.University</scene>
+		<x>2340</x>
+		<y>1562</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+	<door id="doorBots">
+		<scene>game.scenes.mocktropica.megaFightingBots.MegaFightingBots</scene>
+		<x>1000</x>
+		<y>920</y>
+		<direction>left</direction>
+		<label>
+			<text>开始</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

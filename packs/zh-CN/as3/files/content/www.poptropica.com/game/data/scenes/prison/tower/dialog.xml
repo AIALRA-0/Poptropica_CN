@@ -1,0 +1,73 @@
+<dialogs>
+	<character id="player">
+		<statement id="different">这跟我想的不太一样。是有点不同，但哪里不同呢？</statement>
+		<statement id="plaster">看！这里被石膏填上了！可靠的凿子又来救场了！</statement>
+		<statement id="you" link="excuse_me" linkEntityId="bandit">你！都是因为你，我才不得不越狱来找这个保险箱！</statement>
+		<statement id="last_time" link="prove_it" linkEntityId="tex">最后说一遍，我不是那个穿靴子的强盗！</statement>
+		<statement id="contents" link="nice_try" linkEntityId="bandit">也许保险箱里的东西能证明我的清白。</statement>
+		<statement id="maybe" triggerEvent="triggerEvent" triggerEventArgs="open_safe">也许我真有办法……</statement>
+		<statement id="files">也许囚犯档案里有什么能帮我们打开它……</statement>
+		<statement id="so_sure" triggerEvent="triggerEvent" triggerEventArgs="bandit_captured">别那么肯定，警长！</statement>
+		<statement id="friends" link="done" linkEntityId="tex">我有些朋友马上要开假释听证会了。你可以帮他们说句好话。</statement>
+		<statement id="no_spoon">勺子现在用不上。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="tex">
+		<statement id="got_you" link="last_time" linkEntityId="player">总算抓到你了！等等——两个穿靴子的强盗？</statement>
+		<statement id="prove_it" link="contents" linkEntityId="player">证明给我看！</statement>
+		<statement id="confession" link="take_away">这听起来像是在认罪！</statement>
+		<statement id="long_time" link="so_sure" linkEntityId="player">那个穿靴子的强盗很长很长时间都别想看到牢房外面了。</statement>
+		<statement id="sorry" link="friends" linkEntityId="player">抱歉搞错了。有什么我能做的来补偿你吗？</statement>
+		<statement id="done" triggerEvent="triggerEvent" triggerEventArgs="release_prisoners">包在我身上！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="bandit">
+		<statement id="grunt_work" link="you" linkEntityId="player">辛苦你打杂了，接下来交给我吧……</statement>
+		<statement id="excuse_me" triggerEvent="triggerEvent" triggerEventArgs="tex_enter">世事难料啊。失陪了，宝藏归我了。</statement>
+		<statement id="nice_try" link="maybe" linkEntityId="player">想得美，只有弗莱西·福斯伯里知道密码！</statement>
+		<statement id="at_last" triggerEvent="triggerEvent" triggerEventArgs="at_last">终于，弗洛里安的稀世珍宝！</statement>
+		<statement id="what" triggerEvent="triggerEvent" triggerEventArgs="what">什么，这些只是弗洛里安的照片，稀世珍宝就是大头照！</statement>
+		<statement id="years" triggerEvent="triggerEvent" triggerEventArgs="years">找了这么多年，就这！啊啊啊！！！</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

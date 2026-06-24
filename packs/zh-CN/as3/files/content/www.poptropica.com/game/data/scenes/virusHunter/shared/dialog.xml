@@ -1,0 +1,269 @@
+<dialogs>
+	<character id="drLang">
+		<statement id="wave2">干得漂亮！看来你已经掌握了基础。接下来会更有意思。</statement>
+		<statement id="wave3">哇，大部分测试对象都走不到这一步……看来你或许真有潜力？</statement>
+		<statement id="wave4">太棒了！你远超预期……让我们看看你能否应对最强挑战。</statement>
+		<statement id="wave5">哎呀……你知道那玩意儿多贵吗？算了，不就是钱嘛。很多很多钱。</statement>
+		<statement id="instruct0">欢迎来到测试舱！我们先过一遍基础操作。</statement>
+		<statement id="instruct1">用鼠标光标瞄准。</statement>
+		<statement id="instruct2">按住鼠标按钮移动。</statement>
+		<statement id="instruct3">最后，按空格键开火。</statement>
+		<statement id="instruct4">我会通过飞船无线电向你汇报测试进展。祝你好运！</statement>
+		<statement id="boss1">对付那些小家伙干得不错。现在看看你如何应对更高级的单位。</statement>
+		<statement id="boss2">干得不错！这是另一个实验型号，希望你喜欢！</statement>
+		<statement id="boss3">下一个单位配备了新武器原型，小心应对！</statement>
+		<statement id="boss4">很好，看来你准备好挑战我们最先进的单位了。希望你的武器已经充满能量！</statement>
+		<statement id="intro">欢迎来到教程！我会带你了解飞船的各种功能。</statement>
+		<statement id="fatZone" link="fatZone2">你需要锋利的东西切开脂肪。点击飞船选择新武器。</statement>
+		<statement id="fatZone2" link="fatZone3">点击红色激光手术刀选择它。</statement>
+		<statement id="fatZone3">用激光手术刀切开三个脂肪屏障。</statement>
+		<statement id="muscleZone" link="muscleZone2">干得好！接下来，选择飞船右侧的电击工具。</statement>
+		<statement id="muscleZone2">按空格键发射电荷，电击蓝色神经末梢让肌肉收缩。</statement>
+		<statement id="nerveZone">太棒了！再用同样的工具让蓝色神经移开。</statement>
+		<statement id="bloodZone" link="bloodZone2">现在选择飞船左侧的凝血工具。</statement>
+		<statement id="bloodZone2">你需要用凝血剂封住这些伤口，止住血流。</statement>
+		<statement id="fanZone">你的飞船引擎动力强劲，足以穿过风扇造成的强气流。</statement>
+		<statement id="virusZone" link="virusZone2">警告！病毒来袭！</statement>
+		<statement id="virusZone2" link="virusZone3">飞船护盾能抵挡攻击，但注意能量条！</statement>
+		<statement id="virusZone3">切换武器，消灭病毒敌人。</statement>
+		<statement id="end">干得好！你真是天生的好手！</statement>
+		<statement id="hand_warning" timeOverride="5">
+			<span class="title">警告！</span>
+			<span class="text">手部区域即将感染。</span>
+		</statement>
+		<statement id="shield_offline" timeOverride="4">
+			<span class="title">警告！</span>
+			<span class="text">护盾离线。</span>
+		</statement>
+		<statement id="shock_offline" timeOverride="4">
+			<span class="title">警告！</span>
+			<span class="text">电击枪离线。</span>
+		</statement>
+		<statement id="scalpel_offline" timeOverride="4">
+			<span class="title">警告！</span>
+			<span class="text">激光手术刀离线。</span>
+		</statement>
+		<statement id="goo_offline" timeOverride="4">
+			<span class="title">警告！</span>
+			<span class="text">凝血剂离线。</span>
+		</statement>
+		<statement id="antiGrav_offline" timeOverride="4">
+			<span class="title">警告！</span>
+			<span class="text">重力核心离线。</span>
+		</statement>
+		<statement id="shield_online">
+			<span class="title">护盾在线。</span>
+			<span class="text">飞船获准进入危险环境。</span>
+		</statement>
+		<statement id="shock_online">
+			<span class="title">电击枪在线。</span>
+			<span class="text">点击飞船，选择电击枪来刺激神经末梢。</span>
+		</statement>
+		<statement id="scalpel_online">
+			<span class="title">激光手术刀在线。</span>
+			<span class="text">点击飞船，选择激光手术刀来切开堵塞物。</span>
+		</statement>
+		<statement id="goo_online">
+			<span class="title">凝血剂在线。</span>
+			<span class="text">点击飞船，选择凝血剂来封住伤口。</span>
+		</statement>
+		<statement id="antiGrav_online">
+			<span class="title">重力核心在线。</span>
+			<span class="text">飞船获准进入强风环境。</span>
+		</statement>
+		<statement id="virus_attack">
+			<span class="title">危险！</span>
+			<span class="text">病毒攻击！</span>
+		</statement>
+		<statement id="sample_taken">
+			<span class="title">病毒已控制。</span>
+			<span class="text">样本已采集。</span>
+		</statement>
+		<statement id="ship_destroyed">
+			<span class="title">飞船已摧毁。</span>
+			<span class="text">正在再生……</span>
+		</statement>
+		<statement id="brain_bossInvuln">
+			<span class="title">注意！</span>
+			<span class="text">病毒对常规武器免疫……</span>
+		</statement>
+		<statement id="brain_bossInvuln3">
+			<span class="text">扫描中……病毒对电击敏感……</span>
+		</statement>
+		<statement id="brain_bossInvuln5">
+			<span class="text">无效。需要更高电压。寻找附近电路……</span>
+		</statement>
+		<statement id="wbc_theft_2" timeOverride="17">
+			<span class="text">多个追踪信号。</span>
+			<span class="text">部件散落在各处。</span>
+		</statement>
+		<statement id="arrived_in_throat">
+			<span class="title">警告！</span>
+			<span class="text">通道过窄。驾驶员请步行前进。</span>
+		</statement>
+		<statement id="sneeze">
+			<span class="title">警告！</span>
+			<span class="text">即将打喷嚏。准备防冲击姿势！</span>
+		</statement>
+		<statement id="air_currents">
+			<span class="title">警告！</span>
+			<span class="text">气流不稳。无重力核心无法前进。</span>
+		</statement>
+		<statement id="stomach_secondary">
+			<span class="text">异常检测：胃溃疡。</span>
+		</statement>
+		<statement id="stomach_resolved">
+			<span class="text">异常已解决。溃疡已愈合。</span>
+		</statement>
+		<statement id="hand_secondary">
+			<span class="text">检测到异常：组织出血。</span>
+		</statement>
+		<statement id="hand_resolved">
+			<span class="text">异常已解决。出血已治愈。</span>
+		</statement>
+		<statement id="mouth_secondary">
+			<span class="text">检测到异常：牙齿蛀洞。</span>
+		</statement>
+		<statement id="mouth_resolved">
+			<span class="text">异常已解决。蛀洞已清除。</span>
+		</statement>
+		<statement id="intestine_secondary">
+			<span class="text">检测到异常：肠道堵塞。</span>
+		</statement>
+		<statement id="intestine_resolved">
+			<span class="text">异常已解决。堵塞已移除。</span>
+		</statement>
+		<statement id="heart_secondary">
+			<span class="text">检测到异常：心律不齐。</span>
+		</statement>
+		<statement id="heart_resolved">
+			<span class="text">异常已解决。心跳恢复正常。</span>
+		</statement>
+		<statement id="arm_secondary">
+			<span class="text">检测到异常：组织钙化。</span>
+		</statement>
+		<statement id="arm_resolved">
+			<span class="text">异常已解决。钙化已消除。</span>
+		</statement>
+		<statement id="brain_secondary">
+			<span class="text">检测到异常：出血。</span>
+		</statement>
+		<statement id="brain_resolved">
+			<span class="text">异常已解决。出血已治愈。</span>
+		</statement>
+		<statement id="heartworm_attack">
+			<span class="title">危险！</span>
+			<span class="text">心丝虫攻击！</span>
+		</statement>
+		<statement id="heartworm_contained">
+			<span class="text">心丝虫已控制。</span>
+		</statement>
+		<statement id="heartworm_cleared">
+			<span class="text">蠕虫已清除。</span>
+		</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="missed_chance">这太轻松了！我马上就能出去。</statement>
+		<statement id="wbc_theft">飞船，白细胞把那些零件带到哪去了？</statement>
+		<statement id="wbc_theft_3">天啊。我得找回那些零件，不然就完蛋了！</statement>
+		<statement id="say_so">既然你这么说……</statement>
+		<statement id="brain_bossInvuln2">我怎么才能伤害它？</statement>
+		<statement id="brain_bossInvuln4">我能用电击弹打它吗？</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

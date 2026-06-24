@@ -5339,3 +5339,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 - Commit the focused AS2 sound bridge QA hardening separately from the larger existing WIP if the worktree remains mixed.
 - Resolve or intentionally manifest the 628 AS3 untracked runtime inputs before treating AS3 runtime pack verification as green.
+
+## 2026-06-24 AS3 Runtime Input Tracking
+
+- Investigated the full `npm run verify:pack-inputs` failure after the AS2 sound restore. AS2 was green, but AS3 failed because 628 XML runtime inputs under `packs/zh-CN/as3/files` were present in the runtime replacement set and missing from Git tracking.
+- Generated `runtime-data/qa/pack-inputs-as3-latest.json` and grouped the missing inputs. They are all XML pack inputs, mostly scene `dialog.xml`, `doors.xml`, and `items.xml` under real AS3 island folders such as `virusHunter`, `carnival`, `shrink`, `time`, `prison`, `viking`, `myth`, `ghd`, and `arab3`; no `$out`, `$tmp`, or root `content` scratch paths were included.
+- Added exactly those 628 AS3 runtime XML inputs to the Git index. Re-ran `node tools\verify-pack-runtime-inputs.js --source as3 --output runtime-data\qa\pack-inputs-as3-latest.json`; AS3 now passes with `replacementCount: 1316`, `manifestReplacementCount: 1316`, and `untrackedRuntimeInputCount: 0`.
+- Mechanically cleaned the newly tracked XML files for staged Git whitespace compliance only: removed trailing line whitespace and leading spaces before tabs in indentation. This does not edit tag text content.
+- Re-ran full `npm run verify:pack-inputs`; both AS2 and AS3 pass. AS2 remains `replacementCount: 99`, AS3 remains `replacementCount: 1316`, and both source groups have `untrackedRuntimeInputCount: 0`.
+
+## TODO AS3 Runtime Input Tracking
+
+- Continue resolving the remaining dirty working tree separately: AS2 Super Power / Time Tangled SWF changes, AS3 tracked XML edits, helper script edits, and scratch `$out` / `$tmp` / `content` paths are still outside this focused runtime-input tracking commit.

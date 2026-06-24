@@ -1,0 +1,37 @@
+<dialogs>
+	<character id="player">
+		<statement id="something" link="ifOnly" linkEntityId="cam">真是大开眼界。</statement>
+
+
+	</character>
+	<character id="cam">
+		<statement id="whatOnEarth" link="something" linkEntityId="player">刚才那是什么东西？</statement>
+		<statement id="ifOnly" triggerEvent="triggerEvent" triggerEventArgs="getMedallion">要是拍下来就好了。没人会相信我们的。</statement>
+		<statement>没人会相信我们的。</statement>
+
+
+
+
+		</character>
+	<character id="sailor1">
+		<statement>也许卡姆根本没疯。</statement>
+
+
+	</character>
+	<character id="sailor2">
+		<statement>没人会相信我们刚才看到的！</statement>
+
+
+	</character>
+	<character id="sailor3">
+		<statement>你没事真是太好了！</statement>
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

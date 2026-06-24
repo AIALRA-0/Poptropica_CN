@@ -1,0 +1,23 @@
+<dialogs>
+	<character id="player">
+		<statement id="not_so_fast" forceOnScreen="true">住手！破坏已经够多了！</statement>
+		<statement id="thatWasClose" forceOnScreen="true">好险！她可不是在开玩笑。</statement>
+
+
+
+		</character>
+	<character id="thief">
+		<statement id="my_kingdom" forceOnScreen="true">终于，我拥有了重塑这个王国的力量。</statement>
+		<statement id="you_stop_me" forceOnScreen="true">这才刚刚开始！</statement>
+		<statement id="enough_games" forceOnScreen="true">游戏时间结束了。希望你喜欢跳舞，因为我马上要让你跳起来！</statement>
+
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

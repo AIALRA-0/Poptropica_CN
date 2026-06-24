@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>fishing_costume</id>
+		<asset>fishing_costume.swf</asset>
+		<x>381</x>
+		<y>404</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

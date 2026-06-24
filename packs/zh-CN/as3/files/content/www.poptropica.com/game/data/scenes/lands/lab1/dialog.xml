@@ -1,0 +1,31 @@
+<dialogs>
+	<character id="player">
+		<statement id="startDialog">看来我不是第一个来这儿的人。</statement>
+		<statement id="hammerDialog">也许能用这把锤子砸开一条出路！</statement>
+		<statement id="seeRuins">这座桥看起来好古老！不知道是谁建的。</statement>
+		<statement id="seeLava">看起来好烫！我得小心点。</statement>
+		<statement id="seeUnfinishedBridge">看看这把锤子能做什么！</statement>
+		<statement id="seeSceneEdge">这是什么地方？</statement>
+		<statement id="seeTemple">哇，这地方看起来好古老！不知道里面有什么。</statement>
+		<statement id="fallInPit">啊！</statement>
+		<statement id="seeAnvil">我已经有锤子了。看看它能做什么！</statement>
+		<statement id="seeHouse">上面有东西！</statement>
+		<statement id="realmsHint">不知道还有什么可看的。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

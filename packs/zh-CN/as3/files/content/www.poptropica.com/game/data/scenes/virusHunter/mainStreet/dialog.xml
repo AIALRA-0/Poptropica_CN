@@ -1,0 +1,138 @@
+<dialogs>
+	<character id="player">
+		<statement id="hookOutOfReach">有个钩子，但够不着。</statement>
+		<statement id="cantUseResistanceBand">这里用不上拉力带。</statement>
+		<statement id="cantUseShreddedDocuments">也许附近有人能看懂这个。</statement>
+		<statement id="frenzied">她发狂了！我靠近不了。</statement>
+		<statement id="stay">待着！我马上回来……</statement>
+
+
+
+
+
+
+		</character>
+	<character id="citizen1">
+		<statement>这里一直很安静。但最近来了好多陌生人！</statement>
+
+
+	</character>
+	<character id="citizen2">
+		<statement id="walkingHere">我正走路呢！回你该去的地方！</statement>
+		<statement>又来个新面孔？至少你没穿白大褂。</statement>
+
+
+
+	</character>
+	<character id="citizen3">
+		<statement>镇上发生了怪事……但我搞不清是什么！</statement>
+
+
+	</character>
+	<character id="youngPerson">
+		<statement id="statement1">啊，又是那个海盗电台主播！</statement>
+		<statement id="statement2">真奇怪，只有等公交时才会这样。信号源肯定在附近。</statement>
+
+
+
+	</character>
+	<character id="bertShell">
+		<conversation>
+			<exchange>
+				<question>打扰一下。</question>
+				<answer>入侵者！你怎么找到我的？卫星技术？热成像？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我就是爬上屋顶而已。</question>
+				<answer>那你不是政府的人？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>不，我只是想搞清楚这里发生了什么。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="talkToBert" link="giveVanHint">也许我们可以互相帮忙。你帮我找到新世界秩序特工在这里的证据，我就让你进去。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="gotItem_shreddedDocuments">
+			<exchange>
+				<question>这些有用吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="openShreddedDocumentsPopup">嗯……有些纸条颜色不一样。我们把它们分开，看看能不能拼成一份文件。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="gotItem_pdcIdBadge">
+			<exchange>
+				<question>但地堡到底在哪儿？</question>
+				<answer>他们肯定在某个地方设了幌子。你得四处找找。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement id="giveVanHint">我看到那栋公寓后面停着一辆神秘的面包车。去查查看。</statement>
+		<statement id="radioTalk" triggerEvent="triggerEvent" triggerEventArgs="finishRadioTalk">政府那帮人几天前突然出现，立马就转入地下了。我坚信这是蜥蜴人入侵的先头部队——</statement>
+		<statement id="assembledShreds" triggerEvent="triggerEvent" triggerEventArgs="takeCloserLook">干得漂亮！我们仔细瞧瞧。</statement>
+		<statement event="assembled_shreds" link="getBadge">所以，他们用PDC当幌子，嗯？这倒帮了我们。我这儿什么假政府证件都有。</statement>
+		<statement id="getBadge" triggerEvent="giveItem" triggerEventArgs="pdcIdBadge">让我看看， FBI、CIA、DOD、NSA……啊哈！给你。一张PDC身份徽章。这应该能让你进地堡了。</statement>
+		<statement event="used_badge">接下来就靠你自己了。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="dog">
+		<statement>汪汪！</statement>
+
+
+	</character>
+	<character id="girl">
+		<statement id="thank_you" event="girl_in_main_street" link="ace_pilot" linkEntityId="dr_lange">谢谢你救了我的狗！她真是个好姑娘。</statement>
+		<statement event="exited_dog">谢谢你救了我的狗！她真是个好姑娘。</statement>
+
+
+
+	</character>
+	<character id="dr_lange">
+		<statement id="ace_pilot" triggerEvent="triggerEvent" triggerEventArgs="exited_dog, true">你是个王牌飞行员！希望我们再也不需要你帮忙了，但如果真有需要，你得打扮得像样点。</statement>
+		<statement event="exited_dog">你是个王牌飞行员！希望我们再也不需要你帮忙了。</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

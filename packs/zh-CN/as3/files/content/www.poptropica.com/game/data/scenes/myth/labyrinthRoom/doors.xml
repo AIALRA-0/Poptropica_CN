@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorSphinx">
+		<scene>game.scenes.myth.sphinx.Sphinx</scene>
+		<x>486</x>
+		<y>1985</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorLabyrinth">
+		<scene>game.scenes.myth.labyrinth.Labyrinth</scene>
+		<x>214</x>
+		<y>540</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

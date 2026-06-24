@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>borax</id>
+		<asset>borax.swf</asset>
+		<x>1720</x>
+		<y>1650</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

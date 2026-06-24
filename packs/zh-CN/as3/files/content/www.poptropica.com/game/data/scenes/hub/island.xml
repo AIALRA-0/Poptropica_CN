@@ -1,0 +1,63 @@
+<island>
+	<name>Home Island</name>
+	<eventsClass>game.scenes.hub.HubEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>hub</island>
+
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>found_all_shards</event>
+		<event>goggles_costumized</event>
+		<event>talked_to_tailor</event>
+		<event>talked_to_shop_owner</event>
+		<event>talked_to_dj</event>
+		<event>intro_started</event>
+		<event>tutorial_started</event>
+		<event>show_ftue_ending</event>
+		<event>ftue_tutorial_completed</event>
+		<event>explore_map</event>
+		<event>explore_home_island</event>
+		<event>more_adventure</event>
+		<event>no_to_adventure</event>
+		<event>show_map_tutorial</event>
+		<event>take_to_island</event>
+		<event>no_to_island</event>
+		<event>spoke_with_adventurer</event>
+		<event>npcRaceCon1RoofRace</event>
+		<event>npcRaceArab2Entrance</event>
+		<event>npcRaceMocktropicaMountain</event>
+		<event>npcRaceGHDGhostShip</event>
+		<event>recordRaceCon1RoofRace</event>
+		<event>recordRaceArab2Entrance</event>
+		<event>recordRaceMocktropicaMountain</event>
+		<event>recordRaceGHDGhostShip</event>
+		<event>racer_next_con1</event>
+		<event>racer_next_arab2</event>
+		<event>racer_next_mocktropica</event>
+		<event>racer_next_ghd</event>
+		<event>has_deck</event>
+		<event>defeated_dealer</event>
+	</permanentEvents>
+
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medalHub">1055</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.hub.town.Town</scene>
+		<x>1650</x>
+		<y>780</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+
+	<medallion>medalHub</medallion>
+</island>

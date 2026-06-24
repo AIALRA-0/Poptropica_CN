@@ -1,0 +1,98 @@
+<dialogs>
+	<character id="player">
+		<statement id="best">我就知道选对了部落。</statement>
+		<statement id="beaten">海上你们赢了，但陆地上我们可要好好教训你们。</statement>
+
+
+
+	</character>
+	<character id="tribeMember">
+		<statement id="hail">野火部落万岁。我们举办了Poptropica运动会。</statement>
+
+
+	</character>
+	<character id="master">
+		<conversation id="games" event="games">
+			<exchange>
+				<question>迟到？为什么迟到？</question>
+				<answer>当然是为了运动会。 Poptropica运动会一百年才举办一次。我们可不能让大家久等。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>波普特罗波利斯运动会是什么？</question>
+				<answer>你不知道吗？ Poptropica的各个部落都会派出一位冠军参加一系列体育赛事。赢了，你就是部落永远的传奇英雄！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>输了会怎样？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="talked_to_mc,true">没什么大不了的——就是永恒的耻辱和丢脸罢了。那么，你准备好了吗？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation triggeredByEvent="talked_to_mc">
+			<exchange>
+				<question>我准备好了！</question>
+				<answer link="meet">太棒了！去竞技场开始吧。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>还没。</question>
+				<answer>哼。好吧，别磨蹭了。我们得赶紧出发！</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<statement id="late" triggerEvent="triggerEvent" triggerEventArgs="games">啊， [tribe]的代表。你迟到了！</statement>
+		<statement id="meet" triggerEvent="triggerEvent" triggerEventArgs="run">我会在那儿等你。</statement>
+		<statement id="meet_you" triggerEvent="triggerEvent" triggerEventArgs="unlock_door">我会在那儿等你。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="char2">
+		<statement>我简直不敢相信自己的眼睛，波普特罗波利斯城竟然从海里升起来了！</statement>
+
+
+	</character>
+	<character id="char3">
+		<statement>我的父母和祖父母都没机会看到波普特罗波利斯运动会，但我看到了！</statement>
+
+
+	</character>
+	<character id="char4">
+		<statement>这次，我们终于能知道Poptropica的哪个部落最厉害了！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

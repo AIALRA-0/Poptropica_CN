@@ -1,0 +1,45 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.shrink.adStreet3.AdStreet3</scene>
+		<x>1750</x>
+		<y>600</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+				<x>3015</x>
+				<y>1290</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.schoolInterior.SchoolInterior</scene>
+				<x>2265</x>
+				<y>460</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorSchoolCafetorium">
+		<scene>game.scenes.shrink.schoolCafetorium.SchoolCafetorium</scene>
+		<x>242</x>
+		<y>665</y>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>sunflower_seeds</id>
+		<asset>seeds.swf</asset>
+		<x>1145</x>
+		<y>1530</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

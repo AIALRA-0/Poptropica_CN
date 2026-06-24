@@ -1,0 +1,34 @@
+<items>
+	<item>
+		<id>hardHat</id>
+		<asset>hardHat.swf</asset>
+		<x>850</x>
+		<y>5535</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+
+	<item>
+		<id>wire</id>
+		<asset>wire.swf</asset>
+		<x>2387</x>
+		<y>5765</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+
+	<item>
+		<id>batteryNote</id>
+		<asset>batteryNote.swf</asset>
+		<x>2050</x>
+		<y>5425</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

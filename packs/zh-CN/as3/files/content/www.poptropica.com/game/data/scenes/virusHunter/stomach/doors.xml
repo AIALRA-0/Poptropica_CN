@@ -1,0 +1,31 @@
+<doors>
+	<door id="doorMouth">
+		<scene>game.scenes.virusHunter.mouth.Mouth</scene>
+		<x>505</x>
+		<y>3675</y>
+		<label>
+			<text>退出</text>
+			<asset>exitUp</asset>
+		</label>
+	</door>
+
+	<door id="doorBloodStream">
+		<scene>game.scenes.virusHunter.bloodStream.BloodStream</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+
+	<door id="doorIntestine">
+		<scene>game.scenes.virusHunter.intestine.Intestine</scene>
+		<x>320</x>
+		<y>100</y>
+		<label>
+			<text>退出</text>
+			<asset>exitDown</asset>
+		</label>
+	</door>
+</doors>

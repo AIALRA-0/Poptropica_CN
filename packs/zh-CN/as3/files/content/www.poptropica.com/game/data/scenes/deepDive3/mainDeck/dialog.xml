@@ -1,0 +1,35 @@
+<dialogs>
+	<character id="dummyPlayer">
+		<statement id="heyDoor">接通电源后，那扇门好像打开了。</statement>
+		<statement id="notAtlantis">我觉得这里根本不是亚特兰蒂斯……</statement>
+		<statement id="happenAgain">成败在此一举……</statement>
+		<statement id="something">看起来很久以前就出过什么岔子。</statement>
+		<statement id="what">你在说什么？我听不懂！</statement>
+		<statement id="whatWasThat">刚才那是什么声音？</statement>
+		<statement id="buttonPower">这个按钮好像没通电。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="cam">
+		<statement id="this">qmodphz fltg kwls&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;rwqnn fdgfzdgb</statement>
+		<statement id="that">&lt;br/&gt;...life support...</statement>
+		<statement id="alienSpeak">asdfa dgaw aeer adaf&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;hajnja ioweutvm skaoh</statement>
+		<statement id="englishSpeak">&lt;br/&gt;</statement>
+
+
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

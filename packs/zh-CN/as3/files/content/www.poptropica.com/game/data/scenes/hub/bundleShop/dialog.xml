@@ -1,0 +1,30 @@
+<dialogs>
+	<character id="owner">
+		<statement id="welcome" triggerEvent="completeEvent" triggerEventArgs="talked_to_shop_owner">欢迎光临商店。有什么可以帮您的吗。</statement>
+		<statement id="special">啊， [PlayerName]. 我特意为你留了点好东西。</statement>
+		<statement id="social">[PlayerName]. 是来找我聊天的吗。</statement>
+		<statement>浏览左边的卡包，右边会显示里面的内容。</statement>
+		<statement event="bundles_all_purchased">欢迎下次再来。</statement>
+		<statement id="recommend">要不要看看[BundleName]. 这个很受欢迎。</statement>
+		<statement id="purchase">选得好。你真有眼光。</statement>
+		<statement id="free" triggerEvent="triggerEvent" triggerEventArgs="proud_pose">给VIP客户的一点小礼物。</statement>
+		<statement id="break">弄坏了就得买下来。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

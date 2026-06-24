@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="player">
+		<statement id="end" link="true_form" linkEntityId="omegon">你的末日到了，奥米伽！</statement>
+
+
+	</character>
+	<character id="omegon">
+		<statement id="alphaon" link="end" linkEntityId="player">阿尔法，我们终于见面了！</statement>
+		<statement id="true_form">想得美。见识一下我的真身吧！</statement>
+
+
+
+	</character>
+
+
+
+
+</dialogs>

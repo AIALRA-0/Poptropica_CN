@@ -1,0 +1,59 @@
+<doors>
+	<door id="doorTimmyStreet">
+		<scene>game.scenes.timmy.adStreet3.AdStreet3</scene>
+		<x>1274</x>
+		<y>990</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>80</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.timmysStreet.TimmysStreet</scene>
+				<x>4000</x>
+				<y>940</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.school.School</scene>
+				<x>150</x>
+				<y>695</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorMainStreet">
+		<scene>game.scenes.timmy.adMixed2.AdMixed2</scene>
+		<x>70</x>
+		<y>940</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-80</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.school.School</scene>
+				<x>2200</x>
+				<y>690</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+				<x>180</x>
+				<y>1560</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

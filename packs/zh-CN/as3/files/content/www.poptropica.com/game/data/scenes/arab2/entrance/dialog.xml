@@ -1,0 +1,53 @@
+<dialogs>
+	<character id="player">
+		<statement id="blew_up">看来他想抓我的计划彻底泡汤了。</statement>
+		<statement id="open">芝麻开门！</statement>
+
+
+
+		</character>
+	<character id="enforcer">
+		<statement id="run">看来你无路可逃了！</statement>
+
+
+		</character>
+	<character id="master_thief">
+		<statement id="myself">真没想到你能躲过布鲁图斯。看来我得亲自出马了。</statement>
+
+
+	</character>
+	<character id="thief1">
+		<statement id="hello">你好啊，小偷同伙！</statement>
+
+
+	</character>
+	<character id="thief2">
+		<statement id="hello">你好啊，小偷同伙！</statement>
+
+
+	</character>
+	<character id="thief3">
+		<statement id="hello">你好啊，小偷同伙！</statement>
+
+
+	</character>
+	<character id="thief4">
+		<statement id="hello">你好啊，小偷同伙！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

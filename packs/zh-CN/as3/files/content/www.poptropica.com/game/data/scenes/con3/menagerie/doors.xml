@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorHq">
+	<scene>game.scenes.con3.adStreet.AdStreet</scene>
+		<x>200</x>
+		<y>1000</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.con3.menagerie.Menagerie</scene>
+				<x>300</x>
+				<y>1200</y>
+				<direction>right</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.con3.hq.Hq</scene>
+				<x>300</x>
+				<y>50</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

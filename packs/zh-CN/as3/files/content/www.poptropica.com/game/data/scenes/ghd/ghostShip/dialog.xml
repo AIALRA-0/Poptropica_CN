@@ -1,0 +1,23 @@
+<dialogs>
+	<character id="captain">
+		<statement id="rage" link="what" linkEntityId="player">这里没有宝藏！只有邪恶！</statement>
+
+
+	</character>
+	<character id="player">
+		<statement id="gotPiece">这好像是地图球的一块碎片，我打赌附近还藏着更多。</statement>
+		<statement id="what">他说的邪恶是什么意思？</statement>
+		<statement id="leave">所有碎片都找到了，我该回船上了。</statement>
+		<statement id="needPieces">我不能空手回去。</statement>
+
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

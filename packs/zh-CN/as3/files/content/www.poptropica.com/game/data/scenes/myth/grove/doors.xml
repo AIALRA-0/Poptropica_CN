@@ -1,0 +1,71 @@
+<doors>
+	<door id="doorAdSpace">
+		<scene>game.scenes.myth.adGroundH9R.AdGroundH9R</scene>
+		<x>920</x>
+		<y>540</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.myth.mainStreet.MainStreet</scene>
+				<x>5530</x>
+				<y>1110</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.myth.grove.Grove</scene>
+				<x>20</x>
+				<y>890</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorApollo">
+		<scene>game.scenes.myth.apollo.Apollo</scene>
+		<x>370</x>
+		<y>1045</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorHades">
+		<scene>game.scenes.myth.hadesTemple.HadesTemple</scene>
+		<x>1270</x>
+		<y>828</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorPoseidon">
+		<scene>game.scenes.myth.poseidonTemple.PoseidonTemple</scene>
+		<x>1275</x>
+		<y>840</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

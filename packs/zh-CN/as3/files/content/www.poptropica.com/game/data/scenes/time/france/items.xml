@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>notebook</id>
+		<asset>notebook.swf</asset>
+		<x>45</x>
+		<y>1365</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

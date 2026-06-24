@@ -1,0 +1,22 @@
+<items>
+	<item event="ate_meat">
+		<id>emptyPitcher</id>
+		<asset>pitcher.swf</asset>
+		<x>1502</x>
+		<y>539</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item event="ate_meat">
+		<id>taintedMeat</id>
+		<asset>meat.swf</asset>
+		<x>215</x>
+		<y>575</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

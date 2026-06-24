@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>seed_pod</id>
+		<asset>seed_pod.swf</asset>
+		<x>453</x>
+		<y>645</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

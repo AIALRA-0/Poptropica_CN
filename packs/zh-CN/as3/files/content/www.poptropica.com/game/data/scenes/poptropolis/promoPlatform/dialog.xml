@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dialogs>
+	<character id="master">
+		<conversation>
+			<exchange>
+				<question>嘿，波普特罗波利斯运动会怎么了？</question>
+				<answer>你没看博客吗？运动会沉没了，要再过一百年才会回来。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>一百年？可我现在就想玩！</question>
+				<answer>我就知道你会这么说，如果你愿意帮忙，或许有个办法。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我们能做什么？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="putOn">我们只需要把岛挖出来！进入潜水舱，帮你的部落把运动会打捞上来吧！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="backAgain">又回来了？太好了，进入潜水舱，帮你的部落把运动会打捞上来吧！</statement>
+		<statement id="putOn">进入潜水舱，帮你的部落把波普特罗波利斯运动会打捞上来吧！</statement>
+		<statement id="dontGiveUp">别放弃！没有波普特罗波利斯运动会，我就只是个拿着麦克风的帅哥而已。</statement>
+		<statement id="anotherPoint" triggerEvent="triggerEvent" triggerEventArgs="dug_promo">[tribe]再得一分！你可以尽情挖掘，或者乘坐部落渡轮去参观你们部落的公共房间。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="enough">今天先到这里吧，我明天再来潜水。</statement>
+
+
+	</character>
+
+
+
+</dialogs>

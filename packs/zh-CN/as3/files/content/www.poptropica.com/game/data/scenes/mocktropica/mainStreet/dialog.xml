@@ -1,0 +1,370 @@
+<dialogs>
+	<character id="player">
+		<statement id="doorBroken">这座岛的其他部分在哪。</statement>
+		<statement id="noPopCoins" link="sorry" linkEntityId="focusTester">但我没有Poptropica币。</statement>
+		<statement id="ludicrous">这太荒谬了。</statement>
+		<statement id="thats_it" link="twist" linkEntityId="projectManager">就这样？我拯救了世界！？</statement>
+		<statement id="plan_b" link="summon" linkEntityId="focusTester">B计划是什么？</statement>
+		<statement triggeredByEvent="boss_transformed" triggerEvent="triggerEvent" triggerEventArgs="enter_developer">这超出我的能力范围了……你知道怎么对付这家伙吗？</statement>
+		<statement id="whatNow" link="noRest" linkEntityId="projectManager">现在怎么办？要庆祝一下吗？</statement>
+		<statement id="where_my_cake_at" link="give" linkEntityId="projectManager">忙活了半天，连块蛋糕都没有？</statement>
+		<statement id="onePiece" link="maybe" linkEntityId="leadDeveloper">去玩《超级格斗机器人》？从来没人能全身而退。这不可能。</statement>
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="incompleteMan">
+		<statement event="developer_returned">他们修好了我说话的漏洞！可惜我没什么值得说的……</statement>
+		<statement>1101010</statement>
+
+
+
+	</character>
+	<character id="boy">
+		<statement>Poptropica的创作者太慢了！我要玩下一个岛！没有它我简直无法呼吸！</statement>
+		<statement event="spoke_with_focus_tester" link="feedingtime">Poptropica有宠物了！终于！这正是我一直想要的！</statement>
+		<statement id="first_curd">它们就知道吃！这是谁出的馊主意？</statement>
+		<statement event="boy_left_cheese_exterior">这些宠物快把我逼疯了！</statement>
+		<statement event="spoke_with_focus_tester" triggerEvent="triggerEvent" triggerEventArgs="feedingTime">Poptropica有宠物了！终于！这正是我一直想要的！</statement>
+		<statement triggeredByEvent="petHungry" triggerEvent="triggerEvent" triggerEventArgs="boy_left_main_street_cheese, true">看来这小家伙又饿了。来吧，伙计，咱们去旧奶酪工厂。那儿能找到吃的。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="pet">
+		<statement triggeredByEvent="feedingTime" triggerEvent="triggerEvent" triggerEventArgs="petHungry">呐夫，呐夫！</statement>
+
+
+	</character>
+	<character id="projectManager">
+		<conversation>
+			<exchange>
+				<question>你看起来焦头烂额的，怎么了？</question>
+				<answer>我们进度太落后了！ Poptropica的新经理削减预算，几乎把所有人都开除了！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>需要帮忙吗？</question>
+				<answer>通常会有个Poptropica居民跑来告诉你岛上出了什么问题，但现在我们连这个都请不起了！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>也许你就是那个Poptropica居民，只是自己没意识到？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spoke_with_project_manager, true">呃，我从来没想过这个……</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement event="spoke_with_project_manager">我们永远没法按时推出这个岛了！</statement>
+		<statement event="server_repaired" link="thats_it" linkEntityId="player">真不敢相信！所有问题都解决了，这个岛可以上线了。 Poptropica回来了！</statement>
+		<statement id="twist" triggerEvent="triggerEvent" triggerEventArgs="show_evil_managers">唯一缺的就是一个经典的Poptropica式反转。应该有个敌人一直藏在眼皮底下，但会是谁呢？</statement>
+		<statement event="boss_escaped" link="whatNow" linkEntityId="player">总算摆脱了！</statement>
+		<statement id="noRest" link="where_my_cake_at" linkEntityId="player">开什么玩笑？我们得开始做下一个岛了。已经落后进度了！</statement>
+		<statement id="give" link="figures" linkEntityId="leadDeveloper" triggerEvent="triggerEvent" triggerEventArgs="giveMedal">我想，要是不在最后给你个闪亮但毫无用处的小玩意儿，这岛就不算完整。</statement>
+		<statement event="gotItem_medal_mocktropica">我们得开始做下一个岛了。已经落后进度了！</statement>
+		<statement id="rehire" link="strange" linkEntityId="leadDeveloper">既然《超级格斗机器人》完蛋了，也许我们现在可以重新雇他。</statement>
+		<statement id="cuckoo" link="worried" linkEntityId="leadDeveloper">听起来他脑子不太正常了。</statement>
+		<statement id="secret" triggerEvent="triggerEvent" triggerEventArgs="bonusGoInside, true">当然，我们本来也不需要按时推出下一个岛。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="focusTester">
+		<statement event="gotItem_axe" triggerEvent="triggerEvent" triggerEventArgs="focus_pop_coins, true">我想到了！这是我最好的主意！</statement>
+		<statement event="focus_pop_coins2">我得给这些硬币起个聪明的名字……叫波普元？波普谢克尔？还是波普货币？</statement>
+		<statement event="payed_coin, false" id="coinsPlease" link="noPopCoins" linkEntityId="player">离开主街需要一枚波普币。</statement>
+		<statement id="sorry">抱歉！不关我的事！</statement>
+		<statement event="start_collectibles" link="sure" triggerEvent="triggerEvent" triggerEventArgs="focus_collectibles, true">好了，就是这个——这是我最好的主意！</statement>
+		<statement event="focus_collectibles2">行动起来！你需要找到1000个汽水瓶。第一个在Poptropica全球总部楼顶。</statement>
+		<statement event="focus_has_crate">想办法打开这个箱子！</statement>
+		<statement event="smashed_crate">也许收集品不是个好主意……</statement>
+		<statement id="begin" link="drive" linkEntityId="salesManager">我们就是一直藏在你眼皮底下的敌人！没想到吧：Poptropica 和超级格斗机器人网站都是我们的！</statement>
+		<statement id="onlyOne" link="twist" linkEntityId="costCutter">只能活一个！</statement>
+		<statement id="summon" triggerEvent="triggerEvent" triggerEventArgs="boss_summon">我们必须召唤……</statement>
+		<statement triggeredByEvent="boss_summon" triggerEvent="triggerEvent" triggerEventArgs="boss_transform">真正的巨型战斗机器人！</statement>
+		<statement id="escape" link="where" linkEntityId="costCutter">我们还没完！我们会打造一个新游戏！</statement>
+		<conversation triggeredByEvent="focus_pop_coins">
+			<exchange>
+				<question>是什么？</question>
+				<answer>Poptropica币！所有东西都要用Poptropica币买。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>玩家用币买什么？</question>
+				<answer>真的是所有东西！想喂宠物？1 枚波普币。想坐飞艇？1 枚波普币。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="focus_pop_coins2, true">这听起来太糟糕了。整个主意——简直糟透了。</question>
+				<answer>你说糟糕，是指棒极了吗？如果是的话，我同意！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="usedCoin">
+			<exchange>
+				<question>给你波普币，你这个抠门小偷。</question>
+				<answer>合作愉快。记得常来啊，听见没？</answer>
+
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation id="sure" event="focus_collectibles">
+			<exchange>
+				<question>你现在又有什么高见？</question>
+				<answer>收藏品！只给真正痴迷的玩家。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这是什么意思？</question>
+				<answer>我们会让玩家费尽周折去收集一堆没用的随机物品。很棒吧？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="focus_collectibles2, true">不怎么样。太无聊了。</question>
+				<answer>先试试再评价嘛！第一个任务：收集1000个汽水瓶。给你个提示：第一个就在Poptropica全球总部楼顶。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="focus_collectibles">
+			<exchange>
+				<question>你现在又有什么高见？</question>
+				<answer>收藏品！只给真正痴迷的玩家。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这是什么意思？</question>
+				<answer>我们会让玩家费尽周折去收集一堆没用的随机物品。很棒吧？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="focus_collectibles2, true">不怎么样。太无聊了。</question>
+				<answer>先试试再评价嘛！第一个任务：收集1000个汽水瓶。给你个提示：第一个就在Poptropica全球总部楼顶。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation event="start_crate">
+			<exchange>
+				<question>怎么了？</question>
+				<answer>这破箱子太大了，我过不去。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>箱子里是什么？</question>
+				<answer>剩下的汽水瓶！我不把它们藏在莫名其妙的地方，你就收集不到！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>需要帮忙吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="focus_has_crate, true">快想办法，随便什么办法，把这箱子打开！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="salesManager">
+		<statement id="drive" link="onlyOne" linkEntityId="focusTester">我们本想搞垮Poptropica，可你解决了我们辛辛苦苦制造的所有麻烦！</statement>
+		<statement id="plan_b" link="plan_b" linkEntityId="player">是时候启动B计划了。</statement>
+		<statement triggeredByEvent="boss_summon">真正的巨型战斗机器人！</statement>
+		<statement id="mobile" link="cloud" linkEntityId="safetyInspector">我们转战移动端！</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="costCutter">
+		<statement id="twist" link="What_to_do" linkEntityId="safetyInspector">没想到吧？</statement>
+		<statement triggeredByEvent="boss_summon">真正的巨型战斗机器人！</statement>
+		<statement id="where" link="mobile" linkEntityId="salesManager">但去哪儿呢？</statement>
+
+
+
+
+
+	</character>
+	<character id="safetyInspector">
+		<statement event="hasItem_pop" link="ludicrous" linkEntityId="player" triggerEvent="giveItem" triggerEventArgs="helmet">停下！没有合适的装备就从楼上跳下去很危险。拿着这个！</statement>
+		<statement event="hasItem_helmet">没有合适的头盔，不准从任何地方跳下去！</statement>
+		<statement id="What_to_do" link="plan_b" linkEntityId="salesManager">同事们，你们知道我们该做什么。</statement>
+		<statement triggeredByEvent="boss_summon">真正的巨型战斗机器人！</statement>
+		<statement id="cloud">进军云端！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="leadDeveloper">
+		<statement id="use_fps_engine" triggerEvent="triggerEvent" triggerEventArgs="boss_fight_start">不知道。当我们没主意时，只有一件事可做：来段炫酷的动作戏！</statement>
+		<statement id="figures" link="rehire" linkEntityId="projectManager">《超级格斗机器人》……难怪。他们几个月前就挖走了我最好的程序员！</statement>
+		<statement event="defeated_boss" link="rehire" linkEntityId="projectManager">《超级格斗机器人》……难怪。他们几个月前就挖走了我最好的程序员！</statement>
+		<statement id="strange" triggerEvent="triggerEvent" triggerEventArgs="showPda, false">我不知道。他去那儿工作后不久就变得很奇怪。这是我收到的他最后一封邮件。</statement>
+		<statement id="pda" link="cuckoo" linkEntityId="projectManager">从那以后我就没他的消息了。</statement>
+		<statement id="worried" link="onePiece" linkEntityId="player">我很担心。应该有人去找他。</statement>
+		<statement id="maybe" link="secret" linkEntityId="projectManager">也许不用。到开发电脑那儿找我，我给你看个秘密项目。</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="laidOffDeveloper">
+		<statement event="hasItem_coins">好好享受这些币吧……要多少有多少！</statement>
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我本来是Poptropica的开发员，结果那些没良心的新经理把我开除了！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>所以你现在就像个鬼鬼祟祟的家伙在暗处活动？</question>
+				<answer>不，我现在在发假波普币。这是我的报复！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>能给我些波普币吗？</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="coins">给，想要多少拿多少！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

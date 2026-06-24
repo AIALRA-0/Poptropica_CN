@@ -1,0 +1,61 @@
+<dialogs>
+	<character id="player">
+		<statement id="wait">等等，我有话跟你说！</statement>
+		<statement id="where">她跑哪儿去了？</statement>
+		<statement id="there">她在那边。</statement>
+		<statement id="maze0">这地方跟迷宫似的！每条走廊都长得一模一样。</statement>
+		<statement id="maze1">是啊，我好像迷路了……</statement>
+		<statement id="maze2">这条走廊看着眼熟，还是我记错了？</statement>
+		<statement id="maze3">也许我该原路返回。</statement>
+		<statement id="maze4">这条走廊看着眼熟……</statement>
+		<statement id="maze5">谁设计的这些绕来绕去的走廊啊？</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="person5">
+		<statement>因为这个地方，我都要错过所有活动了！</statement>
+
+
+		</character>
+	<character id="person6">
+		<statement>到处都一个样。</statement>
+
+
+		</character>
+	<character id="person7">
+		<statement>真希望有副卡牌游戏能打发时间。</statement>
+
+
+		</character>
+	<character id="person8">
+		<statement>真希望有张地图……</statement>
+
+
+		</character>
+	<character id="person9">
+		<statement>我又饿又累！</statement>
+
+
+		</character>
+	<character id="person10">
+		<statement>这是哪儿？</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+
+</dialogs>

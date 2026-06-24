@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="joeAtWork">没人应门。他大概在上班。</statement>
+		<statement id="noAnswer">没人应门。</statement>
+		<statement id="say_stockman_fits">乔·斯托克曼符合条件……但我得确认一下。</statement>
+
+
+
+
+	</character>
+
+
+</dialogs>

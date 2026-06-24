@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>lever</id>
+		<asset>lever.swf</asset>
+		<x>400</x>
+		<y>760</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

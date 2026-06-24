@@ -1,0 +1,57 @@
+<dialogs>
+	<character id="char1">
+		<conversation id="convo">
+			<exchange>
+				<question>你还好吗？</question>
+				<answer>我没事，但我们得做点什么。席尔瓦先生偷走了我的缩小枪！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>他为什么要这么做？</question>
+				<answer>我不知道！他一直都是个好老师啊！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我们该怎么办？</question>
+				<answer>不管怎样，我们得确保席尔瓦先生看不到我们。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="run">快跑！</statement>
+
+
+
+	</character>
+	<character id="char2">
+		<statement id="there you are">找到你们了！我要再把你们缩小，小到谁也看不见！</statement>
+		<statement id="ill make millions">然后我就卖掉缩小枪的设计图，赚个几百万！</statement>
+
+
+
+	</character>
+	<character id="player">
+		<statement id="in the office">我在席尔瓦先生的办公室里！</statement>
+		<statement id="being watched">有没有感觉被人盯着？</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

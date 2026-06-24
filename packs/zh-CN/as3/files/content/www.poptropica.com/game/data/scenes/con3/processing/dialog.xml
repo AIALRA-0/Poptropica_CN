@@ -1,0 +1,65 @@
+<dialogs>
+	<character id="player">
+		<statement id="power">电线露出来了，没戴手套可别碰。</statement>
+		<statement id="charged">我已经给电子脉冲手套充好电了。</statement>
+
+
+
+	</character>
+	<character id="wizard">
+		<statement id="soda">但我总算找到喝的啦。</statement>
+		<statement id="now">哎呀，现在又出什么事了。</statement>
+		<statement event="machine_broken">谁来帮帮我，我卡住了。</statement>
+		<statement id="help">谁来帮帮我，我卡住了。</statement>
+		<statement id="thanks">我自由了。谢谢。</statement>
+		<statement id="here" triggerEvent="triggerEvent" triggerEventArgs="got_soda_">……你知道吗，折腾这一通我都不渴了。这个给你吧。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="pinata">
+		<statement id="tyrants">皮纳塔侠绝不向暴君屈服。</statement>
+
+
+	</character>
+	<character id="goldFace">
+		<statement>快叫我的经纪人！我的公关！我的造型师！谁都行！ </statement>
+		<statement id="help">快叫我的经纪人！我的公关！我的造型师！谁都行！</statement>
+		<statement id="freedom">终于！这笼子比我的模特合同还难逃！</statement>
+
+
+
+
+	</character>
+	<character id="hench0">
+		<statement id="bio">这破机器偷了我们的生物质！</statement>
+		<statement id="wrench">诊断完成。修复需要超能扳手和能干的助手机器人。</statement>
+
+
+
+	</character>
+	<character id="hench1">
+		<statement id="silence">启动转化程序。</statement>
+		<statement id="next">导入下一个自愿实验体。</statement>
+		<statement id="wire">主导管破裂。尝试手动修复。</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

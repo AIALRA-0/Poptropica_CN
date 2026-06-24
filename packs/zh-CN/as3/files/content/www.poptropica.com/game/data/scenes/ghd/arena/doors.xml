@@ -1,0 +1,30 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.ghd.adStreet1.AdStreet1</scene>
+		<x>120</x>
+		<y>1070</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.ghd.arena.Arena</scene>
+				<x>2750</x>
+				<y>1390</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.ghd.spacePort.SpacePort</scene>
+				<x>200</x>
+				<y>1390</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

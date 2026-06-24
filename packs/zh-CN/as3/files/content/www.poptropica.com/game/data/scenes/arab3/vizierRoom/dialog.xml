@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="player">
+		<statement id="didIt">我成功了！</statement>
+		<statement id="whoops" triggerEvent="triggerEvent" triggerEventArgs="runBack">哎呀！</statement>
+		<statement id="noBook">想制作东西的话，我得先有配方才行。</statement>
+		<statement id="fail">呃，这招好像不管用……</statement>
+		<statement id="magicCarpet" triggerEvent="triggerEvent" triggerEventArgs="magicCarpet">嘿，是魔法飞毯！这下我来到一个全新的世界了。</statement>
+		<statement id="noUse">这张桌子暂时没人能用来制作了。</statement>
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

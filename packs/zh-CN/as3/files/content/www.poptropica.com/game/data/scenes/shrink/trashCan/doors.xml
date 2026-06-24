@@ -1,0 +1,29 @@
+<doors>
+	<door id="door01">
+		<scene>game.scenes.shrink.kitchenShrunk01.KitchenShrunk01</scene>
+		<x>2530</x>
+		<y>1350</y>
+		<label>
+			<text>离开垃圾桶</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="door02">
+		<scene>game.scenes.shrink.kitchenShrunk01.KitchenShrunk01</scene>
+		<x>2530</x>
+		<y>1350</y>
+		<label>
+			<text>离开垃圾桶</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

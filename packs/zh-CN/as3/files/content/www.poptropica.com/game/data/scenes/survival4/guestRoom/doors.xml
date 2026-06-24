@@ -1,0 +1,30 @@
+<doors><!-- guest room -->
+	<door id="door1" triggeredByEvent="cameras_disabled" event="cameras_disabled">
+		<scene>game.scenes.survival4.adStreet1.AdStreet1</scene>
+		<x>140</x>
+		<y>1030</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorRight">
+				<scene>game.scenes.survival4.mainHall.MainHall</scene>
+				<x>150</x>
+				<y>495</y>
+				<direction>right</direction>
+			</door>
+			<door id="doorLeft">
+				<scene>game.scenes.survival4.guestRoom.GuestRoom</scene>
+				<x>2680</x>
+				<y>800</y>
+				<direction>left</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorWoodsMaze">
+		<scene>game.scenes.carnival.woodsMaze.WoodsMaze</scene>
+		<x>1330</x>
+		<y>765</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorMap">
+		<scene>game.scenes.viking.dodoHabitat.DodoHabitat</scene>
+		<x>40</x>
+		<y>1010</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

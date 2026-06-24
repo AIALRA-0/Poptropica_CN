@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>fishing_pole</id>
+		<asset>fishing_pole.swf</asset>
+		<x>640</x>
+		<y>882</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>remote_control</id>
+		<asset>remote_control.swf</asset>
+		<x>364</x>
+		<y>393</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>screw_driver</id>
+		<asset>screw_driver.swf</asset>
+		<x>1661</x>
+		<y>1343</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="found_all_shards" link="return_to_town">这是最后一块了。</statement>
+		<statement id="return_to_town">既然所有碎片都集齐了，我该回镇上了。</statement>
+
+
+
+		</character>
+
+
+</dialogs>

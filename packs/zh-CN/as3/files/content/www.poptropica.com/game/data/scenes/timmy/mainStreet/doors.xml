@@ -1,0 +1,131 @@
+<doors>
+	<door id="doorSchool">
+		<scene>game.scenes.timmy.adMixed2.AdMixed2</scene>
+		<x>1274</x>
+		<y>940</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>-20</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.school.School</scene>
+				<x>2200</x>
+				<y>690</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+				<x>180</x>
+				<y>1560</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorAlley">
+		<scene>game.scenes.timmy.alley.Alley</scene>
+		<x>200</x>
+		<y>680</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+
+
+	<door id="doorCommon">
+		<scene>game.scenes.timmy.commonRoom.CommonRoom</scene>
+		<x>551</x>
+		<y>882</y>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorStore">
+		<scene>game.scenes.timmy.store.Store</scene>
+		<x>775</x>
+		<y>625</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorZoo">
+		<scene>game.scenes.timmy.adMixed1.AdMixed1</scene>
+		<x>70</x>
+		<y>950</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+				<x>5425</x>
+				<y>1558</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.timmy.zoo.Zoo</scene>
+				<x>70</x>
+				<y>820</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorSkyScraper">
+		<scene>game.scenes.timmy.skyScraper.SkyScraper</scene>
+		<x>1130</x>
+		<y>2240</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>50</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+	    <x>0</x>
+	    <y>0</y>
+	    <label>
+	      <text>旅行</text>
+	      <asset>exitUp</asset>
+	      <offset>
+	        <x>0</x>
+	        <y>0</y>
+	      </offset>
+	    </label>
+	</door>
+</doors>

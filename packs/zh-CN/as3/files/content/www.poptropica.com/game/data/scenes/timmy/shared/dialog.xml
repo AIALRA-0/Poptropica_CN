@@ -1,0 +1,52 @@
+<dialogs>
+	<character id="player">
+		<statement id="got_lazybear">懒熊2000的所有零件都齐了，我该去蒂米家把它组装起来。</statement>
+		<statement id="got_totalmobile">全能移动装置的所有零件都齐了，我该去找蒂米会合。</statement>
+		<statement id="free_total">我得想办法把托托从滑梯里弄出来。</statement>
+		<statement id="wheres_total">托托看到里面的东西肯定会兴奋得不行。</statement>
+		<statement id="save_treats">这些零食还是等托托在的时候再拿出来吧。</statement>
+		<statement id="cant_use_trash">这里面没什么值得我花时间的。</statement>
+		<statement id="cant_use_treats">我现在用不上这些零食。</statement>
+		<statement id="cant_use_bonbons">托托肯定喜欢这些。</statement>
+		<statement triggeredByEvent="cant_use_screwdriver">附近一个螺丝都看不到。</statement>
+		<statement id="cant_use_camera" triggeredByEvent="cant_use_camera">这里没什么好拍的。</statement>
+		<statement id="cant_use_marker" triggeredByEvent="cant_use_marker">这里没什么可写的。</statement>
+		<statement id="cant_use_box" triggeredByEvent="cant_use_box">现在用不着这个箱子。</statement>
+		<statement triggeredByEvent="cant_use_gardening_shears">宾果大概不想让我修剪灌木，这些剪刀或许别处能用上。</statement>
+		<statement triggeredByEvent="cant_use_money">这些钱刚好够买餐车的特供品。</statement>
+		<statement triggeredByEvent="cant_use_pole">现在用不着这根杆子。</statement>
+		<statement triggeredByEvent="cant_use_change">自动售货机的零钱正好够。</statement>
+		<statement id="cant_use_shoes" triggeredByEvent="cant_use_shoes">款式不错，但尺码不对，莫莉可能会喜欢。</statement>
+		<statement id="cant_use_cat" triggeredByEvent="cant_use_cat">莫莉的猫，塞尼奥·布里托，可它是只母猫。</statement>
+		<statement triggeredByEvent="cant_use_beach_ball">这个沙滩球弹性真好。</statement>
+		<statement triggeredByEvent="cant_use_office_key">这把钥匙应该能打开蒂米家的门。</statement>
+		<statement triggeredByEvent="cant_use_car_keys">我得找到克里斯平的车。</statement>
+		<statement id="cant_use_car_keys">已经试过那辆车了，估计没机会再试一次。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

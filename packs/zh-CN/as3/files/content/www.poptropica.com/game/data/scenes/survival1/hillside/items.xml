@@ -1,0 +1,23 @@
+<items>
+	<item>
+		<id>handbookPage6</id>
+		<asset>handbookPage.swf</asset>
+		<x>1909</x>
+		<y>297</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+
+	<item>
+		<id>mittens</id>
+		<asset>mittens.swf</asset>
+		<x>235</x>
+		<y>790</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>
