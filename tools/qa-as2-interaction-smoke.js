@@ -487,6 +487,21 @@ function resolveFlashpointQaAs2Popup(args) {
   ).trim();
 }
 
+function withoutAs2PopupLaunchArgs(args) {
+  const next = { ...args };
+  for (const key of [
+    "flashpointQaAs2Popup",
+    "flashpoint-qa-as2-popup",
+    "as2QaPopup",
+    "as2-qa-popup",
+    "qaPopup",
+    "qa-popup"
+  ]) {
+    delete next[key];
+  }
+  return next;
+}
+
 function withLaunchQuery(url, args) {
   const roomOverride = String(args.roomOverride || args["room-override"] || "").trim();
   const islandOverride = String(args.islandOverride || args["island-override"] || "").trim();
@@ -853,6 +868,8 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
   const windowPath = path.join(runDir, `${hiddenStem}-window.json`);
   const analysisPath = path.join(runDir, `${stem}-hud-anchor.json`);
   const annotatedPath = path.join(runDir, `${stem}-hud-anchor.png`);
+  const rowAnalysisPath = path.join(runDir, `${stem}-hud-slot-row.json`);
+  const rowAnnotatedPath = path.join(runDir, `${stem}-hud-slot-row.png`);
   const hiddenArgs = {
     ...args,
     qaHideHud: "1",
@@ -865,6 +882,40 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
   const settleMs = Number(args.hudBaselineSettleMs || args["hud-baseline-settle-ms"] || args.settleMs || 9000);
 
   try {
+    const rowAnalysis = runPythonQa([
+      "analyze-top-right-slot-row",
+      "--input",
+      initial.artifacts.screenshotPath,
+      "--stage-json",
+      initial.artifacts.stagePath,
+      "--output",
+      rowAnalysisPath,
+      "--annotated-output",
+      rowAnnotatedPath,
+      "--slot-names",
+      String(args.as2HudSlotNames || args["as2-hud-slot-names"] || "inventory,wardrobe,map"),
+      "--critical-slots",
+      String(args.as2HudCriticalSlots || args["as2-hud-critical-slots"] || "inventory,wardrobe,map"),
+      "--rightmost-center-inset",
+      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 88),
+      "--center-y-offset",
+      String(args.as2HudCenterYOffset || args["as2-hud-center-y-offset"] || 20),
+      "--slot-spacing",
+      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 86),
+      "--slot-size",
+      String(args.as2HudSlotSize || args["as2-hud-slot-size"] || 76),
+      "--min-edge-density",
+      String(args.as2HudMinEdgeDensity || args["as2-hud-min-edge-density"] || 0.018),
+      "--min-present-slots",
+      String(args.as2HudMinPresentSlots || args["as2-hud-min-present-slots"] || 3),
+      "--max-top-margin",
+      String(args.as2HudSlotMaxTopMargin || args["as2-hud-slot-max-top-margin"] || 58),
+      "--max-center-y-ratio",
+      String(args.as2HudSlotMaxCenterYRatio || args["as2-hud-slot-max-center-y-ratio"] || 0.12),
+      "--no-fail-exit"
+    ], {
+      timeoutMs: 30000
+    });
     const launchHealth = await requestLaunchHealth(hiddenUrl, args);
     const runtime = spawnRuntimeWithWindowGeometry(config, hiddenUrl, args);
     const runtimeWindow = runPythonQa(buildWaitArgs({
@@ -922,13 +973,14 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       "--min-icon-gap",
       String(args.as2HudMinIconGap || args["as2-hud-min-icon-gap"] || 10),
       "--max-icon-gap",
-      String(args.as2HudMaxIconGap || args["as2-hud-max-icon-gap"] || 56)
+      String(args.as2HudMaxIconGap || args["as2-hud-max-icon-gap"] || 56),
+      "--no-fail-exit"
     ], {
       timeoutMs: 30000
     });
     return {
       skipped: false,
-      ok: Boolean(analysis?.ok),
+      ok: Boolean(rowAnalysis?.ok) && (flagEnabled(args.requireLegacyHudDiff || args["require-legacy-hud-diff"]) ? Boolean(analysis?.ok) : true),
       launchHealth: summarizeLaunchHealth(launchHealth),
       runtime: {
         pid: runtime.pid || null,
@@ -941,12 +993,15 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
         artifacts: hidden.artifacts
       },
       analysis,
+      rowAnalysis,
       artifacts: {
         windowPath,
         hiddenScreenshotPath: hidden.artifacts.screenshotPath || null,
         hiddenStagePath: hidden.artifacts.stagePath || null,
         analysisPath,
-        annotatedPath
+        annotatedPath,
+        rowAnalysisPath,
+        rowAnnotatedPath
       }
     };
   } catch (error) {
@@ -958,7 +1013,9 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       artifacts: {
         windowPath,
         analysisPath,
-        annotatedPath
+        annotatedPath,
+        rowAnalysisPath,
+        rowAnnotatedPath
       },
       error: String(error.message || error)
     };
@@ -1261,9 +1318,22 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
       timeoutMs: 30000
     });
     await sleep(Number(args.f11RestoreSettleMs || args["f11-restore-settle-ms"] || 6000));
+    const restoreCapture = captureAndAnalyze({
+      runDir,
+      stem,
+      suffix: "f11-restore",
+      runtime,
+      runtimeWindow,
+      qaErrors,
+      args,
+      useWindowGeometry: false
+    });
+    const restoreStageStable = Boolean(restoreCapture.stage?.stageRect);
+    const restoreVisualStable = !shouldRequireVisualGuard(args) || Boolean(restoreCapture.visualGuard?.ok);
+    const restorePlayableCropStable = !shouldRequirePlayableCropGuard(args) || Boolean(restoreCapture.playableCropGuard?.ok);
     return {
       skipped: false,
-      ok: stageStable && visualStable && playableCropStable && fullscreenSize.ok,
+      ok: stageStable && visualStable && playableCropStable && fullscreenSize.ok && restoreStageStable && restoreVisualStable && restorePlayableCropStable,
       keyPath,
       restoreKeyPath,
       keyOk: Boolean(key?.ok),
@@ -1284,9 +1354,27 @@ async function captureF11({ runDir, stem, runtime, runtimeWindow, qaErrors, args
         playableCropGuard: capture.playableCropGuard,
         ocrText: String(capture.ocr?.text || "").slice(0, 500)
       },
+      postRestore: {
+        screenshotPath: restoreCapture.artifacts.screenshotPath || null,
+        capturePath: restoreCapture.artifacts.metadataPath || null,
+        stagePath: restoreCapture.artifacts.stagePath || null,
+        visualGuardPath: restoreCapture.artifacts.visualGuardPath || null,
+        playableCropGuardPath: restoreCapture.artifacts.playableCropGuardPath || null,
+        playableCropGuardAnnotatedPath: restoreCapture.artifacts.playableCropGuardAnnotatedPath || null,
+        ocrPath: restoreCapture.artifacts.ocrPath || null,
+        imageSize: restoreCapture.capture?.imageSize || null,
+        stageRect: restoreCapture.stage?.stageRect || null,
+        stageCoverageRatio: restoreCapture.stage?.stageCoverageRatio ?? null,
+        visualGuard: restoreCapture.visualGuard,
+        playableCropGuard: restoreCapture.playableCropGuard,
+        ocrText: String(restoreCapture.ocr?.text || "").slice(0, 500)
+      },
       stageStable,
       visualStable,
-      playableCropStable
+      playableCropStable,
+      restoreStageStable,
+      restoreVisualStable,
+      restorePlayableCropStable
     };
   } catch (error) {
     qaErrors.push(formatQaError(`${stem}-f11`, error));
@@ -2028,13 +2116,23 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       })
     : { ok: true, skipped: true };
 
+  const hasQaPopup = Boolean(resolveFlashpointQaAs2Popup(args));
+  const hudSource = hasQaPopup && !popupClose.skipped && popupClose.ok && popupClose.artifacts?.screenshotPath && popupClose.artifacts?.stagePath
+    ? {
+        artifacts: {
+          screenshotPath: popupClose.artifacts.screenshotPath,
+          stagePath: popupClose.artifacts.stagePath
+        }
+      }
+    : initial;
+  const hudAnchorArgs = hudSource === initial ? args : withoutAs2PopupLaunchArgs(args);
   const hudAnchor = await captureHudAnchor({
     config,
     runDir,
     entry,
     stem,
-    initial,
-    args,
+    initial: hudSource,
+    args: hudAnchorArgs,
     qaErrors
   });
 
@@ -2155,6 +2253,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       mapResetConfirmStagePath: mapResetConfirm.artifacts?.stagePath || null,
       hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
       hudAnchorAnnotatedPath: hudAnchor.artifacts?.annotatedPath || null,
+      hudSlotRowPath: hudAnchor.artifacts?.rowAnalysisPath || null,
+      hudSlotRowAnnotatedPath: hudAnchor.artifacts?.rowAnnotatedPath || null,
       audioPath: flagEnabled(args.skipAudio) ? null : audioPath,
       logSegmentPath: logPath
     },

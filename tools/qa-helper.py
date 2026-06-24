@@ -1373,35 +1373,43 @@ def command_capture_window(args):
     layout_sync = sync_runtime_child_windows(int(row["handle"]))
     time.sleep(0.12)
     row = window_row(int(row["handle"])) or row
-    target_row = row
     parent_hwnd = int(row["handle"])
     child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
-    if getattr(args, "largest_child", False) or child_class_contains:
-        target_row = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False)) or target_row
-    hwnd = int(target_row["handle"])
-    raw_bbox = get_capture_bbox(hwnd, args.client_only)
-    bbox = raw_bbox
-    capture_clip = None
-    if int(target_row["handle"]) != parent_hwnd:
-        clipped_bbox = intersect_bboxes(raw_bbox, rect_to_bbox(row["rect"]))
-        if clipped_bbox:
-            bbox = clipped_bbox
-            capture_clip = {
-                "clippedToParentWindow": bbox != raw_bbox,
-                "rawCaptureBox": {
-                    "left": int(raw_bbox[0]),
-                    "top": int(raw_bbox[1]),
-                    "right": int(raw_bbox[2]),
-                    "bottom": int(raw_bbox[3]),
-                    "width": int(max(0, raw_bbox[2] - raw_bbox[0])),
-                    "height": int(max(0, raw_bbox[3] - raw_bbox[1])),
-                },
-            }
+
+    def refresh_capture_target():
+        target = row
+        if getattr(args, "largest_child", False) or child_class_contains:
+            target = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False)) or target
+        target_hwnd = int(target["handle"])
+        raw = get_capture_bbox(target_hwnd, args.client_only)
+        clipped = raw
+        clip = None
+        if target_hwnd != parent_hwnd:
+            clipped_bbox = intersect_bboxes(raw, rect_to_bbox(row["rect"]))
+            if clipped_bbox:
+                clipped = clipped_bbox
+                clip = {
+                    "clippedToParentWindow": clipped != raw,
+                    "rawCaptureBox": {
+                        "left": int(raw[0]),
+                        "top": int(raw[1]),
+                        "right": int(raw[2]),
+                        "bottom": int(raw[3]),
+                        "width": int(max(0, raw[2] - raw[0])),
+                        "height": int(max(0, raw[3] - raw[1])),
+                    },
+                }
+        return target, raw, clipped, clip
+
+    target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
     topmost_applied = False
     try:
         if getattr(args, "no_foreground", False):
             topmost_applied = set_capture_topmost(parent_hwnd)
             sync_runtime_child_windows(parent_hwnd)
+            time.sleep(0.12)
+            row = window_row(parent_hwnd) or row
+            target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
         image = ImageGrab.grab(bbox=bbox, all_screens=True)
     finally:
         if topmost_applied:
@@ -1479,30 +1487,35 @@ def command_capture_window_sequence(args):
     layout_sync = sync_runtime_child_windows(int(row["handle"]))
     time.sleep(0.12)
     row = window_row(int(row["handle"])) or row
-    target_row = row
     parent_hwnd = int(row["handle"])
     child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
-    if getattr(args, "largest_child", False) or child_class_contains:
-        target_row = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False)) or target_row
-    hwnd = int(target_row["handle"])
-    raw_bbox = get_capture_bbox(hwnd, args.client_only)
-    bbox = raw_bbox
-    capture_clip = None
-    if int(target_row["handle"]) != parent_hwnd:
-        clipped_bbox = intersect_bboxes(raw_bbox, rect_to_bbox(row["rect"]))
-        if clipped_bbox:
-            bbox = clipped_bbox
-            capture_clip = {
-                "clippedToParentWindow": bbox != raw_bbox,
-                "rawCaptureBox": {
-                    "left": int(raw_bbox[0]),
-                    "top": int(raw_bbox[1]),
-                    "right": int(raw_bbox[2]),
-                    "bottom": int(raw_bbox[3]),
-                    "width": int(max(0, raw_bbox[2] - raw_bbox[0])),
-                    "height": int(max(0, raw_bbox[3] - raw_bbox[1])),
-                },
-            }
+
+    def refresh_capture_target():
+        target = row
+        if getattr(args, "largest_child", False) or child_class_contains:
+            target = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False)) or target
+        target_hwnd = int(target["handle"])
+        raw = get_capture_bbox(target_hwnd, args.client_only)
+        clipped = raw
+        clip = None
+        if target_hwnd != parent_hwnd:
+            clipped_bbox = intersect_bboxes(raw, rect_to_bbox(row["rect"]))
+            if clipped_bbox:
+                clipped = clipped_bbox
+                clip = {
+                    "clippedToParentWindow": clipped != raw,
+                    "rawCaptureBox": {
+                        "left": int(raw[0]),
+                        "top": int(raw[1]),
+                        "right": int(raw[2]),
+                        "bottom": int(raw[3]),
+                        "width": int(max(0, raw[2] - raw[0])),
+                        "height": int(max(0, raw[3] - raw[1])),
+                    },
+                }
+        return target, raw, clipped, clip
+
+    target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1520,6 +1533,9 @@ def command_capture_window_sequence(args):
             if getattr(args, "no_foreground", False):
                 topmost_applied = set_capture_topmost(parent_hwnd)
                 sync_runtime_child_windows(parent_hwnd)
+                time.sleep(0.12)
+                row = window_row(parent_hwnd) or row
+                target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
             image = ImageGrab.grab(bbox=bbox, all_screens=True)
         finally:
             if topmost_applied:
@@ -2355,15 +2371,20 @@ def command_analyze_playable_crop_guard(args):
         if component["width"] < int(args.min_width) or component["height"] < int(args.min_height):
             continue
         bottom_gap = int(height - component["bottom"])
+        aspect_ratio = float(component["width"]) / float(max(1, component["height"]))
+        too_wide_for_character = aspect_ratio > float(args.max_crop_risk_aspect)
         candidate = {
             **component,
             "bottomGap": bottom_gap,
             "touchesBottom": bottom_gap <= int(args.touch_tolerance),
             "belowLowerTop": component["top"] >= lower_top,
+            "aspectRatio": float(round(aspect_ratio, 6)),
+            "tooWideForCharacter": bool(too_wide_for_character),
         }
         candidate["croppedRisk"] = (
             candidate["bottomGap"] <= int(args.min_bottom_gap) and
-            component["pixels"] >= int(args.min_pixels)
+            component["pixels"] >= int(args.min_pixels) and
+            not too_wide_for_character
         )
         candidates.append(candidate)
     candidates.sort(key=lambda item: (item["croppedRisk"], -item["bottomGap"], item["pixels"]), reverse=True)
@@ -2405,6 +2426,7 @@ def command_analyze_playable_crop_guard(args):
             "minHeight": int(args.min_height),
             "minBottomGap": int(args.min_bottom_gap),
             "touchTolerance": int(args.touch_tolerance),
+            "maxCropRiskAspect": float(args.max_crop_risk_aspect),
             "lowerTopRatio": float(args.lower_top_ratio),
         },
     }
@@ -2768,6 +2790,299 @@ def command_analyze_hud_diff(args):
         sys.exit(2)
 
 
+def _stage_rect_from_args(args, width, height):
+    if getattr(args, "stage_json", None):
+        stage_payload = json.loads(Path(args.stage_json).read_text(encoding="utf-8"))
+        stage_rect = stage_payload.get("stageRect") or None
+        if stage_rect:
+            left = int(stage_rect.get("left", 0))
+            top = int(stage_rect.get("top", 0))
+            right = int(stage_rect.get("right", width))
+            bottom = int(stage_rect.get("bottom", height))
+            return {
+                "left": max(0, min(width, left)),
+                "top": max(0, min(height, top)),
+                "right": max(0, min(width, right)),
+                "bottom": max(0, min(height, bottom)),
+            }
+    return {
+        "left": 0,
+        "top": 0,
+        "right": width,
+        "bottom": height,
+    }
+
+
+def _group_projection_indices(indices, max_gap):
+    if not indices:
+        return []
+    groups = []
+    start = int(indices[0])
+    prev = int(indices[0])
+    for value in indices[1:]:
+        current = int(value)
+        if current - prev <= int(max_gap) + 1:
+            prev = current
+            continue
+        groups.append((start, prev + 1))
+        start = current
+        prev = current
+    groups.append((start, prev + 1))
+    return groups
+
+
+def command_analyze_top_right_icon_row(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    stage_rect = _stage_rect_from_args(args, width, height)
+    stage_left = int(stage_rect["left"])
+    stage_top = int(stage_rect["top"])
+    stage_right = int(stage_rect["right"])
+    stage_bottom = int(stage_rect["bottom"])
+    raw_stage_rect = {
+        "left": int(stage_left),
+        "top": int(stage_top),
+        "right": int(stage_right),
+        "bottom": int(stage_bottom),
+        "width": int(max(0, stage_right - stage_left)),
+        "height": int(max(0, stage_bottom - stage_top)),
+    }
+    expanded_for_hud_slots = False
+    if stage_right < int(width * 0.75):
+        right_region = np.asarray(image.crop((stage_right, stage_top, width, stage_bottom)).convert("RGB"), dtype=np.int16)
+        if right_region.size:
+            max_channel = right_region.max(axis=2)
+            min_channel = right_region.min(axis=2)
+            dark_pct = float((max_channel <= 40).mean())
+            white_pct = float((min_channel >= 245).mean())
+            if dark_pct < 0.96 and white_pct < 0.96:
+                stage_right = width
+                expanded_for_hud_slots = True
+    stage_width = max(1, int(stage_right - stage_left))
+    stage_height = max(1, int(stage_bottom - stage_top))
+
+    search_height = int(round(stage_height * float(args.top_ratio)))
+    search_height = max(int(args.min_search_height), min(int(args.max_search_height), search_height))
+    search_top = stage_top
+    search_bottom = min(stage_bottom, search_top + search_height)
+    search_left = max(stage_left, stage_right - int(round(stage_width * float(args.right_ratio))))
+    search_right = stage_right
+    if search_right <= search_left or search_bottom <= search_top:
+        raise ValueError("Invalid top-right HUD search region")
+
+    crop = image.crop((search_left, search_top, search_right, search_bottom))
+    rgb = np.array(crop).astype(np.int16)
+    max_channel = rgb.max(axis=2)
+    min_channel = rgb.min(axis=2)
+    saturation = max_channel - min_channel
+    gradient_x = np.zeros(rgb.shape[:2], dtype=np.int16)
+    gradient_y = np.zeros(rgb.shape[:2], dtype=np.int16)
+    gradient_x[:, 1:] = np.max(np.abs(rgb[:, 1:] - rgb[:, :-1]), axis=2)
+    gradient_y[1:, :] = np.max(np.abs(rgb[1:, :] - rgb[:-1, :]), axis=2)
+    gradient = np.maximum(gradient_x, gradient_y)
+    vivid_mask = (
+        (max_channel >= int(args.min_brightness)) &
+        (saturation >= int(args.min_saturation)) &
+        (
+            (gradient >= int(args.min_gradient)) |
+            (saturation >= int(args.strong_saturation))
+        )
+    )
+    col_counts = vivid_mask.sum(axis=0)
+    min_col_pixels = max(1, int(round((search_bottom - search_top) * float(args.min_col_density))))
+    active_cols = [int(index) for index, count in enumerate(col_counts) if int(count) >= min_col_pixels]
+
+    components = []
+    for local_left, local_right in _group_projection_indices(active_cols, int(args.max_merge_gap)):
+        local_mask = vivid_mask[:, local_left:local_right]
+        if local_mask.size == 0:
+            continue
+        row_counts = local_mask.sum(axis=1)
+        active_rows = [int(index) for index, count in enumerate(row_counts) if int(count) > 0]
+        if not active_rows:
+            continue
+        local_top = min(active_rows)
+        local_bottom = max(active_rows) + 1
+        comp_width = int(local_right - local_left)
+        comp_height = int(local_bottom - local_top)
+        comp_pixels = int(local_mask[local_top:local_bottom, :].sum())
+        if (
+            comp_width < int(args.min_icon_width) or
+            comp_height < int(args.min_icon_height) or
+            comp_width > int(args.max_icon_width) or
+            comp_height > int(args.max_icon_height) or
+            comp_pixels < int(args.min_icon_pixels)
+        ):
+            continue
+        area = max(1, comp_width * comp_height)
+        density = float(comp_pixels) / float(area)
+        if density < float(args.min_icon_density):
+            continue
+        left = int(search_left + local_left)
+        right = int(search_left + local_right)
+        top = int(search_top + local_top)
+        bottom = int(search_top + local_bottom)
+        components.append({
+            "left": left,
+            "top": top,
+            "right": right,
+            "bottom": bottom,
+            "width": comp_width,
+            "height": comp_height,
+            "pixels": comp_pixels,
+            "density": float(round(density, 6)),
+            "centerX": int(round((left + right) / 2.0)),
+            "centerY": int(round((top + bottom) / 2.0)),
+        })
+
+    components.sort(key=lambda comp: comp["centerY"])
+    clusters = []
+    for comp in components:
+        assigned = False
+        for cluster in clusters:
+            mean_y = sum(item["centerY"] for item in cluster) / float(len(cluster))
+            if abs(comp["centerY"] - mean_y) <= float(args.row_cluster_tolerance):
+                cluster.append(comp)
+                assigned = True
+                break
+        if not assigned:
+            clusters.append([comp])
+    clusters.sort(
+        key=lambda cluster: (
+            -len(cluster),
+            min(item["top"] for item in cluster),
+            -max(item["right"] for item in cluster),
+        )
+    )
+    row_components = sorted(clusters[0], key=lambda comp: comp["left"]) if clusters else []
+    row_box = None
+    right_margin = None
+    top_margin = None
+    row_spread = None
+    row_center_y_ratio = None
+    gaps = []
+    if row_components:
+        row_left = min(comp["left"] for comp in row_components)
+        row_top = min(comp["top"] for comp in row_components)
+        row_right = max(comp["right"] for comp in row_components)
+        row_bottom = max(comp["bottom"] for comp in row_components)
+        row_box = {
+            "left": int(row_left),
+            "top": int(row_top),
+            "right": int(row_right),
+            "bottom": int(row_bottom),
+            "width": int(row_right - row_left),
+            "height": int(row_bottom - row_top),
+            "centerX": int(round((row_left + row_right) / 2.0)),
+            "centerY": int(round((row_top + row_bottom) / 2.0)),
+        }
+        right_margin = int(stage_right - row_right)
+        top_margin = int(row_top - stage_top)
+        row_spread = int(max(comp["centerY"] for comp in row_components) - min(comp["centerY"] for comp in row_components))
+        row_center_y_ratio = float(row_box["centerY"] - stage_top) / float(stage_height)
+        for index in range(1, len(row_components)):
+            gaps.append(int(row_components[index]["left"] - row_components[index - 1]["right"]))
+
+    checks = [
+        {
+            "name": "icon_count",
+            "ok": len(row_components) >= int(args.min_icons),
+            "observed": len(row_components),
+            "min": int(args.min_icons),
+        },
+        {
+            "name": "right_anchor",
+            "ok": right_margin is not None and right_margin >= int(args.min_right_margin) and right_margin <= int(args.max_right_margin),
+            "observed": right_margin,
+            "min": int(args.min_right_margin),
+            "max": int(args.max_right_margin),
+        },
+        {
+            "name": "top_anchor",
+            "ok": top_margin is not None and top_margin >= int(args.min_top_margin) and top_margin <= int(args.max_top_margin),
+            "observed": top_margin,
+            "min": int(args.min_top_margin),
+            "max": int(args.max_top_margin),
+        },
+        {
+            "name": "row_spread",
+            "ok": row_spread is not None and row_spread <= int(args.max_row_spread),
+            "observed": row_spread,
+            "max": int(args.max_row_spread),
+        },
+        {
+            "name": "row_center_y_ratio",
+            "ok": row_center_y_ratio is not None and row_center_y_ratio <= float(args.max_center_y_ratio),
+            "observed": float(round(row_center_y_ratio, 6)) if row_center_y_ratio is not None else None,
+            "max": float(args.max_center_y_ratio),
+        },
+    ]
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "imageSize": {
+            "width": int(width),
+            "height": int(height),
+        },
+        "stageRect": {
+            "left": stage_left,
+            "top": stage_top,
+            "right": stage_right,
+            "bottom": stage_bottom,
+            "width": stage_width,
+            "height": stage_height,
+        },
+        "rawStageRect": raw_stage_rect,
+        "expandedForHudSlots": bool(expanded_for_hud_slots),
+        "searchRegion": {
+            "left": int(search_left),
+            "top": int(search_top),
+            "right": int(search_right),
+            "bottom": int(search_bottom),
+            "width": int(search_right - search_left),
+            "height": int(search_bottom - search_top),
+        },
+        "rowBox": row_box,
+        "rowComponents": row_components,
+        "allComponents": sorted(components, key=lambda comp: (comp["left"], comp["top"])),
+        "metrics": {
+            "rightMargin": right_margin,
+            "topMargin": top_margin,
+            "rowSpread": row_spread,
+            "rowCenterYRatio": float(round(row_center_y_ratio, 6)) if row_center_y_ratio is not None else None,
+            "gaps": gaps,
+        },
+        "checks": checks,
+        "thresholds": {
+            "topRatio": float(args.top_ratio),
+            "rightRatio": float(args.right_ratio),
+            "minSaturation": int(args.min_saturation),
+            "strongSaturation": int(args.strong_saturation),
+            "minBrightness": int(args.min_brightness),
+            "minGradient": int(args.min_gradient),
+        },
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((stage_left, stage_top, stage_right, stage_bottom), outline=(255, 255, 0), width=3)
+        draw.rectangle((search_left, search_top, search_right, search_bottom), outline=(0, 255, 255), width=3)
+        if row_box:
+            draw.rectangle((row_box["left"], row_box["top"], row_box["right"], row_box["bottom"]), outline=(0, 255, 0), width=4)
+        for comp in components:
+            outline = (255, 128, 0) if comp in row_components else (255, 0, 0)
+            draw.rectangle((comp["left"], comp["top"], comp["right"], comp["bottom"]), outline=outline, width=2)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
 def _slot_edge_metrics(region):
     if region.size == 0:
         return {
@@ -2786,11 +3101,73 @@ def _slot_edge_metrics(region):
     min_channel = rgb.min(axis=2)
     saturation = max_channel - min_channel
     edge_mask = (gradient > 35) & (saturation > 20) & (max_channel > 45)
+    if edge_mask.size == 0:
+        return {
+            "edgeDensity": 0.0,
+            "darkDensity": 0.0,
+            "saturationDensity": 0.0,
+            "pixels": 0,
+        }
     return {
         "edgeDensity": float(edge_mask.sum()) / float(edge_mask.size),
         "darkDensity": float((max_channel < 80).sum()) / float(edge_mask.size),
         "saturationDensity": float((saturation > 45).sum()) / float(edge_mask.size),
         "pixels": int(edge_mask.size),
+    }
+
+
+def _slot_change_metrics(before_image, after_image, box, threshold):
+    if before_image is None:
+        return {
+            "available": False,
+            "reason": "before_image_missing",
+            "changeDensity": 0.0,
+            "meanAbsDiff": 0.0,
+            "maxAbsDiff": 0,
+        }
+    left, top, right, bottom = box
+    same_size = before_image.size == after_image.size
+    common_width = min(int(before_image.size[0]), int(after_image.size[0]))
+    common_height = min(int(before_image.size[1]), int(after_image.size[1]))
+    if common_width <= 0 or common_height <= 0:
+        return {
+            "available": False,
+            "reason": "empty_common_image",
+            "beforeSize": {"width": int(before_image.size[0]), "height": int(before_image.size[1])},
+            "afterSize": {"width": int(after_image.size[0]), "height": int(after_image.size[1])},
+            "commonSize": {"width": int(common_width), "height": int(common_height)},
+            "changeDensity": 0.0,
+            "meanAbsDiff": 0.0,
+            "maxAbsDiff": 0,
+        }
+    if not same_size:
+        left, top, right, bottom = _clamp_box(left, top, right, bottom, common_width, common_height)
+    if right <= left or bottom <= top:
+        return {
+            "available": False,
+            "reason": "box_outside_common_image" if not same_size else "empty_box",
+            "beforeSize": {"width": int(before_image.size[0]), "height": int(before_image.size[1])},
+            "afterSize": {"width": int(after_image.size[0]), "height": int(after_image.size[1])},
+            "commonSize": {"width": int(common_width), "height": int(common_height)},
+            "changeDensity": 0.0,
+            "meanAbsDiff": 0.0,
+            "maxAbsDiff": 0,
+        }
+    before = np.asarray(before_image.crop((left, top, right, bottom)).convert("RGB"), dtype=np.int16)
+    after = np.asarray(after_image.crop((left, top, right, bottom)).convert("RGB"), dtype=np.int16)
+    diff = np.abs(after - before)
+    max_diff = np.max(diff, axis=2)
+    changed = max_diff >= int(threshold)
+    return {
+        "available": True,
+        "reason": None if same_size else "cropped_to_common_image",
+        "sameSize": bool(same_size),
+        "beforeSize": {"width": int(before_image.size[0]), "height": int(before_image.size[1])},
+        "afterSize": {"width": int(after_image.size[0]), "height": int(after_image.size[1])},
+        "commonSize": {"width": int(common_width), "height": int(common_height)},
+        "changeDensity": float(changed.sum()) / float(changed.size) if changed.size else 0.0,
+        "meanAbsDiff": float(np.mean(diff)) if diff.size else 0.0,
+        "maxAbsDiff": int(np.max(diff)) if diff.size else 0,
     }
 
 
@@ -2957,6 +3334,266 @@ def command_analyze_hud_row(args):
         sys.exit(2)
 
 
+def command_analyze_top_right_slot_row(args):
+    image = Image.open(args.input).convert("RGB")
+    width, height = image.size
+    before_image = Image.open(args.before).convert("RGB") if getattr(args, "before", "") else None
+    stage_rect = _stage_rect_from_args(args, width, height)
+    stage_left = int(stage_rect["left"])
+    stage_top = int(stage_rect["top"])
+    stage_right = int(stage_rect["right"])
+    stage_bottom = int(stage_rect["bottom"])
+    raw_stage_rect = {
+        "left": int(stage_left),
+        "top": int(stage_top),
+        "right": int(stage_right),
+        "bottom": int(stage_bottom),
+        "width": int(max(0, stage_right - stage_left)),
+        "height": int(max(0, stage_bottom - stage_top)),
+    }
+    expanded_for_hud_slots = False
+    if stage_right < int(width * 0.75):
+        right_region = np.asarray(image.crop((stage_right, stage_top, width, stage_bottom)).convert("RGB"), dtype=np.int16)
+        if right_region.size:
+            max_channel = right_region.max(axis=2)
+            min_channel = right_region.min(axis=2)
+            dark_pct = float((max_channel <= 40).mean())
+            white_pct = float((min_channel >= 245).mean())
+            if dark_pct < 0.96 and white_pct < 0.96:
+                stage_right = width
+                expanded_for_hud_slots = True
+    stage_width = max(1, int(stage_right - stage_left))
+    stage_height = max(1, int(stage_bottom - stage_top))
+    names = [
+        entry.strip()
+        for entry in str(args.slot_names).split(",")
+        if entry.strip()
+    ] or ["inventory", "wardrobe", "map"]
+    critical_names = {
+        entry.strip()
+        for entry in str(args.critical_slots).split(",")
+        if entry.strip()
+    }
+    if not critical_names:
+        critical_names = set(names)
+    change_names = {
+        entry.strip()
+        for entry in str(getattr(args, "change_slots", "") or "").split(",")
+        if entry.strip()
+    }
+    rightmost_center_x = stage_right - float(args.rightmost_center_inset)
+    center_y = stage_top + float(args.center_y_offset)
+    slot_spacing = float(args.slot_spacing)
+    slot_half_size = int(round(float(args.slot_size) / 2.0))
+    slots = []
+    for index, name in enumerate(names):
+        offset = len(names) - 1 - index
+        center_x = rightmost_center_x - slot_spacing * offset
+        left, top, right, bottom = _clamp_box(
+            int(round(center_x - slot_half_size)),
+            int(round(center_y - slot_half_size)),
+            int(round(center_x + slot_half_size)),
+            int(round(center_y + slot_half_size)),
+            width,
+            height,
+        )
+        metrics = _slot_edge_metrics(image.crop((left, top, right, bottom)))
+        change_metrics = _slot_change_metrics(
+            before_image,
+            image,
+            (left, top, right, bottom),
+            int(getattr(args, "change_threshold", 25)),
+        ) if before_image is not None or change_names else None
+        present = (
+            metrics["pixels"] > 0 and
+            metrics["edgeDensity"] >= float(args.min_edge_density)
+        )
+        slots.append({
+            "index": int(index),
+            "name": name,
+            "centerX": float(round(center_x, 3)),
+            "centerY": float(round(center_y, 3)),
+            "box": {
+                "left": int(left),
+                "top": int(top),
+                "right": int(right),
+                "bottom": int(bottom),
+                "width": int(right - left),
+                "height": int(bottom - top),
+            },
+            "present": bool(present),
+            "metrics": {
+                "edgeDensity": float(round(metrics["edgeDensity"], 6)),
+                "darkDensity": float(round(metrics["darkDensity"], 6)),
+                "saturationDensity": float(round(metrics["saturationDensity"], 6)),
+                "pixels": int(metrics["pixels"]),
+                **({
+                    "changeAvailable": bool(change_metrics.get("available")),
+                    "changeReason": change_metrics.get("reason"),
+                    "changeDensity": float(round(change_metrics.get("changeDensity", 0.0), 6)),
+                    "meanAbsDiff": float(round(change_metrics.get("meanAbsDiff", 0.0), 6)),
+                    "maxAbsDiff": int(change_metrics.get("maxAbsDiff", 0)),
+                } if change_metrics else {}),
+            },
+        })
+    present_slots = [slot for slot in slots if slot["present"]]
+    missing_critical = [
+        slot["name"]
+        for slot in slots
+        if slot["name"] in critical_names and not slot["present"]
+    ]
+    changed_slots = [
+        slot for slot in slots
+        if slot["name"] in change_names and
+        slot["metrics"].get("changeAvailable") and
+        slot["metrics"].get("changeDensity", 0.0) >= float(args.min_slot_change_density)
+    ]
+    missing_changed = [
+        slot["name"]
+        for slot in slots
+        if slot["name"] in change_names and slot not in changed_slots
+    ]
+    row_left = min(slot["box"]["left"] for slot in slots)
+    row_top = min(slot["box"]["top"] for slot in slots)
+    row_right = max(slot["box"]["right"] for slot in slots)
+    row_bottom = max(slot["box"]["bottom"] for slot in slots)
+    right_margin = float(stage_right - rightmost_center_x)
+    top_margin = float(row_top - stage_top)
+    center_y_ratio = float(center_y - stage_top) / float(stage_height)
+    checks = [
+        {
+            "name": "present_slot_count",
+            "ok": len(present_slots) >= int(args.min_present_slots),
+            "observed": len(present_slots),
+            "min": int(args.min_present_slots),
+        },
+        {
+            "name": "critical_slots_present",
+            "ok": not missing_critical,
+            "missing": missing_critical,
+            "criticalSlots": sorted(critical_names),
+        },
+        {
+            "name": "right_anchor",
+            "ok": right_margin >= float(args.min_right_margin) and right_margin <= float(args.max_right_margin),
+            "observed": float(round(right_margin, 3)),
+            "min": float(args.min_right_margin),
+            "max": float(args.max_right_margin),
+        },
+        {
+            "name": "top_anchor",
+            "ok": top_margin >= float(args.min_top_margin) and top_margin <= float(args.max_top_margin),
+            "observed": float(round(top_margin, 3)),
+            "min": float(args.min_top_margin),
+            "max": float(args.max_top_margin),
+        },
+        {
+            "name": "center_y_ratio",
+            "ok": center_y_ratio <= float(args.max_center_y_ratio),
+            "observed": float(round(center_y_ratio, 6)),
+            "max": float(args.max_center_y_ratio),
+        },
+    ]
+    if change_names or int(args.min_changed_slots) > 0:
+        changed_names = {slot["name"] for slot in changed_slots}
+        comparable_names = {
+            slot["name"]
+            for slot in slots
+            if slot["name"] in change_names and slot["metrics"].get("changeAvailable")
+        }
+        before_same_size = bool(before_image is not None and before_image.size == image.size)
+        before_comparable = bool(before_image is not None and change_names.issubset(comparable_names))
+        checks.extend([
+            {
+                "name": "before_comparable",
+                "ok": before_comparable,
+                "before": args.before or None,
+                "sameSize": before_same_size,
+                "beforeSize": {
+                    "width": int(before_image.size[0]),
+                    "height": int(before_image.size[1]),
+                } if before_image is not None else None,
+                "afterSize": {
+                    "width": int(width),
+                    "height": int(height),
+                },
+                "comparableSlots": sorted(comparable_names),
+                "changeSlots": sorted(change_names),
+            },
+            {
+                "name": "changed_slot_count",
+                "ok": len(changed_slots) >= int(args.min_changed_slots),
+                "observed": len(changed_slots),
+                "min": int(args.min_changed_slots),
+                "minSlotChangeDensity": float(args.min_slot_change_density),
+                "changeSlots": sorted(change_names),
+            },
+            {
+                "name": "changed_critical_slots",
+                "ok": not missing_changed,
+                "missing": missing_changed,
+                "changedSlots": sorted(changed_names),
+                "changeSlots": sorted(change_names),
+                "minSlotChangeDensity": float(args.min_slot_change_density),
+            },
+        ])
+    payload = {
+        "ok": all(check["ok"] for check in checks),
+        "generatedAt": now_iso(),
+        "input": args.input,
+        "before": args.before or None,
+        "imageSize": {
+            "width": int(width),
+            "height": int(height),
+        },
+        "stageRect": {
+            "left": stage_left,
+            "top": stage_top,
+            "right": stage_right,
+            "bottom": stage_bottom,
+            "width": stage_width,
+            "height": stage_height,
+        },
+        "rawStageRect": raw_stage_rect,
+        "expandedForHudSlots": bool(expanded_for_hud_slots),
+        "layout": {
+            "rowBox": {
+                "left": int(row_left),
+                "top": int(row_top),
+                "right": int(row_right),
+                "bottom": int(row_bottom),
+                "width": int(row_right - row_left),
+                "height": int(row_bottom - row_top),
+            },
+            "rightmostCenterX": float(round(rightmost_center_x, 3)),
+            "centerY": float(round(center_y, 3)),
+            "rightmostCenterInset": float(args.rightmost_center_inset),
+            "centerYOffset": float(args.center_y_offset),
+            "slotSpacing": float(slot_spacing),
+            "slotHalfSize": int(slot_half_size),
+        },
+        "slots": slots,
+        "checks": checks,
+    }
+    if getattr(args, "annotated_output", ""):
+        annotated = image.convert("RGB")
+        draw = ImageDraw.Draw(annotated)
+        draw.rectangle((stage_left, stage_top, stage_right, stage_bottom), outline=(255, 255, 0), width=3)
+        draw.rectangle((row_left, row_top, row_right, row_bottom), outline=(0, 255, 255), width=3)
+        for slot in slots:
+            color = (0, 255, 0) if slot["present"] else (255, 0, 0)
+            box = slot["box"]
+            draw.rectangle((box["left"], box["top"], box["right"], box["bottom"]), outline=color, width=3)
+        annotated_path = Path(args.annotated_output)
+        annotated_path.parent.mkdir(parents=True, exist_ok=True)
+        annotated.save(annotated_path)
+        payload["annotatedOutput"] = str(annotated_path)
+    write_json_if_needed(payload, args.output)
+    to_json(payload)
+    if not payload["ok"] and not getattr(args, "no_fail_exit", False):
+        sys.exit(2)
+
+
 def command_crop_image(args):
     image = Image.open(args.input)
     width, height = image.size
@@ -3041,43 +3678,61 @@ def command_click_window(args):
     parent_hwnd = int(row["handle"])
     child_class_contains = str(getattr(args, "child_class_contains", "") or "").strip().lower()
     if getattr(args, "largest_child", False) or child_class_contains:
-        target_row = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False)) or target_row
+        layout_sync = None
+        for _attempt in range(5):
+            layout_sync = sync_runtime_child_windows(parent_hwnd)
+            target_row = select_child_window(parent_hwnd, child_class_contains, getattr(args, "largest_child", False))
+            if target_row:
+                break
+            pulse_runtime_window_layout(parent_hwnd)
+            time.sleep(0.18)
+        if not target_row:
+            wanted = child_class_contains or "largest-child"
+            raise RuntimeError(f"Requested click target child window was not found: {wanted}")
     point = win32gui.ClientToScreen(parent_hwnd, (requested_x, requested_y))
     hwnd = int(target_row["handle"])
     target_client_point = win32gui.ScreenToClient(hwnd, point)
     hold_ms = max(0, int(getattr(args, "hold_ms", 0) or 0))
     hover_ms = max(0, int(getattr(args, "hover_ms", 0) or 0))
     delivery = "post-message" if getattr(args, "post_message", False) else "cursor"
-    if getattr(args, "post_message", False):
-        post_synthetic_mouse_focus(parent_hwnd, hwnd)
-        lparam = (int(target_client_point[1]) & 0xFFFF) << 16 | (int(target_client_point[0]) & 0xFFFF)
-        win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, 0, lparam)
-        time.sleep(max(0.03, hover_ms / 1000.0))
-        win32gui.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, lparam)
-        if hold_ms > 0:
-            move_interval_ms = max(0, int(getattr(args, "move_interval_ms", 0) or 0))
-            if move_interval_ms > 0:
-                deadline = time.monotonic() + (hold_ms / 1000.0)
-                interval_sec = max(0.01, move_interval_ms / 1000.0)
-                while True:
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        break
-                    win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, win32con.MK_LBUTTON, lparam)
-                    time.sleep(min(interval_sec, remaining))
+    restore_cursor = bool(getattr(args, "restore_cursor", False)) and not getattr(args, "post_message", False)
+    original_cursor = win32api.GetCursorPos() if restore_cursor else None
+    restored_cursor = None
+    try:
+        if getattr(args, "post_message", False):
+            post_synthetic_mouse_focus(parent_hwnd, hwnd)
+            lparam = (int(target_client_point[1]) & 0xFFFF) << 16 | (int(target_client_point[0]) & 0xFFFF)
+            win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, 0, lparam)
+            time.sleep(max(0.03, hover_ms / 1000.0))
+            win32gui.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, lparam)
+            if hold_ms > 0:
+                move_interval_ms = max(0, int(getattr(args, "move_interval_ms", 0) or 0))
+                if move_interval_ms > 0:
+                    deadline = time.monotonic() + (hold_ms / 1000.0)
+                    interval_sec = max(0.01, move_interval_ms / 1000.0)
+                    while True:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            break
+                        win32gui.PostMessage(hwnd, win32con.WM_MOUSEMOVE, win32con.MK_LBUTTON, lparam)
+                        time.sleep(min(interval_sec, remaining))
+                else:
+                    time.sleep(hold_ms / 1000.0)
             else:
-                time.sleep(hold_ms / 1000.0)
+                time.sleep(0.08)
+            win32gui.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, lparam)
+        elif hold_ms > 0:
+            win32api.SetCursorPos(point)
+            time.sleep(max(0.08, hover_ms / 1000.0))
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+            time.sleep(hold_ms / 1000.0)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
         else:
-            time.sleep(0.08)
-        win32gui.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, lparam)
-    elif hold_ms > 0:
-        win32api.SetCursorPos(point)
-        time.sleep(max(0.08, hover_ms / 1000.0))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-        time.sleep(hold_ms / 1000.0)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-    else:
-        mouse.click(coords=point)
+            mouse.click(coords=point)
+    finally:
+        if restore_cursor and original_cursor:
+            win32api.SetCursorPos(original_cursor)
+            restored_cursor = original_cursor
     payload = {
         "ok": True,
         "generatedAt": now_iso(),
@@ -3095,6 +3750,8 @@ def command_click_window(args):
             "hoverMs": hover_ms,
             "holdMs": hold_ms,
             "moveIntervalMs": max(0, int(getattr(args, "move_interval_ms", 0) or 0)),
+            "restoreCursor": restore_cursor,
+            "restoredCursor": restored_cursor,
         },
     }
     write_json_if_needed(payload, args.output)
@@ -3641,6 +4298,7 @@ def main():
     playable_crop_parser.add_argument("--min-height", type=int, default=18)
     playable_crop_parser.add_argument("--min-bottom-gap", type=int, default=24)
     playable_crop_parser.add_argument("--touch-tolerance", type=int, default=2)
+    playable_crop_parser.add_argument("--max-crop-risk-aspect", type=float, default=1.75)
     playable_crop_parser.add_argument("--no-fail-exit", action="store_true")
     playable_crop_parser.set_defaults(func=command_analyze_playable_crop_guard)
 
@@ -3668,7 +4326,66 @@ def main():
     hud_diff_parser.add_argument("--max-icon-gap", type=int, default=56)
     hud_diff_parser.add_argument("--max-unexpected-components", type=int, default=0)
     hud_diff_parser.add_argument("--annotated-output")
+    hud_diff_parser.add_argument("--no-fail-exit", action="store_true")
     hud_diff_parser.set_defaults(func=command_analyze_hud_diff)
+
+    top_right_icon_row_parser = subparsers.add_parser("analyze-top-right-icon-row")
+    top_right_icon_row_parser.add_argument("--input", required=True)
+    top_right_icon_row_parser.add_argument("--stage-json")
+    top_right_icon_row_parser.add_argument("--output")
+    top_right_icon_row_parser.add_argument("--annotated-output")
+    top_right_icon_row_parser.add_argument("--top-ratio", type=float, default=0.28)
+    top_right_icon_row_parser.add_argument("--right-ratio", type=float, default=0.42)
+    top_right_icon_row_parser.add_argument("--min-search-height", type=int, default=90)
+    top_right_icon_row_parser.add_argument("--max-search-height", type=int, default=240)
+    top_right_icon_row_parser.add_argument("--min-saturation", type=int, default=38)
+    top_right_icon_row_parser.add_argument("--strong-saturation", type=int, default=72)
+    top_right_icon_row_parser.add_argument("--min-brightness", type=int, default=70)
+    top_right_icon_row_parser.add_argument("--min-gradient", type=int, default=28)
+    top_right_icon_row_parser.add_argument("--min-col-density", type=float, default=0.012)
+    top_right_icon_row_parser.add_argument("--max-merge-gap", type=int, default=8)
+    top_right_icon_row_parser.add_argument("--row-cluster-tolerance", type=float, default=38.0)
+    top_right_icon_row_parser.add_argument("--min-icon-width", type=int, default=18)
+    top_right_icon_row_parser.add_argument("--min-icon-height", type=int, default=18)
+    top_right_icon_row_parser.add_argument("--max-icon-width", type=int, default=140)
+    top_right_icon_row_parser.add_argument("--max-icon-height", type=int, default=130)
+    top_right_icon_row_parser.add_argument("--min-icon-pixels", type=int, default=90)
+    top_right_icon_row_parser.add_argument("--min-icon-density", type=float, default=0.018)
+    top_right_icon_row_parser.add_argument("--min-icons", type=int, default=3)
+    top_right_icon_row_parser.add_argument("--min-right-margin", type=int, default=0)
+    top_right_icon_row_parser.add_argument("--max-right-margin", type=int, default=130)
+    top_right_icon_row_parser.add_argument("--min-top-margin", type=int, default=-4)
+    top_right_icon_row_parser.add_argument("--max-top-margin", type=int, default=92)
+    top_right_icon_row_parser.add_argument("--max-row-spread", type=int, default=42)
+    top_right_icon_row_parser.add_argument("--max-center-y-ratio", type=float, default=0.18)
+    top_right_icon_row_parser.add_argument("--no-fail-exit", action="store_true")
+    top_right_icon_row_parser.set_defaults(func=command_analyze_top_right_icon_row)
+
+    top_right_slot_row_parser = subparsers.add_parser("analyze-top-right-slot-row")
+    top_right_slot_row_parser.add_argument("--input", required=True)
+    top_right_slot_row_parser.add_argument("--before")
+    top_right_slot_row_parser.add_argument("--stage-json")
+    top_right_slot_row_parser.add_argument("--output")
+    top_right_slot_row_parser.add_argument("--annotated-output")
+    top_right_slot_row_parser.add_argument("--slot-names", default="inventory,wardrobe,map")
+    top_right_slot_row_parser.add_argument("--critical-slots", default="")
+    top_right_slot_row_parser.add_argument("--change-slots", default="")
+    top_right_slot_row_parser.add_argument("--rightmost-center-inset", type=float, default=88.0)
+    top_right_slot_row_parser.add_argument("--center-y-offset", type=float, default=20.0)
+    top_right_slot_row_parser.add_argument("--slot-spacing", type=float, default=86.0)
+    top_right_slot_row_parser.add_argument("--slot-size", type=float, default=76.0)
+    top_right_slot_row_parser.add_argument("--min-edge-density", type=float, default=0.018)
+    top_right_slot_row_parser.add_argument("--min-present-slots", type=int, default=3)
+    top_right_slot_row_parser.add_argument("--min-changed-slots", type=int, default=0)
+    top_right_slot_row_parser.add_argument("--min-slot-change-density", type=float, default=0.0)
+    top_right_slot_row_parser.add_argument("--change-threshold", type=int, default=25)
+    top_right_slot_row_parser.add_argument("--min-right-margin", type=float, default=30.0)
+    top_right_slot_row_parser.add_argument("--max-right-margin", type=float, default=130.0)
+    top_right_slot_row_parser.add_argument("--min-top-margin", type=float, default=-48.0)
+    top_right_slot_row_parser.add_argument("--max-top-margin", type=float, default=58.0)
+    top_right_slot_row_parser.add_argument("--max-center-y-ratio", type=float, default=0.12)
+    top_right_slot_row_parser.add_argument("--no-fail-exit", action="store_true")
+    top_right_slot_row_parser.set_defaults(func=command_analyze_top_right_slot_row)
 
     hud_row_parser = subparsers.add_parser("analyze-hud-row")
     hud_row_parser.add_argument("--input", required=True)
@@ -3719,6 +4436,7 @@ def main():
     click_parser.add_argument("--hover-ms", type=int, default=0)
     click_parser.add_argument("--hold-ms", type=int, default=0)
     click_parser.add_argument("--move-interval-ms", type=int, default=0)
+    click_parser.add_argument("--restore-cursor", action="store_true")
     click_parser.add_argument("--target-monitor")
     click_parser.add_argument("--window-width", type=int)
     click_parser.add_argument("--window-height", type=int)

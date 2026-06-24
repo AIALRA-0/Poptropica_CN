@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 14:44 EDT
+更新时间：2026-06-23 20:34 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 20:34 EDT：Time Tangled 公共 UI blocker wave 重新通过，但仍不声明整岛封版。修复 AS2 `base.php`/`tools/lib/pack.js` 的 viewport 尺寸计算：resize/F11 后优先使用真实 `window.innerWidth/innerHeight`，不再被上一轮写入的 `body/clientWidth` 污染，避免恢复窗口后画面放大裁切、角色/HUD 消失。修复 `malidocs.swf` 任务文件关闭链：关闭桥接同时识别 `popupClose` 和 `popupBack.btnClose`，并允许缩放后 `_root._ymouse` 为负的右上关闭 fallback；弹窗打开时 HUD 隐藏为正确状态，QA 现改为用关闭后的截图做 HUD anchor。F11 QA 也新增 `f11-restore` 截图强判定，恢复后如果蓝边、裁切、角色消失会直接失败。已重建 `runtime-data/patched-zips/as2-runtime.zip`。最新 G32QC/静音证据：完整基线 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782261033187.json` 通过，`loadingCenterPassed=1`、`mapClicksPassed=1`、`hudAnchorPassed=1`、`pauseArtifactPassed=1`、`failedKeys=[]`；F11/恢复 `as2-interaction-smoke-1782260453597.json` 通过，恢复截图 `run-1782260453597/01-time-tangled-f11-restore.png` 角色和 HUD 均可见；任务文件弹窗 `as2-interaction-smoke-1782261165962.json` 通过，关闭后无黑残留/误开第二层；三段 Time Lab 中文对话 `1782260606142`、`1782260674967`、`1782260743562` 通过；Mali/Future2/Viking 三场景 `1782260824696`、`1782260887663`、`1782260952888` 通过。当前剩余：自然时间装置完整路线、自然 NPC 热区 no-repeat、外链白屏、全音频真实来源与后续岛屿逐岛封版仍未完成。
 
 2026-06-23 14:44 EDT：重开 AS3 HUD 宽屏点击验收。新增 `npm run verify:as3-runtime-integrity`，直接验证 pack/runtime `Shell.swf`、`as3-direct.php` hash 一致，并反编译运行包里的 `Hud.as` 检查旧公式、静态 MENU 中文覆盖、右锚 helper 和 hit area。门禁先发现并修复 pack/runtime Shell 不一致；最新 `runtime-data/qa/as3/as3-runtime-integrity.json` 通过，运行包确认包含 `alpha=0.01`、`beginFill(16777215,0.01)`、`param1.hit = _loc3_`，且没有 `text="菜单"` 这类静态中文覆盖。随后多轮 G32QC/no-foreground/静音 1600x900 Poptropicon HUD 点击仍失败：最新 `runtime-data/qa/as3/hud-smoke/as3-hud-smoke-1782240105920.json` 中右锚/top anchor 通过，但点击后 `changed_slot_count=0`，菜单未展开。当前判定：AS3 HUD 视觉右锚和运行包同步已收口，但宽屏真实点击尚未封版；需要一次 G32QC 侧屏真实鼠标点击或 AS3 事件级证据后才能关闭该 blocker。
 

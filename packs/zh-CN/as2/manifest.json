@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T15:14:17.087Z",
+  "generatedAt": "2026-06-24T00:04:34.833Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -633,6 +633,14 @@
       "notes": "QA only: triggers native Time Tangled Pendulums Lab manualSay bubbles via flashpointQaAs2Dialog for runtime Chinese dialogue proof."
     },
     {
+      "assetId": "time-tangled:present-auto-entry-dialog",
+      "assetPath": "content/www.poptropica.com/scenes/islandTime/scenePresent.swf",
+      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\scenePresent.swf",
+      "changed": true,
+      "replaceTarget": "\\DefineSprite_764\\frame_1\\DoAction",
+      "notes": "Restores the Time Tangled Present auto-entry chain by calling the scene sayFunction before falling back to onPress."
+    },
+    {
       "assetId": "as2-shared:gameplay-hud-popup-anchor",
       "assetPath": "content/www.poptropica.com/gameplay.swf",
       "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
@@ -659,14 +667,6 @@
         "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
       "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, replaces the static vector CLOSE label asset, and throttles active/native AS2 dialogue re-entry."
-    },
-    {
-      "assetId": "time-tangled:present-auto-entry-dialog",
-      "assetPath": "content/www.poptropica.com/scenes/islandTime/scenePresent.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\scenes\\islandTime\\scenePresent.swf",
-      "changed": true,
-      "replaceTarget": "\\DefineSprite_764\\frame_1\\DoAction",
-      "notes": "Restores the Time Tangled Present auto-entry chain by calling the scene sayFunction before falling back to onPress."
     }
   ],
   "pendingSwfAssets": [],

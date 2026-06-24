@@ -442,21 +442,23 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
 }
 
 function stableBrowserViewportSize() {
-    const widthCandidates = [
-        window.innerWidth,
-        document.documentElement ? document.documentElement.clientWidth : 0,
-        document.body ? document.body.clientWidth : 0,
-        window.outerWidth ? window.outerWidth - 12 : 0
-    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
-    const heightCandidates = [
-        window.innerHeight,
-        document.documentElement ? document.documentElement.clientHeight : 0,
-        document.body ? document.body.clientHeight : 0,
-        window.outerHeight ? window.outerHeight - 140 : 0
-    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
+    const innerWidth = Number(window.innerWidth || 0),
+          innerHeight = Number(window.innerHeight || 0),
+          widthCandidates = [
+              innerWidth,
+              window.outerWidth ? window.outerWidth - 12 : 0,
+              document.documentElement ? document.documentElement.clientWidth : 0,
+              document.body ? document.body.clientWidth : 0
+          ].map(Number).filter(function(value) { return isFinite(value) && value > 0; }),
+          heightCandidates = [
+              innerHeight,
+              window.outerHeight ? window.outerHeight - 140 : 0,
+              document.documentElement ? document.documentElement.clientHeight : 0,
+              document.body ? document.body.clientHeight : 0
+          ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
     return {
-        width: Math.max(1, Math.round(Math.max.apply(Math, widthCandidates.length ? widthCandidates : [ window.innerWidth || 1 ]))),
-        height: Math.max(1, Math.round(Math.max.apply(Math, heightCandidates.length ? heightCandidates : [ window.innerHeight || 1 ])))
+        width: Math.max(1, Math.round(innerWidth > 0 ? innerWidth : Math.max.apply(Math, widthCandidates.length ? widthCandidates : [ 1 ]))),
+        height: Math.max(1, Math.round(innerHeight > 0 ? innerHeight : Math.max.apply(Math, heightCandidates.length ? heightCandidates : [ 1 ])))
     };
 }
 

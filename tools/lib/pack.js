@@ -3023,15 +3023,21 @@ function zhTryClosePopupFromMouse(source)
    var _loc2_ = 18;
    var _loc3_;
    var _loc4_;
-   if(_root == undefined || popupClose == undefined || popupClose._visible != true)
+   var _loc5_;
+   if(_root == undefined)
    {
       return false;
    }
    _loc3_ = _root._xmouse;
    _loc4_ = _root._ymouse;
-   if(popupClose.getBounds != undefined)
+   _loc5_ = popupClose;
+   if((_loc5_ == undefined || _loc5_._visible != true) && popupBack != undefined && popupBack.btnClose != undefined)
    {
-      _loc1_ = popupClose.getBounds(_root);
+      _loc5_ = popupBack.btnClose;
+   }
+   if(_loc5_ != undefined && _loc5_._visible != false && _loc5_.getBounds != undefined)
+   {
+      _loc1_ = _loc5_.getBounds(_root);
       if(_loc1_ != undefined && _loc3_ >= Number(_loc1_.xMin) - _loc2_ && _loc3_ <= Number(_loc1_.xMax) + _loc2_ && _loc4_ >= Number(_loc1_.yMin) - _loc2_ && _loc4_ <= Number(_loc1_.yMax) + _loc2_)
       {
          loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=" + source,0);
@@ -3039,7 +3045,7 @@ function zhTryClosePopupFromMouse(source)
          return true;
       }
    }
-   if(_loc3_ >= 720 && _loc3_ <= 930 && _loc4_ >= 18 && _loc4_ <= 110)
+   if((_root.__zhPopupHudHidden == true || zhPopupLooksOpen()) && _loc3_ >= 520 && _loc3_ <= 950 && _loc4_ >= -130 && _loc4_ <= 130)
    {
       loadVariablesNum("/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=" + source + "Fallback",0);
       _root.closePopup();
@@ -3052,12 +3058,23 @@ function zhRefreshPopupCloseHit()
    var _loc1_;
    var _loc2_;
    var _loc3_ = 10;
-   if(_root == undefined || popupClose == undefined || popupClose._visible != true || popupClose.getBounds == undefined)
+   var _loc4_;
+   if(_root == undefined)
    {
       zhHidePopupCloseHit();
       return undefined;
    }
-   _loc1_ = popupClose.getBounds(_root);
+   _loc4_ = popupClose;
+   if((_loc4_ == undefined || _loc4_._visible != true) && popupBack != undefined && popupBack.btnClose != undefined)
+   {
+      _loc4_ = popupBack.btnClose;
+   }
+   if(_loc4_ == undefined || _loc4_._visible == false || _loc4_.getBounds == undefined)
+   {
+      zhHidePopupCloseHit();
+      return undefined;
+   }
+   _loc1_ = _loc4_.getBounds(_root);
    if(!(_loc1_.xMax > _loc1_.xMin) || !(_loc1_.yMax > _loc1_.yMin))
    {
       zhHidePopupCloseHit();
@@ -3082,11 +3099,11 @@ function zhRefreshPopupCloseHit()
    _loc2_.lineTo(Number(_loc1_.xMax) + _loc3_,Number(_loc1_.yMax) + _loc3_);
    _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMax) + _loc3_);
    _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMin) - _loc3_);
-   _loc2_.moveTo(760,28);
-   _loc2_.lineTo(900,28);
-   _loc2_.lineTo(900,95);
-   _loc2_.lineTo(760,95);
-   _loc2_.lineTo(760,28);
+   _loc2_.moveTo(520,-130);
+   _loc2_.lineTo(950,-130);
+   _loc2_.lineTo(950,130);
+   _loc2_.lineTo(520,130);
+   _loc2_.lineTo(520,-130);
    _loc2_.endFill();
    _loc2_._alpha = 1;
    _loc2_.onRollOver = _root.useArrow;
@@ -5278,21 +5295,23 @@ function computeScaledViewport(baseWidth, baseHeight, gameState, viewportCrop) {
 }
 
 function stableBrowserViewportSize() {
-    const widthCandidates = [
-        window.innerWidth,
-        document.documentElement ? document.documentElement.clientWidth : 0,
-        document.body ? document.body.clientWidth : 0,
-        window.outerWidth ? window.outerWidth - 12 : 0
-    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
-    const heightCandidates = [
-        window.innerHeight,
-        document.documentElement ? document.documentElement.clientHeight : 0,
-        document.body ? document.body.clientHeight : 0,
-        window.outerHeight ? window.outerHeight - 140 : 0
-    ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
+    const innerWidth = Number(window.innerWidth || 0),
+          innerHeight = Number(window.innerHeight || 0),
+          widthCandidates = [
+              innerWidth,
+              window.outerWidth ? window.outerWidth - 12 : 0,
+              document.documentElement ? document.documentElement.clientWidth : 0,
+              document.body ? document.body.clientWidth : 0
+          ].map(Number).filter(function(value) { return isFinite(value) && value > 0; }),
+          heightCandidates = [
+              innerHeight,
+              window.outerHeight ? window.outerHeight - 140 : 0,
+              document.documentElement ? document.documentElement.clientHeight : 0,
+              document.body ? document.body.clientHeight : 0
+          ].map(Number).filter(function(value) { return isFinite(value) && value > 0; });
     return {
-        width: Math.max(1, Math.round(Math.max.apply(Math, widthCandidates.length ? widthCandidates : [ window.innerWidth || 1 ]))),
-        height: Math.max(1, Math.round(Math.max.apply(Math, heightCandidates.length ? heightCandidates : [ window.innerHeight || 1 ])))
+        width: Math.max(1, Math.round(innerWidth > 0 ? innerWidth : Math.max.apply(Math, widthCandidates.length ? widthCandidates : [ 1 ]))),
+        height: Math.max(1, Math.round(innerHeight > 0 ? innerHeight : Math.max.apply(Math, heightCandidates.length ? heightCandidates : [ 1 ])))
     };
 }
 

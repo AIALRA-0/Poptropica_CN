@@ -926,7 +926,7 @@ function patchFrameOne(content) {
         "         return true;",
         "      }",
         "   }",
-        "   if(_loc4_ >= 720 && _loc4_ <= 930 && _loc5_ >= 18 && _loc5_ <= 110)",
+        "   if(_loc4_ >= 520 && _loc4_ <= 950 && _loc5_ >= -130 && _loc5_ <= 130)",
         "   {",
         "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source + \"Fallback\",0);",
         "      _root.closePopup();",
@@ -939,6 +939,56 @@ function patchFrameOne(content) {
       "popup close global mouse helper"
     );
   }
+  const popupCloseMouseHelper = [
+    "function zhTryClosePopupFromMouse(source)",
+    "{",
+    "   var _loc1_;",
+    "   var _loc2_ = 18;",
+    "   var _loc3_;",
+    "   var _loc4_;",
+    "   var _loc5_;",
+    "   if(_root == undefined)",
+    "   {",
+    "      return false;",
+    "   }",
+    "   _loc3_ = _root._xmouse;",
+    "   _loc4_ = _root._ymouse;",
+    "   _loc5_ = popupClose;",
+    "   if((_loc5_ == undefined || _loc5_._visible != true) && popupBack != undefined && popupBack.btnClose != undefined)",
+    "   {",
+    "      _loc5_ = popupBack.btnClose;",
+    "   }",
+    "   if(_loc5_ != undefined && _loc5_._visible != false && _loc5_.getBounds != undefined)",
+    "   {",
+    "      _loc1_ = _loc5_.getBounds(_root);",
+    "      if(_loc1_ != undefined && _loc3_ >= Number(_loc1_.xMin) - _loc2_ && _loc3_ <= Number(_loc1_.xMax) + _loc2_ && _loc4_ >= Number(_loc1_.yMin) - _loc2_ && _loc4_ <= Number(_loc1_.yMax) + _loc2_)",
+    "      {",
+    "         loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source,0);",
+    "         _root.closePopup();",
+    "         return true;",
+    "      }",
+    "   }",
+    "   if((_root.__zhPopupHudHidden == true || zhPopupLooksOpen()) && _loc3_ >= 520 && _loc3_ <= 950 && _loc4_ >= -130 && _loc4_ <= 130)",
+    "   {",
+    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source + \"Fallback\",0);",
+    "      _root.closePopup();",
+    "      return true;",
+    "   }",
+    "   return false;",
+    "}"
+  ].join("\n");
+  next = next.replace(
+    /function zhTryClosePopupFromMouse\(source\)\r?\n\{[\s\S]*?\r?\n\}\r?\nfunction zhRefreshPopupCloseHit\(\)/u,
+    `${popupCloseMouseHelper}\nfunction zhRefreshPopupCloseHit()`
+  );
+  next = next.replace(
+    /function zhTryClosePopupFromMouse\(source\)\r?\n\{[\s\S]*?\r?\n\}\r?\nfunction zhHidePopupCloseHit\(\)/u,
+    `${popupCloseMouseHelper}\nfunction zhHidePopupCloseHit()`
+  );
+  next = next.replace(
+    /if\((_loc\d+_) >= 720 && \1 <= 930 && (_loc\d+_) >= 18 && \2 <= 110\)/gu,
+    "if($1 >= 520 && $1 <= 950 && $2 >= -130 && $2 <= 130)"
+  );
   if (!next.includes("zhOpenDirectMapBlockedByPopup")) {
     next = next.replace(
       [
@@ -1480,11 +1530,11 @@ function patchFrameOne(content) {
       "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMax) + _loc4_);",
       "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMax) + _loc4_);",
       "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
-      "   _loc3_.moveTo(760,28);",
-      "   _loc3_.lineTo(900,28);",
-      "   _loc3_.lineTo(900,95);",
-      "   _loc3_.lineTo(760,95);",
-      "   _loc3_.lineTo(760,28);",
+      "   _loc3_.moveTo(520,-130);",
+      "   _loc3_.lineTo(950,-130);",
+      "   _loc3_.lineTo(950,130);",
+      "   _loc3_.lineTo(520,130);",
+      "   _loc3_.lineTo(520,-130);",
       "   _loc3_.endFill();",
       "   _loc3_._alpha = 1;",
       "   _loc3_.onRollOver = _root.useArrow;",
@@ -1501,10 +1551,89 @@ function patchFrameOne(content) {
     ].join("\n");
     next = replaceRequired(next, "function zhShowPopupBackdrop(popupName)", helper, "popup close hit helper insertion point");
   }
+  const popupCloseHitHelper = [
+    "function zhRefreshPopupCloseHit()",
+    "{",
+    "   var _loc1_;",
+    "   var _loc2_;",
+    "   var _loc3_ = 10;",
+    "   var _loc4_;",
+    "   if(_root == undefined)",
+    "   {",
+    "      zhHidePopupCloseHit();",
+    "      return undefined;",
+    "   }",
+    "   _loc4_ = popupClose;",
+    "   if((_loc4_ == undefined || _loc4_._visible != true) && popupBack != undefined && popupBack.btnClose != undefined)",
+    "   {",
+    "      _loc4_ = popupBack.btnClose;",
+    "   }",
+    "   if(_loc4_ == undefined || _loc4_._visible == false || _loc4_.getBounds == undefined)",
+    "   {",
+    "      zhHidePopupCloseHit();",
+    "      return undefined;",
+    "   }",
+    "   _loc1_ = _loc4_.getBounds(_root);",
+    "   if(!(_loc1_.xMax > _loc1_.xMin) || !(_loc1_.yMax > _loc1_.yMin))",
+    "   {",
+    "      zhHidePopupCloseHit();",
+    "      return undefined;",
+    "   }",
+    "   _loc2_ = _root.__zhPopupCloseHit;",
+    "   if(_loc2_ == undefined)",
+    "   {",
+    "      _loc2_ = _root.createEmptyMovieClip(\"__zhPopupCloseHit\",1042000);",
+    "      _root.__zhPopupCloseHit = _loc2_;",
+    "   }",
+    "   _loc2_.swapDepths(1042000);",
+    "   _loc2_.clear();",
+    "   _loc2_._x = 0;",
+    "   _loc2_._y = 0;",
+    "   _loc2_._visible = true;",
+    "   _loc2_.enabled = true;",
+    "   _loc2_.useHandCursor = true;",
+    "   _loc2_.beginFill(0,1);",
+    "   _loc2_.moveTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMin) - _loc3_);",
+    "   _loc2_.lineTo(Number(_loc1_.xMax) + _loc3_,Number(_loc1_.yMin) - _loc3_);",
+    "   _loc2_.lineTo(Number(_loc1_.xMax) + _loc3_,Number(_loc1_.yMax) + _loc3_);",
+    "   _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMax) + _loc3_);",
+    "   _loc2_.lineTo(Number(_loc1_.xMin) - _loc3_,Number(_loc1_.yMin) - _loc3_);",
+    "   _loc2_.moveTo(520,-130);",
+    "   _loc2_.lineTo(950,-130);",
+    "   _loc2_.lineTo(950,130);",
+    "   _loc2_.lineTo(520,130);",
+    "   _loc2_.lineTo(520,-130);",
+    "   _loc2_.endFill();",
+    "   _loc2_._alpha = 1;",
+    "   _loc2_.onRollOver = _root.useArrow;",
+    "   _loc2_.onPress = function()",
+    "   {",
+    "   };",
+    "   _loc2_.onRelease = function()",
+    "   {",
+    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=popupCloseHit\",0);",
+    "      _root.closePopup();",
+    "   };",
+    "}"
+  ].join("\n");
+  next = next.replace(
+    /function zhRefreshPopupCloseHit\(\)\r?\n\{[\s\S]*?\r?\n\}\r?\nfunction zhShowPopupBackdrop\(popupName\)/u,
+    `${popupCloseHitHelper}\nfunction zhShowPopupBackdrop(popupName)`
+  );
   next = next.replace(/__zhPopupCloseHit",1030004/gu, "__zhPopupCloseHit\",1042000");
   next = next.replace(/swapDepths\(1030004\)/gu, "swapDepths(1042000)");
   next = next.replace("   _loc3_._alpha = 0;", "   _loc3_._alpha = 1;");
-  if (!next.includes("   _loc3_.moveTo(760,28);")) {
+  next = next.replace(
+    /   (_loc\d+_)\.moveTo\(760,28\);\r?\n   \1\.lineTo\(900,28\);\r?\n   \1\.lineTo\(900,95\);\r?\n   \1\.lineTo\(760,95\);\r?\n   \1\.lineTo\(760,28\);/gu,
+    (_match, clipName) => [
+      `   ${clipName}.moveTo(520,-130);`,
+      `   ${clipName}.lineTo(950,-130);`,
+      `   ${clipName}.lineTo(950,130);`,
+      `   ${clipName}.lineTo(520,130);`,
+      `   ${clipName}.lineTo(520,-130);`
+    ].join("\n")
+  );
+  if (!next.includes(".moveTo(520,-130);")) {
     next = replaceRequired(
       next,
       [
@@ -1517,11 +1646,11 @@ function patchFrameOne(content) {
         "   _loc3_.lineTo(Number(_loc2_.xMax) + _loc4_,Number(_loc2_.yMax) + _loc4_);",
         "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMax) + _loc4_);",
         "   _loc3_.lineTo(Number(_loc2_.xMin) - _loc4_,Number(_loc2_.yMin) - _loc4_);",
-        "   _loc3_.moveTo(760,28);",
-        "   _loc3_.lineTo(900,28);",
-        "   _loc3_.lineTo(900,95);",
-        "   _loc3_.lineTo(760,95);",
-        "   _loc3_.lineTo(760,28);",
+        "   _loc3_.moveTo(520,-130);",
+        "   _loc3_.lineTo(950,-130);",
+        "   _loc3_.lineTo(950,130);",
+        "   _loc3_.lineTo(520,130);",
+        "   _loc3_.lineTo(520,-130);",
         "   _loc3_.endFill();"
       ].join("\n"),
       "popup close fixed hit rect hook"

@@ -11,6 +11,44 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 # Progress
 
+## 2026-06-23 Time Tangled 公共 UI blocker wave 重新通过
+
+- 继续停在用户要求的按岛封版顺序，没有进入 Super Power。
+- 修复 AS2 resize/F11 恢复后画面放大裁切的根因：
+  - `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` 和 `tools/lib/pack.js` 的 `stableBrowserViewportSize()` 现在优先使用真实 `window.innerWidth/innerHeight`。
+  - 旧逻辑会把我们自己写入的 `document.body/clientWidth` 当成最大 viewport，F11 恢复后仍按全屏尺寸缩放，导致角色/HUD 消失。
+- 修复 `malidocs.swf` 任务文件关闭链：
+  - `tools/patch-as2-gameplay-hud-popup.js` 与 `tools/lib/pack.js` 的 popup close bridge 同时识别 `popupClose` 和 `popupBack.btnClose`。
+  - 关闭 fallback 覆盖缩放后 `_root._ymouse=-61` 这类负 y 坐标；最新日志记录 `PopupClosePressed&target=mapMouseListenerFallback`，不再误开第二层任务板。
+- 修复 QA 判定口径：
+  - `tools/qa-as2-interaction-smoke.js` 在 `qa-popup + popup-close` 流程中用关闭后的截图做 HUD anchor，弹窗打开时 HUD 隐藏不再被误判为失败。
+  - F11 流程新增 `f11-restore` 截图并纳入 `f11.ok`，以后恢复后角色消失/蓝边/裁切会直接失败。
+  - `tools/qa-helper.py` 的 HUD slot row 和 playable crop guard 修正了 Time Tangled 深色边/宽平台造成的假阴性。
+- 已重建运行包：
+  - `node tools\patch-as2-gameplay-hud-popup.js`
+  - `npm run rebuild:runtime-zip -- --source as2`
+  - 最新 AS2 runtime zip：`runtime-data/patched-zips/as2-runtime.zip`，`replacementCount=95`。
+- 最新 G32QC/静音/no-foreground 基线通过：
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782261033187.json`
+  - `loadingCenterPassed=1`、`mapClicksPassed=1`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`hudAnchorPassed=1`、`failedKeys=[]`。
+- F11/恢复通过并包含恢复后强判定：
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260453597.json`
+  - 人工复核 `runtime-data/qa/as2/interaction-smoke/run-1782260453597/01-time-tangled-f11-restore.png`：恢复后角色可见，HUD 在内容右上，没有蓝底裁切。
+- 任务文件弹窗关闭通过：
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782261165962.json`
+  - 人工复核 `run-1782261165962/01-time-tangled-initial.png` 与 `run-1782261165962/01-time-tangled-popup-close.png`：文件打开在可视区内，关闭后回到 Mali 场景，无黑残留、无第二层误开。
+- 三段 Time Lab 原生中文对话通过：
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260606142.json`
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260674967.json`
+  - `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260743562.json`
+- 三个真实场景通过：
+  - Mali：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260824696.json`
+  - Future2：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260887663.json`
+  - Viking：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782260952888.json`
+- 当前结论：
+  - Time Tangled 的公共 UI blocker wave 已重新通过：HUD、loading、地图、F11/恢复、任务文件弹窗、三段中文对话、三场景视觉都在最新运行包上有证据。
+  - 仍不声明 Time Tangled 整岛封版。下一步继续补自然时间装置完整路线、自然 NPC 热区 no-repeat、外链白屏、真实音频来源，然后再进入 Super Power。
+
 ## 2026-06-23 AS3 HUD 运行包同步与点击链重开
 
 - 按外部审计提示停止继续推进新岛，本轮只处理 AS3 HUD “视觉右上但宽屏点击打不开”的公共 blocker。
