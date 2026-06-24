@@ -5515,3 +5515,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This closes a concrete sync gap in the background resize/relaunch path and reduces accidental desktop interference from stale runtime metadata.
   - The larger dirty SWF/XML/tool WIP remains unaudited and intentionally uncommitted.
+
+## 2026-06-24 CLI Kebab/Camel Argument Alias Support
+
+- Hardened `tools/lib/cli.js` so `parseArgs()` now assigns camelCase aliases for kebab-case options.
+- This makes QA/runtime commands less brittle when scripts read `args.targetMonitor`, `args.windowSize`, `args.noForeground`, or `args.allowMissingRequests` while callers pass `--target-monitor`, `--window-size`, `--no-foreground`, or `--allow-missing-requests`.
+- Verification:
+  - `node --check tools\lib\cli.js` passed.
+  - Direct Node assertions passed for `--target-monitor`, `--window-size=1450x900`, boolean kebab flags, and explicit camelCase override behavior.
+  - `npm run qa:goal-evidence` passed with `proved=8`, `partial=1`, and only `github_sync` not proved due to unrelated dirty WIP.
+- Scope note:
+  - This is a low-risk QA infrastructure improvement for the no-foreground/window-size testing path.
+  - Existing positional parsing behavior is unchanged; bare positional values immediately after a flag can still be consumed as that flag's value.

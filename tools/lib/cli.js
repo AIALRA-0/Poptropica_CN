@@ -1,3 +1,15 @@
+function camelCaseKey(key) {
+  return String(key || "").replace(/-([a-z0-9])/giu, (_match, char) => String(char).toUpperCase());
+}
+
+function assignArg(args, key, value) {
+  args[key] = value;
+  const alias = camelCaseKey(key);
+  if (alias !== key && args[alias] === undefined) {
+    args[alias] = value;
+  }
+}
+
 function parseArgs(argv) {
   const args = {
     _: []
@@ -14,18 +26,18 @@ function parseArgs(argv) {
     const equalsIndex = rawKey.indexOf("=");
     if (equalsIndex !== -1) {
       const key = rawKey.slice(0, equalsIndex);
-      args[key] = rawKey.slice(equalsIndex + 1);
+      assignArg(args, key, rawKey.slice(equalsIndex + 1));
       continue;
     }
 
     const key = rawKey;
     const next = argv[index + 1];
     if (!next || next.startsWith("--")) {
-      args[key] = true;
+      assignArg(args, key, true);
       continue;
     }
 
-    args[key] = next;
+    assignArg(args, key, next);
     index += 1;
   }
 
