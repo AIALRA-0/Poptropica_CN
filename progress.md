@@ -5527,3 +5527,15 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This is a low-risk QA infrastructure improvement for the no-foreground/window-size testing path.
   - Existing positional parsing behavior is unchanged; bare positional values immediately after a flag can still be consumed as that flag's value.
+
+## 2026-06-24 AS2 Script Question Text Extraction
+
+- Hardened `tools/lib/extractors.js` so SWF script text extraction now includes AS2 dialogue option assignments named `q1`, `q2`, `q3`, and answer assignments named `answ1`, `answ2`, `answ3`.
+- This closes a translation indexing gap where FFDec script exports containing direct `q* = "..."` lines could be skipped unless another existing pattern matched the same line.
+- Verification:
+  - `node --check tools\lib\extractors.js` passed.
+  - `npm run extract:text -- --source as2 --phase full-swf --asset-pattern scenes/islandSuper/sceneSuperMain.swf` passed with `extractedAssetCount=1` and `extractedStringCount=80`.
+  - SQLite inspection of the extracted `sceneSuperMain.swf` asset found `totalScriptRows=78` and `CLIPACTIONRECORD` script rows such as `What happened here?` and `So the prisoners\nhave super powers?`, proving the direct `q*` dialogue option lines now enter the string index.
+- Scope note:
+  - This improves the full-translation pipeline for AS2 SWF dialogue options.
+  - It does not yet translate every remaining English string in dirty AS2/AS3 resource WIP; those resource changes still need separate audit, patching, and runtime verification before staging.

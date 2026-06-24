@@ -437,7 +437,9 @@ const SWF_SCRIPT_LINE_PATTERNS = [
   /\btalkyText\s*=/iu,
   /\bshowSay\s*\(/iu,
   /\bmanualSay\s*\(/iu,
-  /\ba\d+\s*=/iu
+  /\ba\d+\s*=/iu,
+  /\bq\d+\s*=/iu,
+  /\bansw\d+\s*=/iu
 ];
 
 function shouldExtractSwfScriptLine(line) {
