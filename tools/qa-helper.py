@@ -273,6 +273,17 @@ def resolve_monitor_target(target):
                 "availableMonitors": rows,
             }
 
+    if "g32qc" in normalized_requested:
+        candidates = [row for row in rows if not row.get("primary")]
+        candidates = sorted(candidates, key=lambda row: (row["rect"]["left"], row["rect"]["top"]))
+        if candidates:
+            return {
+                "requested": requested,
+                "matchReason": "g32qc-fallback-nonprimary",
+                "monitor": candidates[0],
+                "availableMonitors": rows,
+            }
+
     available = ", ".join(row["deviceShortName"] for row in rows)
     raise RuntimeError(f"Target monitor {requested!r} was not found. Available monitor devices: {available}.")
 
@@ -2267,6 +2278,18 @@ def command_analyze_map_popup_guard(args):
         name: round(float(mask.mean() * 100.0), 6) if mask.size else 0.0
         for name, mask in edge_regions.items()
     }
+    blue_button_mask = (
+        (r <= int(args.max_blue_button_red))
+        & (g >= int(args.min_blue_button_green))
+        & (b >= int(args.min_blue_button_blue))
+        & ((b - r) >= int(args.min_blue_button_delta))
+        & ((b - g) >= int(args.min_blue_button_green_delta))
+    )
+    blue_button_components = [
+        comp for comp in _connected_components(blue_button_mask, min_pixels=int(args.min_blue_button_pixels))
+        if comp["width"] >= int(args.min_blue_button_width) and comp["height"] >= int(args.min_blue_button_height)
+    ]
+    blue_button_components.sort(key=lambda comp: comp["pixels"], reverse=True)
 
     min_margin = int(args.min_margin)
     right_margin = int(width - paper_box["right"])
@@ -2321,6 +2344,12 @@ def command_analyze_map_popup_guard(args):
             "observed": round(float(center_delta_ratio), 6),
             "max": float(args.max_center_x_delta_ratio),
         },
+        {
+            "name": "large_blue_button_component",
+            "ok": len(blue_button_components) >= int(args.min_blue_button_components),
+            "observed": len(blue_button_components),
+            "min": int(args.min_blue_button_components),
+        },
     ]
     max_blue_edge_pct = float(args.max_blue_edge_pct)
     checks.extend([
@@ -2340,6 +2369,7 @@ def command_analyze_map_popup_guard(args):
         "imageSize": { "width": width, "height": height },
         "paperBox": paper_box,
         "paperPixelPct": paper_pct,
+        "blueButtonComponents": blue_button_components[:12],
         "blueEdgeRegions": blue_edge_regions,
         "checks": checks,
     }
@@ -2347,6 +2377,8 @@ def command_analyze_map_popup_guard(args):
         annotated = image.copy()
         draw = ImageDraw.Draw(annotated)
         draw.rectangle([paper_box["left"], paper_box["top"], paper_box["right"], paper_box["bottom"]], outline=(255, 0, 0), width=3)
+        for comp in blue_button_components[:12]:
+            draw.rectangle([comp["left"], comp["top"], comp["right"], comp["bottom"]], outline=(0, 128, 255), width=3)
         annotated.save(args.annotated_output)
         payload["annotatedOutput"] = args.annotated_output
     write_json_if_needed(payload, args.output)
@@ -2615,9 +2647,21 @@ def command_analyze_hud_diff(args):
             comp["height"] >= int(args.min_icon_height)
         )
     ]
+    unexpected_bottom_limit = min(
+        top_bottom,
+        stage_top + max(80, int(round(stage_height * 0.12))),
+    )
+    min_unexpected_width = max(18, int(round(int(args.min_icon_width) * 0.5)))
+    min_unexpected_height = max(18, int(round(int(args.min_icon_height) * 0.5)))
     unexpected_components = [
         comp for comp in all_components
-        if comp["right"] < right_left and comp["pixels"] >= int(args.min_unexpected_pixels)
+        if (
+            comp["right"] < right_left and
+            comp["bottom"] <= unexpected_bottom_limit and
+            comp["width"] >= min_unexpected_width and
+            comp["height"] >= min_unexpected_height and
+            comp["pixels"] >= int(args.min_unexpected_pixels)
+        )
     ]
 
     hud_box = None
@@ -2745,6 +2789,7 @@ def command_analyze_hud_diff(args):
                 "bottom": int(top_bottom),
             },
             "rightHudMinLeft": int(right_left),
+            "unexpectedBottomLimit": int(unexpected_bottom_limit),
         },
         "hudBox": hud_box,
         "hudComponents": hud_components,
@@ -3364,6 +3409,15 @@ def command_analyze_top_right_slot_row(args):
                 expanded_for_hud_slots = True
     stage_width = max(1, int(stage_right - stage_left))
     stage_height = max(1, int(stage_bottom - stage_top))
+    rgb = np.asarray(image, dtype=np.int16)
+    content_left, content_right, letterbox_trim = _trim_dark_letterbox_bounds(
+        rgb,
+        stage_left,
+        stage_top,
+        stage_right,
+        stage_bottom,
+    )
+    content_width = max(1, int(content_right - content_left))
     names = [
         entry.strip()
         for entry in str(args.slot_names).split(",")
@@ -3381,7 +3435,7 @@ def command_analyze_top_right_slot_row(args):
         for entry in str(getattr(args, "change_slots", "") or "").split(",")
         if entry.strip()
     }
-    rightmost_center_x = stage_right - float(args.rightmost_center_inset)
+    rightmost_center_x = content_right - float(args.rightmost_center_inset)
     center_y = stage_top + float(args.center_y_offset)
     slot_spacing = float(args.slot_spacing)
     slot_half_size = int(round(float(args.slot_size) / 2.0))
@@ -3457,7 +3511,7 @@ def command_analyze_top_right_slot_row(args):
     row_top = min(slot["box"]["top"] for slot in slots)
     row_right = max(slot["box"]["right"] for slot in slots)
     row_bottom = max(slot["box"]["bottom"] for slot in slots)
-    right_margin = float(stage_right - rightmost_center_x)
+    right_margin = float(content_right - rightmost_center_x)
     top_margin = float(row_top - stage_top)
     center_y_ratio = float(center_y - stage_top) / float(stage_height)
     checks = [
@@ -3556,6 +3610,15 @@ def command_analyze_top_right_slot_row(args):
         },
         "rawStageRect": raw_stage_rect,
         "expandedForHudSlots": bool(expanded_for_hud_slots),
+        "contentRect": {
+            "left": int(content_left),
+            "top": int(stage_top),
+            "right": int(content_right),
+            "bottom": int(stage_bottom),
+            "width": int(content_width),
+            "height": int(stage_height),
+            "letterboxTrim": letterbox_trim,
+        },
         "layout": {
             "rowBox": {
                 "left": int(row_left),
@@ -3579,6 +3642,7 @@ def command_analyze_top_right_slot_row(args):
         annotated = image.convert("RGB")
         draw = ImageDraw.Draw(annotated)
         draw.rectangle((stage_left, stage_top, stage_right, stage_bottom), outline=(255, 255, 0), width=3)
+        draw.rectangle((content_left, stage_top, content_right, stage_bottom), outline=(255, 0, 255), width=3)
         draw.rectangle((row_left, row_top, row_right, row_bottom), outline=(0, 255, 255), width=3)
         for slot in slots:
             color = (0, 255, 0) if slot["present"] else (255, 0, 0)
@@ -4282,6 +4346,15 @@ def main():
     map_popup_guard_parser.add_argument("--min-blue-blue", type=int, default=170)
     map_popup_guard_parser.add_argument("--min-blue-delta", type=int, default=85)
     map_popup_guard_parser.add_argument("--max-blue-edge-pct", type=float, default=8.0)
+    map_popup_guard_parser.add_argument("--max-blue-button-red", type=int, default=90)
+    map_popup_guard_parser.add_argument("--min-blue-button-green", type=int, default=90)
+    map_popup_guard_parser.add_argument("--min-blue-button-blue", type=int, default=130)
+    map_popup_guard_parser.add_argument("--min-blue-button-delta", type=int, default=45)
+    map_popup_guard_parser.add_argument("--min-blue-button-green-delta", type=int, default=0)
+    map_popup_guard_parser.add_argument("--min-blue-button-pixels", type=int, default=600)
+    map_popup_guard_parser.add_argument("--min-blue-button-width", type=int, default=75)
+    map_popup_guard_parser.add_argument("--min-blue-button-height", type=int, default=16)
+    map_popup_guard_parser.add_argument("--min-blue-button-components", type=int, default=1)
     map_popup_guard_parser.set_defaults(func=command_analyze_map_popup_guard)
 
     playable_crop_parser = subparsers.add_parser("analyze-playable-crop-guard")

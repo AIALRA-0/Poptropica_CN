@@ -176,9 +176,9 @@ const gameViewport = document.getElementById("gameViewport"),
       MAP_POPUP_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 },
       STANDARD_GAMEPLAY_VIEWPORT = { x: 0, y: 0, width: 1000, height: 580 },
       TIME_TANGLED_GAMEPLAY_LAYOUT = {
-          baseWidth: 1182,
-          baseHeight: 645,
-          viewport: { x: 186, y: 0, width: 996, height: 580 }
+          baseWidth: 1000,
+          baseHeight: 580,
+          viewport: { x: 0, y: 0, width: 820, height: 580 }
       };
 let viewportResizeReloadTimer = 0,
     viewportResizeLastSize = null;
@@ -371,6 +371,18 @@ function requestFlashMapResetDialog() {
     return false;
 }
 
+function resolveMapHotspot(viewport) {
+    const hotspot = Object.assign({}, MAP_HOTSPOT);
+    if(viewport && viewport.useViewportCrop && Number(viewport.cropWidth) <= 840) {
+        const cropRight = Number(viewport.cropLeft || 0) + Number(viewport.cropWidth || 0);
+        hotspot.x = Math.max(Number(viewport.cropLeft || 0), cropRight - 110);
+        hotspot.y = -5;
+        hotspot.width = 105;
+        hotspot.height = 80;
+    }
+    return hotspot;
+}
+
 function applyMapHotspot(viewport, gameState) {
     if(!flashpointMapHotspot)
         return;
@@ -383,11 +395,12 @@ function applyMapHotspot(viewport, gameState) {
     const scale = viewport.useViewportCrop ? viewport.viewportScale : 1;
     const anchorLeft = viewport.useViewportCrop ? viewport.contentOffsetLeft : viewport.offsetLeft;
     const anchorTop = viewport.useViewportCrop ? viewport.contentOffsetTop : viewport.offsetTop;
+    const hotspot = resolveMapHotspot(viewport);
     flashpointMapHotspot.hidden = false;
-    flashpointMapHotspot.style.left = `${ anchorLeft + (MAP_HOTSPOT.x - viewport.cropLeft) * scale }px`;
-    flashpointMapHotspot.style.top = `${ anchorTop + (MAP_HOTSPOT.y - viewport.cropTop) * scale }px`;
-    flashpointMapHotspot.style.width = `${ MAP_HOTSPOT.width * scale }px`;
-    flashpointMapHotspot.style.height = `${ MAP_HOTSPOT.height * scale }px`;
+    flashpointMapHotspot.style.left = `${ anchorLeft + (hotspot.x - viewport.cropLeft) * scale }px`;
+    flashpointMapHotspot.style.top = `${ anchorTop + (hotspot.y - viewport.cropTop) * scale }px`;
+    flashpointMapHotspot.style.width = `${ hotspot.width * scale }px`;
+    flashpointMapHotspot.style.height = `${ hotspot.height * scale }px`;
 }
 
 function applyMapResetHotspot(viewport, gameState) {

@@ -1022,6 +1022,60 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
   }
 }
 
+function analyzeHudRowForMapClick({ runDir, stem, initial, args, qaErrors }) {
+  if (!initial?.artifacts?.screenshotPath || !initial?.artifacts?.stagePath) {
+    return null;
+  }
+  const rowAnalysisPath = path.join(runDir, `${stem}-map-hud-slot-row.json`);
+  const rowAnnotatedPath = path.join(runDir, `${stem}-map-hud-slot-row.png`);
+  try {
+    const rowAnalysis = runPythonQa([
+      "analyze-top-right-slot-row",
+      "--input",
+      initial.artifacts.screenshotPath,
+      "--stage-json",
+      initial.artifacts.stagePath,
+      "--output",
+      rowAnalysisPath,
+      "--annotated-output",
+      rowAnnotatedPath,
+      "--slot-names",
+      String(args.as2HudSlotNames || args["as2-hud-slot-names"] || "inventory,wardrobe,map"),
+      "--critical-slots",
+      String(args.as2HudCriticalSlots || args["as2-hud-critical-slots"] || "inventory,wardrobe,map"),
+      "--rightmost-center-inset",
+      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 88),
+      "--center-y-offset",
+      String(args.as2HudCenterYOffset || args["as2-hud-center-y-offset"] || 20),
+      "--slot-spacing",
+      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 86),
+      "--slot-size",
+      String(args.as2HudSlotSize || args["as2-hud-slot-size"] || 76),
+      "--min-edge-density",
+      String(args.as2HudMinEdgeDensity || args["as2-hud-min-edge-density"] || 0.018),
+      "--min-present-slots",
+      String(args.as2HudMinPresentSlots || args["as2-hud-min-present-slots"] || 3),
+      "--max-top-margin",
+      String(args.as2HudSlotMaxTopMargin || args["as2-hud-slot-max-top-margin"] || 58),
+      "--max-center-y-ratio",
+      String(args.as2HudSlotMaxCenterYRatio || args["as2-hud-slot-max-center-y-ratio"] || 0.12),
+      "--no-fail-exit"
+    ], {
+      timeoutMs: 30000
+    });
+    return {
+      rowAnalysis,
+      artifacts: {
+        rowAnalysisPath,
+        rowAnnotatedPath
+      }
+    };
+  } catch (error) {
+    qaErrors.push(formatQaError(`${stem}-map-hud-row`, error));
+    return null;
+  }
+}
+
 function parseSampleMs(value) {
   const text = String(value || "").trim();
   if (!text) {
@@ -1394,17 +1448,33 @@ function mapClickPointFromHudAnchor(capture, hudAnchor) {
   const sourceImage = hudAnchor?.analysis?.imageSize || null;
   const targetImage = capture?.imageSize || null;
   const mapComponent = components.length ? components[components.length - 1] : null;
-  if (!mapComponent || !sourceImage?.width || !sourceImage?.height || !targetImage?.width || !targetImage?.height) {
+  if (mapComponent && sourceImage?.width && sourceImage?.height && targetImage?.width && targetImage?.height) {
+    const offset = captureClickOffset(capture);
+    const scaleX = Number(targetImage.width || 0) / Number(sourceImage.width || 1);
+    const scaleY = Number(targetImage.height || 0) / Number(sourceImage.height || 1);
+    return {
+      x: Math.round(offset.x + (Number(mapComponent.centerX || 0) * scaleX)),
+      y: Math.round(offset.y + (Number(mapComponent.centerY || 0) * scaleY)),
+      source: "hud-anchor-last-component",
+      component: mapComponent
+    };
+  }
+
+  const rowSlots = hudAnchor?.rowAnalysis?.slots || [];
+  const rowSourceImage = hudAnchor?.rowAnalysis?.imageSize || null;
+  const mapSlot = rowSlots.find((slot) => String(slot?.name || "").toLowerCase() === "map" && slot.present)
+    || rowSlots.filter((slot) => slot?.present).slice(-1)[0];
+  if (!mapSlot || !rowSourceImage?.width || !rowSourceImage?.height || !targetImage?.width || !targetImage?.height) {
     return null;
   }
   const offset = captureClickOffset(capture);
-  const scaleX = Number(targetImage.width || 0) / Number(sourceImage.width || 1);
-  const scaleY = Number(targetImage.height || 0) / Number(sourceImage.height || 1);
+  const scaleX = Number(targetImage.width || 0) / Number(rowSourceImage.width || 1);
+  const scaleY = Number(targetImage.height || 0) / Number(rowSourceImage.height || 1);
   return {
-    x: Math.round(offset.x + (Number(mapComponent.centerX || 0) * scaleX)),
-    y: Math.round(offset.y + (Number(mapComponent.centerY || 0) * scaleY)),
-    source: "hud-anchor-last-component",
-    component: mapComponent
+    x: Math.round(offset.x + (Number(mapSlot.centerX || 0) * scaleX)),
+    y: Math.round(offset.y + (Number(mapSlot.centerY || 0) * scaleY)),
+    source: "hud-slot-row-map",
+    component: mapSlot
   };
 }
 
@@ -1489,6 +1559,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
     const logSummary = summarizeLogSegment(segment);
     const mapRequestSeen = Number(logSummary.mapRequestCount || 0) > 0;
     const stageStable = Boolean(postCapture.stage?.stageRect);
+    const mapOpenedByVisualGuard = Boolean(postCapture.visualGuard?.ok);
     const mapRequestRequired = flagEnabled(args.requireMapRequest);
     return {
       ok: stageStable && (!mapRequestRequired || mapRequestSeen),
@@ -1507,6 +1578,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
       artifacts: postCapture.artifacts,
       logSummary,
       mapRequestSeen,
+      mapOpenedByVisualGuard,
       stageStable,
       reason: stageStable
         ? mapRequestRequired && !mapRequestSeen
@@ -2091,6 +2163,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const usePostF11ForMap = flagEnabled(args.mapAfterF11 || args["map-after-f11"]);
   const mapSource = usePostF11ForMap && postF11ForMap?.capture && postF11ForMap?.stage?.stageRect ? postF11ForMap : initial;
 
+  const mapHudAnchor = analyzeHudRowForMapClick({ runDir, stem, initial: mapSource, args, qaErrors });
+
   const map = flagEnabled(args.skipMapClick)
     ? { ok: true, skipped: true, mapRequestSeen: false }
     : clickMap({
@@ -2100,7 +2174,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         runtimeWindow: initial.runtimeWindow || runtimeWindow,
         capture: mapSource.capture,
         stage: mapSource.stage,
-        hudAnchor: null,
+        hudAnchor: mapHudAnchor,
         args,
         qaErrors
       });
@@ -2113,7 +2187,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         map,
         args,
         qaErrors
-      })
+    })
     : { ok: true, skipped: true };
 
   const hasQaPopup = Boolean(resolveFlashpointQaAs2Popup(args));
@@ -2305,7 +2379,7 @@ function buildSummary(startedAt, reports) {
     passed: reports.filter((report) => report.ok).length,
     failed: reports.filter((report) => !report.ok).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
-    mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen).length,
+    mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && (report.map.mapRequestSeen || report.map.mapOpenedByVisualGuard)).length,
     mapResetConfirmPassed: reports.filter((report) => report.mapResetConfirm && !report.mapResetConfirm.skipped && report.mapResetConfirm.ok).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     loadingCenterPassed: reports.filter((report) => report.loading && !report.loading.skipped && report.loading.observed && report.loading.centerOk).length,

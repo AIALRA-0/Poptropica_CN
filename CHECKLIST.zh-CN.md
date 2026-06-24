@@ -1,12 +1,14 @@
 # Poptropica Flash P0 实玩质量 Checklist
 
-更新时间：2026-06-23 20:34 EDT
+更新时间：2026-06-23 21:40 EDT
 
 当前分支：`codex/full-poptropica-qa-20260617`
 
 ## 当前结论
 
 当前主线已经从“HUD 按钮矩阵”切换为“实际游玩质量”。HUD 矩阵已暂停/降级，它只能作为低优先级回归证据，不再代表项目接近完成。
+
+2026-06-23 21:40 EDT：Time Tangled `Desolation` 的 820px 裁剪地图热点和地图 guard 假阳性已修复，但仍不声明整岛封版。修复 AS2 内部 direct-map 命中区：旧 `right-266..right-190` 已改为跟随可视右边界的 `right-110..right-10`；`base.php` 外层透明 map hotspot 也改为按当前裁剪宽度动态计算。QA 修复：地图点击现在使用 HUD slot row 的 `map` 槽位中心，不再点固定过右坐标；`analyze-map-popup-guard` 增加“大块蓝色按钮组件”检查，避免把橙色场景误判为地图纸张。已重打 `gameplay.swf`、`gameplay-zh.swf` 和 `runtime-data/patched-zips/as2-runtime.zip`，导出 AS 证明旧 `-266/-190` 地图命中区已清除。最新 G32QC/静音/no-foreground 严格证据：`runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782264817174.json` 通过，`mapClicksPassed=1`、`sceneEvidencePassed=1`、`visualGuardPassed=1`、`playableCropGuardPassed=1`、`pauseArtifactPassed=1`、`hudAnchorPassed=1`、`audioActive=0`、`failedKeys=[]`；截图 `run-1782264817174/01-time-tangled-initial.png` 角色可见、无大块蓝边、无淡暂停图标、HUD 在内容右上；截图 `run-1782264817174/01-time-tangled-map.png` 为真实 Time Tangled 地图弹窗，`关闭`/`重启岛屿` 中文按钮可见，静态 `TIME TANGLED ISLAND` 仍按规则保留英文美术。剩余：自然时间装置完整路线、自然 NPC no-repeat、任务物品使用后布局、外链白屏、AS3 对话队列、真实音频源和后续逐岛封版。
 
 2026-06-23 20:34 EDT：Time Tangled 公共 UI blocker wave 重新通过，但仍不声明整岛封版。修复 AS2 `base.php`/`tools/lib/pack.js` 的 viewport 尺寸计算：resize/F11 后优先使用真实 `window.innerWidth/innerHeight`，不再被上一轮写入的 `body/clientWidth` 污染，避免恢复窗口后画面放大裁切、角色/HUD 消失。修复 `malidocs.swf` 任务文件关闭链：关闭桥接同时识别 `popupClose` 和 `popupBack.btnClose`，并允许缩放后 `_root._ymouse` 为负的右上关闭 fallback；弹窗打开时 HUD 隐藏为正确状态，QA 现改为用关闭后的截图做 HUD anchor。F11 QA 也新增 `f11-restore` 截图强判定，恢复后如果蓝边、裁切、角色消失会直接失败。已重建 `runtime-data/patched-zips/as2-runtime.zip`。最新 G32QC/静音证据：完整基线 `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782261033187.json` 通过，`loadingCenterPassed=1`、`mapClicksPassed=1`、`hudAnchorPassed=1`、`pauseArtifactPassed=1`、`failedKeys=[]`；F11/恢复 `as2-interaction-smoke-1782260453597.json` 通过，恢复截图 `run-1782260453597/01-time-tangled-f11-restore.png` 角色和 HUD 均可见；任务文件弹窗 `as2-interaction-smoke-1782261165962.json` 通过，关闭后无黑残留/误开第二层；三段 Time Lab 中文对话 `1782260606142`、`1782260674967`、`1782260743562` 通过；Mali/Future2/Viking 三场景 `1782260824696`、`1782260887663`、`1782260952888` 通过。当前剩余：自然时间装置完整路线、自然 NPC 热区 no-repeat、外链白屏、全音频真实来源与后续岛屿逐岛封版仍未完成。
 

@@ -11,6 +11,35 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 
 # Progress
 
+## 2026-06-23 Time Tangled Desolation map hotspot / guard fix
+
+- Stayed on the reopened Time Tangled UI blocker; did not advance to Super Power.
+- Fixed the Time Tangled 820px gameplay crop side effect where the visible right-top map icon no longer matched the AS2 direct-map hit bounds or the outer `base.php` transparent map hotspot.
+- Code changes:
+  - `packs/zh-CN/as2/files/content/www.poptropica.com/base.php` and `tools/lib/pack.js` now use `resolveMapHotspot(viewport)` so the outer map hotspot follows cropped gameplay layouts.
+  - `tools/patch-as2-gameplay-hud-popup.js` and `tools/lib/pack.js` now set AS2 direct map bounds to `right-110..right-10` instead of the stale `right-266..right-190` range.
+  - `tools/qa-as2-interaction-smoke.js` now clicks the AS2 map via the detected HUD slot-row `map` center instead of a hard-coded far-right default point.
+  - `tools/qa-helper.py analyze-map-popup-guard` now requires a large blue map-popup button component, preventing the orange Desolation scene from being misread as the map parchment.
+- Static/build verification:
+  - `node --check tools\patch-as2-gameplay-hud-popup.js`
+  - `node --check tools\lib\pack.js`
+  - `node --check tools\qa-as2-interaction-smoke.js`
+  - `python -m py_compile tools\qa-helper.py`
+  - `node tools\patch-as2-gameplay-hud-popup.js`, rebuilt `runtime-data/patched-zips/as2-runtime.zip`, `replacementCount=95`.
+  - Exported AS proof: `runtime-data/tmp/as2-gameplay-hud-popup/scripts/scripts/frame_1/DoAction.as` contains `__zhGameplayMapBounds = {left:Math.max(6,zhGameplayLogicalRight() - 110),top:-45,right:Math.max(86,zhGameplayLogicalRight() - 10),bottom:70}` and no stale `-266/-190` map bounds.
+- Guard calibration:
+  - Bad false-positive sample now fails: `runtime-data/qa/as2/interaction-smoke/run-1782264193216/01-time-tangled-map-visual-guard-recheck.json`.
+  - Known good map popup still passes: `runtime-data/qa/as2/interaction-smoke/run-1782210583755/01-time-tangled-map-visual-guard-recheck.json`.
+- Runtime verification, G32QC target / no foreground / muted:
+  - Strict passing report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782264817174.json`.
+  - Result: `ok=true`, `mapClicksPassed=1`, `sceneEvidencePassed=1`, `visualGuardPassed=1`, `playableCropGuardPassed=1`, `pauseArtifactPassed=1`, `hudAnchorPassed=1`, `audioActive=0`, `failedKeys=[]`.
+  - Map click point came from `hud-slot-row-map` at `x=1237,y=45`; report recorded `mapRequestSeen=true` and `mapOpenedByVisualGuard=true`.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782264817174/01-time-tangled-initial.png` has player visible, no large blue edge, no faint pause artifact, HUD in the content upper-right.
+  - Screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782264817174/01-time-tangled-map.png` shows the real Time Tangled map popup, Chinese `关闭` and `重启岛屿` buttons, and original English static `TIME TANGLED ISLAND` art.
+- Current conclusion:
+  - Closed this Desolation map/HUD/crop blocker and the QA false-positive gap.
+  - Time Tangled still is not sealed. Remaining items: natural time-device route, natural NPC no-repeat checks, item use-after-layout, external white-screen links, AS3 queue protection, and real audio-source inventory.
+
 ## 2026-06-23 Time Tangled 公共 UI blocker wave 重新通过
 
 - 继续停在用户要求的按岛封版顺序，没有进入 Super Power。

@@ -223,6 +223,19 @@ function patchFrameOne(content) {
     const helperBlock = [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
       "   var zhRight = 1010;",
       "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
       "   {",
@@ -501,12 +514,111 @@ function patchFrameOne(content) {
     [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n"),
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n"),
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
+      "   var zhRight = 1010;",
+      "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
+      "   {",
+      "      zhRight = Math.max(zhRight,Number(Stage.width));",
+      "   }",
+      "   if(zhRight > 1010)",
+      "   {",
+      "      zhRight = zhRight - 35;",
+      "   }",
+      "   return zhRight;",
+      "}"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "function zhGameplayLogicalRight()",
+      "{",
       "   return 820;",
       "}"
     ].join("\n"),
     [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
       "   var zhRight = 1010;",
       "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
       "   {",
@@ -530,6 +642,19 @@ function patchFrameOne(content) {
     [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
       "   var zhRight = 1010;",
       "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
       "   {",
@@ -553,6 +678,19 @@ function patchFrameOne(content) {
     [
       "function zhGameplayLogicalRight()",
       "{",
+      "   var zhIslandName = \"\";",
+      "   if(_root != undefined && _root.island != undefined)",
+      "   {",
+      "      zhIslandName = String(_root.island).toLowerCase();",
+      "   }",
+      "   else if(island != undefined)",
+      "   {",
+      "      zhIslandName = String(island).toLowerCase();",
+      "   }",
+      "   if(zhIslandName == \"time\" || zhIslandName == \"time tangled\")",
+      "   {",
+      "      return 820;",
+      "   }",
       "   var zhRight = 1010;",
       "   if(Stage != undefined && Stage.width != undefined && Number(Stage.width) > 0)",
       "   {",
@@ -2828,7 +2966,7 @@ function patchFrameOne(content) {
       "         navBar.btnMap._visible = true;",
       "         navBar.btnMap._alpha = 100;",
       "         navBar.btnMap.enabled = true;",
-      "         _root.__zhGameplayMapBounds = {left:zhMapX - 20,top:-38,right:zhMapX + 56,bottom:50};",
+      "         _root.__zhGameplayMapBounds = {left:Math.max(6,zhHudRight - 110),top:-45,right:Math.max(86,zhHudRight - 10),bottom:70};",
       "      }",
       "      if(navBar.btnSuperPower != undefined && (!zhIsSuperPowerIsland() || isNaN(Number(navBar.btnSuperPower._y)) || Number(navBar.btnSuperPower._y) < -100))",
       "      {",
@@ -2927,9 +3065,12 @@ function patchFrameOne(content) {
     .replace(/navBar\.btnMap\._x = (?:584|764);/gu, "navBar.btnMap._x = Math.max(118,zhGameplayLogicalRight() - 246);")
     .replace(/navBar\.btnMap\._y = 10;/gu, "navBar.btnMap._y = -20;")
     .replace(/zhMapButton\._x = (?:552|920);/gu, "zhMapButton._x = Math.max(6,zhGameplayLogicalRight() - 90);")
-    .replace(/_root\.__zhGameplayMapBounds = \{left:(?:920|744|564),top:(?:-42|0|-38),right:(?:1010|820|640),bottom:(?:100|90|50)\};/gu, "_root.__zhGameplayMapBounds = {left:Math.max(6,zhGameplayLogicalRight() - 266),top:-38,right:Math.max(86,zhGameplayLogicalRight() - 190),bottom:50};")
+    .replace(/_root\.__zhGameplayMapBounds = \{left:(?:920|744|564),top:(?:-42|0|-38),right:(?:1010|820|640),bottom:(?:100|90|50)\};/gu, "_root.__zhGameplayMapBounds = {left:Math.max(6,zhGameplayLogicalRight() - 110),top:-45,right:Math.max(86,zhGameplayLogicalRight() - 10),bottom:70};")
+    .replace(/_root\.__zhGameplayMapBounds = \{left:Math\.max\(6,zhGameplayLogicalRight\(\) - 266\),top:-38,right:Math\.max\(86,zhGameplayLogicalRight\(\) - 190\),bottom:50\};/gu, "_root.__zhGameplayMapBounds = {left:Math.max(6,zhGameplayLogicalRight() - 110),top:-45,right:Math.max(86,zhGameplayLogicalRight() - 10),bottom:70};")
+    .replace(/_root\.__zhGameplayMapBounds = \{left:Math\.max\(6,zhHudRight - 266\),top:-38,right:Math\.max\(86,zhHudRight - 190\),bottom:50\};/gu, "_root.__zhGameplayMapBounds = {left:Math.max(6,zhHudRight - 110),top:-45,right:Math.max(86,zhHudRight - 10),bottom:70};")
     .replace(/_root\.__zhGameplayTopNavLeft = (?:472|652);/gu, "_root.__zhGameplayTopNavLeft = Math.max(6,zhGameplayLogicalRight() - 358);")
-    .replace(/_root\.__zhGameplayTopNavRight = (?:640|820);/gu, "_root.__zhGameplayTopNavRight = Math.max(86,zhGameplayLogicalRight() - 190);")
+    .replace(/_root\.__zhGameplayTopNavRight = (?:640|820);/gu, "_root.__zhGameplayTopNavRight = Math.max(86,zhGameplayLogicalRight() - 10);")
+    .replace(/_root\.__zhGameplayTopNavRight = Math\.max\(86,zhGameplayLogicalRight\(\) - 190\);/gu, "_root.__zhGameplayTopNavRight = Math.max(86,zhGameplayLogicalRight() - 10);")
     .replace(/_root\.__zhGameplayTopNavTop = 10;/gu, "_root.__zhGameplayTopNavTop = -20;")
     .replace(/_root\.__zhGameplayTopNavCenterY = 10;/gu, "_root.__zhGameplayTopNavCenterY = -20;");
 
