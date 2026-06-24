@@ -5539,3 +5539,17 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This improves the full-translation pipeline for AS2 SWF dialogue options.
   - It does not yet translate every remaining English string in dirty AS2/AS3 resource WIP; those resource changes still need separate audit, patching, and runtime verification before staging.
+
+## 2026-06-24 Playable Crop Guard Tall-Component Filter
+
+- Hardened `tools/qa-helper.py analyze-playable-crop-guard` so very tall pale components in the lower analysis region are reported with `heightRatio` / `tooTallForCharacter` and do not count as cropped-character risk.
+- This targets false positives from tall background or stage-edge shapes touching the bottom of resized AS2 captures while preserving detection for small bottom-edge pale components.
+- Verification:
+  - `python -m py_compile tools/qa-helper.py` passed.
+  - Synthetic tall-block replay wrote `runtime-data/qa/playable-crop-guard-synthetic/too-tall-block.json` with `ok=true`, `heightRatio=0.993333`, `tooTallForCharacter=true`, and `croppedRisk=false`.
+  - Synthetic cropped-small-block replay wrote `runtime-data/qa/playable-crop-guard-synthetic/cropped-small-block.json` with `ok=false`, `heightRatio=0.183333`, `tooTallForCharacter=false`, and `croppedRisk=true`.
+  - Real Super Power replay on `runtime-data/qa/as2/interaction-smoke/run-1782276066178/01-super-power-initial.png` wrote `super-power-initial-replay.json`; it stayed `ok=true` while classifying the full-height right-edge pale component as `tooTallForCharacter=true`.
+  - Reviewed annotated image `runtime-data/qa/playable-crop-guard-synthetic/super-power-initial-replay.png`; the tall excluded box is a background/edge component, not the player or NPC.
+- Scope note:
+  - This improves no-foreground resize/UI QA stability for AS2 visual checks.
+  - It does not replace live all-island interaction smoke; future runtime-flow work should reuse this helper in the broader resize matrix once that larger WIP is audited.

@@ -2390,6 +2390,7 @@ def command_analyze_playable_crop_guard(args):
     width, height = image.size
     rgb = np.array(image).astype(np.int16)
     lower_top = max(0, min(height - 1, int(round(height * float(args.lower_top_ratio)))))
+    analysis_height = max(1, height - lower_top)
     pale_mask = (
         (rgb[:, :, 0] >= int(args.min_red)) &
         (rgb[:, :, 1] >= int(args.min_green)) &
@@ -2405,18 +2406,23 @@ def command_analyze_playable_crop_guard(args):
         bottom_gap = int(height - component["bottom"])
         aspect_ratio = float(component["width"]) / float(max(1, component["height"]))
         too_wide_for_character = aspect_ratio > float(args.max_crop_risk_aspect)
+        height_ratio = float(component["height"]) / float(analysis_height)
+        too_tall_for_character = height_ratio > float(args.max_crop_risk_height_ratio)
         candidate = {
             **component,
             "bottomGap": bottom_gap,
             "touchesBottom": bottom_gap <= int(args.touch_tolerance),
             "belowLowerTop": component["top"] >= lower_top,
             "aspectRatio": float(round(aspect_ratio, 6)),
+            "heightRatio": float(round(height_ratio, 6)),
             "tooWideForCharacter": bool(too_wide_for_character),
+            "tooTallForCharacter": bool(too_tall_for_character),
         }
         candidate["croppedRisk"] = (
             candidate["bottomGap"] <= int(args.min_bottom_gap) and
             component["pixels"] >= int(args.min_pixels) and
-            not too_wide_for_character
+            not too_wide_for_character and
+            not too_tall_for_character
         )
         candidates.append(candidate)
     candidates.sort(key=lambda item: (item["croppedRisk"], -item["bottomGap"], item["pixels"]), reverse=True)
@@ -2459,6 +2465,7 @@ def command_analyze_playable_crop_guard(args):
             "minBottomGap": int(args.min_bottom_gap),
             "touchTolerance": int(args.touch_tolerance),
             "maxCropRiskAspect": float(args.max_crop_risk_aspect),
+            "maxCropRiskHeightRatio": float(args.max_crop_risk_height_ratio),
             "lowerTopRatio": float(args.lower_top_ratio),
         },
     }
@@ -4372,6 +4379,7 @@ def main():
     playable_crop_parser.add_argument("--min-bottom-gap", type=int, default=24)
     playable_crop_parser.add_argument("--touch-tolerance", type=int, default=2)
     playable_crop_parser.add_argument("--max-crop-risk-aspect", type=float, default=1.75)
+    playable_crop_parser.add_argument("--max-crop-risk-height-ratio", type=float, default=0.7)
     playable_crop_parser.add_argument("--no-fail-exit", action="store_true")
     playable_crop_parser.set_defaults(func=command_analyze_playable_crop_guard)
 
