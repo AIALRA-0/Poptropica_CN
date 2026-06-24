@@ -76,28 +76,6 @@ function reportStatus(status, summary, evidence = {}, gaps = []) {
   };
 }
 
-function coverageForAggregate(report, expectedCount, extraChecks = {}) {
-  const missingKeys = Array.isArray(report?.missingKeys) ? report.missingKeys : [];
-  const aggregateOk = report?.aggregate === true;
-  const countOk = Number(report?.expectedTotal || report?.total || 0) === expectedCount &&
-    Number(report?.total || 0) === expectedCount &&
-    Number(report?.passed || 0) === expectedCount &&
-    Number(report?.failed || 0) === 0 &&
-    missingKeys.length === 0;
-  const missingRequestsOk = Number(report?.withMissingLogRequests || 0) === 0;
-  const checks = {
-    aggregateOk,
-    countOk,
-    missingRequestsOk,
-    ...extraChecks
-  };
-  return {
-    ok: Object.values(checks).every(Boolean),
-    checks,
-    missingKeys
-  };
-}
-
 function interactionCoverageForAggregate(report, expectedCount, extraChecks = {}) {
   const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
   const countOk = Number(report?.total || 0) === expectedCount &&
@@ -122,7 +100,7 @@ function findLatestAs2AllIslandVisualReport(expectedCount) {
   let entries = [];
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && /^as2-interaction-smoke-\d+\.json$/u.test(entry.name))
+      .filter((entry) => entry.isFile() && /^as2-interaction-smoke-(?:aggregate-)?\d+\.json$/u.test(entry.name))
       .map((entry) => {
         const reportPath = path.join(dir, entry.name);
         const stat = fs.statSync(reportPath);
@@ -162,6 +140,58 @@ function findLatestAs2AllIslandVisualReport(expectedCount) {
   }
 
   return { ok: false, path: null, reason: "no all-island AS2 visual/map/scene report found" };
+}
+
+function findLatestAs2AllIslandInteractionReport(expectedCount) {
+  const dir = path.join(paths.projectRoot, "runtime-data/qa/as2/interaction-smoke");
+  let entries = [];
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && /^as2-interaction-smoke-(?:aggregate-)?\d+\.json$/u.test(entry.name))
+      .map((entry) => {
+        const reportPath = path.join(dir, entry.name);
+        const stat = fs.statSync(reportPath);
+        return { name: entry.name, path: reportPath, mtimeMs: stat.mtimeMs };
+      })
+      .sort((a, b) => b.mtimeMs - a.mtimeMs);
+  } catch (_error) {
+    return { ok: false, path: null, source: null, data: null, reason: "as2 interaction report directory not readable" };
+  }
+
+  for (const entry of entries) {
+    const report = readJson(entry.path, null);
+    const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
+    const missingKeys = Array.isArray(report?.missingKeys) ? report.missingKeys : [];
+    const ok = report?.ok === true &&
+      Number(report?.total || 0) === expectedCount &&
+      Number(report?.passed || 0) === expectedCount &&
+      Number(report?.failed || 0) === 0 &&
+      Number(report?.audioActive || 0) === expectedCount &&
+      Number(report?.mapClicksPassed || 0) === expectedCount &&
+      Number(report?.sceneEvidencePassed || 0) === expectedCount &&
+      Number(report?.visualGuardPassed || 0) === expectedCount &&
+      Number(report?.withMissingLogRequests || 0) === 0 &&
+      failedKeys.length === 0 &&
+      missingKeys.length === 0;
+    if (ok) {
+      return {
+        ok: true,
+        path: entry.path,
+        source: entry.name,
+        data: report,
+        generatedAt: report.generatedAt || null,
+        total: report.total,
+        passed: report.passed,
+        audioActive: report.audioActive,
+        mapClicksPassed: report.mapClicksPassed,
+        sceneEvidencePassed: report.sceneEvidencePassed,
+        visualGuardPassed: report.visualGuardPassed,
+        withMissingLogRequests: report.withMissingLogRequests
+      };
+    }
+  }
+
+  return { ok: false, path: null, source: null, data: null, reason: "no all-island AS2 interaction/audio/scene/visual report found" };
 }
 
 function findLatestAs3AllIslandInteractionReport(expectedCount) {
@@ -264,10 +294,14 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
   const as2Launchable = launchable.filter((entry) => entry.sourceGroup === "as2");
   const as3Launchable = launchable.filter((entry) => entry.sourceGroup === "as3" && entry.launchMode === "as3-direct-scene");
 
-  const as2Coverage = coverageForAggregate(reports.as2Aggregate.data, as2Launchable.length, {
+  const as2InteractionSelection = reports.as2Aggregate.selection || null;
+  const as2InteractionSource = as2InteractionSelection?.source || "as2-interaction-smoke-latest";
+  const as2Coverage = interactionCoverageForAggregate(reports.as2Aggregate.data, as2Launchable.length, {
+    reportOk: reports.as2Aggregate.data?.ok === true,
     audioOk: Number(reports.as2Aggregate.data?.audioActive || 0) === as2Launchable.length,
     mapOk: Number(reports.as2Aggregate.data?.mapClicksPassed || 0) === as2Launchable.length,
-    sceneOk: Number(reports.as2Aggregate.data?.sceneEvidencePassed || 0) === as2Launchable.length
+    sceneOk: Number(reports.as2Aggregate.data?.sceneEvidencePassed || 0) === as2Launchable.length,
+    visualOk: Number(reports.as2Aggregate.data?.visualGuardPassed || 0) === as2Launchable.length
   });
   const as3InteractionSelection = reports.as3Interaction.selection || null;
   const as3LatestInteraction = reports.as3Interaction.data;
@@ -336,12 +370,23 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
           as3LaunchableDirectScenes: as3Launchable.length,
           as2Aggregate: {
             ok: as2Coverage.ok,
+            source: as2InteractionSource,
             total: reports.as2Aggregate.data?.total,
             passed: reports.as2Aggregate.data?.passed,
             audioActive: reports.as2Aggregate.data?.audioActive,
             mapClicksPassed: reports.as2Aggregate.data?.mapClicksPassed,
             sceneEvidencePassed: reports.as2Aggregate.data?.sceneEvidencePassed,
-            withMissingLogRequests: reports.as2Aggregate.data?.withMissingLogRequests
+            visualGuardPassed: reports.as2Aggregate.data?.visualGuardPassed,
+            withMissingLogRequests: reports.as2Aggregate.data?.withMissingLogRequests,
+            selectedAllIslandReport: as2InteractionSelection
+              ? {
+                  ok: as2InteractionSelection.ok,
+                  source: as2InteractionSelection.source,
+                  path: as2InteractionSelection.path,
+                  generatedAt: as2InteractionSelection.generatedAt || null,
+                  reason: as2InteractionSelection.reason || null
+                }
+              : null
           },
           as3Aggregate: {
             ok: as3Coverage.ok,
@@ -474,10 +519,14 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
       title: "所有游戏场景能正确进入，不白屏、不卡死、不崩溃、不溢出",
       ...reportStatus(
         unresolved.length === 0 && as2Coverage.ok && as3Coverage.ok ? "proved" : "incomplete",
-        "Launchable AS2/AS3 default entry evidence is green, but unresolved manifest entries prevent full completion.",
+        unresolved.length === 0 && as2Coverage.ok && as3Coverage.ok
+          ? "Launchable AS2/AS3 default entry, audio, scene, and visual evidence is green."
+          : "Launchable AS2/AS3 scene-entry evidence is incomplete.",
         {
           unresolvedCount: unresolved.length,
+          as2Source: as2InteractionSource,
           as2Coverage: as2Coverage.checks,
+          as3Source: as3InteractionSource,
           as3Coverage: as3Coverage.checks
         },
         unresolved.length === 0 ? [] : ["Resolve or legitimately source missing launch resources for unresolved islands."]
@@ -494,6 +543,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
         {
           soundReferenceAudit: sound || null,
           as2AudioActive: reports.as2Aggregate.data?.audioActive,
+          as2AudioSource: as2InteractionSource,
           as3AudioActive: as3LatestInteraction?.audioActive,
           as3AudioSource: as3InteractionSource
         },
@@ -568,13 +618,27 @@ function main() {
   const config = loadConfig();
   const manifest = generateLaunchManifest(config, { write: false });
   const packageJson = readJson(path.join(paths.projectRoot, "package.json"), {});
+  const as2LaunchableCount = (manifest.entries || []).filter((entry) =>
+    entry.launchable && entry.sourceGroup === "as2"
+  ).length;
   const as3LaunchableDirectSceneCount = (manifest.entries || []).filter((entry) =>
     entry.launchable && entry.sourceGroup === "as3" && entry.launchMode === "as3-direct-scene"
   ).length;
+  const as2InteractionSelection = findLatestAs2AllIslandInteractionReport(as2LaunchableCount);
+  const latestAs2Interaction = readReport("runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-latest.json");
   const as3InteractionSelection = findLatestAs3AllIslandInteractionReport(as3LaunchableDirectSceneCount);
   const latestAs3Interaction = readReport("runtime-data/qa/as3/interaction-smoke/as3-interaction-smoke-latest.json");
   const reports = {
-    as2Aggregate: readReport("runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-latest.json"),
+    as2Aggregate: as2InteractionSelection.ok
+      ? {
+          path: as2InteractionSelection.path,
+          data: as2InteractionSelection.data,
+          selection: as2InteractionSelection
+        }
+      : {
+          ...latestAs2Interaction,
+          selection: as2InteractionSelection
+        },
     as3Aggregate: readReport("runtime-data/qa/as3/islands-smoke/as3-island-smoke-latest.json"),
     as3Interaction: as3InteractionSelection.ok
       ? {

@@ -5483,3 +5483,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This proves the shipped AS2 shared gameplay sound dispatch has the browser bridge injection present in the runtime artifacts.
   - It still does not prove every natural island scene reaches every sound trigger during live gameplay; next sound work should add targeted interaction probes for high-frequency calls such as `zap`, `boom`, `crunch`, and `ouch`.
+
+## 2026-06-24 Goal Evidence AS2 All-Island Selection Fix
+
+- Fixed `tools/qa-goal-evidence.js` so goal evidence no longer treats the most recent single-island AS2 interaction smoke as the all-island aggregate.
+- The audit now scans `runtime-data/qa/as2/interaction-smoke/` for the newest valid all-island AS2 report, including `as2-interaction-smoke-aggregate-*.json`, and only accepts it when total, passed, audio, map-click, scene-evidence, visual-guard, failed-key, missing-key, and missing-request checks all match the 34 launchable AS2 islands.
+- Latest selected AS2 all-island source is `as2-interaction-smoke-aggregate-1781745107837.json`, with `total=34`, `passed=34`, `audioActive=34`, `mapClicksPassed=34`, `sceneEvidencePassed=34`, `visualGuardPassed=34`, and `withMissingLogRequests=0`.
+- Re-ran goal evidence after refreshing sound checks. Current summary is `proved=8`, `partial=1`, `incomplete=0`, `missing=0`; only `github_sync` remains partial because the worktree still contains large unrelated WIP that must not be bulk-staged without a fresh audit.
+- Verification:
+  - `node --check tools\qa-goal-evidence.js` passed.
+  - `npm run audit:sound-refs:runtime` passed with `totalReferences=12424`, `resolved=12388`, `ignored=36`, and `missing=0`.
+  - `npm run qa:as2-sound-bridge` passed with `expectedSoundCount=20`, `overrideSoundCount=20`, `soundCallCoverage.coveredKnownCount=24`, `gameplaySoundBridge.sourceOk=true`, `runtimeOk=true`, browser playback `ok=true`, and `failedChecks=[]`.
+  - `npm run verify:pack-inputs` passed with AS2 `replacementCount=99`, AS3 `replacementCount=1316`, and `untrackedRuntimeInputCount=0` for both.
+  - `npm run qa:goal-evidence` passed and now reports only `github_sync` as not proved.
+- Scope note:
+  - This improves completion auditing and prevents one-off targeted AS2 smokes from hiding existing all-island audio/scene evidence.
+  - It does not make the full goal complete while the unrelated WIP remains dirty and unaudited.
