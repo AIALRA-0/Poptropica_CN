@@ -5499,3 +5499,19 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This improves completion auditing and prevents one-off targeted AS2 smokes from hiding existing all-island audio/scene evidence.
   - It does not make the full goal complete while the unrelated WIP remains dirty and unaudited.
+
+## 2026-06-24 Runtime Resize Relaunch Helper Sync
+
+- Audited the dirty worktree and found `tools/lib/flashpoint-runtime.js` already references `tools/runtime-resize-relaunch.js`, but the helper itself was still untracked.
+- Added the missing helper to version control scope. It reads managed `active-runtime.json`, preserves the current AS3 launch URL, applies requested window geometry, keeps the G32QC target monitor, and relaunches through the existing managed Flashpoint runtime path when the layout watcher detects a real resize.
+- Hardened the helper before committing:
+  - If the watcher passes an expected PID and `active-runtime.json` points at a different PID, it fails with `stale_resize_watcher`.
+  - If no expected PID is provided and `active-runtime.json` contains a stale inactive PID, it now fails with `stale_active_runtime_pid` instead of launching a new Navigator instance.
+- Verification:
+  - `node --check tools\runtime-resize-relaunch.js` passed.
+  - A protective stale-active smoke returned `ok=false`, `reason=stale_active_runtime_pid`, and wrote `runtime-data/qa/runtime-resize-relaunch/runtime-resize-relaunch-1782278842586.json`.
+  - Confirmed no `flashpointnavigator`, `FPNavigator`, or `FlashpointSecurePlayer` process remained after the smoke.
+  - `npm run qa:goal-evidence` still passed with `proved=8`, `partial=1`, and only `github_sync` not proved because unrelated WIP remains dirty.
+- Scope note:
+  - This closes a concrete sync gap in the background resize/relaunch path and reduces accidental desktop interference from stale runtime metadata.
+  - The larger dirty SWF/XML/tool WIP remains unaudited and intentionally uncommitted.
