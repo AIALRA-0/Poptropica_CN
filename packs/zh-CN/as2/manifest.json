@@ -685,7 +685,7 @@
     "swfRuntimeOverrides": "enabled"
   },
   "superPowerSceneLoadCheckPatch": {
-    "generatedAt": "2026-06-24T04:29:04.515Z",
+    "generatedAt": "2026-06-24T04:37:41.885Z",
     "reportPath": "runtime-data/qa/as2/super-power-scene-loadcheck-patch.json",
     "changedCount": 1,
     "changedSwfs": [

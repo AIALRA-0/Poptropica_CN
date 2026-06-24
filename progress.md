@@ -5368,3 +5368,27 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - Screenshot: `runtime-data/qa/as2/interaction-smoke/run-1782275427486/01-super-power-initial.png`
   - Server log shows the corrected `sceneBank.swf` request and `AdvanceFrame&target=gameplay&before=2&after=2`, so the next pass should debug deferred gameplay timeline advancement after frame 2.
 - Do not treat this as a completed island fix. It is a reproducible narrowed blocker with better QA detection and a committed handoff point.
+
+## 2026-06-24 AS2 Super Power Bank Scene Entry Fixed
+
+- Continued from the pushed shutdown handoff on `codex/full-poptropica-qa-20260617` without reverting the existing unrelated dirty worktree.
+- Root cause of the remaining Bank loading screen was the Super Power scene readiness patch returning after `gameplayMC.nextFrame()` even when the gameplay timeline stayed on frame 2.
+- Updated `tools/lib/pack.js` and `tools/patch-as2-super-power-scenes.js` so `zhSuperAdvanceGameplayFrame()`:
+  - logs `before`, `after`, and `total` frames for each candidate timeline,
+  - falls back to `gotoAndStop(before + 1)` when `nextFrame()` leaves the timeline unchanged but another frame exists,
+  - keeps trying fallback candidates instead of returning after a no-op candidate.
+- Repatched `packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneBank.swf` and rebuilt `runtime-data/patched-zips/as2-runtime.zip`.
+- Static/build verification passed:
+  - `node --check tools\lib\pack.js`
+  - `node --check tools\patch-as2-super-power-scenes.js`
+  - `node --check tools\qa-as2-interaction-smoke.js`
+  - `node tools\patch-as2-super-power-scenes.js --scene=sceneBank --diagnostics`
+  - `npm run rebuild:runtime-zip -- --source as2`
+  - `npm run verify:pack-inputs -- --source as2`
+- Runtime verification passed on the non-primary monitor with muted audio:
+  - Bank override report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782275970408.json`, `ok=true`, `failedChecks=[]`.
+  - Bank screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782275970408/01-super-power-initial.png`; it shows the Bank interior, player, and right-top HUD, not the loading screen.
+  - Bank server log shows `AdvanceFrame&target=gameplay&before=2&after=3&total=26` and then `scene=The%20Bank&event=Loaded`.
+  - Default Super Power report: `runtime-data/qa/as2/interaction-smoke/as2-interaction-smoke-1782276066178.json`, `ok=true`, `failedChecks=[]`.
+  - Default screenshot reviewed: `runtime-data/qa/as2/interaction-smoke/run-1782276066178/01-super-power-initial.png`; it shows the Down Town/Main Street entry with player, NPCs, and right-top HUD.
+- Scope note: this closes the previously narrowed Super Power Bank entry blocker. It does not prove all Super Power objectives or all-island completion yet.

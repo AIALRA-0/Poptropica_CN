@@ -2170,61 +2170,62 @@ function applyAs2SuperPowerSceneLoadCheckCompatibilityPatch({ sourceScriptRoot, 
   return { ok: true, changed };
 }
 
-const AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER = `function zhSuperAdvanceGameplayFrame()
+const AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER = `function zhSuperAdvanceTimeline(target, label)
+{
+   if(target == undefined || target.nextFrame == undefined)
+   {
+      return false;
+   }
+   var beforeFrame = Number(target._currentframe);
+   var totalFrames = Number(target._totalframes);
+   target.nextFrame();
+   var afterFrame = Number(target._currentframe);
+   if(!isNaN(beforeFrame) && !isNaN(afterFrame) && afterFrame == beforeFrame && target.gotoAndStop != undefined && (isNaN(totalFrames) || totalFrames > beforeFrame))
+   {
+      target.gotoAndStop(beforeFrame + 1);
+      afterFrame = Number(target._currentframe);
+   }
+   if(typeof zhSuperBankQaLog == "function")
+   {
+      zhSuperBankQaLog("AdvanceFrame","target=" + label + "&before=" + beforeFrame + "&after=" + afterFrame + "&total=" + totalFrames);
+   }
+   return afterFrame != beforeFrame;
+}
+function zhSuperAdvanceGameplayFrame()
 {
    var target = null;
    if(typeof com != "undefined" && com.poptropica != undefined && com.poptropica.models != undefined && com.poptropica.models.PopModelConst != undefined && com.poptropica.models.PopModelConst.gameplayMC != undefined)
    {
       target = com.poptropica.models.PopModelConst.gameplayMC;
    }
-   if((target == undefined || target.nextFrame == undefined) && _root != undefined && _root.gameplay_container_mc != undefined)
+   if(zhSuperAdvanceTimeline(target,"gameplay"))
+   {
+      return "gameplay";
+   }
+   target = null;
+   if(_root != undefined && _root.gameplay_container_mc != undefined)
    {
       target = _root.gameplay_container_mc;
    }
-   if((target == undefined || target.nextFrame == undefined) && _parent != undefined && _parent._parent != undefined && _parent._parent != _root && _parent._parent.nextFrame != undefined)
+   if(zhSuperAdvanceTimeline(target,"container"))
+   {
+      return "container";
+   }
+   target = null;
+   if(_parent != undefined && _parent._parent != undefined && _parent._parent != _root && _parent._parent.nextFrame != undefined)
    {
       target = _parent._parent;
    }
-   if(target != undefined && target.nextFrame != undefined)
+   if(zhSuperAdvanceTimeline(target,"parent"))
    {
-      var beforeFrame = Number(target._currentframe);
-      target.nextFrame();
-      if(!isNaN(beforeFrame) && beforeFrame < 2 && Number(target._currentframe) < 3)
-      {
-         target.nextFrame();
-      }
-      if(typeof zhSuperBankQaLog == "function")
-      {
-         zhSuperBankQaLog("AdvanceFrame","target=gameplay&before=" + beforeFrame + "&after=" + Number(target._currentframe));
-      }
-      return "gameplay";
+      return "parent";
    }
-   if(_root != undefined && _root.nextFrame != undefined)
+   if(zhSuperAdvanceTimeline(_root,"root"))
    {
-      var rootBeforeFrame = Number(_root._currentframe);
-      _root.nextFrame();
-      if(!isNaN(rootBeforeFrame) && rootBeforeFrame < 2 && Number(_root._currentframe) < 3)
-      {
-         _root.nextFrame();
-      }
-      if(typeof zhSuperBankQaLog == "function")
-      {
-         zhSuperBankQaLog("AdvanceFrame","target=root&before=" + rootBeforeFrame + "&after=" + Number(_root._currentframe));
-      }
       return "root";
    }
-   if(_level0 != undefined && _level0.nextFrame != undefined)
+   if(zhSuperAdvanceTimeline(_level0,"level0"))
    {
-      var levelBeforeFrame = Number(_level0._currentframe);
-      _level0.nextFrame();
-      if(!isNaN(levelBeforeFrame) && levelBeforeFrame < 2 && Number(_level0._currentframe) < 3)
-      {
-         _level0.nextFrame();
-      }
-      if(typeof zhSuperBankQaLog == "function")
-      {
-         zhSuperBankQaLog("AdvanceFrame","target=level0&before=" + levelBeforeFrame + "&after=" + Number(_level0._currentframe));
-      }
       return "level0";
    }
    if(typeof zhSuperBankQaLog == "function")
@@ -2240,7 +2241,9 @@ function applyAs2SuperPowerSceneAvatarReadinessPatch(content) {
     '      zhSuperAdvanceGameplayFrame();\n      return "root";',
     '      _root.nextFrame();\n      return "root";'
   );
-  const helperStart = normalized.indexOf("function zhSuperAdvanceGameplayFrame()\n{");
+  const timelineHelperStart = normalized.indexOf("function zhSuperAdvanceTimeline(target, label)\n{");
+  const legacyHelperStart = normalized.indexOf("function zhSuperAdvanceGameplayFrame()\n{");
+  const helperStart = timelineHelperStart >= 0 ? timelineHelperStart : legacyHelperStart;
   const initStart = helperStart >= 0 ? normalized.indexOf("\nfunction initChars()", helperStart) : -1;
   if (helperStart >= 0 && initStart > helperStart) {
     normalized = `${normalized.slice(0, helperStart)}${AS2_SUPER_POWER_ADVANCE_GAMEPLAY_FRAME_HELPER}${normalized.slice(initStart)}`;
@@ -2256,7 +2259,7 @@ function applyAs2SuperPowerSceneAvatarReadinessPatch(content) {
   let advanceHelperBraceDepth = 0;
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (/^function zhSuperAdvanceGameplayFrame\(\)$/u.test(line.trim())) {
+    if (/^function zhSuperAdvance(?:Timeline|GameplayFrame)\(/u.test(line.trim())) {
       insideAdvanceHelper = true;
       advanceHelperBraceDepth = 0;
       output.push(line);
