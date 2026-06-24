@@ -1,6 +1,8 @@
 const crypto = require("node:crypto");
+const fs = require("node:fs");
 const http = require("node:http");
 const path = require("node:path");
+const zlib = require("node:zlib");
 const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
@@ -23,7 +25,21 @@ const SOURCE_ZIP_PATHS = {
   as3: path.join(paths.projectRoot, "AS3.zip")
 };
 const SOURCE_ZIP_ENTRY_MAX_BYTES = 32 * 1024 * 1024;
+const RUNTIME_ZIP_ENTRY_MAX_BYTES = 64 * 1024 * 1024;
 const AS2_SOUND_EFFECT_POOL_LIMIT = 8;
+const AS2_GAMEPLAY_SOUND_BRIDGE_MARKERS = [
+  "showSound",
+  "ExternalInterface",
+  "flashpointPlayAs2Sound"
+];
+const AS2_GAMEPLAY_SOUND_BRIDGE_SOURCE_FILES = [
+  path.join(paths.as2PackDir, "swf", "content", "www.poptropica.com", "gameplay.swf"),
+  path.join(paths.as2PackDir, "swf", "content", "www.poptropica.com", "gameplay-zh.swf")
+];
+const AS2_GAMEPLAY_SOUND_BRIDGE_RUNTIME_ENTRIES = [
+  "content/www.poptropica.com/gameplay.swf",
+  "content/www.poptropica.com/gameplay-zh.swf"
+];
 const BROWSER_CANDIDATES = [
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
@@ -132,19 +148,18 @@ function findBrowserExecutable() {
   return BROWSER_CANDIDATES.find((candidate) => fileExists(candidate)) || null;
 }
 
-function readSourceZipEntry(sourceGroup, sourceAssetPath) {
-  const zipPath = SOURCE_ZIP_PATHS[sourceGroup];
-  const entryPath = normalizeAssetPath(sourceAssetPath);
-  if (!zipPath || !entryPath) {
+function readZipEntry(zipPath, entryPath, maxBuffer = SOURCE_ZIP_ENTRY_MAX_BYTES) {
+  const normalizedEntryPath = normalizeAssetPath(entryPath);
+  if (!zipPath || !normalizedEntryPath) {
     return {
       ok: false,
-      error: zipPath ? "missing_source_asset_path" : `unsupported_source_group:${sourceGroup || ""}`
+      error: zipPath ? "missing_zip_entry_path" : "missing_zip_path"
     };
   }
 
-  const result = spawnSync("tar", ["-xOf", zipPath, entryPath], {
+  const result = spawnSync("tar", ["-xOf", zipPath, normalizedEntryPath], {
     encoding: null,
-    maxBuffer: SOURCE_ZIP_ENTRY_MAX_BYTES
+    maxBuffer
   });
   if (result.status !== 0) {
     return {
@@ -156,6 +171,121 @@ function readSourceZipEntry(sourceGroup, sourceAssetPath) {
   return {
     ok: true,
     body: result.stdout
+  };
+}
+
+function readSourceZipEntry(sourceGroup, sourceAssetPath) {
+  const zipPath = SOURCE_ZIP_PATHS[sourceGroup];
+  const entryPath = normalizeAssetPath(sourceAssetPath);
+  if (!zipPath || !entryPath) {
+    return {
+      ok: false,
+      error: zipPath ? "missing_source_asset_path" : `unsupported_source_group:${sourceGroup || ""}`
+    };
+  }
+
+  return readZipEntry(zipPath, entryPath);
+}
+
+function asSearchableSwfBuffer(buffer) {
+  const signature = buffer.subarray(0, 3).toString("ascii");
+  if (signature === "CWS") {
+    return {
+      signature,
+      compressed: true,
+      body: Buffer.concat([buffer.subarray(0, 8), zlib.inflateSync(buffer.subarray(8))])
+    };
+  }
+  if (signature === "FWS") {
+    return {
+      signature,
+      compressed: false,
+      body: buffer
+    };
+  }
+  return {
+    signature,
+    compressed: false,
+    body: buffer,
+    warning: "unexpected_swf_signature"
+  };
+}
+
+function buildSwfMarkerCheck({ type, filePath, zipPath, entryPath }) {
+  const check = {
+    type,
+    filePath: filePath || null,
+    zipPath: zipPath || null,
+    entryPath: entryPath || null,
+    exists: false,
+    bytes: null,
+    searchableBytes: null,
+    signature: null,
+    compressed: null,
+    markers: {},
+    ok: false
+  };
+
+  let body = null;
+  if (filePath) {
+    if (!fileExists(filePath)) {
+      check.error = "missing_swf_file";
+      return check;
+    }
+    body = fs.readFileSync(filePath);
+  } else {
+    const entry = readZipEntry(zipPath, entryPath, RUNTIME_ZIP_ENTRY_MAX_BYTES);
+    if (!entry.ok) {
+      check.error = entry.error;
+      return check;
+    }
+    body = entry.body;
+  }
+
+  check.exists = true;
+  check.bytes = body.length;
+
+  try {
+    const searchable = asSearchableSwfBuffer(body);
+    check.signature = searchable.signature;
+    check.compressed = searchable.compressed;
+    check.searchableBytes = searchable.body.length;
+    if (searchable.warning) {
+      check.warning = searchable.warning;
+    }
+    for (const marker of AS2_GAMEPLAY_SOUND_BRIDGE_MARKERS) {
+      check.markers[marker] = searchable.body.includes(Buffer.from(marker, "utf8"));
+    }
+  } catch (error) {
+    check.error = String(error.message || error);
+    return check;
+  }
+
+  const missingMarkers = AS2_GAMEPLAY_SOUND_BRIDGE_MARKERS.filter((marker) => !check.markers[marker]);
+  check.ok = missingMarkers.length === 0;
+  if (!check.ok) {
+    check.error = `missing_markers:${missingMarkers.join(",")}`;
+  }
+  return check;
+}
+
+function buildGameplaySoundBridgeChecks() {
+  const sourceFiles = AS2_GAMEPLAY_SOUND_BRIDGE_SOURCE_FILES.map((filePath) => buildSwfMarkerCheck({
+    type: "source-file",
+    filePath
+  }));
+  const runtimeEntries = AS2_GAMEPLAY_SOUND_BRIDGE_RUNTIME_ENTRIES.map((entryPath) => buildSwfMarkerCheck({
+    type: "runtime-zip-entry",
+    zipPath: paths.as2RuntimeZipPath,
+    entryPath
+  }));
+
+  return {
+    markers: AS2_GAMEPLAY_SOUND_BRIDGE_MARKERS,
+    sourceOk: sourceFiles.length > 0 && sourceFiles.every((check) => check.ok),
+    runtimeOk: runtimeEntries.length > 0 && runtimeEntries.every((check) => check.ok),
+    sourceFiles,
+    runtimeEntries
   };
 }
 
@@ -455,6 +585,7 @@ async function main() {
   const pathEntries = Array.isArray(provenance?.pathEntries) ? provenance.pathEntries : [];
   const sourceChecks = buildProvenanceSourceChecks(provenanceEntries, pathEntries);
   const soundCallCoverage = buildSoundCallCoverage({ manifestEntries, pathEntries });
+  const gameplaySoundBridge = buildGameplaySoundBridgeChecks();
   let browserPlayback = {
     ok: true,
     skipped: true,
@@ -484,6 +615,8 @@ async function main() {
   if (!bridge.playFunctionPresent) failedChecks.push("missing_flashpointPlayAs2Sound_function");
   if (!bridge.externalNamePresent) failedChecks.push("missing_flashpointPlayAs2Sound_export");
   if (!bridge.boundedPoolPresent) failedChecks.push("missing_bounded_audio_pool");
+  if (!gameplaySoundBridge.sourceOk) failedChecks.push("missing_gameplay_source_sound_bridge");
+  if (!gameplaySoundBridge.runtimeOk) failedChecks.push("missing_gameplay_runtime_sound_bridge");
   if (!expectedKeys.length) failedChecks.push("missing_sound_manifest_entries");
   if (!browserPlaybackSoundKey || !manifestEntries[browserPlaybackSoundKey]) {
     failedChecks.push(`browser_playback_sound_missing:${browserPlaybackSoundKey || "unknown"}`);
@@ -601,6 +734,7 @@ async function main() {
     expectedPathCount: pathEntries.length,
     expectedProvenanceSourceCount: sourceChecks.length,
     soundCallCoverage,
+    gameplaySoundBridge,
     browserPlayback,
     bridge,
     failedChecks,
@@ -620,6 +754,12 @@ async function main() {
       expectedKnownCount: report.soundCallCoverage.expectedKnownCount,
       coveredKnownCount: report.soundCallCoverage.coveredKnownCount,
       missingKnownCount: report.soundCallCoverage.missingKnownCount
+    },
+    gameplaySoundBridge: {
+      sourceOk: report.gameplaySoundBridge.sourceOk,
+      runtimeOk: report.gameplaySoundBridge.runtimeOk,
+      sourceCheckedCount: report.gameplaySoundBridge.sourceFiles.length,
+      runtimeCheckedCount: report.gameplaySoundBridge.runtimeEntries.length
     },
     browserPlayback: {
       ok: report.browserPlayback.ok,

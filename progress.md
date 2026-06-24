@@ -5466,3 +5466,20 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - Re-run `git status --short --branch`.
   - Continue with AS2 natural sound verification by gating the gameplay `showSound()` to `flashpointPlayAs2Sound` injection path.
   - Then run `node --check tools\qa-as2-sound-bridge.js`, `npm run qa:as2-sound-bridge`, and `npm run verify:pack-inputs` before staging any code changes.
+
+## 2026-06-24 AS2 Gameplay Sound Bridge Injection Gate
+
+- Hardened `tools/qa-as2-sound-bridge.js` so the AS2 sound bridge QA now statically checks the natural Flash call path, not just the browser-side JavaScript function.
+- The QA now inflates compressed `CWS` gameplay SWFs and verifies `showSound`, `ExternalInterface`, and `flashpointPlayAs2Sound` markers in:
+  - Pack source `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay.swf`
+  - Pack source `packs/zh-CN/as2/swf/content/www.poptropica.com/gameplay-zh.swf`
+  - Runtime zip entry `content/www.poptropica.com/gameplay.swf`
+  - Runtime zip entry `content/www.poptropica.com/gameplay-zh.swf`
+- `npm run qa:as2-sound-bridge` now reports `gameplaySoundBridge.sourceOk=true`, `runtimeOk=true`, `sourceCheckedCount=2`, and `runtimeCheckedCount=2`, so future rebuilds fail if the shared gameplay `showSound()` bridge injection drops out of either pack source or the shipped runtime zip.
+- Verification:
+  - `node --check tools\qa-as2-sound-bridge.js` passed.
+  - `npm run qa:as2-sound-bridge` passed with `expectedSoundCount=20`, `overrideSoundCount=20`, `expectedPathCount=4`, `soundCallCoverage.coveredKnownCount=24`, browser playback `ok=true`, and `failedChecks=[]`.
+  - `npm run verify:pack-inputs` passed with AS2 `replacementCount=99`, AS3 `replacementCount=1316`, and `untrackedRuntimeInputCount=0` for both.
+- Scope note:
+  - This proves the shipped AS2 shared gameplay sound dispatch has the browser bridge injection present in the runtime artifacts.
+  - It still does not prove every natural island scene reaches every sound trigger during live gameplay; next sound work should add targeted interaction probes for high-frequency calls such as `zap`, `boom`, `crunch`, and `ouch`.
