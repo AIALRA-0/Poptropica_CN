@@ -74,7 +74,7 @@
 		<y>1750</y>
 		<direction>left</direction>
 		<label>
-			<text>Exit</text>
+			<text>退出</text>
 			<type>exit3D</type>
 			<offset>
 				<x>0</x>

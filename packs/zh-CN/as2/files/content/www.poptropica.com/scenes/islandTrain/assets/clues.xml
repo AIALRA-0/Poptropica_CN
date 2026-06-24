@@ -1,74 +1,116 @@
 <Clues>
 	<Clue id="1" name="DeviceStolen" displayName="动态捕捉设备失窃" graphic="device">
 		<Response npc="Tesla">
-			<SayText type="npc">What do I care of Edison&apos;s misfortune? I&apos;m working!*stomp* Don&apos;t bother me again.</SayText>
+			<SayText type="npc">爱迪生倒霉关我什么事？我在工作！ *跺脚* 别再来烦我。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Nikola Tesla has been |locked in his cabin| since the theft. That seems suspicious to me.</SayText>
+			<SayText type="npc">尼古拉·特斯拉自从失窃后就一直|把自己关在车厢里|. 这让我觉得很可疑。</SayText>
 			<Action type="addClue" data="2"></Action>
 
+			
+			
+
         
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">I saw Mark Twain hiding something in a |secret compartment| in his cabin! Maybe it was Edison&apos;s device!</SayText>
+			<SayText type="npc">我看到马克·吐温在他的车厢|暗格|里藏了东西！说不定就是爱迪生的设备！</SayText>
 			<Action type="addClue" data="3"></Action>
 
+			
+			
+
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">That device was going to make me the star of the fair.*cry* You&apos;ve got to find it!</SayText>
+			<SayText type="npc">那设备本来能让我在博览会上大放异彩。 *哭* 你一定要找到它！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Whoever stole it couldn&apos;t have gotten off the train, which means the device is still onboard. Find the device, and you&apos;ll find the thief!</SayText>
+			<SayText type="npc">偷东西的人不可能下车，这意味着设备还在火车上。找到设备，你就能找到小偷！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">I&apos;ve been in the engine room this whole time. and I&apos;ve got the coal marks to prove it!</SayText>
+			<SayText type="npc">我一直都在锅炉房里。我身上的煤灰就是证明！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">Astonishing that something could vanish into thin air like that. What a trick!</SayText>
+			<SayText type="npc">真神奇，居然能凭空消失。好厉害的戏法！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Quelle disappointment!*grief* I was looking forward to seeing Monsieur Edison&apos;s device in action!</SayText>
+			<SayText type="npc">太令人失望了！ *悲伤* 我还期待着看爱迪生先生的装置大显身手呢！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">I&apos;m sorry to hear about Mr. Edison&apos;s troubles, but I&apos;ve got problems of my own.</SayText>
+			<SayText type="npc">听说爱迪生先生遇到麻烦，我很遗憾，但我自己也有难题要解决。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">This is going to reflect very poorly on the railroad company!</SayText>
+			<SayText type="npc">这会给铁路公司带来非常不好的影响！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Suspicious folks all around, but none moreso than whoever is riding in the last car. That fella&apos;s behind more security than my memoirs!</SayText>
+			<SayText type="npc">到处都有可疑的人，但最可疑的莫过于最后一节车厢里的那位。那家伙的安保比我的回忆录还严密！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">The missing motion capture device... I should ask everybody on the train about it and see what they know.</SayText>
+			<SayText type="thought">失踪的动态捕捉设备……我应该问问火车上的每个人，看看他们知道些什么。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
 			<SayText type="npc"></SayText>
 
+			
+
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -97,63 +139,97 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="2" name="TeslaCabin" displayName="尼古拉·特斯拉躲在车厢里" graphic="tesla">
 		<Response npc="Anthony">
-			<SayText type="npc">Nikola Tesla has been locked in his cabin since the theft. That seems suspicious to me.</SayText>
+			<SayText type="npc">失窃案发生后，尼古拉·特斯拉就一直把自己锁在车厢里。我觉得这很可疑。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">I didn&apos;t notice anything unusual, but I&apos;ll keep trying to remember anything suspicious.</SayText>
+			<SayText type="npc">我没注意到什么异常，但我会努力回想任何可疑之处。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">It&apos;s like Tesla to retreat from the world. What an odd duck.</SayText>
+			<SayText type="npc">特斯拉就是这样，喜欢躲起来。真是个怪人。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Monsieur Tesla didn&apos;t even glance at me when I passed him earlier. What an unfriendly person.</SayText>
+			<SayText type="npc">我刚才路过时，特斯拉先生看都没看我一眼。真是个不友善的人。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">Don&apos;t know anything about him. I just shovel coal.</SayText>
+			<SayText type="npc">我对他一无所知。我只管铲煤。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">Disappearing isn&apos;t such a difficult trick.</SayText>
+			<SayText type="npc">消失不见也不是什么难事。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">I did hear a cabin door open and close when we went through the tunnel. It could have been Tesla&apos;s.</SayText>
+			<SayText type="npc">我们过隧道时，我确实听到有车厢门开关的声音。可能是特斯拉的。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">I can&apos;t get Tesla to talk to me either. But I have so much to talk to him about!</SayText>
+			<SayText type="npc">我也没法让特斯拉跟我说话。但我有好多话想跟他说呢。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Don&apos;t bother Mr. Tesla. Our cabin doors have locks for a reason.</SayText>
+			<SayText type="npc">别打扰特斯拉先生。我们的车厢门有锁是有原因的。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Sometimes a man just wants some peace and quiet. Nothing wrong with that.</SayText>
+			<SayText type="npc">有时候人就是想图个清静。这没什么不对。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Susan B. Anthony said that Tesla is hiding in his room. I should find a way in there.</SayText>
+			<SayText type="thought">苏珊·B·安东尼说特斯拉躲在自己房间里。我得想办法进去看看。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -178,78 +254,120 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="3" name="Twain" displayName="马克·吐温的秘密隔间" graphic="twain">
 		<Response npc="Twain">
-			<SayText type="char">What&apos;s this about you and a secret compartment here in this cabin?</SayText>
-			<SayText type="npc">That&apos;s nonsense!*tremble* Of course I don&apos;t have a secret compartment.</SayText>
-			<SayText type="char">Then you won&apos;t mind if I have a look around.</SayText>
-			<SayText type="npc">Of... of course not!*tremble* I have nothing to hide!</SayText>
+			<SayText type="char">听说你这间车厢里有个秘密隔间？</SayText>
+			<SayText type="npc">胡说八道！ *发抖* 我哪有什么秘密隔间。</SayText>
+			<SayText type="char">那你不介意我四处看看吧。</SayText>
+			<SayText type="npc">当……当然不介意！ *发抖* 我没什么好藏的！</SayText>
 			<Action type="waitContinue" data="null"></Action>
 			<Action type="callFunc" data="startKnockingGame"></Action>
 
+			
+			
+			
+			
+			
+			
+
         
         
         
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">I saw Mark Twain hiding something in a secret compartment in his cabin! Maybe it was Edison&apos;s device!</SayText>
+			<SayText type="npc">我看见马克·吐温在他车厢的秘密隔间里藏了东西！说不定就是爱迪生的装置！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Yes, I think the device could fit in a space that size. You should investigate!</SayText>
+			<SayText type="npc">没错，我觉得那装置刚好能放进那么大的空间。你该去查查！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">After the comments he&apos;s made about people from other countries, I wouldn&apos;t put anything past Twain.</SayText>
+			<SayText type="npc">就凭他对其他国家的人说的那些话，吐温干出什么事我都不奇怪。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Coal">
-			<SayText type="npc">He wrote Tom Sawyer, didn&apos;t he?*proud* I love that song.</SayText>
+			<SayText type="npc">他写了《汤姆·索亚历险记》对吧？ *自豪* 我可喜欢那首歌了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">Anything can be hidden from the casual observer.</SayText>
+			<SayText type="npc">任何东西都能瞒过粗心的观察者。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Odd, I don&apos;t think my cabin has a hidden compartment.</SayText>
+			<SayText type="npc">奇怪，我的车厢应该没有隐藏隔间。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Why are you asking me about Twain&apos;s cabin?</SayText>
+			<SayText type="npc">你干嘛问我吐温的车厢？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Hmph, I would know if our train cars contained hidden compartments. At least, I think I would...</SayText>
+			<SayText type="npc">哼，要是车厢里有隐藏隔间我肯定知道。至少……我觉得我会知道……</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Nothing is more frustrating than when someone is withholding what&apos;s rightfully yours, wouldn&apos;t you say?</SayText>
+			<SayText type="npc">最气人的就是别人扣着本该属于你的东西，你说是不是？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">The reporter said Mark Twain is hiding something in a secret compartment. I should investigate.</SayText>
+			<SayText type="thought">记者说马克·吐温在秘密隔间里藏了东西。我得调查一下。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">Why are you asking me about Twain&apos;s cabin?</SayText>
+			<SayText type="npc">你干嘛问我吐温的车厢？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -277,69 +395,106 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="4" name="PruneJuice" displayName="西梅汁污渍" graphic="prunejuice">
 		<Response npc="Edison">
-			<SayText type="npc">Interesting... it looks like the trail heads away from my cabin and toward the coal car.</SayText>
+			<SayText type="npc">有意思……这痕迹好像是从我车厢出来，往煤车那边去了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">I love prune juice, but I haven&apos;t had any yet on this trip.</SayText>
+			<SayText type="npc">我爱喝西梅汁，但这趟旅程还没喝过。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">The only place to get prune juice on board is on the dining car.</SayText>
+			<SayText type="npc">车上只有餐车能点到西梅汁。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">Prune juice? Blech!</SayText>
+			<SayText type="npc">西梅汁？噫！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">Such a waste of delicious prune juice!</SayText>
+			<SayText type="npc">多好的西梅汁，就这么浪费了！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Prune juice is the last thing I need with this motion sickness.</SayText>
+			<SayText type="npc">我晕车正难受，可不想喝西梅汁。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Is the juice fermented? Non? Then I shall pass.</SayText>
+			<SayText type="npc">这果汁发酵了吗？没有？那我不要。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">I can&apos;t help you. Sorry.</SayText>
+			<SayText type="npc">我帮不了你，抱歉。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">I only drink water. It&apos;s the healthiest drink.</SayText>
+			<SayText type="npc">我只喝水，那是最健康的饮料。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">I can&apos;t tell you what our passengers ordered! That is confidential information!</SayText>
+			<SayText type="npc">我不能告诉你乘客点了什么！那是机密信息！</SayText>
 			<Action type="waitContinue" data="null"></Action>
 			<Action type="removeClue" data="4"></Action>
 			<Action type="callFunc" data="startOrderPage"></Action>
 
+			
+			
+			
+			
+
         
         
 		
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">There were fresh prune juice stains on the floor outside Edison&apos;s cabin. That could mean that the thief was drinking it. I need to find out who ordered prune juice.</SayText>
+			<SayText type="thought">爱迪生车厢外的地板上有新鲜西梅汁污渍。这说明小偷可能喝过。我得查查谁点了西梅汁。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -364,72 +519,111 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="5" name="CoalSmudges" displayName="煤灰痕迹" graphic="coalsmudges">
 		<Response npc="CoalMan">
-			<SayText type="npc">Okay, okay!*grief* I did leave to |get a snack|, and that&apos;s when the train stopped. But I didn&apos;t go near the luggage! You can ask the Porter!</SayText>
+			<SayText type="npc">好吧，好吧！ *叹气* 我确实离开去 |吃点东西| 了，火车就是那时候停的。但我没靠近行李！你可以问列车员！</SayText>
 			<Action type="addClue" data="6"></Action>
 			<Action type="removeClue" data="5"></Action>
 
+			
+			
+			
+
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Coal isn&apos;t easy to wash off. Whoever was in the luggage area probably still has coal marks on them.</SayText>
+			<SayText type="npc">煤灰可不容易洗掉。去过行李区的人身上很可能还留着煤印。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Why don&apos;t you ask the coal man about it?</SayText>
+			<SayText type="npc">你为什么不问问那个烧煤工呢？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Such filth... I shudder to imagine getting that foulness on myself!</SayText>
+			<SayText type="npc">真脏……想到自己沾上那种污秽，我就浑身发抖！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">That&apos;s coal, no doubt about it. Pretty obvious who that points to.</SayText>
+			<SayText type="npc">那是煤，毫无疑问。很明显指向谁了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Urk, those coal fumes... Get it away from me!</SayText>
+			<SayText type="npc">呃，那股煤烟味……快拿开！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">To think, a rock that is thousands of years old can power a train!</SayText>
+			<SayText type="npc">想想看，一块几千年的石头居然能驱动火车！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">I explored the idea of powering my wheel with coal, but the smoke would be too unpleasant for the passengers.</SayText>
+			<SayText type="npc">我考虑过用煤驱动我的摩天轮，但烟味会让乘客受不了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Coal smudges!?*stomp* What was that incompetent coal man doing in the luggage car?</SayText>
+			<SayText type="npc">煤灰印！？ *跺脚* 那个不称职的司炉工在行李车厢里干什么？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">Coal dust is black as night. That could come in handy someday.</SayText>
+			<SayText type="npc">煤灰黑得像夜晚。说不定哪天能派上用场。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">That&apos;s odd... what was the coal man doing around the passengers&apos; luggage?</SayText>
+			<SayText type="thought">真奇怪……那个烧煤工在乘客行李附近做什么？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">Why don&apos;t you ask the coal man about it?</SayText>
+			<SayText type="npc">你为什么不问问那个烧煤工呢？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -456,77 +650,119 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="6" name="Snack" displayName="司炉工去吃点心了" graphic="snack">
 		<Response npc="CoalMan">
-			<SayText type="npc">I just left for a snack. I didn&apos;t go near the luggage!*grief* You can ask the Porter.</SayText>
+			<SayText type="npc">我只是去吃点心了。我没靠近过行李！ *懊恼* 你可以问搬运工。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">That&apos;s true, he was here getting something to eat when the train stopped. So he couldn&apos;t have stopped the train.</SayText>
+			<SayText type="npc">没错，火车停站时他确实在这里找吃的。所以他不可能去让火车停下。</SayText>
 			<Action type="removeClue" data="6"></Action>
 			<Action type="completeEvent" data="train_investigatedCoal"></Action>
 
+			
+			
+			
+
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">I didn&apos;t go near the luggage!*grief* You can ask the porter!</SayText>
+			<SayText type="npc">我没靠近过行李！ *懊恼* 你可以问搬运工！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">The porter doesn&apos;t take orders from the coal man. The coal man would have had to have left the coal car.</SayText>
+			<SayText type="npc">搬运工不听司炉工的命令。司炉工必须得离开煤车才行。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">I suppose it&apos;s possible that someone else could have snuck into the coal car if the coal man left.</SayText>
+			<SayText type="npc">我想，如果司炉工离开了，确实可能有别人溜进煤车。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Americans*laugh* - always eating!</SayText>
+			<SayText type="npc">美国人*笑*——总是吃个不停！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">If it had been the coal man I&apos;d heard, we probably would have seen coal footprints on the floor instead of prune juice stains.</SayText>
+			<SayText type="npc">如果当时我听到的是司炉工，地上留下的就该是煤脚印，而不是西梅汁渍了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">No one around here values the sweet sting of sweat in their eyes from a hard day&apos;s work.</SayText>
+			<SayText type="npc">这儿没人懂得辛勤劳作后汗水刺痛眼睛的那种甜蜜滋味。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">I was here the whole time, but I don&apos;t remember seeing the coal man. Perhaps he took a different route to the dining car?</SayText>
+			<SayText type="npc">我一直在这儿，但没看见司炉工。也许他走了另一条路去餐车？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Sometimes I think I should have taken a common job like the coal man did.</SayText>
+			<SayText type="npc">有时候我在想，我是不是也该像司炉工那样，找份普通工作。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">The porter should know if the coal man left the coal car.</SayText>
+			<SayText type="npc">搬运工应该知道司炉工有没有离开煤车。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">The coal man says he was getting a snack. I need to find someone who can support his alibi.</SayText>
+			<SayText type="thought">司炉工说他去吃点心了。我得找个人来证实他的不在场证明。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">The porter should know if the coal man was getting a snack.</SayText>
+			<SayText type="npc">搬运工应该知道司炉工是不是去吃点心了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
     
     
@@ -556,63 +792,97 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="7" name="TeslaPrune" displayName="尼古拉·特斯拉点了西梅汁" graphic="tesla">
 		<Response npc="Porter">
-			<SayText type="npc">How did you see what was written on my orders sheet?*stomp* It must be miles away by now!</SayText>
+			<SayText type="npc">你怎么看到我订单单上写了什么？ *跺脚* 那单子现在肯定飞出几英里远了！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">The porter never takes my order, because I&apos;m not a passenger.</SayText>
+			<SayText type="npc">乘务员从不接我的单，因为我不是乘客。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Tesla hasn&apos;t left his cabin since we left Washington D.C. The prune juice must be catching up to him by now.</SayText>
+			<SayText type="npc">自从离开华盛顿特区，特斯拉就没出过包厢。那西梅汁现在肯定让他够受的。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">It is strange that Tesla won&apos;t leave his room, even ordering room service instead of going to the dining car.</SayText>
+			<SayText type="npc">真奇怪，特斯拉连餐车都不去，只叫客房服务。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Tesla has awful taste - not that there are any good options on the menu.</SayText>
+			<SayText type="npc">特斯拉品味真差——虽然菜单上也没什么好选的。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">How can somebody make it this long without going to the bathroom?</SayText>
+			<SayText type="npc">有人能这么久不上厕所吗？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Tesla got his prune juice already? Then why am I still waiting for my bicarbonate of soda?</SayText>
+			<SayText type="npc">特斯拉的西梅汁都到了？那我的小苏打水怎么还没来？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">If Tesla won&apos;t talk to you himself, perhaps you could see if there&apos;s any more evidence in his luggage.</SayText>
+			<SayText type="npc">如果特斯拉不肯亲自跟你谈，也许你可以看看他的行李里有没有更多线索。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">I guess you&apos;d expect someone as brilliant as Tesla to have some quirks.</SayText>
+			<SayText type="npc">像特斯拉这样的天才，有点怪癖也正常。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">If Tesla made that juice disappear in a flash, it&apos;ll probably reappear just as quickly.</SayText>
+			<SayText type="npc">如果特斯拉能让果汁瞬间消失，那它也可能瞬间出现。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">I need to ask Tesla a few questions, but he won&apos;t talk to me. Maybe there&apos;s a clue in his luggage?</SayText>
+			<SayText type="thought">我得问特斯拉几个问题，但他不肯跟我说话。也许他的行李里有线索？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -637,76 +907,117 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="8" name="GrainyPicture" displayName="模糊的照片" graphic="grainypic">
 		<Response npc="Edison">
-			<SayText type="char">When we went around that curve, Tesla was all the way on the other side of the train!</SayText>
-			<SayText type="npc">I knew it. But you realize what this means?</SayText>
-			<SayText type="char">The thief is still on the loose!</SayText>
-			<SayText type="npc">Make haste and talk to Tesla. Perhaps he knows something that can help us.</SayText>
+			<SayText type="char">火车转弯时，特斯拉在车厢的另一头！</SayText>
+			<SayText type="npc">我就知道。但你明白这意味着什么吗？</SayText>
+			<SayText type="char">小偷还在逍遥法外！</SayText>
+			<SayText type="npc">快去和特斯拉谈谈。也许他知道些什么能帮到我们。</SayText>
+
+			
+			
+			
+			
 
         
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Pinkerton">
-			<SayText type="char">I have proof that Mr. Tesla is innocent!</SayText>
-			<SayText type="npc">Buzz off. This one&apos;s open and shut.</SayText>
+			<SayText type="char">我有证据证明特斯拉先生是清白的！</SayText>
+			<SayText type="npc">走开。这案子铁证如山。</SayText>
+
+			
+			
 
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">I&apos;ve always enjoyed the view of the train going around that curve. Who knew it could be used to solve a crime?</SayText>
+			<SayText type="npc">我一直喜欢看火车转弯的景象。谁知道这还能用来破案？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">Good thing we had to slow down to go around that curve, or the image might have been blurry.</SayText>
+			<SayText type="npc">幸好转弯时火车减速了，不然照片可能更模糊。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">What sort of wizardry is this? That looks just like Nikola Tesla!</SayText>
+			<SayText type="npc">这是什么魔法？这看起来就是尼古拉·特斯拉！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">In the future, this kind of technology will probably be a great help to police and reporters.</SayText>
+			<SayText type="npc">将来，这种技术对警察和记者肯定大有帮助。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">Wow,*proud* where can I get a device like that?</SayText>
+			<SayText type="npc">哇， *proud* 哪里能弄到这样的设备？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Nothing can surpass the written word for truth and clarity.</SayText>
+			<SayText type="npc">论真实与清晰，没有什么能超越文字。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Incredible!*proud* Mr. Edison&apos;s device could see so far out the window!</SayText>
+			<SayText type="npc">太神奇了！ *proud* 爱迪生先生的设备能看那么远窗外！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Hmph,*cry* I guess the motion capture device will be the main attraction at the fair if I can&apos;t fix the wheel.</SayText>
+			<SayText type="npc">哼， *cry* 看来如果摩天轮修不好，博览会的焦点就是那个动作捕捉设备了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">I can see why someone would steal that. You could make a lot of money with such a device.</SayText>
+			<SayText type="npc">我明白为什么会有人偷它了。用那种装置能赚大钱。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">When we went around that curve, Tesla was all the way on the other side of the train! The thief is still on the loose!</SayText>
+			<SayText type="thought">火车转弯时，特斯拉在车厢的另一头！小偷还在逍遥法外！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -733,75 +1044,116 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="9" name="Briefcase" displayName="打开的手提箱" graphic="briefcase">
 		<Response npc="Tesla">
-			<SayText type="npc">I don&apos;t know how it was opened.*grief* The key is still around my neck!</SayText>
+			<SayText type="npc">我不知道它是怎么被打开的。 *grief* 钥匙还在我脖子上！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Weisz">
-			<SayText type="npc">That lock looks like it was picked by an expert.*proud* No, |I don&apos;t know anyone| like that. Excuse me.</SayText>
+			<SayText type="npc">那锁看起来是专家撬开的。 *proud* 不， |我不认识|那样的人。失陪了。</SayText>
 			<Action type="addClue" data="10"></Action>
 
+			
+			
+
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">I&apos;ve never invented a gizmo to break through a lock. That would be unethical.</SayText>
+			<SayText type="npc">我从没发明过能撬锁的小玩意儿。那是不道德的。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Nobody could have gotten in through Tesla&apos;s cabin. Our doors are impregnable!</SayText>
+			<SayText type="npc">没人能进特斯拉的车厢。我们的门坚不可摧！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">I&apos;d have to save up for a fancy case like that, but I&apos;d get coal dust all over it.</SayText>
+			<SayText type="npc">我得攒钱才能买那么好的箱子，但我会弄得全是煤灰。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Tesla should have used a case with a combination lock. Keys can be stolen or copied.</SayText>
+			<SayText type="npc">特斯拉该用密码锁的箱子。钥匙可能被偷或复制。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">A high-end model. Functional and fashionable.</SayText>
+			<SayText type="npc">高端款式。实用又时尚。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">It wouldn&apos;t have been easy to get into that case without a good set of tools.</SayText>
+			<SayText type="npc">没有一套好工具，想打开那个箱子可不容易。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">What a ride. I didn&apos;t expect the great train robbery!</SayText>
+			<SayText type="npc">这趟旅程真刺激。没想到会遇上火车大劫案！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">I should keep my own effects close at hand. There are thieves about!</SayText>
+			<SayText type="npc">我得把自己的东西看紧点。周围有小偷！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">How was the case opened? More importantly, what was in the case?</SayText>
+			<SayText type="npc">箱子是怎么打开的？更重要的是，里面装了什么？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Tesla has the only key. How did the thief open the briefcase?</SayText>
+			<SayText type="thought">特斯拉有唯一的钥匙。小偷是怎么打开手提箱的？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">The case doesn&apos;t look damaged. You should find someone who could have picked the lock.</SayText>
+			<SayText type="npc">箱子看起来没损坏。你应该找找会撬锁的人。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -822,79 +1174,122 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="10" name="Weisz" displayName="埃里克·魏斯的古怪行为" graphic="weisz">
 		<Response npc="Weisz">
-			<SayText type="npc">I don&apos;t know what you&apos;re talking about!</SayText>
+			<SayText type="npc">我不知道你在说什么！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Mr. Weisz is very strange. He seems to appear and disappear at will.</SayText>
+			<SayText type="npc">魏斯先生很古怪。他好像能随意出现和消失。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Weisz? What kind of a name is Weisz?*laugh* I don&apos;t trust him.</SayText>
+			<SayText type="npc">魏斯？这算什么名字？ *笑* 我不信任他。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Of everyone on board, only Mr. Weisz seems to have no reason to be here.</SayText>
+			<SayText type="npc">车上所有人里，只有魏斯先生似乎没有理由出现在这里。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">I have not spoken with Monsieur Weisz. I haven&apos;t even seen him.</SayText>
+			<SayText type="npc">我没和魏斯先生说过话。我甚至没见过他。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">He did ask me about the inner workings of my wheel. He seemed a little too interested.</SayText>
+			<SayText type="npc">他确实问过我摩天轮的内部构造。他好像有点过于感兴趣了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">I saw him lurking around near my cabin earlier. I got distracted, and when I turned back he had vanished.</SayText>
+			<SayText type="npc">我之前看见他在我舱室附近鬼鬼祟祟。我一分神，再回头他就不见了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">I think I saw him heading toward the coal car earlier.</SayText>
+			<SayText type="npc">我好像看见他之前往煤车那边去了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">Nope, haven&apos;t seen him up here.</SayText>
+			<SayText type="npc">没，我这儿没见过他。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Mr. Weisz is a paying customer. I know nothing more.</SayText>
+			<SayText type="npc">魏斯先生是付费乘客。其他的我一概不知。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">Something has been bothering me about this Weisz character. Doesn&apos;t he look familiar? Look at this article.</SayText>
+			<SayText type="npc">这个魏斯总让我觉得不对劲。你不觉得他眼熟吗？看看这篇报道。</SayText>
 			<Action type="waitContinue" data="null"></Action>
 			<Action type="addClue" data="11"></Action>
 			<Action type="callFunc" data="getNewspaper"></Action>
 
+			
+			
+			
+			
+
         
         
 		
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Weisz acted strangely when he mentioned that the lock was picked by an expert.</SayText>
+			<SayText type="thought">魏斯提到锁是被专家撬开时，反应很奇怪。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">I don&apos;t know anything about Erik Weisz.</SayText>
+			<SayText type="npc">我对埃里克·魏斯一无所知。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
     
     
@@ -922,77 +1317,119 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="11" name="TimesArticle" displayName="纽约时报文章" graphic="nytimes">
 		<Response npc="Weisz">
-			<SayText type="npc">You&apos;ve found out my true identity, but can you catch me?</SayText>
+			<SayText type="npc">你发现了我的真实身份，但你能抓住我吗？</SayText>
 			<Action type="removeClue" data="10"></Action>
 			<Action type="waitContinue" data="null"></Action>
 
+			
+			
+			
+
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">All this time, we were traveling with a famous magician?</SayText>
+			<SayText type="npc">这么久以来，我们一直和一位著名魔术师同行？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Houdini&apos;s trickery and flimflammery don&apos;t impress me.</SayText>
+			<SayText type="npc">胡迪尼的把戏和骗术可打动不了我。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Houdini? The Harry Houdini? You should take a closer look in his cabin.</SayText>
+			<SayText type="npc">胡迪尼？那个大名鼎鼎的哈里·胡迪尼？你该去他的包厢仔细看看。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">I understand how Monsieur Houdini would break into Tesla&apos;s briefcase, but I do not understand why.</SayText>
+			<SayText type="npc">我明白胡迪尼先生如何打开特斯拉的公文包，但我不明白他为何要这么做。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">They do look a lot alike.</SayText>
+			<SayText type="npc">他们确实长得很像。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">It must have been Houdini who broke into my briefcase.*grief* Find him!</SayText>
+			<SayText type="npc">一定是胡迪尼撬开了我的公文包。 *悲伤* 找到他！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Like most Americans, Houdini is a thief. Did you know he stole his name from the French magician Robert Houdin?</SayText>
+			<SayText type="npc">和大多数美国人一样，胡迪尼是个小偷。你知道他的艺名是从法国魔术师罗贝尔·乌丹那里借来的吗？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">I don&apos;t recall seeing Weisz onboard. I&apos;m sure I would have recognized him. Everyone knows Houdini!</SayText>
+			<SayText type="npc">我不记得在车上见过韦斯。我肯定能认出他。谁不知道胡迪尼啊！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">I did think it was strange that this Weisz fellow was onboard with so many celebrities.</SayText>
+			<SayText type="npc">我确实觉得奇怪，这个韦斯怎么会和这么多名人同车。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">Houdini can definitely pick a lock. Maybe his lockpicks are still in his room.</SayText>
+			<SayText type="npc">胡迪尼肯定能开锁。也许他的开锁工具还在房间里。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Erik Weisz looks a lot like Harry Houdini. Could they be the same person?</SayText>
+			<SayText type="thought">埃里克·韦斯看起来很像哈里·胡迪尼。他们会不会是同一个人？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">They do look a lot alike.</SayText>
+			<SayText type="npc">他们确实长得很像。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1013,72 +1450,110 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="12" name="Tesla" displayName="尼古拉·特斯拉有所隐瞒" graphic="tesla">
 		<Response npc="Tesla">
-			<SayText type="char">All right, Tesla, come clean. What were you hiding?</SayText>
-			<SayText type="npc">Let me out of here and I&apos;ll talk.[pick his lock]</SayText>
-			<SayText type="npc">I was carrying a small transformer capable of generating an enormous amount of wattage. Only this device would provide enough electricity to power the Ferris Wheel.</SayText>
-			<SayText type="char">Why would somebody steal that?</SayText>
-			<SayText type="npc">Egotistic fools � nobody wants to be upstaged by the Wheel!</SayText>
+			<SayText type="char">好了，特斯拉，老实交代吧。你藏了什么？</SayText>
+			<SayText type="npc">放我出去，我就告诉你。 [撬开他的锁]</SayText>
+			<SayText type="npc">我随身带了一个小型变压器，能产生巨大的电量。只有这个设备才能为摩天轮提供足够的电力。</SayText>
+			<SayText type="char">为什么会有人偷那个？</SayText>
+			<SayText type="npc">自负的傻瓜——没人想被摩天轮抢了风头！</SayText>
+
+			
+			
+			
+			
+			
 
         
         
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">I can&apos;t imagine what Tesla had in that case. You should ask him.</SayText>
+			<SayText type="npc">我想象不出特斯拉箱子里装了什么。你应该去问他。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">Don&apos;t ask me about Tesla&apos;s tomfoolery. Ask Tesla.</SayText>
+			<SayText type="npc">别问我特斯拉那些胡闹玩意儿。去问特斯拉本人。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">Professional curiosity does lead me to wonder what Tesla had in that case.</SayText>
+			<SayText type="npc">出于职业好奇，我确实想知道特斯拉箱子里装了什么。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">If you know what was stolen from Tesla, you may be able to determine who had the motive.</SayText>
+			<SayText type="npc">如果你知道特斯拉丢了什么，或许就能推断出谁的动机最大。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Whatever Tesla had might have been able to help me.*grief* Please, you&apos;ve got to find it!</SayText>
+			<SayText type="npc">不管特斯拉带了什么，或许能帮到我。 *悲伤* 求你了，一定要找到它！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">I&apos;m sure Tesla was carrying another one of his useless gadgets.</SayText>
+			<SayText type="npc">我敢肯定特斯拉又带了他那些没用的玩意儿。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">If I wanted this much excitement in the workplace, I&apos;d have taken that whaling job on the Pequod!</SayText>
+			<SayText type="npc">要是我想在工作时这么刺激，当初就该去佩阔德号捕鲸！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">I&apos;d tell you to stop bothering my passengers, but I guess we&apos;re well past that point.</SayText>
+			<SayText type="npc">我本该让你别打扰我的乘客，不过现在说这个也晚了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">If you can find out what was in that case, you&apos;ll have the scoop of a lifetime.</SayText>
+			<SayText type="npc">要是你能查出箱子里是什么，就能拿到独家大新闻。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Weisz... er, Houdini... said to find what Tesla was hiding, and I would find the thief.</SayText>
+			<SayText type="thought">魏斯……呃，胡迪尼……说找到特斯拉藏的东西，就能找到小偷。</SayText>
+
+			
 
         
 
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1095,70 +1570,108 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="13" name="Transformer" displayName="变压器" graphic="transformer">
 		<Response npc="Edison">
-			<SayText type="npc">Hmph. Inferior workmanship.</SayText>
+			<SayText type="npc">哼。做工真差。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">It&apos;s the very thing that could save my wheel!*grief* You&apos;ve got to find it!</SayText>
+			<SayText type="npc">这正是能拯救我摩天轮的东西！ *悲伤* 你必须找到它！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">That drawing means nothing to me, but if you asked me, I&apos;d say Gustave Eiffel is the most likely suspect. He has the most to lose if the Ferris Wheel is a success.</SayText>
+			<SayText type="npc">那张图纸对我毫无意义，但如果你问我，我会说古斯塔夫·埃菲尔嫌疑最大。如果摩天轮成功，他的损失最大。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">You still don&apos;t know who the thief is, and you&apos;ve talked to everyone on board � except that |mysterious fellow| in the last car. Talk to him and you may find the truth.</SayText>
+			<SayText type="npc">你还是不知道小偷是谁，而且车上所有人都问过了——除了最后一节车厢那位|神秘先生|. 去和他谈谈，或许就能真相大白。</SayText>
 			<Action type="addClue" data="14"></Action>
 
+			
+			
+
         
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Electrical? How gauche.*laugh* Monsieur Eiffel&apos;s tower never needed such artificial assistance.</SayText>
+			<SayText type="npc">电气？太俗气了。 *笑* 埃菲尔先生的塔可不需要这种人工辅助。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">Buddy, nobody in the big city is going to read a story about this little gizmo.*laugh* But the Ferris Wheel - now that&apos;s a scoop!</SayText>
+			<SayText type="npc">老兄，大城市里没人会报道这种小玩意儿。 *笑* 但摩天轮——那才是头条新闻！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">If it ain&apos;t coal-fired, I ain&apos;t interested.</SayText>
+			<SayText type="npc">不是烧煤的，我可没兴趣。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">That looks quite small. It could be hidden almost anywhere on this train!</SayText>
+			<SayText type="npc">那东西看起来很小。几乎可以藏在这列火车的任何地方！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Electrical engineering is beyond me. I build solid structures.</SayText>
+			<SayText type="npc">电气工程我不懂。我建造的是坚固的结构。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">My transformer - my greatest invention!</SayText>
+			<SayText type="npc">我的变压器——我最伟大的发明！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">This looks like it belongs in the Ferris Wheel.</SayText>
+			<SayText type="thought">这看起来像是摩天轮上的东西。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">I don&apos;t know anything about that.</SayText>
+			<SayText type="npc">我对此一无所知。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1185,68 +1698,105 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="14" name="Silhouette" displayName="最后一节车厢的神秘人" graphic="silhouette">
 		<Response npc="Edison">
-			<SayText type="npc">It would take a genius to thwart the security and reach the last car. Are you a genius?</SayText>
+			<SayText type="npc">只有天才才能突破安保进入最后一节车厢。你是天才吗？</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Please, get to the last car and talk to the mysterious person! You&apos;re my only hope!</SayText>
+			<SayText type="npc">拜托，去最后一节车厢和那个神秘人谈谈！你是我唯一的希望了！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">The Pinkerton guard is a tough cookie, but I saw him napping outside the last car. Maybe you can sneak by.</SayText>
+			<SayText type="npc">平克顿警卫是个硬茬，但我看到他在最后一节车厢外打盹。也许你能溜过去。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">You still don�t know who the thief is, and you�ve talked to everyone on board � except that mysterious fellow in the last car. Talk to him and you may find the truth.</SayText>
+			<SayText type="npc">你还没找出小偷是谁，而且你已经和车上所有人都谈过了——除了最后一节车厢那个神秘人。去和他谈谈，也许就能真相大白。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Good luck trying to get past all of the traps at the rear of the car.</SayText>
+			<SayText type="npc">祝你好运，想通过车厢后部的所有陷阱可不容易。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">I have a theory about who&apos;s on the last car. I think it&apos;s someone very important. You should go check it out.</SayText>
+			<SayText type="npc">我对最后一节车厢里的人有个猜测。我觉得是个大人物。你应该去查查看。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">Don&apos;t ask me who&apos;s back there. I&apos;ve learned my lesson about leaving the coal car.</SayText>
+			<SayText type="npc">别问我后面是谁。我已经吸取教训了，不该离开煤车。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">Let the spirit of curiosity take you wherever it may lead!</SayText>
+			<SayText type="npc">让好奇心的精神指引你去任何地方吧！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">That fellow has the right idea. Leaving your cabin is never a good idea.</SayText>
+			<SayText type="npc">那家伙说得对。离开你的车厢从来不是个好主意。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Security is tight in the last car. But I wouldn&apos;t put anything past you.</SayText>
+			<SayText type="npc">最后一节车厢安保很严。但我觉得你肯定有办法。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">There&apos;s a mysterious fellow in the last car, but it&apos;s heavily guarded.</SayText>
+			<SayText type="thought">最后一节车厢有个神秘人，但那里戒备森严。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">I don&apos;t know who&apos;s in the last car, and I don&apos;t think they want us to know, either.</SayText>
+			<SayText type="npc">我不知道最后一节车厢里是谁，而且我觉得他们也不想让我们知道。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1273,69 +1823,106 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="15" name="Trunk" displayName="行李箱里的法国物品" graphic="trunk">
 		<Response npc="Edison">
-			<SayText type="npc">All those French curios must point to Gustave Eiffel!</SayText>
+			<SayText type="npc">所有这些法国小玩意儿肯定指向古斯塔夫·埃菲尔！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">Mr. Eiffel is trying to sabotage me?*grief* No, I don&apos;t believe it!</SayText>
+			<SayText type="npc">埃菲尔先生想破坏我的计划？ *悲痛*不，我不信！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">You never could trust a Frenchman.</SayText>
+			<SayText type="npc">法国佬就是靠不住。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">What a long way to travel just to commit a crime.</SayText>
+			<SayText type="npc">跑这么远就为了干坏事。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">Another promising mind done in by his own ego.</SayText>
+			<SayText type="npc">又一个天才毁在了自大上。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">The evidence is overwhelming. Monsieur Eiffel is in the cabin car.</SayText>
+			<SayText type="npc">证据确凿，埃菲尔先生就在车厢里。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">I&apos;d still like to see his tower one day.</SayText>
+			<SayText type="npc">我还是想看看他建的那座塔。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">This never would have happened if the fair had been held in New York*stomp* instead of Chicago.</SayText>
+			<SayText type="npc">要是世博会在纽约*跺脚*而不是芝加哥办，就不会出这种事了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">It&apos;s true: I&apos;m French. But you&apos;ve overlooked one very important detail. This is a lady&apos;s handkerchief!</SayText>
-			<SayText type="char">It must be the Le Monde reporter. She doesn&apos;t want the Chicago fair to upstage Paris!</SayText>
+			<SayText type="npc">没错，我是法国人。但你们漏掉了一个关键细节——这是女士手帕！</SayText>
+			<SayText type="char">肯定是《世界报》的记者。她不想让芝加哥世博会抢了巴黎的风头！</SayText>
 			<Action type="waitContinue" data="null"></Action>
 			<Action type="callFunc" data="startLeMondeChase"></Action>
 
+			
+			
+			
+			
+
         
         
         
         
-    		</Response>
+    				</Response>
 		<Response npc="player">
-			<SayText type="thought">Various French books and other items from France... and a handkerchief smudged with coal dust!</SayText>
+			<SayText type="thought">一堆法国书和法国货……还有块沾了煤灰的手帕！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">Don&apos;t ask me. It&apos;s not my trunk.</SayText>
+			<SayText type="npc">别问我，又不是我的箱子。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1360,68 +1947,105 @@
 
     
 
-	</Clue>
+		</Clue>
 	<Clue id="16" name="PinkertonBlock" displayName="平克顿挡路" graphic="pinkerton">
 		<Response npc="player">
-			<SayText type="thought">I need to talk to Tesla in the coal car, but the Pinkerton agent is blocking the entrance.</SayText>
+			<SayText type="thought">我得去煤车找特斯拉，但平克顿探员把入口堵住了。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Edison">
-			<SayText type="npc">If you can&apos;t go through him, you could always try going over or around the guard.</SayText>
+			<SayText type="npc">硬闯不行，可以试试从上面或旁边绕过去。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Ferris">
-			<SayText type="npc">The guard won&apos;t stop you from heading back that way, I&apos;m sure.</SayText>
+			<SayText type="npc">守卫肯定不会拦着你往回走。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Twain">
-			<SayText type="npc">A brave person could probably move about the train by walking on top of it. Or a foolish person!</SayText>
+			<SayText type="npc">胆大的人可以从车顶走，或者说是莽撞的人！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Anthony">
-			<SayText type="npc">Don&apos;t expect the Pinkerton man to listen to reason. He wouldn&apos;t even take a pamphlet!</SayText>
+			<SayText type="npc">别指望平克顿探员讲道理，他连传单都不接！</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Tesla">
-			<SayText type="npc">I do not like that guard one bit.</SayText>
+			<SayText type="npc">我一点都不喜欢那个守卫。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Porter">
-			<SayText type="npc">Even I don&apos;t have the authority to move the guard from his post.</SayText>
+			<SayText type="npc">连我都没权力调动那个守卫。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="CoalMan">
-			<SayText type="npc">You don&apos;t need my help. You already found your way in here!</SayText>
+			<SayText type="npc">你不需要我帮忙。你不是已经进来了嘛。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="NyTimes">
-			<SayText type="npc">You&apos;ll never outmuscle that guard. You&apos;ll have to outfox him.</SayText>
+			<SayText type="npc">你硬拼不过那个守卫。得智取才行。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="Eiffel">
-			<SayText type="npc">When all else fails, look to the sky!</SayText>
+			<SayText type="npc">实在没办法的时候，就抬头看看天。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="LeMonde">
-			<SayText type="npc">Some of these train cars have hatches on the roof.</SayText>
+			<SayText type="npc">有些车厢顶上有舱口。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
 		<Response npc="default">
-			<SayText type="npc">I&apos;d stay away from the Pinkerton man if I were you.</SayText>
+			<SayText type="npc">我要是你，就离那个平克顿探员远点。</SayText>
+
+			
 
         
-    		</Response>
+    				</Response>
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
     
@@ -1448,7 +2072,24 @@
 
     
 
-	</Clue>
+		</Clue>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 

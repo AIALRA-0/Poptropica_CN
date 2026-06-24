@@ -5569,3 +5569,14 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
 - Scope note:
   - This prevents future manifest regeneration from silently dropping AS3 QA seed/start positions or changing resize reload behavior.
   - It does not validate live AS3 gameplay flows; those remain covered by separate AS3 smoke/P0 playability WIP.
+
+## 2026-06-24 Immediate Shutdown WIP Checkpoint
+
+- User requested an immediate stop so the machine can be shut down.
+- Prepared a WIP checkpoint instead of continuing deeper runtime work.
+- Current dirty scope being preserved includes bulk zh-CN AS2/AS3 resource updates, AS2 SWF changes, native navigation/XML text patch tooling, AS3 shell/scene patch tooling, runtime flow checker updates, and package script wiring.
+- Temporary extraction/output directories are intentionally left unstaged: `$out/`, `$tmp/`, and `content/`.
+- Known status for next continuation:
+  - The full project goal is not complete yet.
+  - The latest verified goal evidence before this checkpoint was `proved=8`, `partial=1`, with `github_sync` as the remaining partial item until the WIP checkpoint is pushed.
+  - The new bulk WIP checkpoint still needs a full audit/test pass before it should be treated as final gameplay evidence.

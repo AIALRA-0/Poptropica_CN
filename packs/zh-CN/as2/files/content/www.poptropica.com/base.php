@@ -373,7 +373,7 @@ function requestFlashMapResetDialog() {
 
 function resolveMapHotspot(viewport) {
     const hotspot = Object.assign({}, MAP_HOTSPOT);
-    if(viewport && viewport.useViewportCrop && Number(viewport.cropWidth) <= 840) {
+    if(viewport && viewport.useViewportCrop) {
         const cropRight = Number(viewport.cropLeft || 0) + Number(viewport.cropWidth || 0);
         hotspot.x = Math.max(Number(viewport.cropLeft || 0), cropRight - 110);
         hotspot.y = -5;
@@ -490,12 +490,26 @@ function scheduleResizeRecoveryReload() {
     viewportResizeLastSize = size;
     if(!shrank)
         return;
+    if(resizeRecoveryAlreadyReloaded())
+        return;
     if(viewportResizeReloadTimer)
         clearTimeout(viewportResizeReloadTimer);
     viewportResizeReloadTimer = setTimeout(reloadAfterViewportShrink, 900);
 }
 
+function resizeRecoveryAlreadyReloaded() {
+    try {
+        return new URL(window.location.href).searchParams.has("flashpointResizeReload");
+    } catch(err) {
+        return String(window.location.search || "").indexOf("flashpointResizeReload=") >= 0;
+    }
+}
+
 function reloadAfterViewportShrink() {
+    if(resizeRecoveryAlreadyReloaded()) {
+        applyCurrentViewport();
+        return;
+    }
     try {
         const url = new URL(window.location.href);
         url.searchParams.delete("flashpointQaLoadingHoldMs");

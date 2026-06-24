@@ -38,26 +38,54 @@ function findScreenManagerScript(root) {
   return null;
 }
 
-function applyLiveResizePatch(content) {
-  let next = String(content || "").replace(/\r\n/gu, "\n");
-  const liveMethods = `      private function onStageResize(param1:Event) : void
-      {
-         var groupManager:GroupManager = null;
-         if(!this.zhApplyBrowserLiveViewport())
-         {
-            return;
-         }
-         groupManager = this.shellApi.getManager(GroupManager) as GroupManager;
-         if(groupManager != null)
-         {
-            groupManager.resize(this.shellApi.viewportWidth,this.shellApi.viewportHeight);
-         }
+function replaceAs3Function(source, signature, replacement) {
+  const start = source.indexOf(signature);
+  if (start === -1) {
+    return source;
+  }
+  const braceStart = source.indexOf("{", start);
+  if (braceStart === -1) {
+    throw new Error(`Unable to locate function body for: ${signature}`);
+  }
+  let depth = 0;
+  for (let index = braceStart; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === "{") {
+      depth += 1;
+    } else if (char === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return `${source.slice(0, start)}${replacement}${source.slice(index + 1)}`;
       }
-      
-      private function zhApplyBrowserLiveViewport() : Boolean
+    }
+  }
+  throw new Error(`Unable to find closing brace for: ${signature}`);
+}
+
+function applyAdaptiveResizePatch(content) {
+  let next = String(content || "").replace(/\r\n/gu, "\n");
+  if (!next.includes("import engine.systems.CameraSystem;")) {
+    next = next.replace(
+      "   import engine.managers.GroupManager;\n",
+      "   import engine.managers.GroupManager;\n   import engine.systems.CameraSystem;\n"
+    );
+  }
+
+  next = next.replace(
+    /      private function onStageResize\(param1:Event\) : void\n      \{[\s\S]*?\n      override protected function construct/u,
+    "      override protected function construct"
+  );
+
+  const adaptiveHelpers = `      
+      private function zhApplyBrowserAdaptiveViewport() : Boolean
       {
          var zhStageWidth:Number = Number(NaN);
          var zhStageHeight:Number = Number(NaN);
+         var zhBaseWidth:Number = Number(NaN);
+         var zhBaseHeight:Number = Number(NaN);
+         var zhScale:Number = Number(NaN);
+         var zhViewportWidth:Number = Number(NaN);
+         var zhViewportHeight:Number = Number(NaN);
          if(AppConfig.mobile || !PlatformUtils.inBrowser || this.shellApi == null || _container == null)
          {
             return false;
@@ -68,55 +96,105 @@ function applyLiveResizePatch(content) {
          {
             return false;
          }
-         this.shellApi.viewportWidth = zhStageWidth;
-         this.shellApi.viewportHeight = zhStageHeight;
+         if(zhStageWidth >= zhStageHeight)
+         {
+            zhBaseWidth = GAME_WIDTH;
+            zhBaseHeight = GAME_HEIGHT;
+            zhScale = zhStageHeight / zhBaseHeight;
+            zhViewportWidth = zhStageWidth / zhScale;
+            zhViewportHeight = zhBaseHeight;
+         }
+         else
+         {
+            zhBaseWidth = GAME_HEIGHT;
+            zhBaseHeight = GAME_WIDTH;
+            zhScale = zhStageWidth / zhBaseWidth;
+            zhViewportWidth = zhBaseWidth;
+            zhViewportHeight = zhStageHeight / zhScale;
+         }
+         if(!isFinite(zhScale) || zhScale <= 0)
+         {
+            zhScale = 1;
+            zhViewportWidth = zhBaseWidth;
+            zhViewportHeight = zhBaseHeight;
+         }
+         this.shellApi.viewportWidth = Math.max(zhBaseWidth,zhViewportWidth);
+         this.shellApi.viewportHeight = Math.max(zhBaseHeight,zhViewportHeight);
          this.shellApi.viewportDeltaX = 0;
          this.shellApi.viewportDeltaY = 0;
-         this.shellApi.viewportScale = 1;
+         this.shellApi.viewportScale = zhScale;
          _container.x = 0;
          _container.y = 0;
-         _container.scaleX = 1;
-         _container.scaleY = 1;
+         _container.scaleX = zhScale;
+         _container.scaleY = zhScale;
          if(_backgroundContainer != null)
          {
-            _backgroundContainer.width = zhStageWidth;
-            _backgroundContainer.height = zhStageHeight;
+            _backgroundContainer.width = this.shellApi.viewportWidth;
+            _backgroundContainer.height = this.shellApi.viewportHeight;
          }
          return true;
       }`;
 
-  const resizePattern = /      private function onStageResize\(param1:Event\) : void\n      \{[\s\S]*?\n      override protected function construct/u;
-  if (!resizePattern.test(next)) {
-    throw new Error("Unable to locate ScreenManager resize method block.");
-  }
-  next = next.replace(resizePattern, `${liveMethods}
-      
-      override protected function construct`);
-
-  const currentSetupPattern = /         if\(this\.zhApplyBrowser(?:Cover|Live)Viewport\(\)\)\n         \{\n            AppConfig\.platformType = "desktop";\n            createContainers\(_container\);\n            return;\n         \}/u;
-  if (currentSetupPattern.test(next)) {
-    next = next.replace(currentSetupPattern, `         if(this.zhApplyBrowserLiveViewport())
+  const resizeMethod = `      public function resize(param1:Number, param2:Number) : void
+      {
+         var groupManager:GroupManager = null;
+         var cameraSystem:CameraSystem = null;
+         if(this.zhApplyBrowserAdaptiveViewport())
          {
-            AppConfig.platformType = "desktop";
-            createContainers(_container);
-            return;
-         }`);
-  } else {
-    const preLiveSetupPattern = /         var zhStageWidth:Number = Math\.max\(1,_stage\.stageWidth\);\n         var zhStageHeight:Number = Math\.max\(1,_stage\.stageHeight\);\n         if\(!AppConfig\.mobile && PlatformUtils\.inBrowser && zhStageWidth > 100 && zhStageHeight > 100\)\n         \{[\s\S]*?\n         \}\n         if\(AppConfig\.mobile \|\| AppConfig\.debug && !PlatformUtils\.inBrowser\)/u;
-    if (!preLiveSetupPattern.test(next)) {
-      throw new Error("Unable to locate ScreenManager browser setup block.");
-    }
-    next = next.replace(preLiveSetupPattern, `         if(this.zhApplyBrowserLiveViewport())
-         {
-            AppConfig.platformType = "desktop";
-            createContainers(_container);
+            groupManager = this.shellApi.getManager(GroupManager) as GroupManager;
+            if(groupManager != null)
+            {
+               groupManager.resize(this.shellApi.viewportWidth,this.shellApi.viewportHeight);
+               cameraSystem = groupManager.getSystem(CameraSystem) as CameraSystem;
+               if(cameraSystem != null)
+               {
+                  cameraSystem.jumpToTarget = true;
+               }
+            }
             return;
          }
-         if(AppConfig.mobile || AppConfig.debug && !PlatformUtils.inBrowser)`);
+         GroupManager(this.shellApi.getManager(GroupManager)).resize(param1,param2);
+         if(_backgroundContainer != null)
+         {
+            _backgroundContainer.width = param1;
+            _backgroundContainer.height = param2;
+         }
+      }`;
+  next = replaceAs3Function(next, "      public function resize(param1:Number, param2:Number) : void", resizeMethod);
+
+  const browserSetupCall = `         if(this.zhApplyBrowserAdaptiveViewport())
+         {
+            AppConfig.platformType = "desktop";
+            createContainers(_container);
+            return;
+         }`;
+  const currentSetupPattern = /         if\(this\.zhApplyBrowser(?:Adaptive|Cover|Live|Fit)Viewport\(\)\)\n         \{\n            AppConfig\.platformType = "desktop";\n            createContainers\(_container\);\n            return;\n         \}/u;
+  if (currentSetupPattern.test(next)) {
+    next = next.replace(currentSetupPattern, browserSetupCall);
+  } else if (next.includes('         _stage.align = "TL";\n')) {
+    next = next.replace('         _stage.align = "TL";\n', `         _stage.align = "TL";\n${browserSetupCall}\n`);
+  } else {
+    throw new Error("Unable to locate ScreenManager setupScreen stage align block.");
   }
 
-  if (!next.includes("zhApplyBrowserLiveViewport") || next.includes("zhApplyBrowserCoverViewport")) {
-    throw new Error("ScreenManager live resize patch did not apply cleanly.");
+  if (!next.includes("private function zhApplyBrowserAdaptiveViewport")) {
+    const marker = "\n      public function resize";
+    const markerIndex = next.indexOf(marker);
+    if (markerIndex === -1) {
+      throw new Error("Unable to locate ScreenManager resize marker for adaptive helper.");
+    }
+    next = `${next.slice(0, markerIndex)}\n${adaptiveHelpers}\n${next.slice(markerIndex)}`;
+  }
+
+  if (!next.includes("zhApplyBrowserAdaptiveViewport") || !next.includes("cameraSystem.jumpToTarget = true") || next.includes("zhApplyBrowserCoverViewport") || next.includes("zhApplyBrowserLiveViewport") || next.includes("zhApplyBrowserFitViewport")) {
+    throw new Error("ScreenManager adaptive camera viewport resize patch did not apply cleanly.");
+  }
+  next = next.replace(
+    /_backgroundContainer = _loc2_\.createBox\(shellApi\.viewportWidth,shellApi\.viewportHeight(?:,\d+)?\);/u,
+    "_backgroundContainer = _loc2_.createBox(shellApi.viewportWidth,shellApi.viewportHeight,5858397);"
+  );
+  if (!next.includes("_backgroundContainer = _loc2_.createBox(shellApi.viewportWidth,shellApi.viewportHeight,5858397);")) {
+    throw new Error("Unable to patch ScreenManager browser background fill color.");
   }
   return next;
 }
@@ -133,7 +211,7 @@ function main() {
     throw new Error(`AS3 pack Shell.swf is missing: ${packShell}`);
   }
 
-  const workDir = path.join(paths.tempDir, "as3-shell-layout-live-patch");
+  const workDir = path.join(paths.tempDir, "as3-shell-layout-adaptive-camera-patch");
   removeDirContents(workDir);
   ensureDirSync(workDir);
   const scriptRoot = path.join(workDir, "scripts");
@@ -155,7 +233,7 @@ function main() {
   }
 
   const originalScript = fs.readFileSync(screenManagerPath, "utf8");
-  const patchedScript = applyLiveResizePatch(originalScript);
+  const patchedScript = applyAdaptiveResizePatch(originalScript);
   writeText(screenManagerPath, patchedScript);
 
   runFfdec(ffdecCli, [
@@ -181,18 +259,25 @@ function main() {
         pendingSwfAssets: []
       };
   manifest.assetsPatched = Number(manifest.assetsPatched || 0) + 1;
-  manifest.swfPatchedAssets = Array.isArray(manifest.swfPatchedAssets) ? manifest.swfPatchedAssets : [];
+  manifest.swfPatchedAssets = (Array.isArray(manifest.swfPatchedAssets) ? manifest.swfPatchedAssets : [])
+    .filter((entry) => !["as3-shell:layout-fit-scale-resize", "as3-shell:layout-cover-scale", "as3-shell:layout-live-resize", "as3-shell:layout-adaptive-resize"].includes(entry?.assetId));
   manifest.swfPatchedAssets.push({
-    assetId: "as3-shell:layout-live-resize",
+    assetId: "as3-shell:layout-adaptive-camera-resize",
     assetPath: AS3_SHELL_PATH,
     outputPath: packShell
   });
 
-  const runtimeZip = buildRuntimeZipForSourceGroup({
-    config,
-    sourceGroup: "as3",
-    manifest
-  });
+  const runtimeZip = process.env.POPTROPICA_SKIP_RUNTIME_REBUILD === "1"
+    ? {
+        status: "skipped",
+        reason: "POPTROPICA_SKIP_RUNTIME_REBUILD=1",
+        runtimeZipPath: paths.as3RuntimeZipPath
+      }
+    : buildRuntimeZipForSourceGroup({
+        config,
+        sourceGroup: "as3",
+        manifest
+      });
   writeJson(manifestPath, manifest);
 
   const report = {
@@ -201,9 +286,9 @@ function main() {
     packShell,
     runtimeZip,
     screenManagerPath,
-    patch: "browser live stage viewport on setup and resize"
+    patch: "browser adaptive wide viewport on setup and resize; resize requests camera jump back to target"
   };
-  const reportPath = path.join(paths.qaDir, "as3", "as3-shell-layout-live-patch.json");
+  const reportPath = path.join(paths.qaDir, "as3", "as3-shell-layout-adaptive-camera-patch.json");
   writeJson(reportPath, report);
   printJson({ ...report, reportPath });
 }

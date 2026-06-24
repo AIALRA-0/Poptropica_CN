@@ -56,7 +56,7 @@
 		<y>1326</y>
 		<direction>right</direction>
 		<label>
-			<text>Exit</text>
+			<text>退出</text>
 			<type>exit3D</type>
 			<offset>
 				<x>0</x>

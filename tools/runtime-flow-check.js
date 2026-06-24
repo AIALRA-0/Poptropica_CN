@@ -8,6 +8,7 @@ const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const { ensureDirSync, writeJson } = require("./lib/fs-utils");
 const { ensureManagedWorkspace, ensureFlashpointServices, mountSourceZip, proxyRequest, spawnManagedRuntime } = require("./lib/flashpoint-runtime");
+const { resolveCliWindowGeometry, withWindowGeometryEnv } = require("./lib/runtime-window-geometry");
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const QA_HELPER_PATH = path.join(paths.toolsRoot, "qa-helper.py");
@@ -49,7 +50,7 @@ const SUPER_POWER_ACTIONS = {
   "downtown-bank": {
     kind: "stage",
     viewport: "super-gameplay",
-    points: [{ x: 0.50, y: 0.68 }, { x: 0.50, y: 0.68 }],
+    points: [{ x: 0.88, y: 0.72 }, { x: 0.88, y: 0.66 }],
     expectedLogFragment: "sceneBank.swf",
     expectedScene: "Bank",
     settleMs: 20000,
@@ -188,6 +189,76 @@ function normalizeSceneMarkerText(value) {
     .replace(/\s+/gu, " ")
     .trim()
     .toUpperCase();
+}
+
+function flagEnabled(value) {
+  if (value === true) {
+    return true;
+  }
+  if (value === false || value === undefined || value === null) {
+    return false;
+  }
+  return /^(1|true|yes|y|on)$/iu.test(String(value).trim());
+}
+
+function resolveWindowSize(args = {}) {
+  const sizeMatch = String(args.windowSize || args["window-size"] || "").match(/^(\d+)x(\d+)$/iu);
+  const width = Number(args.windowWidth || args["window-width"] || (sizeMatch ? sizeMatch[1] : 0));
+  const height = Number(args.windowHeight || args["window-height"] || (sizeMatch ? sizeMatch[2] : 0));
+  return {
+    width: Number.isFinite(width) && width > 0 ? Math.round(width) : null,
+    height: Number.isFinite(height) && height > 0 ? Math.round(height) : null
+  };
+}
+
+function resolveQaWindowOptions(args = {}) {
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const noForeground = flagEnabled(args.noForeground || args["no-foreground"] || args.noForegroundCapture || args["no-foreground-capture"] || process.env.POPTROPICA_QA_NO_FOREGROUND);
+  const postMessageClicks = !flagEnabled(args.allowMouseClicks || args["allow-mouse-clicks"]) && !flagEnabled(args.cursorClicks || args["cursor-clicks"]);
+  const size = resolveWindowSize(args);
+  const maximize = flagEnabled(args.maximizeWindow || args["maximize-window"] || args.maximize);
+
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  if (noForeground) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
+  if (postMessageClicks && !process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS) {
+    process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
+  }
+
+  return {
+    targetMonitor: targetMonitor || null,
+    width: size.width,
+    height: size.height,
+    maximize,
+    noForeground,
+    postMessageClicks
+  };
+}
+
+function appendQaWindowArgs(commandArgs, options = {}) {
+  if (options.targetMonitor) {
+    commandArgs.push("--target-monitor", String(options.targetMonitor));
+  }
+  if (options.width) {
+    commandArgs.push("--window-width", String(options.width));
+  }
+  if (options.height) {
+    commandArgs.push("--window-height", String(options.height));
+  }
+  if (options.maximize) {
+    commandArgs.push("--maximize");
+  }
+  return commandArgs;
+}
+
+function focusWindowIfAllowed(handle, options = {}) {
+  if (options.noForeground) {
+    return;
+  }
+  focusWindow(handle);
 }
 
 function runPowershell(command, timeout = 30000) {
@@ -451,6 +522,7 @@ function captureStageBundle(handle, reportDir, stem, options = {}) {
   if (options.pid) {
     captureArgs.push("--pid", String(options.pid));
   }
+  appendQaWindowArgs(captureArgs, options);
   const capture = runPythonQa(captureArgs, 70000);
   const stage = runPythonQa([
     "analyze-stage",
@@ -489,6 +561,12 @@ function clickWindowPoint(handle, point, options = {}) {
   if (options.pid) {
     args.push("--pid", String(options.pid));
   }
+  appendQaWindowArgs(args, options);
+  if (options.postMessageClicks) {
+    args.push("--post-message");
+  } else if (options.restoreCursor !== false) {
+    args.push("--restore-cursor");
+  }
   const click = runPythonQa(args, 20000);
   return {
     point,
@@ -508,6 +586,33 @@ function sendWindowKeys(handle, keys, delayMs = 250) {
     ok: result.status === 0,
     stdout: String(result.stdout || "").trim(),
     stderr: String(result.stderr || "").trim(),
+    keys
+  };
+}
+
+function keyWindow(handle, keys, options = {}) {
+  const args = [
+    "key-window",
+    "--handle", String(handle),
+    "--key", String(keys || "")
+  ];
+  if (options.processNames) {
+    args.push("--process-names", String(options.processNames));
+  }
+  if (options.titleContains) {
+    args.push("--title-contains", String(options.titleContains));
+  }
+  if (options.pid) {
+    args.push("--pid", String(options.pid));
+  }
+  appendQaWindowArgs(args, options);
+  if (options.postMessageClicks) {
+    args.push("--post-message");
+  }
+  const output = runPythonQa(args, 20000);
+  return {
+    ok: true,
+    output,
     keys
   };
 }
@@ -559,6 +664,7 @@ async function runStageAction({
   reportDir,
   sequenceIndex,
   delayMs,
+  windowOptions,
   fallbackWaitMs
 }) {
   const stepDefinition = getStageAction(actionName);
@@ -568,7 +674,8 @@ async function runStageAction({
 
   const windowFilter = {
     processNames: RUNTIME_CLICK_PROCESS_NAMES,
-    pid: runtimePid
+    pid: runtimePid,
+    ...windowOptions
   };
   const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`, windowFilter);
   const activeHandle = Number(beforeBundle.capture?.window?.handle || handle);
@@ -577,7 +684,7 @@ async function runStageAction({
   const clickSequence = [];
   const followupDelayMs = Number(stepDefinition.followupDelayMs || Math.min(1800, Math.max(600, Math.round((stepDefinition.settleMs || fallbackWaitMs) / 8))));
   for (let index = 0; index < clickPlan.length; index += 1) {
-    focusWindow(activeHandle);
+    focusWindowIfAllowed(activeHandle, windowFilter);
     const point = stagePointToWindowPoint(beforeBundle.stage, clickPlan[index], stepDefinition, beforeBundle.capture);
     clickSequence.push(clickWindowPoint(activeHandle, point, windowFilter));
     if (index + 1 < clickPlan.length) {
@@ -624,6 +731,7 @@ async function runKeyAction({
   runtimePid,
   reportDir,
   sequenceIndex,
+  windowOptions,
   fallbackWaitMs
 }) {
   const stepDefinition = getStageAction(actionName);
@@ -633,13 +741,14 @@ async function runKeyAction({
 
   const windowFilter = {
     processNames: RUNTIME_CLICK_PROCESS_NAMES,
-    pid: runtimePid
+    pid: runtimePid,
+    ...windowOptions
   };
   const beforeBundle = captureStageBundle(handle, reportDir, `${String(sequenceIndex).padStart(2, "0")}-${actionName}-before`, windowFilter);
   const activeHandle = Number(beforeBundle.capture?.window?.handle || handle);
   const beforeViewport = getStageViewportRect(beforeBundle.stage, stepDefinition, beforeBundle.capture);
   const logStartOffset = fs.existsSync(GAME_SERVER_LOG_PATH) ? fs.statSync(GAME_SERVER_LOG_PATH).size : 0;
-  focusWindow(activeHandle);
+  focusWindowIfAllowed(activeHandle, windowFilter);
   if (beforeViewport.width > 0 && beforeViewport.height > 0) {
     const clickOffset = captureClickOffset(beforeBundle.capture);
     clickWindowPoint(activeHandle, {
@@ -648,7 +757,9 @@ async function runKeyAction({
     }, windowFilter);
     await sleep(220);
   }
-  const keyResult = sendWindowKeys(activeHandle, stepDefinition.key, 400);
+  const keyResult = windowFilter.postMessageClicks
+    ? keyWindow(activeHandle, stepDefinition.key, windowFilter)
+    : sendWindowKeys(activeHandle, stepDefinition.key, 400);
   const logResult = stepDefinition.expectedLogFragment
     ? await waitForLogFragment(GAME_SERVER_LOG_PATH, logStartOffset, stepDefinition.expectedLogFragment, stepDefinition.settleMs || fallbackWaitMs)
     : null;
@@ -681,12 +792,12 @@ async function runKeyAction({
   };
 }
 
-async function runLauncherAction(actionName, handle, delayMs, waitMs) {
+async function runLauncherAction(actionName, handle, delayMs, waitMs, windowOptions = {}) {
   const point = getLauncherClickPoint(actionName);
   if (!point) {
     throw new Error(`Unsupported action: ${actionName}`);
   }
-  const clickResult = clickWindowPoint(handle, point);
+  const clickResult = clickWindowPoint(handle, point, windowOptions);
   await sleep(delayMs);
   await sleep(waitMs);
   return {
@@ -699,6 +810,7 @@ async function runLauncherAction(actionName, handle, delayMs, waitMs) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const sourceGroup = String(args.source || "as3").toLowerCase();
+  const qaWindowOptions = resolveQaWindowOptions(args);
   const islandId = args.island ? String(args.island).toLowerCase() : null;
   const directLaunchUrl = args.launchUrl
     ? String(args.launchUrl)
@@ -743,7 +855,10 @@ async function main() {
       if (startupHealth.statusCode < 200 || startupHealth.statusCode >= 400) {
         throw new Error(`Direct launch URL failed with status ${startupHealth.statusCode}`);
       }
-      spawnManagedRuntime(config, sourceGroup, directLaunchUrl, { detach: true });
+      const runtimeGeometry = resolveCliWindowGeometry(args, sourceGroup);
+      withWindowGeometryEnv(runtimeGeometry, () => {
+        spawnManagedRuntime(config, sourceGroup, directLaunchUrl, { detach: true });
+      });
     } else if (islandId) {
       const launch = spawnSync(process.execPath, [LAUNCH_SCRIPT_PATH, "--island", islandId], {
         cwd: paths.projectRoot,
@@ -778,9 +893,10 @@ async function main() {
     const runtimePid = Number(runtimeWindow.Id?.value || runtimeWindow.Id || 0) || null;
     const runtimeWindowFilter = {
       processNames: RUNTIME_CLICK_PROCESS_NAMES,
-      pid: runtimePid
+      pid: runtimePid,
+      ...qaWindowOptions
     };
-    focusWindow(handle);
+    focusWindowIfAllowed(handle, runtimeWindowFilter);
     await sleep(startupWaitMs);
 
     const initialBundle = captureStageBundle(handle, reportDir, `${sourceGroup}-initial`, runtimeWindowFilter);
@@ -792,7 +908,7 @@ async function main() {
       const stepDefinition = getStageAction(actionName);
       let result;
       if (!stepDefinition) {
-        result = await runLauncherAction(actionName, handle, perActionDelayMs, perActionWaitMs);
+        result = await runLauncherAction(actionName, handle, perActionDelayMs, perActionWaitMs, runtimeWindowFilter);
       } else if (stepDefinition.kind === "key") {
         result = await runKeyAction({
           actionName,
@@ -800,6 +916,7 @@ async function main() {
           runtimePid,
           reportDir,
           sequenceIndex: index + 1,
+          windowOptions: qaWindowOptions,
           fallbackWaitMs: perActionWaitMs
         });
       } else {
@@ -810,11 +927,12 @@ async function main() {
           reportDir,
           sequenceIndex: index + 1,
           delayMs: perActionDelayMs,
+          windowOptions: qaWindowOptions,
           fallbackWaitMs: perActionWaitMs
         });
       }
       actionResults.push(result);
-      focusWindow(handle);
+      focusWindowIfAllowed(handle, runtimeWindowFilter);
     }
 
     const failedActions = actionResults.filter((result) => result.verdict && !result.verdict.ok);
