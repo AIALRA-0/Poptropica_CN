@@ -24,7 +24,6 @@ const {
 
 let mainWindow = null;
 let activeRuntime = null;
-const DEFAULT_RUNTIME_TARGET_MONITOR = "G32QC";
 const electronProfileRoot = path.join(
   paths.runtimeDataDir,
   process.env.POPTROPICA_UI_TEST
@@ -64,13 +63,8 @@ function emitStatus(stage, message, extra = {}) {
   });
 }
 
-function ensureRuntimeTargetMonitorEnv() {
-  const current = String(process.env.POPTROPICA_QA_MONITOR || "").trim();
-  if (current) {
-    return current;
-  }
-  process.env.POPTROPICA_QA_MONITOR = DEFAULT_RUNTIME_TARGET_MONITOR;
-  return DEFAULT_RUNTIME_TARGET_MONITOR;
+function resolveRuntimeTargetMonitor() {
+  return String(process.env.POPTROPICA_QA_MONITOR || "").trim();
 }
 
 for (const profileDir of [
@@ -195,7 +189,7 @@ async function buildRuntimePlan(sourceGroup) {
     };
   }
 
-  const targetMonitor = ensureRuntimeTargetMonitorEnv();
+  const targetMonitor = resolveRuntimeTargetMonitor();
   const windowGeometry = resolveLauncherRuntimeWindowGeometry(normalized);
   ensureManagedWorkspace(config);
   const services = await ensureFlashpointServices(config);

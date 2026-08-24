@@ -428,11 +428,11 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
     },
     {
       id: "launcher_ipc_and_safe_sizing",
-      title: "Launcher UI / IPC 使用 G32QC 和安全窗口尺寸",
+      title: "Launcher UI / IPC 使用可配置显示器和安全窗口尺寸",
       ...reportStatus(
         reports.launcherIpc.data?.ok === true ? "proved" : "missing",
         reports.launcherIpc.data?.ok === true
-          ? "Launcher IPC background smoke validates AS3 safe maximize, AS2 default sizing, inherited sizing, busy-launch guard, and G32QC target."
+          ? "Launcher IPC background smoke validates AS3 safe maximize, AS2 default sizing, inherited sizing, busy-launch guard, and an explicit neutral target."
           : "Launcher IPC smoke evidence is missing or failing.",
         {
           launcherIpc: reports.launcherIpc.data

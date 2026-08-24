@@ -8,8 +8,8 @@
   "pendingSwfAssets": [],
   "runtimeZip": {
     "status": "ready",
-    "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
-    "runtimeZipPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
+    "sourceZip": "AS3.zip",
+    "runtimeZipPath": "runtime-data\\patched-zips\\as3-runtime.zip",
     "replacementCount": 47,
     "swfRuntimeOverrides": "safe_subset"
   }

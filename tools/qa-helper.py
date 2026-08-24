@@ -37,13 +37,6 @@ RUNTIME_BROWSER_PROCESS_NAMES = {
     "basiliskii.exe",
     "firefox.exe",
 }
-KNOWN_MODEL_SIZE_HINTS = {
-    "g32qc": (2560, 1440),
-    "g32qc a": (2560, 1440),
-    "34gp950g": (2752, 1152),
-    "b226hql": (1920, 1080),
-}
-
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 if hasattr(sys.stderr, "reconfigure"):
@@ -82,61 +75,8 @@ def rect_payload(rect):
     }
 
 
-def read_active_monitor_models():
-    script = (
-        "Get-CimInstance -Namespace root\\wmi -ClassName WmiMonitorID | "
-        "Where-Object { $_.Active } | "
-        "Select-Object InstanceName,"
-        "@{Name='UserFriendlyName';Expression={($_.UserFriendlyName | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
-        "@{Name='ManufacturerName';Expression={($_.ManufacturerName | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
-        "@{Name='ProductCodeID';Expression={($_.ProductCodeID | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}},"
-        "@{Name='SerialNumberID';Expression={($_.SerialNumberID | Where-Object {$_ -ne 0} | ForEach-Object {[char]$_}) -join ''}} | "
-        "ConvertTo-Json -Compress"
-    )
-    try:
-        result = subprocess.run(
-            [
-                "powershell",
-                "-NoProfile",
-                "-NonInteractive",
-                "-ExecutionPolicy",
-                "Bypass",
-                "-Command",
-                script,
-            ],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=8,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-            check=False,
-        )
-    except Exception:
-        return []
-    if result.returncode != 0 or not result.stdout.strip():
-        return []
-    try:
-        payload = json.loads(result.stdout)
-    except Exception:
-        return []
-    rows = payload if isinstance(payload, list) else [payload]
-    return [
-        {
-            "instanceName": row.get("InstanceName"),
-            "userFriendlyName": row.get("UserFriendlyName"),
-            "manufacturerName": row.get("ManufacturerName"),
-            "productCodeId": row.get("ProductCodeID"),
-            "serialNumberId": row.get("SerialNumberID"),
-        }
-        for row in rows
-        if isinstance(row, dict)
-    ]
-
-
 def enum_monitors():
     rows = []
-    models = read_active_monitor_models()
     for index, (handle, _hdc, _rect) in enumerate(win32api.EnumDisplayMonitors(), start=1):
         info = win32api.GetMonitorInfo(handle)
         device = str(info.get("Device") or "")
@@ -155,31 +95,6 @@ def enum_monitors():
         }
         row["aliases"] = monitor_aliases(row)
         rows.append(row)
-
-    for model in models:
-        name = str(model.get("userFriendlyName") or "")
-        normalized_name = normalize_token(name)
-        size_hint = next(
-            (size for key, size in KNOWN_MODEL_SIZE_HINTS.items() if normalize_token(key) in normalized_name),
-            None,
-        )
-        if not size_hint:
-            continue
-        width, height = size_hint
-        candidates = [
-            row for row in rows
-            if row["rect"]["width"] == width and row["rect"]["height"] == height
-        ]
-        if "g32qc" in normalized_name:
-            candidates = [row for row in candidates if not row["primary"]] or candidates
-        if "34gp950g" in normalized_name:
-            candidates = [row for row in candidates if row["primary"]] or candidates
-        if "b226hql" in normalized_name:
-            candidates = sorted(candidates, key=lambda row: (row["rect"]["top"], row["rect"]["left"]), reverse=True)
-        else:
-            candidates = sorted(candidates, key=lambda row: (row["primary"], row["rect"]["left"]))
-        if candidates:
-            candidates[0]["modelHint"] = model
 
     for row in rows:
         row["aliases"] = monitor_aliases(row)
@@ -233,29 +148,6 @@ def resolve_monitor_target(target):
                 "requested": requested,
                 "matchReason": "alias-substring",
                 "monitor": row,
-                "availableMonitors": rows,
-            }
-
-    for model_name, size_hint in KNOWN_MODEL_SIZE_HINTS.items():
-        if normalize_token(model_name) not in normalized_requested:
-            continue
-        width, height = size_hint
-        candidates = [
-            row for row in rows
-            if row["rect"]["width"] == width and row["rect"]["height"] == height
-        ]
-        if "g32qc" in normalize_token(model_name):
-            candidates = [row for row in candidates if not row["primary"]] or candidates
-            candidates = sorted(candidates, key=lambda row: (row["rect"]["left"], row["rect"]["top"]))
-        elif "34gp950g" in normalize_token(model_name):
-            candidates = [row for row in candidates if row["primary"]] or candidates
-        else:
-            candidates = sorted(candidates, key=lambda row: (row["rect"]["top"], row["rect"]["left"]), reverse=True)
-        if candidates:
-            return {
-                "requested": requested,
-                "matchReason": f"known-size:{model_name}",
-                "monitor": candidates[0],
                 "availableMonitors": rows,
             }
 

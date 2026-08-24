@@ -12,7 +12,6 @@ const paths = require("./lib/paths");
 
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 22800;
-const DEFAULT_TARGET_MONITOR = "G32QC";
 const MAX_BODY_BYTES = 1024 * 1024;
 
 function flagEnabled(value, fallback = false) {
@@ -81,7 +80,7 @@ function getState(serverOptions = {}) {
     app: {
       name: "POPTROPICA_FLASH Web Launcher",
       hostOnly: true,
-      defaultTargetMonitor: DEFAULT_TARGET_MONITOR,
+      defaultTargetMonitor: String(process.env.POPTROPICA_QA_MONITOR || "").trim() || null,
       launchMode: resolvedOptions.launchMode,
       spawnEnabled: resolvedOptions.spawnEnabled
     },
@@ -187,7 +186,7 @@ function resolveGeometryOptions(body = {}) {
 }
 
 function buildLaunchArgs({ mode, value, sourceGroup, body = {} }) {
-  const targetMonitor = String(body.targetMonitor || body.monitor || process.env.POPTROPICA_QA_MONITOR || DEFAULT_TARGET_MONITOR).trim();
+  const targetMonitor = String(body.targetMonitor || body.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   const geometryOptions = resolveGeometryOptions(body);
   const args = [];
   if (mode === "runtime") {
@@ -497,7 +496,7 @@ function renderPage(serverOptions = {}) {
           <span class="status-line"><span class="dot" id="proxyDot"></span>Proxy</span>
           <span class="status-line"><span class="dot" id="zipDot"></span>ZIP</span>
           <span class="status-line"><span class="dot" id="phpDot"></span>PHP</span>
-          <span class="status-line"><span class="dot ok"></span><span id="monitorLabel">G32QC</span></span>
+          <span class="status-line"><span class="dot ok"></span><span id="monitorLabel">系统自动选择</span></span>
           <span class="status-line"><span class="dot ok"></span><span id="launchModeLabel">${launchMode}</span></span>
         </div>
         <div class="notice" id="noSpawnNotice" hidden>部署预览模式已启用：启动按钮只返回命令计划，不会在服务器主机上启动 Flashpoint Navigator。</div>
@@ -566,12 +565,12 @@ function renderPage(serverOptions = {}) {
       }
       function launchPayload(extra = {}) {
         const size = $("sizeSelect").value;
-        return { targetMonitor: "G32QC", ...(size ? { windowSize: size, maximize: false } : { maximize: true }), ...extra };
+        return { ...(size ? { windowSize: size, maximize: false } : { maximize: true }), ...extra };
       }
       function renderSummary() {
         const summary = state.payload?.inventory?.summary || {};
         const launch = state.payload?.launchManifest?.summary || {};
-        $("subtitle").textContent = window.location.origin;
+        $("subtitle").textContent = "仅限本机访问";
         $("launchableCount").textContent = (launch.launchableCount || 0) + " / " + (launch.totalEntries || 0);
         $("flashIslandCount").textContent = String(summary.flashIslandCount || 0);
         $("playableCount").textContent = String(summary.verifiedPlayableCount || 0);
@@ -580,7 +579,7 @@ function renderPage(serverOptions = {}) {
         $("proxyDot").classList.toggle("ok", Boolean(healthy.proxy));
         $("zipDot").classList.toggle("ok", Boolean(healthy.zip));
         $("phpDot").classList.toggle("ok", Boolean(healthy.php));
-        $("monitorLabel").textContent = state.payload?.app?.defaultTargetMonitor || "G32QC";
+        $("monitorLabel").textContent = state.payload?.app?.defaultTargetMonitor || "系统自动选择";
         $("launchModeLabel").textContent = state.payload?.app?.launchMode || SERVER_LAUNCH_MODE;
         $("noSpawnNotice").hidden = Boolean(state.payload?.app?.spawnEnabled ?? SERVER_SPAWN_ENABLED);
       }
@@ -744,7 +743,7 @@ async function main() {
     url: instance.url,
     host: instance.host,
     port: instance.port,
-    targetMonitor: DEFAULT_TARGET_MONITOR,
+    targetMonitor: String(process.env.POPTROPICA_QA_MONITOR || "").trim() || null,
     launchMode: instance.launchMode,
     spawnEnabled: instance.spawnEnabled
   };

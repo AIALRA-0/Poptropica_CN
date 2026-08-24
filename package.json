@@ -44,7 +44,7 @@
     "qa:steam-detect": "node tools/qa-steam-detect.js",
     "qa:web-launcher": "node tools/qa-web-launcher.js",
     "qa:launcher-ipc": "node tools/qa-launcher-ipc.js",
-    "qa:monitors": "python tools/qa-helper.py list-monitors --target-monitor G32QC",
+    "qa:monitors": "python tools/qa-helper.py list-monitors",
     "qa:capture": "node tools/qa-capture.js",
     "qa:ocr": "node tools/qa-ocr.js",
     "qa:audio-check": "node tools/qa-audio-check.js",

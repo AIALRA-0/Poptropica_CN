@@ -4,15 +4,15 @@
     "as2Configured": true,
     "as3Configured": true,
     "as2Archive": {
-      "archivePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-      "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
-      "runtimeZip": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
+      "archivePath": "runtime-data\\patched-zips\\as2-runtime.zip",
+      "sourceZip": "AS2.zip",
+      "runtimeZip": "runtime-data\\patched-zips\\as2-runtime.zip",
       "usesRuntimeZip": true
     },
     "as3Archive": {
-      "archivePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-      "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
-      "runtimeZip": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
+      "archivePath": "runtime-data\\patched-zips\\as3-runtime.zip",
+      "sourceZip": "AS3.zip",
+      "runtimeZip": "runtime-data\\patched-zips\\as3-runtime.zip",
       "usesRuntimeZip": true
     }
   },

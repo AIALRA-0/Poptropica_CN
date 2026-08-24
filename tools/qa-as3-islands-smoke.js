@@ -107,7 +107,7 @@ function shouldFailOnMissingRequests(args) {
 }
 
 function applyVisibleQaDefaults(args) {
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }

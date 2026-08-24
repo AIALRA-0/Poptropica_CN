@@ -172,7 +172,7 @@ async function main() {
   };
 
   try {
-    delete process.env.POPTROPICA_QA_MONITOR;
+    process.env.POPTROPICA_QA_MONITOR = "SECONDARY_DISPLAY";
     delete process.env.POPTROPICA_WINDOW_HEIGHT;
     delete process.env.POPTROPICA_WINDOW_WIDTH;
     process.env.POPTROPICA_UI_TEST = "1";
@@ -196,13 +196,13 @@ async function main() {
     const as3 = await invoke("flash:launch-runtime", "as3");
     assert(as3.ok === true, "AS3 launch IPC should return ok");
     assert(as3.launched === true, "AS3 launch IPC should report launched");
-    assert(as3.targetMonitor === "G32QC", "AS3 launch should default to G32QC");
+    assert(as3.targetMonitor === "SECONDARY_DISPLAY", "AS3 launch should preserve the configured target");
     assert(as3.windowGeometry?.mode === "as3-safe-maximize", "AS3 launch should use safe maximize");
     assert(as3.windowGeometry?.width === AS3_SAFE_MAXIMIZE_WIDTH, "AS3 safe width mismatch");
     assert(as3.windowGeometry?.height === AS3_SAFE_MAXIMIZE_HEIGHT, "AS3 safe height mismatch");
     assert(spawnCalls.length === 1, "AS3 launch should spawn exactly one runtime");
     assert(spawnCalls[0].sourceGroup === "as3", "AS3 spawn source mismatch");
-    assert(spawnCalls[0].env.monitor === "G32QC", "AS3 spawn monitor env mismatch");
+    assert(spawnCalls[0].env.monitor === "SECONDARY_DISPLAY", "AS3 spawn monitor env mismatch");
     assert(spawnCalls[0].env.width === String(AS3_SAFE_MAXIMIZE_WIDTH), "AS3 spawn width env mismatch");
     assert(spawnCalls[0].env.height === String(AS3_SAFE_MAXIMIZE_HEIGHT), "AS3 spawn height env mismatch");
     assert(process.env.POPTROPICA_WINDOW_WIDTH === undefined, "AS3 width env should be restored");
@@ -216,11 +216,11 @@ async function main() {
     const as2 = await invoke("flash:launch-runtime", "as2");
     assert(as2.ok === true, "AS2 launch IPC should return ok");
     assert(as2.launched === true, "AS2 launch IPC should report launched");
-    assert(as2.targetMonitor === "G32QC", "AS2 launch should default to G32QC");
+    assert(as2.targetMonitor === "SECONDARY_DISPLAY", "AS2 launch should preserve the configured target");
     assert(as2.windowGeometry === null, "AS2 launch should not force a bounded size by default");
     assert(spawnCalls.length === 2, "AS2 launch should spawn one more runtime");
     assert(spawnCalls[1].sourceGroup === "as2", "AS2 spawn source mismatch");
-    assert(spawnCalls[1].env.monitor === "G32QC", "AS2 spawn monitor env mismatch");
+    assert(spawnCalls[1].env.monitor === "SECONDARY_DISPLAY", "AS2 spawn monitor env mismatch");
     assert(spawnCalls[1].env.width === null, "AS2 spawn should not set width env");
     assert(spawnCalls[1].env.height === null, "AS2 spawn should not set height env");
     spawnCalls[1].child.emit("exit", 0);

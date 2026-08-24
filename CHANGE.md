@@ -544,7 +544,7 @@
   - 275 条文本
 - 然后我把这一岛的补丁重新打进了实际运行包。
 - 现在给 `AS2` 用的运行包已经是新的：
-  - `E:\Poptropica\POPTROPICA_FLASH\runtime-data\patched-zips\as2-runtime.zip`
+  - `<project-root>\runtime-data\patched-zips\as2-runtime.zip`
 
 ### 这次和以前最大的区别
 - 以前很多时候是：
@@ -574,13 +574,13 @@
 - 如果你想直接测 `Super Power`，最直接的是在项目目录里运行：
 
 ```powershell
-cd E:\Poptropica\POPTROPICA_FLASH
+cd <project-root>
 npm run launch -- --island super-power
 ```
 
 - 如果你想先开启动器，再自己进旧版游戏，也可以双击：
-  - `E:\Poptropica\POPTROPICA_FLASH\Start-Poptropica-Flash.vbs`
-  - 或 `E:\Poptropica\POPTROPICA_FLASH\Start-Poptropica-Flash.bat`
+  - `<project-root>\Start-Poptropica-Flash.vbs`
+  - 或 `<project-root>\Start-Poptropica-Flash.bat`
 
 ### 这一轮一句话总结
 - 这次终于不是“全量乱跑但没结果”了。
@@ -619,7 +619,7 @@ npm run launch -- --island super-power
 - 直接在项目目录里运行：
 
 ```powershell
-cd E:\Poptropica\POPTROPICA_FLASH
+cd <project-root>
 npm run launch -- --island super-power
 ```
 
@@ -653,14 +653,14 @@ npm run launch -- --island super-power
   - 真正加载到了 `Super Power Island`
   - 场景是 `Main Street`
 - 我还直接抓了真实窗口截图：
-  - `E:\Poptropica\POPTROPICA_FLASH\runtime-data\qa\super-power-window.png`
+  - `<project-root>\runtime-data\qa\super-power-window.png`
 - 截图里已经不是空白页，而是已经进到 `Super Power` 的街道画面
 
 ### 你现在怎么测
 - 直接运行：
 
 ```powershell
-cd E:\Poptropica\POPTROPICA_FLASH
+cd <project-root>
 npm run launch -- --island super-power
 ```
 
@@ -679,9 +679,9 @@ npm run launch -- --island super-power
 - 现在启动前会先确认本地 PHP 路由真的监听在 `22600`，没起来就直接报错，不再假装成功。
 - 我已经重新实测过：当前运行状态里 `proxy=true`、`zip=true`、`php=true`，而且游戏服务器日志里也不再是“连 22600 被拒绝”那种错误。
 - 现在如果还出问题，最该看的日志是：
-  - `E:\Poptropica\POPTROPICA_FLASH\runtime-data\workspaces\flashpoint-managed\logs\flashpoint-game-server.log`
-  - `E:\Poptropica\POPTROPICA_FLASH\runtime-data\workspaces\flashpoint-managed\logs\flashpoint-php-router.log`
-  - `E:\Poptropica\POPTROPICA_FLASH\runtime-data\flashpoint-runtime-state.json`
+  - `<project-root>\runtime-data\workspaces\flashpoint-managed\logs\flashpoint-game-server.log`
+  - `<project-root>\runtime-data\workspaces\flashpoint-managed\logs\flashpoint-php-router.log`
+  - `<project-root>\runtime-data\flashpoint-runtime-state.json`
 
 # 2026-04-17 02:10
 
