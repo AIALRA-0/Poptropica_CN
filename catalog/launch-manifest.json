@@ -1302,7 +1302,7 @@
       "runtime": "flash",
       "launchable": true,
       "islandParam": "virusHunter",
-      "roomParam": "mainStreet",
+      "roomParam": "adStreet",
       "startupPath": "gameplay",
       "sceneFolder": "virusHunter",
       "discoveredRooms": [
@@ -1387,8 +1387,8 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.mainStreet.MainStreet&reloadOnResize=frame",
-      "as3TargetScene": "game.scenes.mocktropica.mainStreet.MainStreet",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.adStreet.AdStreet&reloadOnResize=frame",
+      "as3TargetScene": "game.scenes.mocktropica.adStreet.AdStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,

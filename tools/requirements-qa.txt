@@ -1,0 +1,8 @@
+numpy
+Pillow
+psutil
+soundcard
+pywin32
+pywinauto
+rapidocr_onnxruntime
+pycaw
