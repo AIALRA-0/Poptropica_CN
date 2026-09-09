@@ -681,7 +681,7 @@
     "status": "ready",
     "sourceZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 111,
+    "replacementCount": 115,
     "swfRuntimeOverrides": "enabled"
   },
   "superPowerSceneLoadCheckPatch": {
