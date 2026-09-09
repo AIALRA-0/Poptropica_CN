@@ -37,7 +37,7 @@
   },
   "as3": {
     "virus-hunter": { "sceneFolder": "virusHunter", "roomParam": "mainStreet", "islandParam": "virusHunter", "startupPath": "gameplay" },
-    "mocktropica": { "sceneFolder": "mocktropica", "roomParam": "mainStreet", "islandParam": "mocktropica", "startupPath": "gameplay" },
+    "mocktropica": { "sceneFolder": "mocktropica", "roomParam": "adStreet", "islandParam": "mocktropica", "startupPath": "gameplay" },
     "monster-carnival": { "sceneFolder": "carnival", "roomParam": "mainStreet", "islandParam": "carnival", "startupPath": "gameplay" },
     "survival": { "sceneFolder": "survival1", "roomParam": "crashLanding", "islandParam": "survival1", "startupPath": "gameplay" },
     "mission-atlantis": { "sceneFolder": "deepDive1", "roomParam": "ship", "islandParam": "deepDive1", "startupPath": "gameplay" },
