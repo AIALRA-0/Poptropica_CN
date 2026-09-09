@@ -63,6 +63,7 @@
     "seed:as3-items": "node tools/seed-as3-item-translations.js",
     "qa:window-audit": "node tools/window-audit.js",
     "qa:goal-evidence": "node tools/qa-goal-evidence.js",
+    "qa:sync-status": "node tools/sync-qa-status.js",
     "qa:launch-gaps": "node tools/qa-launch-manifest-gaps.js",
     "qa:reality2-shell-probe": "node tools/qa-reality2-shell-probe.js",
     "qa:reality2-source-probe": "node tools/qa-reality2-source-probe.js",
