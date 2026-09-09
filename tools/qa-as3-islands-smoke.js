@@ -1651,7 +1651,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   if (!stage?.stageRect || Number(stage.stageCoverageRatio || 0) < Number(args.minStageCoverage || 0.35)) {
     failedChecks.push("stage_not_detected_or_too_small");
   }
-  if (flagEnabled(args.requireVisualGuard) && !visualGuard?.ok) {
+  if (!flagEnabled(args.skipVisualGuard) && !visualGuard?.ok) {
     failedChecks.push("initial_visual_guard_failed");
   }
   if (isLaunchHealthOk(launchHealth) && !flagEnabled(args.allowNoSceneProgress) && !hasSceneProgressSignal(logSummary)) {
