@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorDinningHall">
+		<scene>game.scenes.viking.diningHall.DiningHall</scene>
+		<x>250</x>
+		<y>920</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

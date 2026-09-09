@@ -1,0 +1,88 @@
+<doors>
+	<door id="medusaDoor">
+		<scene>game.scenes.deepDive2.adMixed2.AdMixed2</scene>
+		<x>50</x>
+		<y>1080</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+				<x>2510</x>
+				<y>650</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive2.medusaArea.MedusaArea</scene>
+				<x>197</x>
+				<y>1048</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="pipeDoor">
+		<scene>game.scenes.deepDive2.adStreet3.AdStreet3</scene>
+		<x>290</x>
+		<y>0</y>
+		<direction>down</direction>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>150</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+				<x>2020</x>
+				<y>1150</y>
+				<direction>up</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive2.pipeRoom.PipeRoom</scene>
+				<x>440</x>
+				<y>150</y>
+				<direction>down</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="predatorDoor">
+		<scene>game.scenes.deepDive2.adMixed1.AdMixed1</scene>
+		<x>275</x>
+		<y>1125</y>
+		<direction>up</direction>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>150</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+				<x>2019</x>
+				<y>173</y>
+				<direction>down</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive2.predatorArea.PredatorArea</scene>
+				<x>350</x>
+				<y>3900</y>
+				<direction>up</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

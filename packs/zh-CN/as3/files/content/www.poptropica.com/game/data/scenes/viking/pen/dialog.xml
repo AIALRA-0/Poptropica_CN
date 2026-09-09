@@ -1,0 +1,93 @@
+<dialogs>
+	<character id="octavian">
+		<statement id="letMeSee" link="cantFoolUs" linkEntityId="oliver">让我看看地图，确认它完好无损，然后我就放你出去。</statement>
+		<statement id="finally" link="unlockCage" linkEntityId="jorge">没错，就是这个！终于，我能知道Poptropica的秘密了！</statement>
+		<statement id="niceLife">为什么？我已经从你那儿得到了我想要的。现在该换上伪装溜出去了。</statement>
+
+
+
+
+
+	</character>
+	<character id="oliver">
+		<statement link="liedToMe" linkEntityId="player">那个混蛋奥克塔维安。嘿，你能帮帮我们吗？</statement>
+		<statement event="gotItem_candybar">一套好伪装，我们就能溜过去。</statement>
+		<statement id="cantFoolUs" link="giveIt" linkEntityId="jorge">你骗不了我们，奥克塔维安！</statement>
+		<statement id="youHadFood" link="getOut" linkEntityId="player">你有吃的，豪尔赫？</statement>
+		<statement id="wait" link="disguise" linkEntityId="mya">等等！我们不能就这么走过维京人身边。他们会把我们扔回笼子的。</statement>
+		<statement id="gave_helmet">这头盔做得真不错。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="jorge">
+		<statement link="liedToMe" linkEntityId="player">嘿，能帮帮我们吗？我饿了。</statement>
+		<statement event="gotItem_candybar">这真的管用吗？</statement>
+		<statement id="giveIt" triggerEvent="triggerEvent" triggerEventArgs="hand_map">就给他吧！他干嘛要撒谎？</statement>
+		<statement id="unlockCage" link="niceLife" linkEntityId="octavian">嗯，只要你打开这个笼子，我们马上就走。</statement>
+		<statement id="thankYou" triggerEvent="giveItem" triggerEventArgs="candybar" link="youHadFood" linkEntityId="oliver">哦谢谢你，太感谢了！我本来留着这个，但可以给你。</statement>
+		<statement id="gave_furs">哇，这些东西的主人胃口一定很大。</statement>
+
+
+
+
+
+
+
+
+		</character>
+	<character id="mya">
+		<statement link="liedToMe" linkEntityId="player">打扰一下，我们得追上奥克塔维安！能帮帮我们吗？</statement>
+		<statement event="gotItem_candybar">我们需要伪装才能通过那些维京人。</statement>
+		<statement id="disguise" triggerEvent="triggerEvent" triggerEventArgs="vikingClothes">奥利弗说得对，我们需要伪装一下。你能弄到维京人的衣服吗？</statement>
+		<statement id="gave_furs">机会来了，我们跟着你。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="guard">
+		<statement id="heeHee">嘿嘿……蠢猪！</statement>
+		<statement id="cantPass">喂，快走开！不准看囚犯。</statement>
+		<statement id="whatTheDuece">啊！奥丁在上，这是什么？！</statement>
+		<statement id="notGood">我有种不祥的预感……</statement>
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="notHim">又是他。我先躲起来，看看情况再说。</statement>
+		<statement id="guard">我得想办法对付那个守卫。</statement>
+		<statement id="gate">我得先搞定那个笼门。</statement>
+		<statement id="emptyBucket">这个桶是空的。</statement>
+		<statement id="nothingToChop">斧头在这里已经没用了。</statement>
+		<statement id="liedToMe">那个奥克塔维安也骗了我。我能救你们出来。</statement>
+		<statement id="suchDoor">我得想办法弄开这把锁。</statement>
+		<statement id="getOut" link="wait" linkEntityId="oliver">我们快离开这里！</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+</dialogs>

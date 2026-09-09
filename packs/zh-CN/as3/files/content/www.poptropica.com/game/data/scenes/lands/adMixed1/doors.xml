@@ -1,0 +1,31 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.lands.lab1.Lab1</scene>
+		<x>100</x>
+		<y>950</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.lands.lab1.Lab1</scene>
+		<x>1800</x>
+		<y>950</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

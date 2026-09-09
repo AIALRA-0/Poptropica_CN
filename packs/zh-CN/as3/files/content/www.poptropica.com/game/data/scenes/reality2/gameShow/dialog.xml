@@ -1,0 +1,251 @@
+<dialogs>
+	<character id="probably">
+		<statement id="eek">呀啊啊啊！</statement>
+		<statement id="spiders">哈！蜘蛛。毛茸茸的小东西。</statement>
+		<statement id="like">我挺喜欢它们。</statement>
+		<statement id="choose">选择三名挑战者吧，我无畏的朋友。</statement>
+		<statement id="chosen" link="confirm">挑战者已经选好了！你准备好了吗？</statement>
+		<conversation id = "confirm">
+			<exchange>
+				<question forceOnScreen="true">我们来选新的挑战者。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="repick">谨慎选择。</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">我是新手。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="difficulty_easy">明白。这些游戏会设为基础模式。</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">准备大干一场！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="difficulty_normal">听起来你很有信心。这场比赛一定很精彩！</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true" >看我称霸全场！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="difficulty_hard">嚯嚯！有人很有自信嘛。你最好准备好迎接一生难忘的挑战！</answer>
+			</exchange>
+		</conversation>
+		<statement id="begin" triggerEvent="triggerEvent" triggerEventArgs="games_started, true">嘻嘻！我激动得快喘不过气了！比赛开始！</statement>
+		<statement id="winners">现在颁发第三名。如果我抬得起手，我一定向你敬礼。</statement>
+		<statement id="second">第二名属于那位肱二头肌特别结实的人。你知道我说的是谁。</statement>
+		<statement id="drum roll">疯狂敲响邦戈鼓，迎接我们的新岛屿冠军！！！第一名是……</statement>
+		<statement id="congrats">祝贺我们的获胜者！</statement>
+		<statement id="credits">至于你，[Player Name]，根据你的表现，你一共获得了……</statement>
+		<statement id="uhoh" link = "save">糟了……如果你想获得这些点数，必须先保存游戏。</statement>
+		<statement id="save" link = "response">你想先保存游戏，以便获得这些点数吗？</statement>
+		<conversation id = "response">
+			<exchange>
+				<question>好的，谢谢。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="save_game">很好！我这就为你安排！</answer>
+			</exchange>
+			<exchange>
+				<question>不用了，谢谢。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="continue_game">别担心。</answer>
+			</exchange>
+		</conversation>
+		<statement id="splendid">太棒了，按约定，这是你的点数。</statement>
+		<statement id="next">开始下一项挑战！</statement>
+		<statement id="final" triggerEvent="triggerEvent" triggerEventArgs="competition_finished, true">节目到这里就结束了！感谢小蛇全程抱着我，这种尴尬真是妙不可言。下次再来！！！</statement>
+    </character>
+    <character id="c1">
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+    <character id="c2" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+    <character id="c3" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+   <character id="c4" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+    <character id="c5" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+   <character id="c6" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="won'tJones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+    <character id="c7" forceOnScreen="true" >
+		<statement id="drHare" forceOnScreen="true" >准备成为我的手下吧。</statement>
+		<statement id="kittenWhispers" forceOnScreen="true" >完——美。</statement>
+		<statement id="zackStyles" forceOnScreen="true" >没人能阻止我。</statement>
+		<statement id="jayIsaacs" forceOnScreen="true" >我喜欢圆满结局。</statement>
+		<statement id="babyGooGoo" forceOnScreen="true" >鼓掌！！！鼓掌！！！</statement>
+		<statement id="bopbop" forceOnScreen="true" >我会跳着舞超过你。</statement>
+		<statement id="scherazade" forceOnScreen="true" >我会像影子一样从你身边溜过。</statement>
+		<statement id="grimReaper" forceOnScreen="true" >你已经完了。</statement>
+		<statement id="zeus" forceOnScreen="true" >我行动如闪电。</statement>
+		<statement id="aphrodite" forceOnScreen="true" >漂亮的选择。</statement>
+		<statement id="hades" forceOnScreen="true" >你输定了！</statement>
+		<statement id="mandyScreams" forceOnScreen="true" >我天生就这样。</statement>
+		<statement id="vanBuren" forceOnScreen="true" >想跑就跑吧，但我一定会抓到你。</statement>
+		<statement id="omegon" forceOnScreen="true" >可恶！你为什么选我？</statement>
+		<statement id="tortaPiccola" forceOnScreen="true" >放马过来吧，小甜心。</statement>
+		<statement id="kickerHalfpipe" forceOnScreen="true" >准备被我彻底击败吧。</statement>
+		<statement id="amaraEnorme" forceOnScreen="true" >我太喜欢你选我了。</statement>
+		<statement id="bobFloss" forceOnScreen="true" >我准备好了，朋友。</statement>
+		<statement id="shett" forceOnScreen="true" >我们谈谈这件事吧。</statement>
+		<statement id="blinked" forceOnScreen="true" >我不想谈这个。</statement>
+		<statement id="brindiBundee" forceOnScreen="true" >我爱我的小鳄鱼。</statement>
+		<statement id="wont'Jones" forceOnScreen="true" >在我的怪异指数表上，这地方能打 9.0 分。</statement>
+		<statement id="jackNeuron" forceOnScreen="true" >我天生就爱竞争。</statement>
+		<statement id="shendiva" forceOnScreen="true" >我只是喜欢找乐子。</statement>
+		<statement id="ringmaster" forceOnScreen="true" >你的灵魂归我了。</statement>
+		<statement id="deli" forceOnScreen="true" >你好。</statement>
+		<statement id="teslaTopsy" forceOnScreen="true" >我尊重你的选择。</statement>
+    </character>
+</dialogs>

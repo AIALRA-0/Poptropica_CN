@@ -1,0 +1,24 @@
+<dialogs>
+	<character id="vanBurenTalker">
+		<statement id="start" forceOnScreen="true">好极了！快跑，小伙子！狩猎的乐趣全在追逐之中！</statement>
+		<statement id="start_lass" forceOnScreen="true">好极了！快跑，小姑娘！狩猎的乐趣全在追逐之中！</statement>
+		<statement id="chase" triggerEvent="triggerEvent" triggerEventArgs="tally-ho" forceOnScreen="true">温斯顿，我亲爱的朋友。劳驾你放出猎犬，我想我们可以开始了。</statement>
+		<statement triggeredByEvent="tally-ho" forceOnScreen="true">出发！</statement>
+
+
+
+
+
+	</character>
+	<character id="buren">
+		<statement id="lost_him">看来我们跟丢了。</statement>
+		<statement id="setup_camp">没关系，我们就在这儿扎营，稍后继续狩猎！</statement>
+
+
+
+	</character>
+
+
+
+
+</dialogs>

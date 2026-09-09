@@ -1,0 +1,17 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" >Viking_Theme.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="baseGround">ls_concrete_01.mp3, ls_concrete_02.mp3 </asset>
+		<asset id="bounce">ls_bounce_01.mp3, ls_bounce_02.mp3, ls_bounce_03.mp3</asset>
+		<asset id="ground">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+		<asset id="ice">ls_ice_01.mp3, ls_ice_02.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="step">
+		<asset id="baseGround">fs_concrete_01.mp3, fs_concrete_02.mp3, fs_concrete_03.mp3, fs_concrete_04.mp3 </asset>
+		<asset id="ground">fs_concrete_01.mp3, fs_concrete_02.mp3</asset>
+		<asset id="ice">fs_ice_01.mp3, fs_ice_02.mp3, fs_ice_03.mp3, fs_ice_04.mp3</asset>
+	</sound>
+</sounds>

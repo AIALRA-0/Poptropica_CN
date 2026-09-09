@@ -1,0 +1,58 @@
+<item id="3582">
+		<type>store</type>
+	<subType>general</subType>
+	
+	<contentClass> <!-- This displays avatar  -->
+		<className>game.ui.card.CharacterContentView</className>
+		<y>24</y>
+	</contentClass>
+
+	
+		<buttons>
+			<btn>
+				<index>0</index>
+			<conditional id="hasLook" isTrue="false"/>
+				<label>使用</label>
+				<actions>
+				<action type="applyLook" tracking="Toilet Paper"/>
+			</actions>
+			</btn>
+			<btn>
+				<index>0</index>
+ 			<conditional id="hasLook" isTrue="true"/>
+				<label>收起</label>
+				<actions>
+				<action type="removeLook"/>
+			</actions>
+			</btn>
+		</buttons>
+		
+	<textfields>
+		<text id="memberinstructions">
+		  <value>DC 餐馆</value>
+		  <y>-175</y>
+		</text>
+		<text id="storeTitle">
+		  <value>魔术师帽</value>
+		   <y>-200</y>
+		</text>
+		<text id="memberinstructions">
+		  <value>______________________________</value>
+		  <y>-140</y>
+		</text>
+	</textfields>
+			
+		<assets>
+		<asset id="cardBack" />
+		</assets>
+	
+	<conditionals>
+			<conditional type="hasLook" />
+		</conditionals>
+		
+	<looks>
+		<look> <!-- Only list what you want to change -->
+			<hair>magichat</hair>
+		</look>
+	</looks> 
+</item>

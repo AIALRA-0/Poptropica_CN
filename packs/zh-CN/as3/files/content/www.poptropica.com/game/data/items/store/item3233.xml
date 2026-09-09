@@ -1,0 +1,49 @@
+<item id="3233">
+	<type>store</type>
+	<subType>general</subType>
+
+	<contentClass> <!-- This displays avatar -->
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+	
+	<buttons>
+		<btn>
+			<index>1</index>
+			<label>僵尸化</label>
+			<actions>
+				<action type="applyLookNPC">
+			</action>
+		</actions>
+		</btn>
+		<btn>
+			<index>0</index>
+			<label>换装</label>
+			<actions>
+				<action type="costumize">
+			</action>
+		</actions>
+		</btn>
+	</buttons>
+
+	<assets>
+		<asset id="cardBack" />
+	</assets>
+
+	<textfields>
+		<text id="storeSubTitle">
+			<value>鬼屋</value>
+		</text>
+		<text id="storeTitle2">
+			<value>变成僵尸！</value>
+		</text>
+	</textfields>
+	
+	<looks>
+		<look> <!-- Only list what you want to change -->
+			<eyes>zombie_static</eyes>
+			<marks>zombie</marks>
+			<mouth>zombie</mouth>
+			<facial>zombie</facial>
+		</look>
+	</looks> 
+</item>

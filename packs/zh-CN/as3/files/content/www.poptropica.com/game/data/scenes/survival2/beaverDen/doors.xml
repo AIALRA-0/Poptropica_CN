@@ -1,0 +1,58 @@
+<doors>
+	<door id="doorFishing">
+		<scene>game.scenes.survival2.adMixed2.AdMixed2</scene>
+		<x>1860</x>
+		<y>1050</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival2.fishingHole.FishingHole</scene>
+				<x>3550</x>
+				<y>750</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival2.beaverDen.BeaverDen</scene>
+				<x>25</x>
+				<y>1000</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorTrees">
+		<scene>game.scenes.survival2.adMixed1.AdMixed1</scene>
+		<x>50</x>
+		<y>1050</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival2.beaverDen.BeaverDen</scene>
+				<x>5300</x>
+				<y>800</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival2.trees.Trees</scene>
+				<x>145</x>
+				<y>1460</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

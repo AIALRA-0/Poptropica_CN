@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="cosmoe">
+		<statement id="baby">它不让我离开这个巢穴。它肯定把我当成它的宝宝了。</statement>
+		<statement id="free">谢了，你救了我一命！我们船上见。</statement>
+
+
+
+	</character>
+	<character id="player">
+		<statement id="not_here">我打赌这些东西也是从这样的蛋里孵出来的……</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

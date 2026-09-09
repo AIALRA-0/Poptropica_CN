@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>guano</id>
+		<asset>guano.swf</asset>
+		<x>2164</x>
+		<y>1033</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

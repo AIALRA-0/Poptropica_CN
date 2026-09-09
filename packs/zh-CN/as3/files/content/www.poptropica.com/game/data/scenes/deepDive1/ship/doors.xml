@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorHub">
+		<scene>game.scenes.deepDive1.hub.Hub</scene>
+		<x>500</x>
+		<y>150</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

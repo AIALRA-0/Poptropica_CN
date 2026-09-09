@@ -1,0 +1,58 @@
+<dialogs>
+	<character id="scientist">
+		<statement>你是英雄。</statement>
+		<statement id="sayDelivery">乔·斯托克曼的中餐外卖。</statement>
+		<statement id="sayItsFree">这儿写着你的名字。还写着&apos;已付清&apos;</statement>
+		<statement id="sayHereYouGo">给你。</statement>
+
+
+
+
+
+	</character>
+	<character id="joe">
+		<statement link="pilot" linkEntityId="player">呃……你又是谁。</statement>
+		<statement id="sayDidntOrder">我没点中餐。</statement>
+		<statement id="sayThatsMyOrder">没错，是我的订单。</statement>
+		<statement id="sayDinnerTime">嗯……晚餐时间到。</statement>
+		<statement id="sneeze">阿嚏</statement>
+		<statement id="endConvo2">嘿，怎么回事 - 哎哟 - 发生什么了。</statement>
+		<statement id="endConvo4">你说什么。</statement>
+		<statement id="endConvo6">哇哦。我妈总说我将来会干大事。</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="player">
+		<statement id="endConvo7">嘿，没我的功劳吗。</statement>
+		<statement id="pilot">只是个飞行员。</statement>
+
+
+
+		</character>
+	<character id="drlange">
+		<statement>谢谢你的帮助。</statement>
+		<statement id="endConvo1">采集血样。我们需要尽快生产疫苗。</statement>
+		<statement id="endConvo3">你的身体制造出了解药，能对付我们见过最危险的病毒！</statement>
+		<statement id="endConvo5">乔，你是英雄！你刚刚拯救了世界！</statement>
+		<statement id="endConvo8">这是秘密行动。绝不能让人知道你参与其中。我们最多只能给你这个。</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

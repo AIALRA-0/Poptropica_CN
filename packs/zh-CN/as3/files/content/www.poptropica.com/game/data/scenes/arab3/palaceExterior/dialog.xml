@@ -1,0 +1,108 @@
+<dialogs>
+	<character id="player">
+		<statement id="yipes">哇！你就是那个神灯精灵吗？</statement>
+		<statement id="getLamp">这个……这是个魔法容器。</statement>
+		<statement id="click_barrel">我得想办法上去才能把他救出来。</statement>
+		<statement id="no_use_key">这里没什么可解锁的。</statement>
+
+
+
+
+
+		</character>
+	<character id="guard1">
+		<statement>再守着宫殿也没意义了。</statement>
+		<statement id="funny">对骆驼有致命吸引力……你得承认这挺好笑的。</statement>
+
+
+
+	</character>
+	<character id="guard2">
+		<statement>有个神灯精灵要抓！我要许愿让所有女士都为我倾倒！</statement>
+		<statement id="getAway" triggerEvent="triggerEvent" triggerEventArgs="runFromCamel">离我远点，你这多情的骆驼！</statement>
+		<statement id="running">离我远点，你这多情的骆驼！</statement>
+		<conversation id="disaster">
+			<exchange>
+				<question>发生什么事了？</question>
+				<answer>真是场灾难！这骆驼一直缠着我。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>发生什么事了？</question>
+				<answer>我搞砸了。我找到了神灯精灵，许愿让所有女士都为我倾倒。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这愿望听起来挺正常的。</question>
+				<answer link="getAway" triggerEvent="triggerEvent" triggerEventArgs="faceCamel">我当时也是这么想的——但我应该把物种说清楚！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+	</character>
+	<character id="chestTalk">
+		<statement id="letMeOut" link="yipes" linkEntityId="player">让我*咕哝*出去！</statement>
+		<statement id="iWish">我发誓！等我*咕哝*出去，那精灵会后悔没*咕哝*回灯里！</statement>
+		<statement id="not_muffled">哦，谢谢你！</statement>
+		<statement id="gotLamp">我真不该许那个愿望！</statement>
+		<conversation id="masterOfCoin">
+			<exchange>
+				<question>这里面没人啊！</question>
+				<answer triggerFirst="true" triggerEvent="triggerEvent" triggerEventArgs="chest_animate">是我——四十大盗的财务总管。神灯精灵把我变成了宝箱！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我不明白。怎么会这样？</question>
+				<answer triggerFirst="true" triggerEvent="triggerEvent" triggerEventArgs="chest_animate">我找到了神灯精灵，许愿拥有无尽财富——但我不是字面意思！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>那好吧，不介意我翻翻你吧？</question>
+				<answer triggerFirst="true" triggerEvent="triggerEvent" triggerEventArgs="getLamp">想要什么就拿吧。财富现在对我有什么用？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+	</character>
+	<character id="genie">
+		<statement id="royalPain">这宫殿正适合你，因为你真是个烦人精！</statement>
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

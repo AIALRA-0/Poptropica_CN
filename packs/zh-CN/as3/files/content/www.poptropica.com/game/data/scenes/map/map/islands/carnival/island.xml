@@ -1,0 +1,16 @@
+<island>
+	<name>怪物嘉年华岛</name>
+	<island>carnival</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/carnival/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

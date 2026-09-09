@@ -1,0 +1,48 @@
+<item id="3262">
+		<type>store</type>
+		<subType>general</subType>
+		<buttons>
+			<btn>
+			<conditional id="hasAbility" isTrue="false"/>
+				<label>咀嚼</label>
+				<actions>
+				<action type="activatePower">
+					<parameters>
+							<param id="trigger">true</param>
+					</parameters>
+				</action>
+			</actions>
+			</btn>
+			<btn>
+				<conditional id="hasAbility" isTrue="true"/>
+				<label>停止咀嚼</label>
+				<actions>
+				<action type="deactivatePower"/>
+			</actions>
+			</btn>
+		</buttons>
+		<textfields>
+			<text id="storeTitle">
+				<value>波普口香糖</value>
+				</text>
+			<text id="storeSubTitle">
+					<value>幸运三叶草口味</value>
+	 	 	</text>
+		<text id="storeInstructions">
+			<web>Tap space bar to blow bubbles.</web>
+			<mobile>Tap ACTION to blow bubbles.</mobile>
+		</text>
+		</textfields>
+		<assets>
+			<asset id="cardBack" />
+			<asset id="cardContent"/>
+		</assets>
+		
+ 	<specials>
+			<specialAbility>gum_shamrock</specialAbility>
+	</specials>
+	
+	<conditionals>
+			<conditional type="hasAbility"/>
+		</conditionals>
+</item>

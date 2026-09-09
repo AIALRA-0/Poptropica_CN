@@ -1,0 +1,56 @@
+<doors>
+	<door id="predatorDoor">
+		<scene>game.scenes.deepDive2.predatorArea.PredatorArea</scene>
+		<x>2322</x>
+		<y>3950</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>150</y>
+			</offset>
+		</label>
+	</door>
+	<door id="pipesDoor">
+		<scene>game.scenes.deepDive2.pipeRoom.PipeRoom</scene>
+		<x>1550</x>
+		<y>70</y>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="alienDoor">
+		<scene>game.scenes.deepDive2.adMixed2.AdMixed2</scene>
+		<x>1880</x>
+		<y>1080</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive2.alienDoor.AlienDoor</scene>
+				<x>2510</x>
+				<y>650</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive2.medusaArea.MedusaArea</scene>
+				<x>197</x>
+				<y>1048</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

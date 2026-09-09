@@ -1,0 +1,41 @@
+<island>
+	<name>真人秀：野外探险</name>
+	<eventsClass></eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>reality2</island>
+
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>started</event>
+		<event>saw_intro</event>
+		<event>games_started</event>
+		<event>completed_game_1</event>
+		<event>completed_game_2</event>
+		<event>completed_game_3</event>
+		<event>competition_finished</event>
+		<event>gotItem_medal_reality2</event>
+	</permanentEvents>
+
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+		<item id="medal_reality2">1060</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.reality2.mainStreet.MainStreet</scene>
+		<x>300</x>
+		<y>900</y>
+		<direction>right</direction>
+		<label>
+			<text>离开</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</firstScene>
+
+	<playerMap></playerMap>
+	<medallion>medal_reality2</medallion>
+</island>

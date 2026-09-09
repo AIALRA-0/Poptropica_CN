@@ -1,0 +1,154 @@
+<dialogs>
+	<character id="char1">
+		<statement>要是C. J. 不来，我终于有机会拿第一名了！</statement>
+		<statement event="gotItem_medal_shrink">我连续答对了五次！</statement>
+
+
+
+		</character>
+	<character id="char2">
+		<statement>虽然很神奇，但这是真的：用气球摩擦头发，它就会粘在头上！</statement>
+		<statement event="gotItem_medal_shrink">我在想还能把什么粘在头上呢？</statement>
+
+
+
+		</character>
+	<character id="char3">
+		<statement>C. J. 跟我说她今年要做一个超大的科学展项目！但她不肯告诉我是什么！</statement>
+		<statement event="gotItem_medal_shrink">我明年也要做同样的项目！</statement>
+
+
+
+		</character>
+	<character id="char4">
+		<statement>我讨厌C. J. 每年都赢，但我总是喜欢看她的科学项目！</statement>
+		<statement event="gotItem_medal_shrink">下一站：月球！</statement>
+
+
+
+		</character>
+	<character id="char5">
+		<statement>要是给我们更多时间准备，我的项目肯定会好得多。</statement>
+		<statement event="gotItem_medal_shrink">现在我有一整年时间想个更好的点子！</statement>
+
+
+
+		</character>
+	<character id="char6">
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我是科学老师，席尔瓦先生。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>一切都还好吗？</question>
+				<answer>科学展马上要开始了，我的得意门生还没到！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你觉得她只是迟到了吗？</question>
+				<answer>她已经连续三年赢得科学展了。她绝不会错过的！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement event="gotItem_medal_shrink">没有你的帮助，我做不到。</statement>
+
+
+
+	</character>
+	<character id="char7">
+		<statement>C. J. 肯定在路上了。她一整年都在为科学展做准备！</statement>
+		<statement event="gotItem_medal_shrink">非常感谢你帮助我们的女儿。</statement>
+
+
+
+		</character>
+	<character id="char8">
+		<conversation>
+			<exchange>
+				<question>C. J. 在哪儿？</question>
+				<answer>我不太确定，但她应该快到了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>她要带什么项目来？</question>
+				<answer>C. J. 说她今年有个超棒的项目。她从不让我们进房间看她做什么！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="got_address,true">我能帮上什么忙吗？</question>
+				<answer>不如你去我们公寓看看C. J. 吧。我们住在A大道。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement event="gotItem_medal_shrink">我们太骄傲了！</statement>
+
+
+
+	</character>
+	<character id="char9">
+		<statement id="famous" triggerEvent="triggerEvent" triggerEventArgs="give_medallion">我终于出名啦！耶！</statement>
+		<statement event="gotItem_medal_shrink">我终于出名啦！耶！</statement>
+
+
+
+	</character>
+	<character id="cj">
+		<statement id="thanks" link="famous" linkEntityId="char9">没有你帮忙我可做不到！</statement>
+		<statement event="gotItem_medal_shrink">没有你帮忙我可做不到！</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

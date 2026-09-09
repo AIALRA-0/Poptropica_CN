@@ -1,0 +1,15 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.con2.expo.Expo</scene>
+		<x>3800</x>
+		<y>950</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

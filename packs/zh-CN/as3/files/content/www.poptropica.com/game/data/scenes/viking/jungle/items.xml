@@ -1,0 +1,34 @@
+<items>
+	<item>
+		<id>rope</id>
+		<asset>rope.swf</asset>
+		<x>3079</x>
+		<y>1035</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>book</id>
+		<asset>book.swf</asset>
+		<x>2186</x>
+		<y>1005</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>book2</id>
+		<asset>book2.swf</asset>
+		<x>2235</x>
+		<y>1005</y>
+		<rotation>35</rotation>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+
+</items>

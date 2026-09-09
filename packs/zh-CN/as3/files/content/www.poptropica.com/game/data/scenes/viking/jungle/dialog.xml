@@ -1,0 +1,60 @@
+<dialogs>
+	<character id="player">
+		<statement id="timber">倒啦！</statement>
+		<statement id="wontBudge">光推是推不动的。</statement>
+		<statement id="thick">丛林太密了！没有地图我会迷路的。</statement>
+		<statement id="whatDoing" link="getMeDown" linkEntityId="octavian" triggerEvent="triggerEvent" triggerEventArgs="pan_octavian">你在上面干什么？</statement>
+		<statement id="howCanI" link="thisMap" linkEntityId="octavian" triggerEvent="triggerEvent" triggerEventArgs="pan_octavian">我该怎么做？</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="octavian">
+		<statement id="getDown" triggerEvent="triggerEvent" triggerEventArgs="pan_player">快把我弄下来！</statement>
+		<statement id="look" link="whatDoing" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="pan_player">喂，你！往上看！</statement>
+		<statement id="getMeDown" link="howCanI" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="pan_player">别管我为什么在这儿——先把我弄下来！</statement>
+		<statement id="thisMap" triggerEvent="triggerEvent" triggerEventArgs="give_map">这座岛上一定有你能用的东西。这张地图会帮你找到它。</statement>
+		<conversation id="the_beginning">
+			<exchange>
+				<question>你在上面做什么？</question>
+				<answer>我给你的地图只是开始。它是整张地图的一部分——一张完整的Poptropica地图。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>那张地图现在在哪里？</question>
+				<answer>我被旅伴抢劫了，他们把我丢在这里。我怀疑他们把它带到维京要塞，想卖掉它。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>太可恶了！我能帮你拿回来吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="octavian_run_off">如果你能找到它，我会分你一份——但我需要地图的其余部分。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

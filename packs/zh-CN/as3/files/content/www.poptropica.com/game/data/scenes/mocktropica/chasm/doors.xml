@@ -1,0 +1,45 @@
+<doors>
+	<door id="doorMountain">
+		<scene>game.scenes.mocktropica.mountain.Mountain</scene>
+		<x>1730</x>
+		<y>5480</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMainStreet">
+		<scene>game.scenes.mocktropica.adStreet.AdStreet</scene>
+		<x>40</x>
+		<y>590</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.mocktropica.chasm.Chasm</scene>
+				<x>2300</x>
+				<y>1120</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.mocktropica.mainStreet.MainStreet</scene>
+				<x>100</x>
+				<y>1740</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

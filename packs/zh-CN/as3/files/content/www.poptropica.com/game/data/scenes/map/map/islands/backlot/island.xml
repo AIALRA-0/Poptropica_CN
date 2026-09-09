@@ -1,0 +1,16 @@
+<island>
+	<name>片场幕后岛</name>
+	<island>backlot</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/backlot/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

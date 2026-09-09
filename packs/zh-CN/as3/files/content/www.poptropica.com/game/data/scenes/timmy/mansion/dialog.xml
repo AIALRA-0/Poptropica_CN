@@ -1,0 +1,95 @@
+<dialogs>
+	<character id="timmy">
+		<statement>那个鞋盒正好给懒熊2000用。我们得想办法把它弄下来。</statement>
+		<statement id="throw_me" triggerEvent="triggerEvent" triggerEventArgs="throw_to_timmy">太好了。扔给我吧，我投得可准了。</statement>
+		<statement id="got_box">我觉得这办法不太靠谱……</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="this_wagon">这辆小推车正好给全动号用。</statement>
+		<statement id="got_wagon">这辆小推车应该能派上用场。</statement>
+		<statement id="pole">这根杆子不够长……我需要找个能扔的东西。</statement>
+		<statement id="cant_reach">那个鞋盒放得太高了，我够不着。得想办法把它弄下来！</statement>
+		<statement id="beach_ball" link="throw_me" linkEntityId="timmy">也许我们可以用沙滩球把它砸下来！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="bingo">
+		<conversation>
+			<exchange>
+				<question>你在干什么？</question>
+				<answer>正在精心修剪科兰德女士心爱的灌木丛。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你为什么要做这个？</question>
+				<answer>科兰德女士很喜欢。我也挺喜欢的，不过要是她能付我工钱，我会更喜欢。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>她不付你工钱？</question>
+				<answer>哦，我不该这么说。她最后还是会付的。大多数时候。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我能爬上去吗？</question>
+				<answer>好吧。不过要小心点。</answer>
+
+
+
+						</exchange>
+
+
+
+
+
+				</conversation>
+		<conversation id="wagon">
+			<exchange>
+				<question>我能借用那辆手推车吗？</question>
+				<answer>哦，不！怎么又是你！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我真的需要一辆手推车。如果你能借我用一下……</question>
+				<answer>没门！你上次已经害我分心了。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<statement id="no" triggerEvent="triggerEvent" triggerEventArgs="finish_nose">不——！</statement>
+		<statement id="look">看看你干的好事！这下我怎么修啊？</statement>
+		<statement id="mitts">别碰那辆手推车！</statement>
+		<statement id="look_at_that">快看那边……一只跳舞的熊……</statement>
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

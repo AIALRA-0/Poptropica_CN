@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>magic_book</id>
+		<asset>magic_book.swf</asset>
+		<x>769</x>
+		<y>478</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

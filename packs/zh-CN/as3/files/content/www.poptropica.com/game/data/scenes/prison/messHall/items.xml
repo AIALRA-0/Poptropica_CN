@@ -1,0 +1,12 @@
+<items>
+	<item triggeredByEvent="started_food_fight">
+		<id>mixer</id>
+		<asset>mixer.swf</asset>
+		<x>1720</x>
+		<y>1035</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

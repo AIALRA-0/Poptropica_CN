@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>goldenApple</id>
+		<asset>goldenApple.swf</asset>
+		<x>1737</x>
+		<y>480</y>
+		<label>
+			<text>使用</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>zeusScroll</id>
+		<asset>zeusScroll.swf</asset>
+		<x>1638</x>
+		<y>634</y>
+		<label>
+			<text>使用</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

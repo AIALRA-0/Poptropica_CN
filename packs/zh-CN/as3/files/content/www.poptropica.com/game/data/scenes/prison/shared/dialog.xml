@@ -1,0 +1,41 @@
+<dialogs>
+	<character id="player">
+		<statement id="cant_use_metal_cup">这里没什么可装的。</statement>
+		<statement id="cant_use_plaster_cup">要是能找到东西混合，就能做出结实的砖块。</statement>
+		<statement id="cant_use_water_cup">我不渴。</statement>
+		<statement id="cant_use_dummy_head">简直和我一模一样！……除了颜色。</statement>
+		<statement id="cant_use_painted_head">这完全就是我！晚上肯定能骗过守卫。</statement>
+		<statement id="cant_use_pasta">看着像钻头，但肯定没法用。</statement>
+		<statement id="cant_use_uncooked_pasta">形状挺眼熟，但现在用不上。</statement>
+		<statement id="cant_use_generic">这里好像用不了。</statement>
+		<statement id="cant_use_painted_pasta">不仔细看的话，和商店里的钻头一模一样。</statement>
+		<statement id="cant_use_sunflower">范·诺斯特兰德想要的就是这种花。</statement>
+		<statement id="cant_use_seeds">种下这个说不定能开出花来。</statement>
+		<statement id="more_gum">口香糖不够了。</statement>
+		<statement id="cant_use_gum">可以用口香糖换点好处。</statement>
+		<statement id="cant_use_sharpened_spoon">这个可以当凿子用。</statement>
+		<statement id="cant_use_mixer">只要找到钻头，这个搅拌机就能当电钻用。</statement>
+		<statement id="cant_use_drill_bit">这是个结实的钻头。</statement>
+		<statement id="cant_use_spoon">就是一把勺子。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

@@ -1,0 +1,22 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.arab3.palaceInterior.PalaceInterior</scene>
+		<x>1800</x>
+		<y>775</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+	<door id="exitRight">
+	<scene>game.scenes.arab3.palaceExterior.PalaceExterior</scene>
+		<x>800</x>
+		<y>1250</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,198 @@
+<dialogs>
+	<character id="dealer">
+		<statement id="start">欢迎来到强力行动队卡牌游戏！要获胜，你需要收集整整13颗宝石。</statement>
+		<statement id="firstTurn">游戏开始时，你通常要尽可能多地收集宝石。</statement>
+		<statement id="enemyAlmost13">看来我快接近目标了。你或许该攻击一下，别让我凑到13。</statement>
+		<statement id="playerAlmost13">记住，要赢就得正好凑到13颗宝石。超过13的话，你刚收集的宝石就没了。</statement>
+		<statement id="win">作为新手，你打得真不错。</statement>
+		<statement id="lose">打得好，你上手真快。</statement>
+		<statement id="tie">看来我们打平了。作为新手，你相当厉害。</statement>
+		<statement id="enemy_used_block">除非你出更强的牌，否则这张牌会阻挡你本回合的行动。</statement>
+		<statement id="enemy_used_skip">打出这张牌会强制对手跳过下一回合。</statement>
+		<statement id="enemy_used_both">用这张牌，我可以在同一回合里在两个槽位都出牌。</statement>
+		<statement id="enemy_used_steal">除了常规行动，这张牌还能让我拿走你的一颗宝石。</statement>
+		<statement id="enemy_used_draw">我打出这张牌时，可以额外抽一张牌。</statement>
+		<statement id="enemy_out_of_cards">我的牌打完了，但游戏会继续，直到双方都没牌，或者有人达到13颗宝石。</statement>
+		<statement id="player_blocked">因为那张牌小于或等于我的牌，你的行动被阻挡了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="hippie">
+		<statement id="start">玩《强力行动队》卡牌游戏让我开心，但赢下它更让我开心。</statement>
+		<statement id="enemyAlmost13">太刺激了。无意冒犯。</statement>
+		<statement id="playerAlmost13">你打得很好。但还没结束呢。</statement>
+		<statement id="win">希望我在失败中学到了点什么。</statement>
+		<statement id="lose">玩这个游戏的都是赢家，只不过我赢得更多一点。</statement>
+		<statement id="tie">我喜欢平局，势均力敌才够酷。</statement>
+		<statement id="enemy_blocked">想挡我？没门。</statement>
+		<statement id="player_blocked">不是针对你，但这招行不通。</statement>
+		<statement id="player_used_skip">哼，这仇我记下了。</statement>
+		<statement id="enemy_used_skip">抱歉，你的回合我跳过了。</statement>
+		<statement id="player_used_both">双倍泡泡，沸腾麻烦。</statement>
+		<statement id="enemy_used_both">我拿不定主意，干脆出两张牌。</statement>
+		<statement id="player_used_steal">嘿，那是我的。</statement>
+		<statement id="enemy_used_steal">偷窃是不对的。我更愿意把这看作分享。</statement>
+		<statement id="player_used_draw">拿张牌呗，为什么不呢。</statement>
+		<statement id="enemy_used_draw">我真想把整副牌都抽光，不过抽一张也行。</statement>
+		<statement id="enemy_out_of_cards">糟了，我没牌了。现在只能听天由命了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="card2">
+		<statement id="start">我需要点挑战，你准备好了吗？</statement>
+		<statement id="enemyAlmost13">快成功了！</statement>
+		<statement id="playerAlmost13">打得不错，但我翻盘过更糟的局面。</statement>
+		<statement id="win">不赖嘛！牌组配得好，谁都能赢。</statement>
+		<statement id="lose">说实话，我以为你会更难缠一点。</statement>
+		<statement id="tie">唉，真没劲。</statement>
+		<statement id="enemy_blocked">想挡我？没门。</statement>
+		<statement id="player_blocked">不，这招行不通。</statement>
+		<statement id="player_used_skip">哼，这仇我记下了。</statement>
+		<statement id="enemy_used_skip">这回合真棒，我要再来一次！</statement>
+		<statement id="player_used_both">双倍麻烦，加倍刺激。</statement>
+		<statement id="enemy_used_both">一张牌不错，两张牌更妙。</statement>
+		<statement id="player_used_steal">嘿！那是我的牌！</statement>
+		<statement id="enemy_used_steal">我的就是我的，你的也是我的。</statement>
+		<statement id="player_used_draw">抽张牌吧，别客气。</statement>
+		<statement id="enemy_used_draw">多多益善，这是我的座右铭。</statement>
+		<statement id="enemy_out_of_cards">没牌了，看来只能干等着了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="expert">
+		<statement id="start">我从未输过，现在也不打算开始。</statement>
+		<statement id="start2">上次你赢了，但这次可没那么走运！</statement>
+		<statement id="enemyAlmost13">胜利在望。哈欠。</statement>
+		<statement id="playerAlmost13">我这是在麻痹你，让你放松警惕。</statement>
+		<statement id="win">不敢相信我输了！现在只有一件事可做：回去干我的高薪高科技工作。</statement>
+		<statement id="lose">本想鼓励你继续努力，但真的没必要。</statement>
+		<statement id="tie">说不清为什么，但这感觉比输了还糟。</statement>
+		<statement id="player_blocked">你该知道，用那种弱牌对付我可不行。</statement>
+		<statement id="enemy_blocked">被挡了！可恶，反正那张牌也没用。</statement>
+		<statement id="player_used_skip">哼，我会找你算账的！</statement>
+		<statement id="enemy_used_skip">跳过你的下一回合。反正你一直都在跳过。</statement>
+		<statement id="player_used_both">双倍泡泡，麻烦翻倍。</statement>
+		<statement id="enemy_used_both">双倍快乐！</statement>
+		<statement id="player_used_steal">嘿！那是我的！</statement>
+		<statement id="enemy_used_steal">嗖！我要拿走一张。</statement>
+		<statement id="player_used_draw">再抽一张呗，反正你也没辙。</statement>
+		<statement id="enemy_used_draw">虽然我不需要，但再抽一张也无妨。</statement>
+		<statement id="enemy_out_of_cards">我已经打出最后一张牌了。真没想到会走到这一步。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="scott">
+		<statement id="start">祝好运，哈哈。</statement>
+		<statement id="enemyAlmost13">打得好。</statement>
+		<statement id="playerAlmost13">&gt;:(</statement>
+		<statement id="win">哈。</statement>
+		<statement id="lose">太简单了。</statement>
+		<statement id="tie">啥。</statement>
+		<statement id="player_blocked">这下你怎么办。</statement>
+		<statement id="enemy_blocked">呃。</statement>
+		<statement id="player_used_skip">跳过！</statement>
+		<statement id="enemy_used_skip">这招怎么样！</statement>
+		<statement id="player_used_both">哦哦，糟了。</statement>
+		<statement id="enemy_used_both">这我可应付不来！</statement>
+		<statement id="player_used_steal">喂！那是我的！</statement>
+		<statement id="enemy_used_steal">那我就不客气收下啦！</statement>
+		<statement id="player_used_draw">拿着吧，你肯定用得上。</statement>
+		<statement id="enemy_used_draw">哈哈，来得正好。</statement>
+		<statement id="enemy_out_of_cards">真不知道你是怎么撑到现在的。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,39 @@
+<item id="3210">
+	<type>store</type>
+	<subType>general</subType>
+	
+	<contentClass>
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+	
+	<buttons>
+		<btn>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+	</buttons>
+	
+	<textfields>
+		<text id="storeSubTitle">
+			<value>缩小射线岛</value>
+		</text>
+			<text id="storeTitle">
+			<value>硬头盔</value>
+		</text>
+		<text id="storeInstructions">
+			<value>在缩小射击小游戏里更轻松地撞穿物体！</value>
+		</text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack" />
+	</assets>
+	
+	<looks>
+		<look>
+			<facial>ShrinkRayPromo1</facial>
+		</look>
+	</looks>
+</item>

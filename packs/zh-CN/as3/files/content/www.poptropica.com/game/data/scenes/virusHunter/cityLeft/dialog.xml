@@ -1,0 +1,59 @@
+<dialogs>
+	<character id="player">
+		<statement id="help" link="sick_dog" linkEntityId="girl">需要帮忙吗？</statement>
+
+
+		</character>
+	<character id="manWithShades">
+		<conversation>
+			<exchange>
+				<question>你在这儿干嘛？</question>
+				<answer>看不出来吗？我在送披萨。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="driverTrembles">早餐时间送披萨？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="vanLeaves">被发现了！快跑！</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+	</character>
+	<character id="girl">
+		<statement id="come_back">贝儿！回来，贝儿！</statement>
+		<statement id="sick_dog" triggerEvent="triggerEvent" triggerEventArgs="talked_to_girl, true">除非你能治好一只生病的狗！</statement>
+		<statement event="talked_to_girl">请帮帮我的狗！</statement>
+		<conversation>
+			<exchange>
+				<question>怎么了？</question>
+				<answer link="help" linkEntityId="player" triggerEvent="giveItem" triggerEventArgs="petriDish">是我的狗，贝儿。它从垃圾桶里吃了这个之后，行为就变得很奇怪。</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

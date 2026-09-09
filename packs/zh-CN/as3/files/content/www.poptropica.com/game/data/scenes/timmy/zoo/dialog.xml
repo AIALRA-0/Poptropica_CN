@@ -1,0 +1,21 @@
+<dialogs>
+	<character id="player">
+		<statement id="fans" triggerEvent="triggerEvent" triggerEventArgs="pan_player">要是我能碰到控制面板就好了……</statement>
+		<statement id="bear" triggerEvent="triggerEvent" triggerEventArgs="pan_player">有趣的熊……</statement>
+		<statement id="nuggets" triggerEvent="triggerEvent" triggerEventArgs="get_nuggets">请给我一些鸡块。</statement>
+
+
+
+
+		</character>
+	<character id="worker">
+		<statement id="normal">不到三块钱就能买到最棒的鸡块。</statement>
+		<statement id="distracted">那只北极熊真有才。我们这只整天就泡在水池里。</statement>
+
+
+
+		</character>
+
+
+
+</dialogs>

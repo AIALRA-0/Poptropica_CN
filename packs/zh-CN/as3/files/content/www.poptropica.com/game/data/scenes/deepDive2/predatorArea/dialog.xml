@@ -1,0 +1,25 @@
+<dialogs>
+	<character id="cam">
+		<statement id="predatorScene">这地方让我有种不祥的预感。小心点。</statement>
+		<statement id="getFish">那些小鱼一直跟着你，好像很害怕什么。</statement>
+		<statement id="filmGlyph">这些符号是什么意思？</statement>
+		<statement id="getStone">这些石头碎片到处都是，它们之间可能有联系。</statement>
+		<statement id="trapShark">哥布林鲨已经存在1. 25亿年了！</statement>
+		<statement id="trapShark2">它为什么被困在这里这么久？</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="dummyPlayer">
+		<statement id="trapShark3">也许它一直在等我。</statement>
+
+
+	</character>
+
+
+
+</dialogs>

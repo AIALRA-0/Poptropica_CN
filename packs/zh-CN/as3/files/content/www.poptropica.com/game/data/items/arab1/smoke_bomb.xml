@@ -1,0 +1,54 @@
+<item id="smoke_bomb">
+	<type>island</type>
+	<subType>arab1</subType>
+	<textfields>
+ 		<text>
+      		<value>烟雾弹</value>
+    	</text>
+    	<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="false"></conditional>
+			<value>按空格键投掷烟雾弹！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+		<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="true"></conditional>
+			<value>按动作键投掷烟雾弹！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>装备</label>
+    		<actions>
+	    		<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<looks>
+		<look>
+			<item>an_bomb</item>
+		</look>
+	</looks>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+		<conditional type="checkIfMobile"/>
+	</conditionals>
+</item>

@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="radio">
+		<statement id="read">收到信号。原地待命，我们派直升机来接你。</statement>
+		<statement id="mvb">我是迈伦·范布伦。待在原地别动。</statement>
+
+
+
+		</character>
+
+
+</dialogs>

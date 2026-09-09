@@ -1,0 +1,206 @@
+<dialogs>
+	<character id="queen">
+		<statement id="evil" link="but" linkEntityId="dagger">最后再说一遍，你天生就是邪恶的，如果我不把你培养成邪恶的人，那我这个当妈的也太不称职了。</statement>
+		<statement id="no" triggerEvent="triggerEvent" triggerEventArgs="see_queen">别可是了！这事到此为止。现在我要履行女王职责，去小吃摊大快朵颐了。</statement>
+
+
+
+		</character>
+	<character id="dagger">
+		<conversation>
+			<exchange>
+				<question>你好。</question>
+				<answer>好什么好？我一点都没看出来！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>比如星际小吃车厨艺大赛。</question>
+				<answer>拜托。每年这些讨厌的家伙都带着恶心的食物来，把这儿搞得臭烘烘的。 </answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你不喜欢？</question>
+				<answer>我只想赶紧离开这个破地方。 </answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="but" link="no" linkEntityId="queen">可是妈妈——</statement>
+		<statement id="radio4" link="radio5" linkEntityId="jack1">不，走开！我不需要你们这些没用的卫兵整天盯着我！</statement>
+
+
+
+
+	</character>
+	<character id="chef">
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="chef_pose">我是波巴·弗莱，银河系顶尖大厨。最棒的！无人能及！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你听起来很自信嘛。</question>
+				<answer>没有我做不成美味料理的食材。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你什么都能做？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="talked_to_chef, true">给我带些稀奇古怪的食材来，我证明给你看！保证让你不虚此行。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement event="talked_to_chef">给我带些稀奇古怪的食材来，保证让你不虚此行！</statement>
+		<statement id="fruit" triggerEvent="exchangeItems" triggerEventArgs="fruit, egg">太棒了——马克斯布拉果非常稀有！我用一个超大号蛋跟你换！</statement>
+		<statement id="seed_pod" triggerEvent="exchangeItems" triggerEventArgs="seed_pod, gelatin_salad">啊，这是银河系最稀有的香料之一。我用这份弹力果冻沙拉跟你换！</statement>
+
+
+
+
+
+	</character>
+	<character id="cook0">
+		<statement>尝尝我们的新式复古塔可！</statement>
+
+
+		</character>
+	<character id="cook1">
+		<statement>保证咸味十足！</statement>
+
+
+		</character>
+	<character id="cook2">
+		<statement>你吃过最冰的冰淇淋！</statement>
+
+
+		</character>
+	<character id="player">
+		<statement id="nuke">这东西有辐射！不能碰，不然我的手会融化的！</statement>
+		<statement id="loudspeaker">扩音器！我忍不住想玩玩这个！</statement>
+		<statement id="noRadio">我现在不需要碰那个。</statement>
+		<statement id="spoon">几桶核燃料球。</statement>
+		<statement id="spoon2">用足够长的杠杆就能撬开这个。</statement>
+		<statement id="thereIsNoSpoon">我已经拿到充好电的燃料电池了。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="radio">
+		<statement id="comment0">欢迎来到太空港芬克顿，黑暗王国中闪耀的明珠。</statement>
+		<statement id="comment1">为了您的安全，请勿接近、挑衅甚至直视达格女王的机器人卫兵。</statement>
+		<statement id="comment2">访客需自行清理洒出的东西。违规者将被抛入太空真空。</statement>
+		<statement id="comment3">达格女王提醒您，在向她陛下跪拜时请使用提供的卫生垫。</statement>
+		<statement id="comment4">星际美食车烹饪大赛由斯皮福百洁布赞助。斯皮福：当吐口唾沫擦擦不够用时。</statement>
+		<conversation id="heyRadio">
+			<exchange>
+				<question>现在为河城鼠队击球的是：左外野手，钱斯·法布洛索！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="guards_distracted">现在为河城鼠队击球的是：左外野手，钱斯·法布洛索！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>橡胶婴儿车保险杠！三根粗蓟草棍！独一无二的纽约！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="guards_distracted">橡胶婴儿车保险杠！三根粗蓟草棍！独一无二的纽约！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>请热粉色叛军封锁跑车的主人挪一下车好吗？它停在拖车区了。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="guards_distracted">请热粉色叛军封锁跑车的主人挪一下车好吗？它停在拖车区了。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="jack0">
+		<statement id="back" link="back1" linkEntityId="jack1">站住！这里是禁区。</statement>
+		<statement id="radio0" link="radio1" linkEntityId="jack1">嘿！有人在乱动扩音器！</statement>
+		<statement id="leave" link="leave1" linkEntityId="jack1">糟了！燃料供应被污染了！现在只能用来做廉价快餐了！</statement>
+		<statement id="radio3" link="radio4" linkEntityId="dagger">那个叛逆的平民没打扰您吧，匕首公主？</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="jack1">
+		<statement id="back1">意思就是快滚！</statement>
+		<statement id="radio1">我们得阻止他们！</statement>
+		<statement id="leave1">女王会为此拆了我们的！快离开这儿！</statement>
+		<statement id="radio2" link="radio3" linkEntityId="jack0">别碰皇家扩音器！</statement>
+		<statement id="radio5">我们只是遵照女王的命令行事。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="alien3">
+		<statement>离女王的机器人卫兵远点，他们可凶了！</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

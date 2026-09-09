@@ -1,0 +1,62 @@
+<item id="mjolnir">
+	<type>island</type>
+	<subType>con1</subType>
+		
+	<textfields>
+  		<text id="title">
+    		<value>雷神之锤</value>
+  		</text>
+  		<text>
+  			<conditional id="checkIfMobile" isTrue="false"></conditional>
+      		<value>按空格键展示力量！</value>
+      		<y>100</y>
+    	</text>
+    	<text>
+  			<conditional id="checkIfMobile" isTrue="true"></conditional>
+      		<value>点按动作按钮展示力量！</value>
+      		<y>100</y>
+    	</text>
+  	</textfields>
+  	
+  	<buttons>
+    	<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>装备</label>
+    		<actions>
+				<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>收起</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+  	</buttons>
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-80</saturation>
+     			<hue>25</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <looks>
+	    <look>
+		 	<item>poptropicon_mjolnir</item>
+	   	</look> 
+	</looks> 
+ 
+ 	<conditionals>
+    	<conditional type="hasLook" />	
+		<conditional type="checkIfMobile" />
+    </conditionals>
+</item>

@@ -1,0 +1,110 @@
+{
+  "ok": true,
+  "alreadyMerged": false,
+  "generatedAt": "2026-06-21T00:01:13.116Z",
+  "assetId": "as3-shell:reality2-class-merge",
+  "baseShellPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
+  "donorShellPath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\reality2-shell-candidates\\Shell-20201112013740.swf",
+  "outputShellPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\swf\\content\\www.poptropica.com\\game\\Shell.swf",
+  "provenancePath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\provenance\\reality2-shell-merge.json",
+  "manifestPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as3\\manifest.json",
+  "rabcdasmHome": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\tools\\rabcdasm-1.18",
+  "workRoot": null,
+  "keepTemp": false,
+  "classCount": 18,
+  "classes": [
+    "game.scenes.reality2.Reality2Events",
+    "game.scenes.reality2.common.Common",
+    "game.scenes.reality2.shared.RealityScene",
+    "game.scenes.reality2.shared.Contest",
+    "game.scenes.reality2.cheetahRun.CheetahRun",
+    "game.scenes.reality2.mainStreet.MainStreet",
+    "game.scenes.reality2.gameShow.GameShow",
+    "game.scenes.reality2.spearThrow.SpearThrow",
+    "game.scenes.reality2.deepDive.DeepDive",
+    "game.scenes.reality2.shared.RankingsPopup",
+    "game.scenes.reality2.spearThrow.ai.AiInput",
+    "game.scenes.reality2.shared.Contestant",
+    "game.scenes.reality2.deepDive.diveSystem.Diver",
+    "game.scenes.reality2.deepDive.diveSystem.DiverSystem",
+    "game.scenes.reality2.deepDive.diveSystem.DiverObstacle",
+    "game.scenes.reality2.spearThrow.ai.SpearThrowAiSystem",
+    "game.scenes.reality2.spearThrow.ai.SpearThrowAiNode",
+    "game.scenes.reality2.deepDive.diveSystem.DiverNode"
+  ],
+  "includes": [
+    " #include \"game/scenes/reality2/Reality2Events.script.asasm\"",
+    " #include \"game/scenes/reality2/common/Common.script.asasm\"",
+    " #include \"game/scenes/reality2/shared/RealityScene.script.asasm\"",
+    " #include \"game/scenes/reality2/shared/Contest.script.asasm\"",
+    " #include \"game/scenes/reality2/cheetahRun/CheetahRun.script.asasm\"",
+    " #include \"game/scenes/reality2/mainStreet/MainStreet.script.asasm\"",
+    " #include \"game/scenes/reality2/gameShow/GameShow.script.asasm\"",
+    " #include \"game/scenes/reality2/spearThrow/SpearThrow.script.asasm\"",
+    " #include \"game/scenes/reality2/deepDive/DeepDive.script.asasm\"",
+    " #include \"game/scenes/reality2/shared/RankingsPopup.script.asasm\"",
+    " #include \"game/scenes/reality2/spearThrow/ai/AiInput.script.asasm\"",
+    " #include \"game/scenes/reality2/shared/Contestant.script.asasm\"",
+    " #include \"game/scenes/reality2/deepDive/diveSystem/Diver.script.asasm\"",
+    " #include \"game/scenes/reality2/deepDive/diveSystem/DiverSystem.script.asasm\"",
+    " #include \"game/scenes/reality2/deepDive/diveSystem/DiverObstacle.script.asasm\"",
+    " #include \"game/scenes/reality2/spearThrow/ai/SpearThrowAiSystem.script.asasm\"",
+    " #include \"game/scenes/reality2/spearThrow/ai/SpearThrowAiNode.script.asasm\"",
+    " #include \"game/scenes/reality2/deepDive/diveSystem/DiverNode.script.asasm\""
+  ],
+  "treeCopy": {
+    "sourceDir": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\reality2-rabcdasm-merge-1782000073458\\donor-0\\game\\scenes\\reality2",
+    "targetDir": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\reality2-rabcdasm-merge-1782000073458\\base-0\\game\\scenes\\reality2",
+    "copiedFileCount": 36
+  },
+  "source": {
+    "baseSha1": "c36005c8b87c6c434ff06bc83c560a98992a4af5",
+    "donorSha1": "013144efff329facaeb360ec198ac82e0bb61fcd"
+  },
+  "output": {
+    "sha1": "614d2f12bf7b4d67e6d753d658884743b884ec67",
+    "bytes": 5028790
+  },
+  "validation": {
+    "base": {
+      "inspected": true,
+      "signature": "CWS",
+      "compressedBytes": 5022521,
+      "searchableBytes": 11023773,
+      "targetClassPresent": false,
+      "controlPackages": {
+        "game.scenes.ghd": true,
+        "game.scenes.timmy": true,
+        "game.scenes.prison": true,
+        "game.scenes.virusHunter": true
+      }
+    },
+    "donor": {
+      "inspected": true,
+      "signature": "CWS",
+      "compressedBytes": 5872554,
+      "searchableBytes": 11865484,
+      "targetClassPresent": true,
+      "controlPackages": {
+        "game.scenes.ghd": true,
+        "game.scenes.timmy": true,
+        "game.scenes.prison": true,
+        "game.scenes.virusHunter": true
+      }
+    },
+    "output": {
+      "inspected": true,
+      "signature": "CWS",
+      "compressedBytes": 5028790,
+      "searchableBytes": 10332378,
+      "targetClassPresent": true,
+      "controlPackages": {
+        "game.scenes.ghd": true,
+        "game.scenes.timmy": true,
+        "game.scenes.prison": true,
+        "game.scenes.virusHunter": true
+      }
+    },
+    "missingControls": []
+  }
+}

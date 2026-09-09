@@ -1,0 +1,32 @@
+<item id="_under_construction">
+  	<type>store</type>
+  	<subType>general</subType>
+  	<textfields>
+   	 	<text>
+      		<value>施工中</value>
+   	 	</text>
+   	 	<text>
+      		<value>看不到所有卡片？别担心！</value>
+      		<size>22</size>
+      		<y>105</y>
+    	</text>
+    	<text>
+      		<value>我们正在整理施工，</value>
+      		<size>22</size>
+      		<y>125</y>
+    	</text>
+    	<text>
+      		<value>我们很快就会把它们挖出来！</value>
+      		<size>22</size>
+      		<y>145</y>
+    	</text>
+  	</textfields>
+  	<assets>
+		<asset id="cardBack">
+    		<assetPath>items/ui/background_construction.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+			<assetPath>items/ui/under_construction.swf</assetPath>
+		</asset>
+  	</assets>
+</item>

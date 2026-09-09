@@ -1,0 +1,190 @@
+<doors>
+	<door id="doorMidway">
+		<scene>game.scenes.carnival.midwayDay.MidwayDay</scene>
+		<x>5355</x>
+		<y>1953</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorMidway" event="set_night">
+		<scene>game.scenes.carnival.midwayNight.MidwayNight</scene>
+		<x>5355</x>
+		<y>1953</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorMidway" event="set_evening">
+		<scene>game.scenes.carnival.midwayEvening.MidwayEvening</scene>
+		<x>5355</x>
+		<y>1953</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorMidway" event="set_morning">
+		<scene>game.scenes.carnival.midwayEmpty.MidwayEmpty</scene>
+		<x>5355</x>
+		<y>1953</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorWoods">
+		<scene>game.scenes.carnival.adStreet2.AdStreet2</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.ridesDay.RidesDay</scene>
+				<x>7350</x>
+				<y>1603</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.woods.Woods</scene>
+				<x>70</x>
+				<y>770</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorWoods" event="set_night">
+		<scene>game.scenes.carnival.adStreet2.AdStreet2</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.ridesNight.RidesNight</scene>
+				<x>7350</x>
+				<y>1603</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.woods.Woods</scene>
+				<x>70</x>
+				<y>770</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorWoods" event="set_evening">
+		<scene>game.scenes.carnival.adStreet2.AdStreet2</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.ridesEvening.RidesEvening</scene>
+				<x>7350</x>
+				<y>1603</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.woods.Woods</scene>
+				<x>70</x>
+				<y>770</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorWoods" event="set_morning">
+		<scene>game.scenes.carnival.adStreet2.AdStreet2</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.ridesEmpty.RidesEmpty</scene>
+				<x>7350</x>
+				<y>1603</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.woods.Woods</scene>
+				<x>70</x>
+				<y>770</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorTunnelLove">
+		<scene>game.scenes.carnival.tunnelLove.TunnelLove</scene>
+		<x>480</x>
+		<y>740</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+	<door id="doorHauntedLab">
+		<scene>game.scenes.carnival.hauntedLab.HauntedLab</scene>
+		<x>47</x>
+		<y>1758</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

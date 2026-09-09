@@ -1,0 +1,60 @@
+<dialogs>
+	<character id="vanBuren">
+		<statement id="lucky" link="go_home" linkEntityId="player">你运气真好，被我们找到了！正好赶上明天的大狩猎。</statement>
+		<statement id="nonsense" link="trophy_room">别胡说。你绝不能错过和世界最伟大狩猎大师一起打猎的机会！</statement>
+		<statement id="trophy_room" triggerEvent="triggerEvent" triggerEventArgs="to_the_trophies">不信的话，来我的战利品室看看。</statement>
+
+
+
+
+	</character>
+	<character id="winston">
+		<statement id="startled">谁在那儿？</statement>
+		<statement id="dinner">主人将在宴会厅接待你。</statement>
+		<statement id="caught">你一定是迷路了。回房间去吧。</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="go_home" triggerEvent="triggerEvent" triggerEventArgs="nonsense_boy">我真的想回家了。</statement>
+		<statement id="need_trophy_room_key">这门钥匙一定在某个地方……</statement>
+		<statement id="fragile">这东西看起来挺脆弱的。我最好先别碰它。</statement>
+		<statement id="too_hot">哇，好烫！</statement>
+		<statement id="get_on_with_it">我得去战利品室，这样才能离开这里。</statement>
+		<statement id="must_escape">这门纹丝不动。一定有办法解除安全锁。</statement>
+		<statement id="nom_noms">范布伦要我去宴会厅……吃点东西应该没关系吧。</statement>
+		<statement id="no_recording">糟糕，这锁一定是识别范布伦声音的！</statement>
+		<statement id="tally_ho">我应该试试找到的那个录音。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="securityInteraction">
+		<statement id="keycode">请输入密码。</statement>
+		<statement id="authorization" triggerEvent="triggerEvent" triggerEventArgs="voice_authorization">请进行语音授权。</statement>
+		<statement id="acceptedKey">安全码验证通过。</statement>
+		<statement id="acceptedVoice">语音密码验证通过。</statement>
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

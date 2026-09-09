@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>carrotTransporter</id>
+		<asset>carrotTransporter.swf</asset>
+		<x>436</x>
+		<y>1110</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

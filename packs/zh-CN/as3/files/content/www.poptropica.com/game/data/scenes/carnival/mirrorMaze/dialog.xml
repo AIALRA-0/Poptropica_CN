@@ -1,0 +1,43 @@
+<dialogs>
+	<character id="player">
+		<statement id="dontUseHammer">我得小心点！用锤子很容易打碎这些镜子。</statement>
+		<statement id="enslaveRingmaster" link="nowSlave" linkEntityId="ringmaster">现在你是我的奴隶了！</statement>
+		<statement id="neverHurt" link="wontHurt" linkEntityId="ringmaster">你再也别想伤害任何人了。</statement>
+		<statement id="believeChicken" link="cluckChicken" linkEntityId="ringmaster">为了保险起见，从现在起，你要相信自己是……嗯……一只鸡！</statement>
+		<statement id="freeCages" triggerEvent="triggerEvent" triggerEventArgs="fadeBlack">来得正好。我们去把笼子里的人都放出来吧。</statement>
+
+
+
+
+
+
+		</character>
+	<character id="ringmaster">
+		<statement id="tauntstart" triggerEvent="triggerEvent" triggerEventArgs="startGame">你休想抓住我！</statement>
+		<statement id="taunt1" triggerEvent="triggerEvent" triggerEventArgs="endTaunt">你休想抓住我！</statement>
+		<statement id="taunt2" triggerEvent="triggerEvent" triggerEventArgs="endTaunt">这个镇子要为对我做的事付出代价！</statement>
+		<statement id="taunt3" triggerEvent="triggerEvent" triggerEventArgs="endTaunt">你的灵魂属于我！</statement>
+		<statement id="becomeSlave" triggerEvent="triggerEvent" triggerEventArgs="becomeSlave">你无处可藏！成为我的奴隶吧！</statement>
+		<statement id="nowSlave" link="neverHurt" linkEntityId="player">我是你的奴隶</statement>
+		<statement id="wontHurt" link="believeChicken" linkEntityId="player">我再也不会伤害任何人了</statement>
+		<statement id="cluckChicken" triggerEvent="triggerEvent" triggerEventArgs="actChicken">我是只小鸡！咯咯，咯咯！</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="edgar">
+		<statement id="stoppedRingmaster" link="freeCages" linkEntityId="player">你阻止了他！</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

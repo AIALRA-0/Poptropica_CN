@@ -1,0 +1,33 @@
+<item id="dr_smartypants">
+	<type>island</type>
+	<subType>con3</subType>
+	<value>1,skip</value>
+	<textfields>
+ 		<text id="title">
+      		<value>聪明裤博士</value>
+      		<styleFamily>CCG</styleFamily>
+      		<styleId>title_squish</styleId>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="power">
+      		<value>跳过一回合</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>40</y>
+    	</text>
+    	<text id="description">
+      		<value>对手的下一回合会被跳过。</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>105</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con3/background1.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con3/dr_smartypants.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

@@ -1,0 +1,422 @@
+<!-- The id tag in style accepts multiple names separated by commas -->
+<!--  Accepted attributes and accepted values in the style
+
+	<fontfamily> 		// Comma separated font families
+	<size>				// Font size
+	<color>				// Only hexadecimal colors #FF0000
+	<bold>				// true or false
+	<italic>			// true or false
+	<underline>			// true or false
+	<align>				// left, center, right, justify
+	<leading>	    	// Numeric amount of space in between lines
+	<marginleft>   		// Numeric amount of space from left margin
+	<marginright>		// Numeric amount of space from right side
+	<indent>			// Numeric indent amount
+	<letterspacing>		// Numeric spacing in between the letters
+	<verticalalign>		// true or false
+	<shadow>			// sub categories defaults
+		<alpha>			// Numeric alpha value = .15
+		<color>			// Hexadecimal shadow color = #000000
+		<offsetX>		// Numeric offset x to original textfield = -1
+		<offsetY>		// Numeric offset y to original textfield = 2
+	<effect>			// Can vary, same usage for card text
+
+-->
+
+<css>
+	<styles id="card">
+		<style id="title, campaigntitle, adtitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>24</size>
+			<color>#000000</color>
+			<align>center</align>
+			<leading>-6</leading>
+			<verticalalign>true</verticalalign>
+			<shadow>
+				<alpha>.4</alpha>
+				<color>#FFFFFF</color>
+				<offsetX>4</offsetX>
+				<offsetY>5</offsetY>
+				<!-- <offsetX>1</offsetX>
+				<offsetY>2</offsetY> -->
+			</shadow>
+		</style>
+
+		<style id="titlewhite">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>28</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+			<leading>-6</leading>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="goldtitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>30</size>
+			<color>#F9C142</color>
+			<align>center</align>
+			<leading>-6</leading>
+			<verticalalign>true</verticalalign>
+			<shadow>
+				<alpha>.4</alpha>
+				<color>#000000</color>
+				<offsetX>4</offsetX>
+				<offsetY>5</offsetY>
+				<!-- <offsetX>1</offsetX>
+				<offsetY>2</offsetY> -->
+			</shadow>
+		</style>
+
+		<style id="membertitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>26</size>
+			<color>#8D6507</color>
+			<align>center</align>
+			<leading>-6</leading>
+			<verticalalign>true</verticalalign>
+			<shadow>
+				<alpha>.4</alpha>
+				<color>#FFFFFF</color>
+				<offsetX>1</offsetX>
+				<offsetY>2</offsetY>
+			</shadow>
+		</style>
+
+		<style id="memberinstructions,memberinstructions2">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#8D6507</color>
+			<align>center</align>
+			<shadow>
+				<alpha>.4</alpha>
+				<color>#FFFFFF</color>
+				<offsetX>1</offsetX>
+				<offsetY>2</offsetY>
+			</shadow>
+		</style>
+
+		<style id="instructions">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>15</size>
+			<color>#333333</color>
+			<align>center</align>
+		</style>
+
+		<style id="instructionswhite">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>15</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+		</style>
+
+		<style id="goldinstructions">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>15</size>
+			<color>#F9C142</color>
+			<align>center</align>
+		</style>
+
+		<style id="limited,ad">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>9</size>
+			<color>#333333</color>
+			<align>center</align>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="subtitle, adsubtitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#000000</color>
+			<align>center</align>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="memberGift">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>26</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="memberGiftTitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>35</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="copyright">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>7</size>
+			<color>#000000</color>
+			<align>center</align>
+			<leading>-6</leading>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="button">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>18</size>
+			<color>#000000</color>
+		</style>
+
+		<style id="islandgray">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>18</size>
+			<align>center</align>
+			<color>#606060</color>
+		</style>
+
+		<style id="campaigngray">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>28</size>
+			<color>#4D4D4D</color>
+			<align>center</align>
+			<leading>-7</leading>
+			<verticalalign>true</verticalalign>
+			<shadow>
+				<alpha>.7</alpha>
+				<color>#FFFFFF</color>
+				<offsetX>2</offsetX>
+				<offsetY>2</offsetY>
+			</shadow>
+		</style>
+
+		<style id="memberinstructionsgray">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#4D4D4D</color>
+			<align>center</align>
+			<shadow>
+				<alpha>.7</alpha>
+				<color>#FFFFFF</color>
+				<offsetX>2</offsetX>
+				<offsetY>2</offsetY>
+			</shadow>
+		</style>
+
+		<style id="ccgtitle">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>28</size>
+			<color>#000000</color>
+			<align>center</align>
+			<verticalalign>true</verticalalign>
+		</style>
+
+		<style id="credits">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>44</size>
+			<color>#000000</color>
+			<align>center</align>
+			<letterspacing>0</letterspacing>
+		</style>
+
+		<style id="default">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>15</size>
+			<color>#333333</color>
+			<align>center</align>
+		</style>
+	</styles>
+
+	<styles id="dialog">
+		<style id="haveitem">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#015201</color>
+			<align>center</align>
+			<leading>2</leading>
+		</style>
+
+		<style id="default">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#000000</color>
+			<align>center</align>
+			<leading>2</leading>
+		</style>
+	</styles>
+
+	<styles id="ui">
+		<style id="timer">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>35</size>
+			<color>#ffcc00</color>
+			<align>center</align>
+			<leading>2</leading>
+			<shadow>
+				<alpha>1</alpha>
+				<color>#111111</color>
+				<offsetX>2</offsetX>
+				<offsetY>2</offsetY>
+			</shadow>
+		</style>
+		<style id="hint">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>12</size>
+			<color>#ffffff</color>
+			<align>center</align>
+			<leading>2</leading>
+		</style>
+		<style id="tutorialwhite">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>32</size>
+			<color>#ffffff</color>
+			<align>center</align>
+			<leading>2</leading>
+		</style>
+		<style id="tutorialwhite2">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>32</size>
+			<color>#ffffff</color>
+			<align>left</align>
+			<leading>2</leading>
+		</style>
+		<style id="tutorialgreen">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>32</size>
+			<color>#00CC00</color>
+			<align>center</align>
+			<bold>true</bold>
+			<leading>2</leading>
+		</style>
+		<style id="plate">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>108</size>
+			<color>#DEFFE2</color>
+			<align>left</align>
+			<leading>2</leading>
+			<letterspacing>2.5</letterspacing>
+		</style>
+		<style id="nixie">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>54</size>
+			<color>#FFB71B</color>
+			<align>center</align>
+			<leading>2</leading>
+			<letterspacing>2.5</letterspacing>
+		</style>
+		<style id="digitalgreen">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>25</size>
+			<color>#45DA7E</color>
+			<align>left</align>
+			<leading>2</leading>
+			<letterspacing>2.5</letterspacing>
+		</style>
+		<style id="tooltip">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>18</size>
+			<color>#0083F2</color>
+			<align>center</align>
+			<leading>2</leading>
+			<!-- <effect>
+			<name>dropShadow</name>
+			<blurX>2</blurX>
+			<blurY>2</blurY>
+			<distance>0</distance>
+			<angle>0</angle>
+			<color>0xFFFFFF</color>
+			<strength>6</strength>
+			<quality>3</quality>
+		</effect> -->
+		</style>
+		<style id="loadinghints">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>22</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+		</style>
+		<style id="loadinghintsmobile">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>42</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+		</style>
+	</styles>
+
+	<styles id="popup">
+		<style id="titleyellow">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>38</size>
+			<color>#FAD92A</color>
+			<align>center</align>
+			<shadow>
+				<alpha>.2</alpha>
+				<color>#000000</color>
+				<offsetX>3</offsetX>
+				<offsetY>3</offsetY>
+				<angle>90</angle>
+				<distane>2</distane>
+			</shadow>
+		</style>
+		<style id="raisedparagraph">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>16</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+			<leading>2</leading>
+			<shadow>
+				<alpha>.2</alpha>
+				<color>#000000</color>
+				<offsetX>3</offsetX>
+				<offsetY>3</offsetY>
+				<angle>90</angle>
+				<distane>2</distane>
+			</shadow>
+		</style>
+
+		<style id="dimfootnote">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>13</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+			<leading>2</leading>
+			<alpha>70</alpha>
+		</style>
+	</styles>
+
+	<!-- NOTE :: This should really be in a separate style.xml that gets loaded just for this island -->
+	<styles id="CCG">
+		<style id="title">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>26</size>
+			<color>#FFFFFF</color>
+			<align>left</align>
+		</style>
+		<style id="title_long">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>22</size>
+			<color>#FFFFFF</color>
+			<align>left</align>
+		</style>
+		<style id="title_squish">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>21</size>
+			<color>#FFFFFF</color>
+			<align>left</align>
+		</style>
+		<style id="power">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>24</size>
+			<color>#FFFFFF</color>
+			<align>center</align>
+		</style>
+		<style id="description">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>22</size>
+			<color>#553902</color>
+			<align>center</align>
+		</style>
+		<style id="quotation">
+			<fontfamily>SimHei, Microsoft YaHei UI, Microsoft YaHei, Arial Unicode MS, _sans</fontfamily>
+			<size>20</size>
+			<color>#553902</color>
+			<align>center</align>
+		</style>
+	</styles>
+</css>

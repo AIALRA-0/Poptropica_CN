@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorMain">
+		<scene>game.scenes.timmy.mainStreet.MainStreet</scene>
+		<x>2160</x>
+		<y>110</y>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

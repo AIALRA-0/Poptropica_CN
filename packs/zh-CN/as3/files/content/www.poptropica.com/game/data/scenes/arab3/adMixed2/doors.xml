@@ -1,0 +1,22 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.arab3.palaceExterior.PalaceExterior</scene>
+		<x>2500</x>
+		<y>1280</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+		</label>
+	</door>
+	<door id="exitRight">
+		<scene>game.scenes.arab3.bazaar.Bazaar</scene>
+		<x>150</x>
+		<y>1550</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+		</label>
+	</door>
+</doors>

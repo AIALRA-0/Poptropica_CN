@@ -1,0 +1,110 @@
+<dialogs>
+	<character id="dealer">
+		<statement id="new_player" link="try_game">想试试《超级行动队》集换式卡牌游戏吗？</statement>
+		<statement id="give_starter" triggerEvent="triggerEvent" triggerEventArgs="give_deck">这是你的新手卡组。</statement>
+		<statement id="dealer_teach" triggerEvent="triggerEvent" triggerEventArgs="play_dealer">我来教你玩。</statement>
+		<statement event="starter_deck" link="replay">想再玩一局吗？</statement>
+		<statement id="won_card" link="explain_deck">打得不错！这张卡能强化你的卡组。</statement>
+		<statement id="explain_deck" triggerEvent="triggerEvent" triggerEventArgs="open_deck">用卡组道具可以调整卡牌。试试把刚赢的卡换上。</statement>
+		<statement id="deck_closed" link="lookout">拿到新卡记得更新卡组</statement>
+		<statement id="lookout">多留意四周，卡牌可能藏在任何地方。</statement>
+		<conversation id="try_game">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="check_if_played">没问题！</question>
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+		<conversation id="replay">
+			<exchange>
+				<question>当然，试试看。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_dealer">太好了，我们开始吧。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>现在不行。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="lost_to_expert">她说得对，说不定会场里还有更多卡牌。</statement>
+
+
+	</character>
+	<character id="expert">
+		<statement>我的卡组太强了，连新欧米伽卡都用不上。</statement>
+		<statement event="starter_deck" link="question">打赢我的史诗卡组，就送你一张未发售的欧米伽卡。</statement>
+		<statement event="omegon_body_photo" link="question">我居然输了。三局两胜？</statement>
+		<statement id="lost">你怎么可能赢我！这不科学！</statement>
+		<statement id="won">就凭你卡组里那些牌，永远别想赢我。</statement>
+		<conversation id="question">
+			<exchange>
+				<question>放马过来。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_expert">准备迎接惨败吧。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我先不玩了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+	</character>
+	<character id="marksman">
+		<statement>我超爱强力行动队！我要集齐他们的所有卡牌！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

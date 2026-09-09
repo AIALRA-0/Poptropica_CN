@@ -1,0 +1,183 @@
+<dialogs>
+	<character id="player">
+		<statement id="money">我得找点钱才能买一个。</statement>
+		<statement id="easy">这也太简单了。随便哪个笨蛋都能设计游戏！</statement>
+		<statement id="who" link="fired" linkEntityId="designer1">比利·乔丹是谁？</statement>
+		<statement id="find" triggerEvent="triggerEvent" triggerEventArgs="findHim">好，我去找他！</statement>
+		<statement id="laps" link="brilliant" linkEntityId="costCutter">呃，他们怎么都坐在别人腿上？</statement>
+		<statement id="youDidIt" triggerEvent="triggerEvent" triggerEventArgs="getCostume">你做到了，桶桶机器人。</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="guy">
+		<statement>没人看牌子吗？</statement>
+		<statement id="oof">哎哟！</statement>
+
+
+
+		</character>
+	<character id="programmer1">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="programmer1">我们需要更多人手！我一个人干两个人的活！</statement>
+
+
+	</character>
+	<character id="programmer2">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="programmer2">整天工作不休息，我都想缩成一团哭了。</statement>
+		<statement id="fix" link="who" linkEntityId="player">只有比利·乔丹能修好这个。</statement>
+
+
+
+	</character>
+	<character id="designer1">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="designer1">我们永远没法按时发布这个岛了。我们连主街场景都还没完成。</statement>
+		<statement id="without" link="quest" triggerEvent="triggerEvent" triggerEventArgs="questOn">没有失踪的同事，我们永远没法按时发布这个岛了。</statement>
+		<statement id="found_staff">你找到我们失踪的员工了吗？你拿着他们的工牌。</statement>
+		<statement id="fired" link="find" linkEntityId="player">我们以前的老开发。但他被解雇后就疯了。他现在跑到大自然里冥想去了。</statement>
+		<conversation id="quest">
+			<exchange>
+				<question>需要帮忙吗？</question>
+				<answer>我们需要老设计师回来完成山景场景。我们需要老编剧回来完成剧本。我们需要老程序员来修复漏洞。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>所以，基本上你是让我去跑腿找人？</question>
+				<answer>抱歉，我不太明白这个词……</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="findThem">我在哪里能找到他们？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="getBadges">给，带上这些员工工牌。它们应该能帮到你。再说一遍——这绝对不是跑腿任务。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+	</character>
+	<character id="designer2">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="designer2,true">我们群龙无首。</statement>
+		<statement id="bug" triggerEvent="triggerEvent" triggerEventArgs="faceLeft" link="fix" linkEntityId="programmer2">糟了。一个严重漏洞。谁能帮帮我们？</statement>
+
+
+
+	</character>
+	<character id="leadDesigner">
+		<statement>我决定把场景调暗一点，就像我的灵魂一样。</statement>
+		<statement id="mountainFinished" triggerEvent="triggerEvent" triggerEventArgs="mountainFinished">山景渲染快完成了……我决定把场景调暗一点，就像我的灵魂一样。</statement>
+
+
+
+	</character>
+	<character id="costCutter">
+		<statement id="brilliant" triggerEvent="triggerEvent" triggerEventArgs="twoDeep">这是我天才的新‘双层’程序。空间翻倍，椅子浪费的钱减半。</statement>
+
+
+	</character>
+	<character id="leadDeveloper">
+		<statement>这下应该能修好那个烦人的背包漏洞了。</statement>
+		<statement id="fix" triggerEvent="triggerEvent" triggerEventArgs="openHud">好了，这下你的背包应该没问题了。还有这个对话漏洞是怎么回事？一行代码就能搞定。真是的。</statement>
+		<statement id="backDoor">我黑进了一个后门漏洞，可以让你绕过《超级格斗机器人》的付费墙。进去找到我们失踪的程序员！</statement>
+		<statement id="wellDone">干得好，干得好。</statement>
+		<statement id="welcomeBack" linkEntityId="hertz" link="happyBack">你回来了。</statement>
+		<statement id="theresANote" linkEntityId="hertz" link="token">有张纸条。上面写了什么？</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="hertz">
+		<statement>回来真好。</statement>
+		<statement id="happyBack" triggerEvent="triggerEvent" triggerEventArgs="bucketBotCard">很高兴能回来。</statement>
+		<statement id="token" linkEntityId="player" link="youDidIt">上面写着‘聊表谢意。 -BB’</statement>
+
+
+
+
+	</character>
+	<character id="sleepingProgrammer">
+		<conversation>
+			<exchange>
+				<question>你在下面干什么呢？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="backToSleep">睡觉啊！这还不明显吗？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你还在这儿工作？我以为其他程序员都被开除了。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="backToSleep">我觉得大家好像都把我给忘了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我在找一份Poptropica的剧本，你见过吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="spokeToSleeper">切！我才不管什么剧本，我要回去睡大觉了。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="mother">嗯……什么……？好的妈妈，早餐再多来点甜食……每顿都要甜食……真香……</statement>
+		<statement id="smell" triggerEvent="triggerEvent" triggerEventArgs="jumpUp">这是什么味道……？廉价的糖霜？还是陈旧的办公室点心？</statement>
+		<statement id="cake" triggerEvent="triggerEvent" triggerEventArgs="runOut">蛋糕！</statement>
+
+
+
+
+
+	</character>
+	<character id="bathroomPerson">
+		<statement>正忙着呢！抱歉！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

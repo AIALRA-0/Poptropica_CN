@@ -1,0 +1,12 @@
+<doors>
+	<door id="doorCheeseExterior">
+		<scene>game.scenes.mocktropica.cheeseExterior.CheeseExterior</scene>
+		<x>2892</x>
+		<y>1640</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

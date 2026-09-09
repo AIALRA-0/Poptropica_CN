@@ -1,0 +1,23 @@
+<items>
+	<item>
+		<id>wetKindling</id>
+		<asset>wetKindling.swf</asset>
+		<x>1740</x>
+		<y>2020</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+
+	<item>
+		<id>handbookPage5</id>
+		<asset>handbookPage.swf</asset>
+		<x>1550.15</x>
+		<y>260</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

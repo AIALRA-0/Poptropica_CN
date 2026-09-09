@@ -1,0 +1,28 @@
+<dialogs>
+	<character id="player">
+    </character>
+	<character id="cam">
+		<statement id="this">asdfa dgaw aeer adaf&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;hajnja ioweutvm skaoh</statement>
+		<statement id="that">&lt;br/&gt;   ...GO HOME. THANK YOU...</statement>
+		<statement id="static">|</statement>
+
+
+
+
+		</character>
+	<character id="dummyPlayer">
+		<statement id="comeIn" triggerEvent="triggerEvent" triggerEventArgs="comeInOver">凯姆，收到请回答。能听到吗？</statement>
+		<statement id="guess" triggerEvent="triggerEvent" triggerEventArgs="guessOver">看来只能靠自己了……</statement>
+		<statement id="whatWasThat">刚才那是什么声音？</statement>
+		<statement id="wait" triggerEvent="triggerEvent" triggerEventArgs="waitOver">等等！我也要回家！求你了！</statement>
+
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

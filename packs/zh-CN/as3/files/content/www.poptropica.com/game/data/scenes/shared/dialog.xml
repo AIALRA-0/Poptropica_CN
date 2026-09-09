@@ -1,0 +1,20 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="cannot_use_item_default">这里用不了这个。</statement>
+		<statement triggeredByEvent="no_reason_to_use_item_default">没必要在这里用这个。</statement>
+		<statement triggeredByEvent="maybe_later_default">也许以后能派上用场。</statement>
+		<statement triggeredByEvent="cannot_use_vh_camera">我得找到档案里描述的那个人。</statement>
+		<statement triggeredByEvent="cannot_use_vh_photo">我应该把这个给兰格博士看看。</statement>
+		<statement triggeredByEvent="cannot_use_vh_documents">我得找个能看懂这个的人。</statement>
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

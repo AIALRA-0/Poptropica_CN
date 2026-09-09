@@ -1,0 +1,31 @@
+<doors>
+	<door id="exitRight">
+		<scene>game.scenes.viking.jungle.Jungle</scene>
+		<x>1655</x>
+		<y>1032</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitLeft">
+		<scene>game.scenes.viking.embedsCamp.EmbedsCamp</scene>
+		<x>2424</x>
+		<y>747</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

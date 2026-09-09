@@ -1,0 +1,58 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.survival3.adMixed2.AdMixed2</scene>
+		<x>1870</x>
+		<y>1015</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival3.valleyLeft.ValleyLeft</scene>
+				<x>2500</x>
+				<y>2210</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival3.riverBed.RiverBed</scene>
+				<x>110</x>
+				<y>1000</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.survival3.adStreet3.AdStreet3</scene>
+		<x>50</x>
+		<y>1030</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival3.riverBed.RiverBed</scene>
+				<x>3500</x>
+				<y>1000</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival3.valleyRight.ValleyRight</scene>
+				<x>250</x>
+				<y>1820</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

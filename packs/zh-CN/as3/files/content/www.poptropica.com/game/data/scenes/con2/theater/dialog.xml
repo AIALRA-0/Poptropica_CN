@@ -1,0 +1,130 @@
+<dialogs>
+	<character id="player">
+		<statement id="what_contest" triggerEvent="triggerEvent" triggerEventArgs="emcee_gesture">什么比赛？</statement>
+		<statement id="omegon" link="nobody_knows" linkEntityId="emcee">奥米冈？他长什么样？</statement>
+		<statement id="locked">嗯……锁住了……</statement>
+		<statement id="get_ready" triggerEvent="triggerEvent" triggerEventArgs="run_off">好的！</statement>
+
+
+
+
+
+	</character>
+	<character id="emcee">
+		<statement id="dramatic" link="what_contest" linkEntityId="player">出场挺有戏剧性，但时机不对。比赛还没开始呢。</statement>
+		<statement id="whoever">谁能做出最棒的奥米冈装扮，就能在《强力行动队》续集中客串一个角色。</statement>
+		<statement>谁能做出最棒的奥米冈装扮，就能在《强力行动队》续集中客串一个角色。</statement>
+		<statement id="welcome" link="today">欢迎来到PoptropiCon装扮大赛。</statement>
+		<statement id="today" link="hear_it" triggerEvent="triggerEvent" triggerEventArgs="cheer1">今天的获胜者将在下一部《强力行动队》电影中客串一个角色。</statement>
+		<statement id="hear_it" triggerEvent="triggerEvent" triggerEventArgs="enter_contestant_1">让我们欢迎1号选手。</statement>
+		<statement id="terrible" triggerEvent="triggerEvent" triggerEventArgs="enter_contestant_2">太糟了。简直糟透了。接下来是2号选手。</statement>
+		<statement id="unfortunate" triggerEvent="triggerEvent" triggerEventArgs="enter_player">哇，真不走运。好吧，我们速战速决。 3号选手？</statement>
+		<statement id="pretty_good" link="winner">嘿，这还真不错。我简直不敢相信。</statement>
+		<statement id="winner" triggerEvent="triggerEvent" triggerEventArgs="enter_omegon">没必要拖时间了。服装大赛的获胜者是——</statement>
+		<statement id="amazing" link="bow" linkEntityId="omegon" triggerEvent="triggerEvent" triggerEventArgs="shake3">太棒了！一位惊喜选手——这身装扮绝了！我连缝线都看不到。</statement>
+		<statement id="terrific" link="destroy" linkEntityId="omegon" triggerEvent="triggerEvent" triggerEventArgs="shake4">哈哈，太精彩了。好了，不用再看了。冠军诞生了！</statement>
+		<statement id="milk" triggerEvent="triggerEvent" triggerEventArgs="omegon_glow">不用再卖关子了。来领奖吧。这位先生，请摘下面具。</statement>
+		<statement id="no_mask" triggerEvent="triggerEvent" triggerEventArgs="omegon_attack">没面具？真的没面具！</statement>
+		<statement id="ahh">啊！</statement>
+		<statement id="get_ready" triggerEvent="triggerEvent" triggerEventArgs="get_ready">你该穿上装扮了，比赛马上开始。</statement>
+		<statement id="after_contest">你的装扮不错，但最后那位简直绝了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="omegon">
+		<statement id="bow" link="terrific" linkEntityId="emcee">向奥米贡鞠躬。</statement>
+		<statement id="destroy" link="milk" linkEntityId="emcee">我来是为了摧毁超级行动队。</statement>
+		<statement id="no_mask" link="no_mask" linkEntityId="emcee">我不戴面具。</statement>
+
+
+
+
+	</character>
+	<character id="superhero">
+		<statement>这可是千载难逢的奖品。谁会是奥米贡的最佳扮演者？</statement>
+		<statement id="hehheh">嘿嘿……</statement>
+		<statement id="hmm">嗯……</statement>
+		<statement id="ooh">哦……</statement>
+		<statement id="ahh">啊！</statement>
+		<statement id="after_contest">我对那个比赛真不知道该说什么好……</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="viking">
+		<statement>电影里没人知道奥米贡长什么样。制片方把一切都保密得严严实实。</statement>
+		<statement id="after_contest">我爱奥米贡。</statement>
+
+
+
+	</character>
+	<character id="hippie">
+		<statement>展会上的卡牌游戏总是最棒的。我都等不及了！</statement>
+		<statement event="starter_deck" link="question">我刚玩了《强力行动队》卡牌游戏，超有意思！想玩吗？</statement>
+		<statement id="after_contest">那场比赛绝对是展会最精彩的节目！</statement>
+		<conversation id="question">
+			<exchange>
+				<question>当然。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_hippie">来玩吧！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>不用了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+	</character>
+	<character id="contestant1">
+		<statement id="ahh">啊！</statement>
+
+
+	</character>
+	<character id="contestant2">
+		<statement id="ahh">啊！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+</dialogs>

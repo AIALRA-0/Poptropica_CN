@@ -1,0 +1,97 @@
+<island>
+	<name>扳手猴岛</name>
+	<eventsClass>game.scenes.ftue.FtueEvents</eventsClass>
+	<gameVersion>AS3</gameVersion>
+	<island>ftue</island>
+
+	<!-- All 'permanentEvents' will be stored to the server with the 'islandName_' prefix added. -->
+	<permanentEvents>
+		<event>arrived_in_plane</event>
+		<event>ask_where_are_we</event>
+		<event>ask_who_are_you</event>
+		<event>ask_what_we_doing</event>
+		<event>race_enter</event>
+		<event>show_save_tutorial</event>
+		<event>skipped_save_tutorial</event>
+		<event>race_ask_question</event>
+		<event>race_ask_rules</event>
+		<event>race_ask_medallion</event>
+		<event>race_ask_credits</event>
+		<event>leave_tutorial</event>
+		<event>leave_tutorial_confirmed</event>
+		<event>leave_tutorial_canceled</event>
+		<event>race_begun</event>
+		<event>encountered_baron</event>
+		<event>going_down</event>
+		<event>woke_up_on_beach</event>
+		<event>jumped_on_rock</event>
+		<event>control_tutorial_complete</event>
+		<event>found_amelia</event>
+		<event>climbed_rope</event>
+		<event>saved_amelia</event>
+		<event>followed_monkey_to_beach</event>
+		<event>cornered_crab</event>
+		<event>got_wrench</event>
+		<event>skipped_item_tutorial</event>
+		<event>used_item_tutorial</event>
+		<event>fix_broke_plane</event>
+		<event>interactive_tutorial</event>
+		<event>dialog_tutorial</event>
+		<event>three_ingredients</event>
+		<event>cranked_wheel</event>
+		<event>dropped_in_fruit_1</event>
+		<event>dropped_in_fruit_2</event>
+		<event>dropped_in_fruit_3</event>
+		<event>dropped_in_fruit_4</event>
+		<event>dropped_in_fruit_5</event>
+		<event>got_rope</event>
+		<event>got_canvas</event>
+		<event>got_drink</event>
+		<event>gave_cruose_item_rope</event>
+		<event>gave_cruose_item_canvas</event>
+		<event>gave_cruose_item_drink</event>
+		<event>saw_crusoe_plans</event>
+		<event>made_blimp</event>
+		<event>re_entered_race</event>
+		<event>dropped_ballast</event>
+		<event>caught_up_baron</event>
+		<event>challenged_baron</event>
+		<event>fell_off_blimp</event>
+		<event>dodged_baron_success</event>
+		<event>threw_wrench</event>
+		<event>talk_to_crusoe</event>
+		<event>threw_drink</event>
+		<event>finished_race</event>
+		<event>landed</event>
+		<event>awarded_medallion</event>
+		<event>explore_map</event>
+		<event>explore_home_island</event>
+	</permanentEvents>
+
+	<!-- All island items will be converted from their string format into the ints specified here before being stored in the database. -->
+	<itemIdMap>
+	<item id="canvas">982</item>
+	<item id="rope">980</item>
+	<item id="drink">981</item>
+	<item id="wrench">979</item>
+	<item id="medal_ftue">1058</item>
+	</itemIdMap>
+
+	<firstScene>
+		<scene>game.scenes.ftue.intro.Intro</scene>
+		<x>1000</x>
+		<y>800</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>1000</x>
+				<y>920</y>
+			</offset>
+		</label>
+	</firstScene>
+
+	<playerMap></playerMap>
+	<medallion>medal_ftue</medallion>
+</island>

@@ -1,0 +1,88 @@
+<doors>
+	<door id="doorThrone">
+	<scene>game.scenes.con3.adMixed2.AdMixed2</scene>
+		<x>200</x>
+		<y>1000</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.con3.hq.Hq</scene>
+				<x>1700</x>
+				<y>360</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.con3.throneRoom.ThroneRoom</scene>
+					<x>2100</x>
+					<y>950</y>
+				<direction>left</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorProcessing">
+	<scene>game.scenes.con3.adMixed1.AdMixed1</scene>
+		<x>200</x>
+		<y>1000</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.con3.hq.Hq</scene>
+				<x>1200</x>
+				<y>50</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.con3.processing.Processing</scene>
+				<x>180</x>
+				<y>490</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorMenagerie">
+	<scene>game.scenes.con3.adStreet.AdStreet</scene>
+		<x>1700</x>
+		<y>1000</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.con3.menagerie.Menagerie</scene>
+				<x>300</x>
+				<y>1200</y>
+				<direction>right</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.con3.hq.Hq</scene>
+				<x>300</x>
+				<y>50</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

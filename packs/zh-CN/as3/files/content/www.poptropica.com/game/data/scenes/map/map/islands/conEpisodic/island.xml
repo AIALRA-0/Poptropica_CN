@@ -1,0 +1,28 @@
+<island>
+	<name>Poptropicon 漫展岛</name>
+	<island>con</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/conEpisodic/</islandFolder>
+	<numEpisodes>3</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode1/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode2/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode3/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

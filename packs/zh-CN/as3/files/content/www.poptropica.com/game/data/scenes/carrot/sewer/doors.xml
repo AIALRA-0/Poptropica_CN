@@ -1,0 +1,28 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.engine.Engine</scene>
+		<x>1128</x>
+		<y>1580</y>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.carrot.factory.Factory</scene>
+		<x>3105</x>
+		<y>1640</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-60</x>
+				<y>20</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,18 @@
+<doors>
+
+	<door id="doorArcade">
+		<scene>game.scenes.hub.arcade.Arcade</scene>
+		<x>790</x>
+		<y>550</y>
+		<direction>right</direction>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

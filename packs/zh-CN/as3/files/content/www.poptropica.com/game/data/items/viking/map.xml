@@ -1,0 +1,43 @@
+<item id="map"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>viking</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>地图</value>
+  		</text>
+  		<text>
+      		<value>一张更大地图的一角。</value>
+      		<y>-110</y>
+    	</text>
+  	</textfields>
+
+	<buttons>
+    	<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.viking.shared.popups.MapPopup</param>
+					</parameters>
+				</action>
+			</actions>	
+		</btn>
+	</buttons>
+	
+	<assets>
+  		<asset id="cardBack">
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-60</saturation>
+     			<hue>70</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+	
+</item>

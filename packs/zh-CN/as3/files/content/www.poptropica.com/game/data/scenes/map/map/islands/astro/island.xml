@@ -1,0 +1,16 @@
+<island>
+	<name>太空骑士岛</name>
+	<island>astro</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/astro/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

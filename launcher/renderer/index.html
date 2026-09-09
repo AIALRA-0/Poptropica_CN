@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POPTROPICA_FLASH</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <p class="eyebrow">POPTROPICA FLASH</p>
+          <h1>旧版 Poptropica 启动器</h1>
+          <p class="subtitle">默认只做三件事：准备环境、挂上汉化、进入 AS2 / AS3 旧版世界。</p>
+        </div>
+        <div class="topbar-status">
+          <span id="readyBadge" class="pill waiting">检查中</span>
+          <button id="prepareButton" class="primary-button">立即准备</button>
+        </div>
+      </header>
+
+      <main class="main-shell">
+        <section class="status-panel">
+          <div class="status-copy">
+            <p class="eyebrow">当前状态</p>
+            <h2 id="headline">正在检查环境</h2>
+            <p id="statusMessage">启动器会自动整理 Flashpoint 运行环境，然后你就可以直接进入旧版游戏。</p>
+            <p id="progressMessage" class="progress-message">首次打开时会在后台准备，不需要你手动折腾一堆脚本。</p>
+          </div>
+          <div class="status-stats">
+            <div class="stat-card">
+              <span>已接好核心</span>
+              <strong id="launchableCount">0 / 0</strong>
+            </div>
+            <div class="stat-card">
+              <span>真实可见中文</span>
+              <strong id="verifiedChineseCount">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>已验证可玩</span>
+              <strong id="verifiedPlayableCount">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="entry-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">入口</p>
+              <h2>进入旧版游戏</h2>
+            </div>
+            <p class="panel-note">进入后在游戏里登录、进岛、切岛。默认界面不再做外部单岛直跳。</p>
+          </div>
+          <div class="entry-grid">
+            <article class="entry-card">
+              <p class="entry-tag">推荐</p>
+              <h3>进入 AS3</h3>
+              <p>后期旧岛、主页和大部分登录流走这里。默认推荐先从 AS3 进入。</p>
+              <button id="launchAs3Button" class="launch-button">进入 AS3</button>
+            </article>
+
+            <article class="entry-card">
+              <p class="entry-tag">经典</p>
+              <h3>进入 AS2</h3>
+              <p>更早期的经典旧岛走这里。已经单独分出更适合 AS2 的运行器链。</p>
+              <button id="launchAs2Button" class="launch-button">进入 AS2</button>
+            </article>
+
+            <article class="entry-card">
+              <p class="entry-tag">汉化</p>
+              <h3>重建汉化包</h3>
+              <p>只在你真的要更新文本包时才需要点它。平时不用碰调试和脚本细节。</p>
+              <button id="rebuildPackButton" class="ghost-button">重建汉化包</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="table-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">状态表</p>
+              <h2>旧岛状态</h2>
+            </div>
+            <div class="table-toolbar">
+              <input id="filterInput" type="search" placeholder="按中英文岛名搜索，例如 病毒 / Virus / 早期" />
+              <button id="refreshButton" class="ghost-button">刷新</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="status-table">
+              <thead>
+                <tr>
+                  <th>中文名</th>
+                  <th>英文名</th>
+                  <th>包名</th>
+                  <th>版本</th>
+                  <th>是否可玩</th>
+                  <th>汉化状态</th>
+                  <th>最近验证</th>
+                </tr>
+              </thead>
+              <tbody id="islandTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="advancedArea" class="advanced-area hidden">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">高级模式</p>
+              <h2>调试与维护</h2>
+            </div>
+            <p class="panel-note">这里只留给调试，不再和普通界面混在一起。</p>
+          </div>
+
+          <div class="advanced-grid">
+            <section class="panel">
+              <h3>路径设置</h3>
+              <button data-pick="flashpointRoot">选择 Flashpoint 根目录</button>
+              <button data-pick="as2Gamezip">选择 AS2 数据包</button>
+              <button data-pick="as3Gamezip">选择 AS3 数据包</button>
+              <button data-pick="steamRoot">选择 Steam 安装目录</button>
+            </section>
+
+            <section class="panel">
+              <h3>维护动作</h3>
+              <button data-command="bootstrap:flashpoint">准备运行环境</button>
+              <button data-command="doctor:flashpoint">检查运行状态</button>
+              <button data-command="discover:launch-scenes">刷新启动清单</button>
+              <button data-command="qa:validate-as3">闭环验收 AS3</button>
+              <button data-command="qa:validate-as2">闭环验收 AS2</button>
+              <button data-command="qa:window-audit">桌面窗口审计</button>
+              <button data-command="rebuild:pack">重建汉化包</button>
+              <button id="openOriginalFlashpoint">打开原始 Flashpoint</button>
+            </section>
+
+            <section class="panel">
+              <h3>路径状态</h3>
+              <div id="sourceStatus"></div>
+            </section>
+
+            <section class="panel">
+              <h3>运行状态</h3>
+              <div id="runtimeStatus"></div>
+            </section>
+          </div>
+
+          <section class="panel">
+            <h3>最近结果</h3>
+            <pre id="commandOutput">高级模式会把脚本结果放在这里。</pre>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

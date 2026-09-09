@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement id="used_remote">电视遥控器我用完了。</statement>
+
+
+		</character>
+
+
+</dialogs>

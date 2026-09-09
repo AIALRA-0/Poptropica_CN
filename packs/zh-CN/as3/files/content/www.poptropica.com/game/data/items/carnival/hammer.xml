@@ -1,0 +1,58 @@
+<item id="hammer"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>carnival</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>锤子</value>
+  		</text>
+  		<text>
+      		<value>按空格键挥动锤子！</value>
+    	</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+		<!-- Instead of the "shared" folder, you can also put the island card "background.swf" art inside the island folder you are using for all the other cards. EX - "items/"island_name"/background.swf" -->
+			<assetPath>items/carnival/background.swf</assetPath>
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-48</saturation>
+     			<hue>-9</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>装备</label>
+    		<actions>
+	    		<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<looks>
+		<look>
+			<item>mc_hammer</item>
+		</look>
+	</looks>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+	</conditionals>
+	
+</item>

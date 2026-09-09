@@ -1,0 +1,58 @@
+<doors>
+	<door id="doorWoods">
+		<scene>game.scenes.carnival.woods.Woods</scene>
+		<x>1693</x>
+		<y>700</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorClearing">
+		<scene>game.scenes.carnival.clearing.Clearing</scene>
+		<x>40</x>
+		<y>760</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorWoodsMazeLeft">
+		<scene>game.scenes.carnival.woodsMaze.WoodsMaze</scene>
+		<x>1384</x>
+		<y>355</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorWoodsMazeRight">
+		<scene>game.scenes.carnival.woodsMaze.WoodsMaze</scene>
+		<x>10</x>
+		<y>365</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

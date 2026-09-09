@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>pop</id>
+		<asset>pop.swf</asset>
+		<x>4100</x>
+		<y>287</y>
+		<label>
+			<text>使用</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

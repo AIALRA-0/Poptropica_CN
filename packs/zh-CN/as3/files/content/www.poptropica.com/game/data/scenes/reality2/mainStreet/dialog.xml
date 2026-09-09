@@ -1,0 +1,62 @@
+<dialogs>
+	<character id="probably">
+		<statement id="welcome" link="hi" linkEntityId="player">欢迎！欢迎！我是吉姆·普罗巴布利，是时候让你的梦想成真了！</statement>
+		<statement id="haha" link="intro" linkEntityId="probably" triggerEvent="triggerEvent" triggerEventArgs="returnControl">哈哈哈！没错，我可以！让我们见见挑战者们！</statement>
+		<statement id="returnToGame" link="yes" linkEntityId="player">你想回到你的比赛吗？</statement>
+		<conversation id="intro">
+			<exchange>
+				<question>当然！他们在哪儿？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gotoVillage">我们会在蛇群出没的丛林深处找到他们。走吧！</answer>
+			</exchange>
+			<exchange>
+				<question>不了，我还是去探索吧。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="afterIntro">如果你想先探索一下也行，准备好了就回来找我。</answer>
+			</exchange>
+		</conversation>
+		<conversation id="afterIntro">
+			<exchange>
+				<question forceOnScreen="true">我准备好见挑战者了！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gotoVillage">我们会在蛇群出没的丛林深处找到他们。走吧！</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">我再继续探索一下。</question>
+				<answer>如果你想先探索一下也行，准备好了就回来找我。</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">我想去波普岛世界旅行。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="leave">当然，想回来时随时回来。我们会等你。</answer>
+			</exchange>
+		</conversation>
+		<conversation id="replay">
+			<exchange>
+				<question forceOnScreen="true">你好。我能再玩一次吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gotoVillage">当然！让我们见见挑战者们！</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">你确定呼吸没问题吗？</question>
+				<answer>哈哈哈！没错，我可以！</answer>
+			</exchange>
+			<exchange>
+				<question forceOnScreen="true">我想去波普岛世界旅行。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="leave">当然，想回来时随时回来。我们会等你。</answer>
+			</exchange>
+		</conversation>
+		<statement id="medallion" link="what" linkEntityId="player">别忘了拿走你的奖章！</statement>
+		<statement id="take it" triggerEvent="triggerEvent" triggerEventArgs="getMedallion">拿着吧。这是波普岛的传统。</statement>
+    </character>
+    <character id="player">
+	<statement id="hi" link="haha" linkEntityId="probably">你好。你还好吗？能呼吸吗？</statement>
+		<statement id="what" link="take it" linkEntityId="probably">为什么？</statement>
+		<statement id="yes" triggerEvent="triggerEvent" triggerEventArgs="gotoVillage">是的。</statement>
+    </character>
+    <character id="cameraguy1">
+	<statement id="have seen" link="sorry" linkEntityId="cameraguy2">德韦恩，你看见我的备用摄像机了吗？</statement>
+	<statement id="little brains" link="totally" linkEntityId="cameraguy2">挺好。猴子的脑袋很小。</statement>
+	<statement id="hah">哈……小脑袋。</statement>
+    </character>
+    <character id="cameraguy2">
+	<statement id="sorry" link="little brains" linkEntityId="cameraguy1">抱歉，韦恩。我让猴子们拿走了。</statement>
+	<statement id="totally" triggerEvent="triggerEvent" triggerEventArgs="setCameramenDialog">嘿嘿。是啊，伙计……完全没错。</statement>
+	<statement id="yeah">是啊……猴子。</statement>
+    </character>
+</dialogs>

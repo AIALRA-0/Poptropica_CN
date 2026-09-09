@@ -1,0 +1,37 @@
+<dialogs>
+	<character id="wheelGuy">
+		<statement id="not_registered" link="show">抱歉！你需要保存游戏才能转轮盘。</statement>
+		<statement id="show" link="how">需要我教你怎么做吗？</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="open_wheel" id="spin">转转轮盘，赢取战利品！</statement>
+		<statement id="nospin">重玩岛屿获取额外奖励。就现在。你还等什么？</statement>
+		<conversation id="how">
+			<exchange>
+				<question>好啊！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_save_tutorial">没问题。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>也许下次吧。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="decline_to_save">别紧张，但没账户我们没法给你发奖品。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

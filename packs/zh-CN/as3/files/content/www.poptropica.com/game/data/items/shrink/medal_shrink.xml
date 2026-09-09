@@ -1,0 +1,65 @@
+<item id="medal_shrink">
+	<type>island</type>
+	<subType>shrink</subType>
+	
+	<buttons>
+  		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="applyLook"/>
+				<action type="tiggerEvent">
+		  			<parameters>
+		  				<param id="event">useMedal</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<textfields>
+  		<text>
+    		<value>缩小光线奖章</value>
+  		</text>
+  		<text>
+  			<value>恭喜！你完成了缩小光线岛任务。</value>
+      		<size>18</size>
+      		<y>70</y>
+      		<width>150</width>
+      		<textColor>0x49464E</textColor>
+    	</text>
+  	</textfields>
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/ShrinkRayBackground.swf</assetPath>
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>36</brightness>
+     			<contrast>-17</contrast>
+     			<saturation>9</saturation>
+     			<hue>12</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <looks>
+	    <look>
+		 	<overshirt>medalshrinkray</overshirt>
+	   	</look> 
+	</looks>  
+	
+	<conditionals>
+    	<conditional type="hasLook" />	<!-- if no lookId param is given uses first look by default -->
+    </conditionals>
+</item>

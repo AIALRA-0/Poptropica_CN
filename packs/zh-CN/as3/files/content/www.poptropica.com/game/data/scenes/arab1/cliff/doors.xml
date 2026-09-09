@@ -1,0 +1,42 @@
+<doors>
+	<door id="door0">
+		<scene>game.scenes.arab1.adStreet3.AdStreet3</scene>
+		<x>1874</x>
+		<y>1045</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab1.desert.Desert</scene>
+				<x>5350</x>
+				<y>1500</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab1.cliff.Cliff</scene>
+				<x>150</x>
+				<y>1410</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="door1">
+		<scene>game.scenes.arab1.cave.Cave</scene>
+		<x>1245</x>
+		<y>1293</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

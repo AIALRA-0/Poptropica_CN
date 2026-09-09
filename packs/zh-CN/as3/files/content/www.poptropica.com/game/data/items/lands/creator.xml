@@ -1,0 +1,62 @@
+<item id="creator">
+	<type>island</type>
+	<subType>lands</subType>
+	<contentClass>
+		<className>game.ui.card.CharacterContentView</className>
+		<parameters>
+			<param id="gender">true</param>
+		</parameters>
+		<y>5</y>
+	</contentClass>
+
+	<buttons>
+		<btn>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+	</buttons>
+
+	<textfields>
+		<text id="title">
+			<value>创世大师！</value>
+			<y>-190</y>
+		</text>
+		<text>
+    		<value>出发吧，去改变这个世界！</value>
+   			<size>15</size>
+    		<y>90</y>
+  		</text>
+		<text>
+    		<value>在采矿模式中解锁超级跳跃。</value>
+   			<size>15</size>
+    		<y>110</y>
+  		</text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundBlue.swf</assetPath>
+    	</asset>
+		<asset id="cardContent"/>
+	</assets>
+
+	<looks>
+		<look id="male">
+			<mouth>hercules</mouth>
+			<hair>lands_builder_boy</hair>
+			<shirt>lands_builder</shirt>
+			<pants>biker</pants>
+			<pack>blueknight</pack>
+		</look>
+		<look id="female">
+			<mouth>sponsorEC1</mouth>
+			<marks>bangs4</marks>
+			<hair>lands_builder_girl</hair>
+			<shirt>lands_builder</shirt>
+			<pants>biker</pants>
+			<pack>blueknight</pack>
+		</look>
+	</looks>
+</item>

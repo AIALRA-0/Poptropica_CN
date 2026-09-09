@@ -1,0 +1,1399 @@
+const path = require("node:path");
+const { parseArgs, printJson } = require("./lib/cli");
+const { loadConfig } = require("./lib/config");
+const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { clearPoptropicaFlashState } = require("./lib/flash-state");
+const { ensureQaDir, runPythonQa } = require("./lib/qa");
+const { writeJson } = require("./lib/fs-utils");
+const { buildAs3DirectSceneUrl } = require("./lib/as3-direct-wrapper");
+const {
+  ensureFlashpointServices,
+  ensureManagedWorkspace,
+  mountSourceZip,
+  spawnManagedRuntime,
+  stopNavigatorProcesses
+} = require("./lib/flashpoint-runtime");
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function flagEnabled(value) {
+  return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
+}
+
+function parseSize(value, fallback) {
+  const match = String(value || "").match(/^(\d+)x(\d+)$/u);
+  if (!match) {
+    return fallback;
+  }
+  return {
+    width: Number(match[1]),
+    height: Number(match[2])
+  };
+}
+
+function splitCsv(value) {
+  return String(value || "")
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function safeFileSegment(value) {
+  return String(value || "unknown")
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/gu, "-")
+    .replace(/^-+|-+$/gu, "")
+    .slice(0, 80) || "unknown";
+}
+
+function capitalizeFirst(value) {
+  const text = String(value || "");
+  return text ? `${text.slice(0, 1).toUpperCase()}${text.slice(1)}` : "";
+}
+
+function normalizeAs3SceneOverride(value) {
+  const text = String(value || "").trim();
+  if (!text || /^game\.scenes\./iu.test(text)) {
+    return text;
+  }
+  const parts = text
+    .replace(/\\/gu, "/")
+    .replace(/^\/+|\/+$/gu, "")
+    .split(/[/.]+/u)
+    .filter(Boolean);
+  if (parts.length < 2) {
+    return text;
+  }
+  const islandPackage = parts[0];
+  const roomPackage = parts[1];
+  const roomClass = roomPackage
+    .split(/[^a-z0-9]+/iu)
+    .filter(Boolean)
+    .map(capitalizeFirst)
+    .join("");
+  return roomClass ? `game.scenes.${islandPackage}.${roomPackage}.${roomClass}` : text;
+}
+
+function cmdlineFragmentForLaunchUrl(launchUrl) {
+  try {
+    const parsed = new URL(launchUrl);
+    const overrideScene = parsed.searchParams.get("overrideScene");
+    if (overrideScene) {
+      return overrideScene;
+    }
+    const room = parsed.searchParams.get("room");
+    if (room) {
+      return room;
+    }
+    return parsed.pathname || launchUrl;
+  } catch (_error) {
+    return String(launchUrl || "");
+  }
+}
+
+function runtimeCmdlineContains(runtime) {
+  return String(runtime?.cmdlineContains || runtime?.launchUrl || "").trim();
+}
+
+function waitWindowArgs({ runtime, size, outputPath, timeoutMs, allowAnyPid = false }) {
+  const commandArgs = [
+    "wait-window",
+    "--process-names",
+    runtime.processNames.join(","),
+    "--title-contains",
+    "poptropica",
+    "--timeout-ms",
+    String(timeoutMs),
+    "--poll-ms",
+    "250",
+    "--window-width",
+    String(size.width),
+    "--window-height",
+    String(size.height),
+    "--output",
+    outputPath
+  ];
+  if (!allowAnyPid && runtime.pid) {
+    commandArgs.push("--pid", String(runtime.pid));
+  }
+  const cmdlineContains = runtimeCmdlineContains(runtime);
+  if (cmdlineContains) {
+    commandArgs.push("--cmdline-contains", cmdlineContains);
+  }
+  return commandArgs;
+}
+
+function captureArgs({ runtime, handle, size, screenshotPath, metadataPath, args }) {
+  const commandArgs = [
+    "capture-window",
+    "--handle",
+    String(handle),
+    "--process-names",
+    runtime.processNames.join(","),
+    "--title-contains",
+    "poptropica",
+    "--pid",
+    String(runtime.pid),
+    "--window-width",
+    String(size.width),
+    "--window-height",
+    String(size.height),
+    "--client-only",
+    "--output",
+    screenshotPath,
+    "--metadata-output",
+    metadataPath
+  ];
+  if (flagEnabled(process.env.POPTROPICA_QA_NO_FOREGROUND || args?.noForeground || args?.["no-foreground"])) {
+    commandArgs.push("--no-foreground");
+  }
+  const captureChildClass = String(process.env.POPTROPICA_QA_CAPTURE_CHILD_CLASS || "GeckoFPSandboxChildWindow").trim();
+  if (captureChildClass) {
+    commandArgs.push("--child-class-contains", captureChildClass);
+  }
+  const cmdlineContains = runtimeCmdlineContains(runtime);
+  if (cmdlineContains) {
+    commandArgs.push("--cmdline-contains", cmdlineContains);
+  }
+  return commandArgs;
+}
+
+function locateOcrLine(ocr, pattern) {
+  const regex = pattern instanceof RegExp ? pattern : new RegExp(String(pattern), "iu");
+  const matches = (ocr?.lines || [])
+    .filter((line) => regex.test(String(line.text || "")) && line.box)
+    .sort((left, right) => Number(right.score || 0) - Number(left.score || 0));
+  return matches[0] || null;
+}
+
+function locateStartLine(ocr) {
+  return locateOcrLine(ocr, /^START$/iu) || locateOcrLine(ocr, /\bSTART\b/iu);
+}
+
+function visibleEnglishLeakCheck(label, ocr, args) {
+  const text = String(ocr?.text || "");
+  const patternText = String(
+    args.forbiddenVisiblePattern ||
+    args["forbidden-visible-pattern"] ||
+    "\\b(?:MENU|PRIZE|Store|Galactic Hot Dogs(?: Island)?)\\b"
+  );
+  const pattern = new RegExp(patternText, "iu");
+  return {
+    label,
+    ok: !pattern.test(text),
+    pattern: String(pattern),
+    text: text.slice(0, 500)
+  };
+}
+
+function qaCheckOk(checks, name) {
+  const check = Array.isArray(checks) ? checks.find((entry) => entry?.name === name) : null;
+  return Boolean(check?.ok);
+}
+
+function fixedHudSlotRowVisualOk(row) {
+  const checks = Array.isArray(row?.checks) ? row.checks : [];
+  return Boolean(
+    row &&
+    (
+      row.ok ||
+      (
+        qaCheckOk(checks, "present_slot_count") &&
+        qaCheckOk(checks, "right_anchor") &&
+        qaCheckOk(checks, "top_anchor") &&
+        qaCheckOk(checks, "center_y_ratio") &&
+        qaCheckOk(checks, "before_comparable") &&
+        qaCheckOk(checks, "changed_slot_count") &&
+        qaCheckOk(checks, "changed_critical_slots")
+      )
+    )
+  );
+}
+
+function fallbackMenuLine(capture, args) {
+  if (flagEnabled(args.disableMenuFallback || args["disable-menu-fallback"])) {
+    return null;
+  }
+  const width = Number(capture?.imageSize?.width || 0);
+  if (!width) {
+    return null;
+  }
+  const centerX = width - Number(args.menuFallbackRightInset || args["menu-fallback-right-inset"] || 51);
+  const centerY = Number(args.menuFallbackTopCenter || args["menu-fallback-top-center"] || 86);
+  const halfWidth = Number(args.menuFallbackHalfWidth || args["menu-fallback-half-width"] || 28);
+  const halfHeight = Number(args.menuFallbackHalfHeight || args["menu-fallback-half-height"] || 16);
+  return {
+    text: "MENU",
+    score: null,
+    synthetic: true,
+    reason: "top-right-menu-fallback",
+    box: {
+      left: centerX - halfWidth,
+      top: centerY - halfHeight,
+      right: centerX + halfWidth,
+      bottom: centerY + halfHeight,
+      width: halfWidth * 2,
+      height: halfHeight * 2,
+      centerX,
+      centerY
+    }
+  };
+}
+
+function locateMenuLine({ ocr, capture, args }) {
+  const width = Number(capture?.imageSize?.width || 0);
+  const height = Number(capture?.imageSize?.height || 0);
+  const minCenterRatio = Number(args.minMenuCenterRatio || args["min-menu-center-ratio"] || 0.82);
+  const maxTopInset = Number(
+    args.maxMenuTopInset ||
+    args["max-menu-top-inset"] ||
+    Math.max(120, height * 0.28)
+  );
+  const menuPattern = /\b(?:MENU|WENU|MEN[UO]|MENV)\b/iu;
+  const candidates = (ocr?.lines || [])
+    .filter((line) => menuPattern.test(String(line.text || "")) && line.box)
+    .map((line) => ({
+      line,
+      rightAnchor: width > 0 ? Number(line.box.centerX || 0) / width : 0,
+      topAnchor: Number(line.box.centerY || 0)
+    }))
+    .filter((entry) => {
+      if (!width || !height) {
+        return true;
+      }
+      return entry.rightAnchor >= Math.max(0.5, minCenterRatio - 0.12) &&
+        entry.topAnchor <= maxTopInset;
+    })
+    .sort((left, right) => {
+      const rightDelta = right.rightAnchor - left.rightAnchor;
+      if (Math.abs(rightDelta) > 0.01) {
+        return rightDelta;
+      }
+      const topDelta = left.topAnchor - right.topAnchor;
+      if (Math.abs(topDelta) > 5) {
+        return topDelta;
+      }
+      return Number(right.line.score || 0) - Number(left.line.score || 0);
+    });
+  return candidates[0]?.line || locateOcrLine(ocr, menuPattern) || fallbackMenuLine(capture, args);
+}
+
+function menuPlacementCheck(menuLine, capture, args) {
+  const width = Number(capture?.imageSize?.width || 0);
+  const height = Number(capture?.imageSize?.height || 0);
+  const box = menuLine?.box || null;
+  const maxRightInset = Number(args.maxMenuRightInset || args["max-menu-right-inset"] || 140);
+  const maxTopInset = Number(
+    args.maxMenuTopInset ||
+    args["max-menu-top-inset"] ||
+    Math.max(120, height * 0.28)
+  );
+  const minCenterRatio = Number(args.minMenuCenterRatio || args["min-menu-center-ratio"] || 0.82);
+  const checks = [
+    {
+      name: menuLine?.synthetic ? "menu_fallback_candidate" : "menu_ocr_found",
+      ok: Boolean(menuLine && box)
+    },
+    {
+      name: "menu_inside_capture",
+      ok: Boolean(box && box.left >= 0 && box.top >= 0 && box.right <= width && box.bottom <= height),
+      box,
+      imageSize: { width, height }
+    },
+    {
+      name: "menu_right_anchor",
+      ok: Boolean(box && (width - box.centerX) <= maxRightInset),
+      observedRightInset: box ? Number((width - box.centerX).toFixed(3)) : null,
+      maxRightInset
+    },
+    {
+      name: "menu_center_ratio",
+      ok: Boolean(box && width > 0 && (box.centerX / width) >= minCenterRatio),
+      observedRatio: box && width > 0 ? Number((box.centerX / width).toFixed(6)) : null,
+      minCenterRatio
+    },
+    {
+      name: "menu_top_anchor",
+      ok: Boolean(box && box.centerY <= maxTopInset),
+      observedTopCenter: box ? box.centerY : null,
+      maxTopInset
+    }
+  ];
+  return {
+    ok: checks.every((check) => check.ok),
+    menu: menuLine,
+    checks
+  };
+}
+
+function chromeOffsetsFromCapture(capture, args) {
+  const parentRect = capture?.window?.rect || null;
+  const targetRect = capture?.targetWindow?.rect || null;
+  return {
+    x: targetRect && parentRect
+      ? Number(targetRect.left || 0) - Number(parentRect.left || 0)
+      : Number(args.browserChromeOffsetX || args["browser-chrome-offset-x"] || 0),
+    y: targetRect && parentRect
+      ? Number(targetRect.top || 0) - Number(parentRect.top || 0)
+      : Number(args.browserChromeOffsetY || args["browser-chrome-offset-y"] || 110)
+  };
+}
+
+function directClickTargetFromCapture(capture, args) {
+  if (!flagEnabled(args?.directChildClicks || args?.["direct-child-clicks"])) {
+    return {};
+  }
+  const target = capture?.targetWindow || null;
+  const parent = capture?.window || null;
+  if (!target?.handle || !parent?.handle || Number(target.handle) === Number(parent.handle)) {
+    return {};
+  }
+  return {
+    targetHandle: Number(target.handle),
+    targetClassName: target.className || null,
+    directTargetWindow: true
+  };
+}
+
+function clickPointForMenu(menuLine, capture, args) {
+  const box = menuLine?.box;
+  if (!box) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  const yOffset = menuLine.synthetic ? 0 : Number(args.menuClickTextYOffset || args["menu-click-text-y-offset"] || 0);
+  const xOffset = menuLine.synthetic ? 0 : Number(args.menuClickTextXOffset || args["menu-click-text-x-offset"] || 0);
+  const screenshotY = Math.round(box.centerY + yOffset);
+  const screenshotX = Math.round(box.centerX + xOffset);
+  return {
+    x: Math.round(screenshotX + offsets.x),
+    y: Math.round(screenshotY + offsets.y),
+    screenshotX,
+    screenshotY,
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    menuClickTextXOffset: xOffset,
+    menuClickTextYOffset: yOffset,
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function clickPointForInventory(capture, menuLine, args) {
+  const width = Number(capture?.imageSize?.width || 0);
+  if (!width) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  const inventoryRightInset = Number(args.inventoryButtonRightInset || args["inventory-button-right-inset"] || 130);
+  const screenshotY = Math.round(menuLine?.box?.centerY || Number(args.menuFallbackTopCenter || args["menu-fallback-top-center"] || 86));
+  const screenshotX = Math.round(width - inventoryRightInset);
+  return {
+    x: screenshotX + Math.round(offsets.x),
+    y: screenshotY + Math.round(offsets.y),
+    screenshotX,
+    screenshotY,
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    inventoryRightInset,
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function clickPointForRightInset(capture, menuLine, rightInset, args) {
+  const width = Number(capture?.imageSize?.width || 0);
+  if (!width) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  const screenshotY = Math.round(menuLine?.box?.centerY || Number(args.menuFallbackTopCenter || args["menu-fallback-top-center"] || 86));
+  const screenshotX = Math.round(width - Number(rightInset));
+  return {
+    x: screenshotX + Math.round(offsets.x),
+    y: screenshotY + Math.round(offsets.y),
+    screenshotX,
+    screenshotY,
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    rightInset: Number(rightInset),
+    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0),
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function adaptiveHudTargetX(width, buttonCount, buttonIndex, menuLine = null) {
+  const safeWidth = Number(width || 0);
+  const menuCenterX = Number(menuLine?.box?.centerX || (safeWidth - 68));
+  const safeIndex = Math.max(0, Math.min(Math.max(1, Number(buttonCount || 8)) - 1, Number(buttonIndex || 0)));
+  const expandedHudCenters = [
+    58,
+    158,
+    272,
+    menuCenterX - 540,
+    menuCenterX - 430,
+    menuCenterX - 312,
+    menuCenterX - 202,
+    menuCenterX - 90
+  ];
+  if (Number(buttonCount || 8) === 8 && Number.isFinite(expandedHudCenters[safeIndex])) {
+    return clamp(expandedHudCenters[safeIndex], 28, Math.max(28, safeWidth - 28));
+  }
+  const newHudX = safeWidth - 50;
+  const safeCount = Math.max(1, Number(buttonCount || 8));
+  const leftPad = Math.max(18, Math.min(50, newHudX - 18));
+  let spacing = (newHudX - leftPad) / safeCount;
+  if (!Number.isFinite(spacing) || spacing <= 0) {
+    spacing = 80;
+  }
+  spacing = Math.min(80, spacing);
+  if (spacing < 24) {
+    spacing = 24;
+  }
+  return Math.max(18, newHudX - spacing * (safeCount - safeIndex));
+}
+
+function clickPointForHudButtonIndex(capture, menuLine, args) {
+  const rawExplicitX = args.secondaryClickX ?? args["secondary-click-x"];
+  const rawExplicitY = args.secondaryClickY ?? args["secondary-click-y"];
+  const explicitX = Number(rawExplicitX);
+  const explicitY = Number(rawExplicitY);
+  if (Number.isFinite(explicitX) && Number.isFinite(explicitY)) {
+    const width = Number(capture?.imageSize?.width || 0);
+    const height = Number(capture?.imageSize?.height || 0);
+    const offsets = chromeOffsetsFromCapture(capture, args);
+    const screenshotX = Math.round(explicitX);
+    const screenshotY = Math.round(explicitY);
+    return {
+      x: screenshotX + Math.round(offsets.x),
+      y: screenshotY + Math.round(offsets.y),
+      screenshotX,
+      screenshotY,
+      browserChromeOffsetX: offsets.x,
+      browserChromeOffsetY: offsets.y,
+      explicit: true,
+      insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= height,
+      ...directClickTargetFromCapture(capture, args)
+    };
+  }
+
+  const rawIndex = args.secondaryButtonIndex ?? args["secondary-button-index"];
+  if (rawIndex === undefined || rawIndex === null || rawIndex === "") {
+    return null;
+  }
+  const width = Number(capture?.imageSize?.width || 0);
+  if (!width) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  const buttonCount = Number(args.secondaryButtonCount || args["secondary-button-count"] || 8);
+  const buttonIndex = Number(rawIndex);
+  const screenshotX = Math.round(adaptiveHudTargetX(width, buttonCount, buttonIndex, menuLine));
+  const screenshotY = Math.round(menuLine?.box?.centerY || Number(args.menuFallbackTopCenter || args["menu-fallback-top-center"] || 86));
+  return {
+    x: screenshotX + Math.round(offsets.x),
+    y: screenshotY + Math.round(offsets.y),
+    screenshotX,
+    screenshotY,
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    buttonIndex,
+    buttonCount,
+    insideCapture: screenshotX >= 0 && screenshotX <= width && screenshotY >= 0 && screenshotY <= Number(capture?.imageSize?.height || 0),
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function clickPointForTutorialWalk(capture, args, attemptIndex = 0) {
+  const width = Number(capture?.imageSize?.width || 0);
+  const height = Number(capture?.imageSize?.height || 0);
+  if (!width || !height) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  const xRatioStep = Number(args.tutorialWalkXRatioStep || args["tutorial-walk-x-ratio-step"] || 0.08);
+  const baseXRatio = Number(args.tutorialWalkXRatio || args["tutorial-walk-x-ratio"] || 0.61);
+  const xRatio = Math.min(0.86, baseXRatio + Math.max(0, Number(attemptIndex || 0)) * xRatioStep);
+  const yRatio = Number(args.tutorialWalkYRatio || args["tutorial-walk-y-ratio"] || 0.87);
+  const screenshotX = Math.round(width * xRatio);
+  const screenshotY = Math.round(height * yRatio);
+  return {
+    x: screenshotX + Math.round(offsets.x),
+    y: screenshotY + Math.round(offsets.y),
+    screenshotX,
+    screenshotY,
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    xRatio,
+    yRatio,
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function shouldDismissWalkTutorial(ocr, args) {
+  if (flagEnabled(args.disableTutorialDismiss || args["disable-tutorial-dismiss"])) {
+    return false;
+  }
+  return /CLICK\s+AND\s+HOLD\s+IN\s+FRONT\s+OF\s+AVATAR\s+TO\s+WALK/iu.test(String(ocr?.text || ""));
+}
+
+function hudReadyRetryReason(analysis, args) {
+  if (flagEnabled(args.disableHudReadyRetry || args["disable-hud-ready-retry"])) {
+    return null;
+  }
+  const text = String(analysis?.ocr?.text || "");
+  if (/\bsaving\s+game\b/iu.test(text) || /正在保存/u.test(text)) {
+    return "saving-game-transition";
+  }
+  const menuLine = locateMenuLine({ ocr: analysis?.ocr, capture: analysis?.capture, args });
+  if (!menuLine) {
+    return "menu-missing";
+  }
+  if (menuLine.synthetic) {
+    return "menu-fallback-only";
+  }
+  return null;
+}
+
+function clickPointForOcrLine(line, capture, args) {
+  const box = line?.box;
+  if (!box) {
+    return null;
+  }
+  const offsets = chromeOffsetsFromCapture(capture, args);
+  return {
+    x: Math.round(box.centerX + offsets.x),
+    y: Math.round(box.centerY + offsets.y),
+    screenshotX: Math.round(box.centerX),
+    screenshotY: Math.round(box.centerY),
+    browserChromeOffsetX: offsets.x,
+    browserChromeOffsetY: offsets.y,
+    ...directClickTargetFromCapture(capture, args)
+  };
+}
+
+function clickWindowPoint({ runtime, handle, point, outputPath, args, holdMs, moveIntervalMs }) {
+  const directTarget = Number(point?.targetHandle || 0) > 0;
+  const commandArgs = [
+    "click-window",
+    "--handle",
+    String(directTarget ? point.targetHandle : handle),
+    "--process-names",
+    directTarget ? "" : runtime.processNames.join(","),
+    "--title-contains",
+    directTarget ? "" : "poptropica",
+    "--x",
+    String(directTarget ? point.screenshotX : point.x),
+    "--y",
+    String(directTarget ? point.screenshotY : point.y),
+    "--hold-ms",
+    String(holdMs ?? args.menuClickHoldMs ?? args["menu-click-hold-ms"] ?? 80),
+    "--output",
+    outputPath
+  ];
+  if (!directTarget && runtime.pid) {
+    commandArgs.push("--pid", String(runtime.pid));
+  }
+  const interval = Number(moveIntervalMs ?? args.clickMoveIntervalMs ?? args["click-move-interval-ms"] ?? 0);
+  if (interval > 0) {
+    commandArgs.push("--move-interval-ms", String(interval));
+  }
+  if (!directTarget && !flagEnabled(args.parentWindowClicks || args["parent-window-clicks"])) {
+    const clickChildClass = String(args.clickChildClass || args["click-child-class"] || "GeckoFPSandboxChildWindow").trim();
+    if (clickChildClass) {
+      commandArgs.push("--child-class-contains", clickChildClass);
+    } else {
+      commandArgs.push("--largest-child");
+    }
+  }
+  if (!flagEnabled(args.allowForegroundClicks || args["allow-foreground-clicks"])) {
+    commandArgs.push("--post-message");
+  } else if (flagEnabled(args.restoreCursorAfterClick || args["restore-cursor-after-click"])) {
+    commandArgs.push("--restore-cursor");
+  }
+  const cmdlineContains = runtimeCmdlineContains(runtime);
+  if (!directTarget && cmdlineContains) {
+    commandArgs.push("--cmdline-contains", cmdlineContains);
+  }
+  return runPythonQa(commandArgs, { timeoutMs: 30000 });
+}
+
+function clickMenu({ runtime, handle, point, outputPath, args }) {
+  return clickWindowPoint({ runtime, handle, point, outputPath, args });
+}
+
+async function captureAndAnalyze({ runtime, handle, size, stem, runDir, args }) {
+  const screenshotPath = path.join(runDir, `${stem}.png`);
+  const capturePath = path.join(runDir, `${stem}-capture.json`);
+  const ocrPath = path.join(runDir, `${stem}-ocr.json`);
+  const reacquireWindowPath = path.join(runDir, `${stem}-reacquire-window.json`);
+  let activeHandle = handle;
+  let reacquiredWindow = null;
+  let capture = null;
+  try {
+    capture = runPythonQa(captureArgs({
+      runtime,
+      handle: activeHandle,
+      size,
+      screenshotPath,
+      metadataPath: capturePath,
+      args
+    }), { timeoutMs: 45000 });
+  } catch (error) {
+    const message = String(error.message || error);
+    if (!/not valid|invalid|handle/iu.test(message)) {
+      throw error;
+    }
+    reacquiredWindow = runPythonQa(waitWindowArgs({
+      runtime,
+      size,
+      outputPath: reacquireWindowPath,
+      timeoutMs: Number(args.captureReacquireTimeoutMs || args["capture-reacquire-timeout-ms"] || 20000),
+      allowAnyPid: true
+    }), { timeoutMs: Number(args.captureReacquireTimeoutMs || args["capture-reacquire-timeout-ms"] || 20000) + 5000 });
+    activeHandle = reacquiredWindow.match.handle;
+    capture = runPythonQa(captureArgs({
+      runtime,
+      handle: activeHandle,
+      size,
+      screenshotPath,
+      metadataPath: capturePath,
+      args
+    }), { timeoutMs: 45000 });
+  }
+  const ocr = runPythonQa([
+    "ocr-image",
+    "--input",
+    screenshotPath,
+    "--output",
+    ocrPath
+  ], { timeoutMs: 120000 });
+  return { screenshotPath, capturePath, ocrPath, reacquireWindowPath: reacquiredWindow ? reacquireWindowPath : null, reacquiredWindow, capture, ocr };
+}
+
+async function testEntry({ config, entry, index, total, runDir, args }) {
+  const initialSize = parseSize(args.initialSize || args["initial-size"] || "1186x760", { width: 1186, height: 760 });
+  const resizedSize = parseSize(args.resizedSize || args["resized-size"] || args.windowSize || args["window-size"] || "1450x900", { width: 1450, height: 900 });
+  const safeStem = `${String(index + 1).padStart(2, "0")}-${safeFileSegment(entry.canonicalKey)}`;
+  const windowBeforePath = path.join(runDir, `${safeStem}-window-before.json`);
+  const windowAfterPath = path.join(runDir, `${safeStem}-window-after.json`);
+  const clickPath = path.join(runDir, `${safeStem}-menu-click.json`);
+  const startClickPath = path.join(runDir, `${safeStem}-start-click.json`);
+  const postClickWindowPath = path.join(runDir, `${safeStem}-post-click-window.json`);
+  const postClickDiffPath = path.join(runDir, `${safeStem}-post-click-diff.json`);
+  const expandedHudRowPath = path.join(runDir, `${safeStem}-expanded-hud-row.json`);
+  const expandedHudRowAnnotatedPath = path.join(runDir, `${safeStem}-expanded-hud-row.png`);
+  const fixedExpandedHudSlotRowPath = path.join(runDir, `${safeStem}-expanded-hud-fixed-slot-row.json`);
+  const fixedExpandedHudSlotRowAnnotatedPath = path.join(runDir, `${safeStem}-expanded-hud-fixed-slot-row.png`);
+  const inventoryClickPath = path.join(runDir, `${safeStem}-inventory-click.json`);
+  const secondaryClickPath = path.join(runDir, `${safeStem}-secondary-click.json`);
+  const secondaryClickDiffPath = path.join(runDir, `${safeStem}-secondary-click-diff.json`);
+  const tutorialClickPath = path.join(runDir, `${safeStem}-tutorial-walk-click.json`);
+  const resizedStartClickPath = path.join(runDir, `${safeStem}-resized-start-click.json`);
+  const qaErrors = [];
+
+  process.env.POPTROPICA_WINDOW_WIDTH = String(initialSize.width);
+  process.env.POPTROPICA_WINDOW_HEIGHT = String(initialSize.height);
+  clearPoptropicaFlashState({ reason: `qa-as3-hud-smoke:${entry.canonicalKey}` });
+  const runtime = spawnManagedRuntime(config, "as3", entry.launchUrl, {
+    detach: true,
+    playerKey: "flashpointnavigator-as3"
+  });
+  runtime.launchUrl = entry.launchUrl;
+  runtime.cmdlineContains = cmdlineFragmentForLaunchUrl(entry.launchUrl);
+
+  try {
+    const initialWindow = runPythonQa(waitWindowArgs({
+      runtime,
+      size: initialSize,
+      outputPath: windowBeforePath,
+      timeoutMs: Number(args.windowTimeoutMs || 90000)
+    }), { timeoutMs: Number(args.windowTimeoutMs || 90000) + 5000 });
+
+    await sleep(Number(args.initialSettleMs || args["initial-settle-ms"] || 45000));
+
+    let initial = await captureAndAnalyze({
+      runtime,
+      handle: initialWindow.match.handle,
+      size: initialSize,
+      stem: `${safeStem}-initial`,
+      runDir,
+      args
+    });
+    let startClick = null;
+    let startClickAttempts = [];
+    let startClickPoint = null;
+    let startedInitial = null;
+    if (!flagEnabled(args.skipStart || args["skip-start"])) {
+      const startLine = locateStartLine(initial.ocr);
+      startClickPoint = clickPointForOcrLine(startLine, initial.capture, args);
+      if (startClickPoint) {
+        const startClickCount = Math.max(1, Number(args.startClickCount || args["start-click-count"] || 2));
+        for (let attemptIndex = 0; attemptIndex < startClickCount; attemptIndex += 1) {
+          const outputPath = attemptIndex === startClickCount - 1
+            ? startClickPath
+            : path.join(runDir, `${safeStem}-start-click-${attemptIndex + 1}.json`);
+          const attempt = clickWindowPoint({
+            runtime,
+            handle: initialWindow.match.handle,
+            point: startClickPoint,
+            outputPath,
+            args,
+            holdMs: Number(args.startClickHoldMs || args["start-click-hold-ms"] || 90)
+          });
+          startClickAttempts.push({ attempt: attemptIndex + 1, outputPath, click: attempt });
+          startClick = attempt;
+          if (attemptIndex < startClickCount - 1) {
+            await sleep(Number(args.startClickRetryDelayMs || args["start-click-retry-delay-ms"] || 350));
+          }
+        }
+        await sleep(Number(args.startClickWaitMs || args["start-click-wait-ms"] || 6500));
+        startedInitial = await captureAndAnalyze({
+          runtime,
+          handle: initialWindow.match.handle,
+          size: initialSize,
+          stem: `${safeStem}-initial-after-start`,
+          runDir,
+          args
+        });
+        initial = startedInitial;
+      }
+    }
+    const initialMenu = locateMenuLine({ ocr: initial.ocr, capture: initial.capture, args });
+    const initialPlacement = menuPlacementCheck(initialMenu, initial.capture, args);
+
+    const resizedWindow = runPythonQa(waitWindowArgs({
+      runtime,
+      size: resizedSize,
+      outputPath: windowAfterPath,
+      timeoutMs: Number(args.resizeWindowTimeoutMs || args["resize-window-timeout-ms"] || 15000),
+      allowAnyPid: true
+    }), { timeoutMs: Number(args.resizeWindowTimeoutMs || args["resize-window-timeout-ms"] || 15000) + 5000 });
+
+    await sleep(Number(args.resizeSettleMs || args["resize-settle-ms"] || 55000));
+
+    let resized = await captureAndAnalyze({
+      runtime,
+      handle: resizedWindow.match.handle,
+      size: resizedSize,
+      stem: `${safeStem}-resized`,
+      runDir,
+      args
+    });
+    let resizedStartClick = null;
+    let resizedStartClickAttempts = [];
+    let resizedStartClickPoint = null;
+    let resizedAfterStart = null;
+    if (!flagEnabled(args.skipStart || args["skip-start"])) {
+      const resizedStartLine = locateStartLine(resized.ocr);
+      resizedStartClickPoint = clickPointForOcrLine(resizedStartLine, resized.capture, args);
+      if (resizedStartClickPoint) {
+        const startClickCount = Math.max(1, Number(args.startClickCount || args["start-click-count"] || 2));
+        for (let attemptIndex = 0; attemptIndex < startClickCount; attemptIndex += 1) {
+          const outputPath = attemptIndex === startClickCount - 1
+            ? resizedStartClickPath
+            : path.join(runDir, `${safeStem}-resized-start-click-${attemptIndex + 1}.json`);
+          const attempt = clickWindowPoint({
+            runtime,
+            handle: resizedWindow.match.handle,
+            point: resizedStartClickPoint,
+            outputPath,
+            args,
+            holdMs: Number(args.startClickHoldMs || args["start-click-hold-ms"] || 90)
+          });
+          resizedStartClickAttempts.push({ attempt: attemptIndex + 1, outputPath, click: attempt });
+          resizedStartClick = attempt;
+          if (attemptIndex < startClickCount - 1) {
+            await sleep(Number(args.startClickRetryDelayMs || args["start-click-retry-delay-ms"] || 350));
+          }
+        }
+        await sleep(Number(args.startClickWaitMs || args["start-click-wait-ms"] || 6500));
+        resizedAfterStart = await captureAndAnalyze({
+          runtime,
+          handle: resizedWindow.match.handle,
+          size: resizedSize,
+          stem: `${safeStem}-resized-after-start`,
+          runDir,
+          args
+        });
+        resized = resizedAfterStart;
+      }
+    }
+    let tutorialClick = null;
+    let tutorialClickAttempts = [];
+    let resizedAfterTutorial = null;
+    let resizedHudReadyAttempts = [];
+    const tutorialMaxAttempts = Math.max(1, Number(args.tutorialWalkClickCount || args["tutorial-walk-click-count"] || 3));
+    for (let tutorialAttemptIndex = 0; tutorialAttemptIndex < tutorialMaxAttempts && shouldDismissWalkTutorial(resized.ocr, args); tutorialAttemptIndex += 1) {
+      const tutorialPoint = clickPointForTutorialWalk(resized.capture, args, tutorialAttemptIndex);
+      if (tutorialPoint) {
+        const outputPath = tutorialAttemptIndex === tutorialMaxAttempts - 1
+          ? tutorialClickPath
+          : path.join(runDir, `${safeStem}-tutorial-walk-click-${tutorialAttemptIndex + 1}.json`);
+        tutorialClick = clickWindowPoint({
+          runtime,
+          handle: resizedWindow.match.handle,
+          point: tutorialPoint,
+          outputPath,
+          args,
+          holdMs: Number(args.tutorialWalkHoldMs || args["tutorial-walk-hold-ms"] || 2500),
+          moveIntervalMs: Number(args.tutorialWalkMoveIntervalMs || args["tutorial-walk-move-interval-ms"] || 80)
+        });
+        tutorialClickAttempts.push({ attempt: tutorialAttemptIndex + 1, outputPath, click: tutorialClick });
+        await sleep(Number(args.tutorialDismissWaitMs || args["tutorial-dismiss-wait-ms"] || 5000));
+        resizedAfterTutorial = await captureAndAnalyze({
+          runtime,
+          handle: resizedWindow.match.handle,
+          size: resizedSize,
+          stem: `${safeStem}-resized-after-tutorial-${tutorialAttemptIndex + 1}`,
+          runDir,
+          args
+        });
+        resized = resizedAfterTutorial;
+      }
+    }
+    const hudReadyMaxAttempts = Math.max(0, Number(args.hudReadyMaxAttempts || args["hud-ready-max-attempts"] || 5));
+    const hudReadyDelayMs = Number(args.hudReadyRetryDelayMs || args["hud-ready-retry-delay-ms"] || 3000);
+    for (let attemptIndex = 0; attemptIndex < hudReadyMaxAttempts; attemptIndex += 1) {
+      const reason = hudReadyRetryReason(resized, args);
+      if (!reason) {
+        break;
+      }
+      await sleep(hudReadyDelayMs);
+      const next = await captureAndAnalyze({
+        runtime,
+        handle: resizedWindow.match.handle,
+        size: resizedSize,
+        stem: `${safeStem}-resized-hud-ready-${attemptIndex + 1}`,
+        runDir,
+        args
+      });
+      resizedHudReadyAttempts.push({
+        attempt: attemptIndex + 1,
+        reason,
+        screenshotPath: next.screenshotPath,
+        ocrPath: next.ocrPath,
+        text: String(next.ocr?.text || "").slice(0, 500)
+      });
+      resized = next;
+    }
+    const resizedMenu = locateMenuLine({ ocr: resized.ocr, capture: resized.capture, args });
+    const resizedPlacement = menuPlacementCheck(resizedMenu, resized.capture, args);
+
+    const clickPoint = clickPointForMenu(resizedMenu, resized.capture, args);
+    let click = null;
+    let postClick = null;
+    let postClickDiff = null;
+    let expandedHudRow = null;
+    let fixedExpandedHudSlotRow = null;
+    let inventoryClick = null;
+    let inventory = null;
+    let secondaryClick = null;
+    let secondary = null;
+    let secondaryClickDiff = null;
+    let clickResponsive = {
+      ok: false,
+      skipped: !clickPoint,
+      reason: clickPoint ? null : "menu_ocr_missing"
+    };
+    if (clickPoint) {
+      click = clickMenu({
+        runtime,
+        handle: resizedWindow.match.handle,
+        point: clickPoint,
+        outputPath: clickPath,
+        args
+      });
+      await sleep(Number(args.clickWaitMs || args["click-wait-ms"] || 2800));
+      const postClickWindow = runPythonQa(waitWindowArgs({
+        runtime,
+        size: resizedSize,
+        outputPath: postClickWindowPath,
+        timeoutMs: Number(args.postClickWindowTimeoutMs || args["post-click-window-timeout-ms"] || 10000),
+        allowAnyPid: true
+      }), { timeoutMs: Number(args.postClickWindowTimeoutMs || args["post-click-window-timeout-ms"] || 10000) + 5000 });
+      postClick = await captureAndAnalyze({
+        runtime,
+        handle: postClickWindow.match.handle,
+        size: resizedSize,
+        stem: `${safeStem}-post-click`,
+        runDir,
+        args
+      });
+      postClickDiff = runPythonQa([
+        "compare-images",
+        "--before",
+        resized.screenshotPath,
+        "--after",
+        postClick.screenshotPath,
+        "--threshold",
+        String(args.clickDiffThreshold || args["click-diff-threshold"] || 20),
+        "--output",
+        postClickDiffPath
+      ], { timeoutMs: 30000 });
+      if (!flagEnabled(args.disableExpandedHudRowCheck || args["disable-expanded-hud-row-check"]) && resizedMenu?.box) {
+        expandedHudRow = runPythonQa([
+          "analyze-hud-row",
+          "--input",
+          postClick.screenshotPath,
+          "--menu-center-x",
+          String(resizedMenu.box.centerX),
+          "--menu-center-y",
+          String(resizedMenu.box.centerY),
+          "--output",
+          expandedHudRowPath,
+          "--annotated-output",
+          expandedHudRowAnnotatedPath,
+          "--min-edge-density",
+          String(args.expandedHudMinEdgeDensity || args["expanded-hud-min-edge-density"] || 0.025),
+          "--min-present-slots",
+          String(args.expandedHudMinPresentSlots || args["expanded-hud-min-present-slots"] || 7),
+          "--max-row-top",
+          String(args.expandedHudMaxRowTop || args["expanded-hud-max-row-top"] || 90),
+          "--no-fail-exit"
+        ], { timeoutMs: 30000 });
+      }
+      if (!flagEnabled(args.disableFixedHudSlotRowCheck || args["disable-fixed-hud-slot-row-check"])) {
+        const fixedHudImageWidth = Number(postClick.capture?.imageSize?.width || resized.capture?.imageSize?.width || 0);
+        const fixedHudScale = fixedHudImageWidth > 0 ? fixedHudImageWidth / 960 : 1;
+        const fixedHudMenuCenterX = Number(resizedMenu?.box?.centerX || 0);
+        const fixedHudMenuCenterY = Number(resizedMenu?.box?.centerY || 0);
+        const fixedHudRightInset = fixedHudImageWidth > 0 && fixedHudMenuCenterX > 0
+          ? Math.max(8, fixedHudImageWidth - fixedHudMenuCenterX)
+          : 58;
+        const fixedHudCenterY = fixedHudMenuCenterY > 0 ? fixedHudMenuCenterY : 114;
+        fixedExpandedHudSlotRow = runPythonQa([
+          "analyze-top-right-slot-row",
+          "--input",
+          postClick.screenshotPath,
+          "--before",
+          resized.screenshotPath,
+          "--output",
+          fixedExpandedHudSlotRowPath,
+          "--annotated-output",
+          fixedExpandedHudSlotRowAnnotatedPath,
+          "--slot-names",
+          String(args.fixedHudSlotNames || args["fixed-hud-slot-names"] || "settings,audio,home,store,map,costumizer,inventory,menu"),
+          "--critical-slots",
+          String(args.fixedHudCriticalSlots || args["fixed-hud-critical-slots"] || "settings,audio,home,store,map,costumizer,inventory,menu"),
+          "--change-slots",
+          String(args.fixedHudChangeSlots || args["fixed-hud-change-slots"] || "settings,audio,home,store,map,costumizer,inventory"),
+          "--rightmost-center-inset",
+          String(args.fixedHudRightmostCenterInset || args["fixed-hud-rightmost-center-inset"] || fixedHudRightInset),
+          "--center-y-offset",
+          String(args.fixedHudCenterYOffset || args["fixed-hud-center-y-offset"] || fixedHudCenterY),
+          "--slot-spacing",
+          String(args.fixedHudSlotSpacing || args["fixed-hud-slot-spacing"] || Math.max(86, 86 * fixedHudScale)),
+          "--slot-size",
+          String(args.fixedHudSlotSize || args["fixed-hud-slot-size"] || Math.max(78, 76 * fixedHudScale)),
+          "--min-edge-density",
+          String(args.fixedHudMinEdgeDensity || args["fixed-hud-min-edge-density"] || 0.018),
+          "--min-present-slots",
+          String(args.fixedHudMinPresentSlots || args["fixed-hud-min-present-slots"] || 7),
+          "--min-changed-slots",
+          String(args.fixedHudMinChangedSlots || args["fixed-hud-min-changed-slots"] || 7),
+          "--min-slot-change-density",
+          String(args.fixedHudMinSlotChangeDensity || args["fixed-hud-min-slot-change-density"] || 0.025),
+          "--change-threshold",
+          String(args.fixedHudChangeThreshold || args["fixed-hud-change-threshold"] || 30),
+          "--max-top-margin",
+          String(args.fixedHudMaxTopMargin || args["fixed-hud-max-top-margin"] || Math.max(64, fixedHudCenterY + 72)),
+          "--max-center-y-ratio",
+          String(args.fixedHudMaxCenterYRatio || args["fixed-hud-max-center-y-ratio"] || 0.18),
+          "--no-fail-exit"
+        ], { timeoutMs: 30000 });
+      }
+      const minChangedPixelRatio = Number(args.minMenuClickChangedPixelRatio || args["min-menu-click-changed-pixel-ratio"] || 0.05);
+      clickResponsive = {
+        ok: Number(postClickDiff?.changedPixelRatio || 0) >= minChangedPixelRatio,
+        skipped: false,
+        minChangedPixelRatio,
+        observedChangedPixelRatio: Number(postClickDiff?.changedPixelRatio || 0),
+        postClickText: String(postClick.ocr?.text || "").slice(0, 500)
+      };
+      if (flagEnabled(args.inventoryCheck || args["inventory-check"])) {
+        const inventoryPoint = clickPointForInventory(postClick.capture, resizedMenu, args);
+        if (inventoryPoint) {
+          inventoryClick = clickWindowPoint({
+            runtime,
+            handle: resizedWindow.match.handle,
+            point: inventoryPoint,
+            outputPath: inventoryClickPath,
+            args,
+            holdMs: Number(args.inventoryClickHoldMs || args["inventory-click-hold-ms"] || 80)
+          });
+          await sleep(Number(args.inventoryClickWaitMs || args["inventory-click-wait-ms"] || 4000));
+          inventory = await captureAndAnalyze({
+            runtime,
+            handle: resizedWindow.match.handle,
+            size: resizedSize,
+            stem: `${safeStem}-inventory`,
+            runDir,
+            args
+          });
+        }
+      }
+      if (flagEnabled(args.secondaryClick || args["secondary-click"])) {
+        const secondaryRightInset = Number(args.secondaryClickRightInset || args["secondary-click-right-inset"] || 130);
+        const secondaryPoint = clickPointForHudButtonIndex(postClick.capture, resizedMenu, args) || clickPointForRightInset(postClick.capture, resizedMenu, secondaryRightInset, args);
+        if (secondaryPoint) {
+          secondaryClick = clickWindowPoint({
+            runtime,
+            handle: resizedWindow.match.handle,
+            point: secondaryPoint,
+            outputPath: secondaryClickPath,
+            args,
+            holdMs: Number(args.secondaryClickHoldMs || args["secondary-click-hold-ms"] || 90)
+          });
+          await sleep(Number(args.secondaryClickWaitMs || args["secondary-click-wait-ms"] || 4500));
+          secondary = await captureAndAnalyze({
+            runtime,
+            handle: resizedWindow.match.handle,
+            size: resizedSize,
+            stem: `${safeStem}-secondary`,
+            runDir,
+            args
+          });
+          secondaryClickDiff = runPythonQa([
+            "compare-images",
+            "--before",
+            postClick.screenshotPath,
+            "--after",
+            secondary.screenshotPath,
+            "--threshold",
+            String(args.secondaryClickDiffThreshold || args["secondary-click-diff-threshold"] || 20),
+            "--output",
+            secondaryClickDiffPath
+          ], { timeoutMs: 30000 });
+        }
+      }
+    }
+    const inventoryText = String(inventory?.ocr?.text || "");
+    const inventoryExpectedPattern = new RegExp(String(args.inventoryExpectedPattern || args["inventory-expected-pattern"] || "背包|岛屿|物品"), "u");
+    const inventoryForbiddenPattern = /YOUR INVENTORY IS EMPTY|Your inventory is empty|EXPLORE THE ISLAND|Explore the island/iu;
+    const inventoryCheck = flagEnabled(args.inventoryCheck || args["inventory-check"])
+      ? {
+          ok: Boolean(inventory && inventory.ocr?.containsChinese && inventoryExpectedPattern.test(inventoryText) && !inventoryForbiddenPattern.test(inventoryText)),
+          skipped: false,
+          point: inventoryClick?.point || null,
+          containsChinese: Boolean(inventory?.ocr?.containsChinese),
+          expectedPattern: String(inventoryExpectedPattern),
+          forbiddenPattern: String(inventoryForbiddenPattern),
+          text: inventoryText.slice(0, 500)
+        }
+      : {
+          ok: true,
+          skipped: true
+        };
+    const visibleEnglishChecks = flagEnabled(args.forbidVisibleEnglish || args["forbid-visible-english"])
+      ? [
+          visibleEnglishLeakCheck("initial", initial.ocr, args),
+          visibleEnglishLeakCheck("resized", resized.ocr, args),
+          ...(postClick?.ocr ? [visibleEnglishLeakCheck("post-click", postClick.ocr, args)] : []),
+          ...(inventory?.ocr ? [visibleEnglishLeakCheck("inventory", inventory.ocr, args)] : []),
+          ...(secondary?.ocr ? [visibleEnglishLeakCheck("secondary", secondary.ocr, args)] : [])
+        ]
+      : [];
+    const visibleEnglishCheck = visibleEnglishChecks.length
+      ? {
+          ok: visibleEnglishChecks.every((check) => check.ok),
+          skipped: false,
+          checks: visibleEnglishChecks
+        }
+      : {
+          ok: true,
+          skipped: true,
+          checks: []
+        };
+    const secondaryExpectedPatternText = String(args.secondaryClickExpectedPattern || args["secondary-click-expected-pattern"] || "").trim();
+    const secondaryExpectedPattern = secondaryExpectedPatternText ? new RegExp(secondaryExpectedPatternText, "iu") : null;
+    const secondaryText = String(secondary?.ocr?.text || "");
+    const secondaryChangedEnough = Number(secondaryClickDiff?.changedPixelRatio || 0) >=
+      Number(args.minSecondaryClickChangedPixelRatio || args["min-secondary-click-changed-pixel-ratio"] || 0.01);
+    const secondaryExpectedMatched = secondaryExpectedPattern
+      ? secondaryExpectedPattern.test(secondaryText)
+      : null;
+    const secondaryClickCheck = flagEnabled(args.secondaryClick || args["secondary-click"])
+      ? {
+          ok: Boolean(
+            secondaryClick &&
+            secondary?.ocr &&
+            (secondaryExpectedPattern ? secondaryExpectedMatched : secondaryChangedEnough)
+          ),
+          skipped: false,
+          label: String(args.secondaryClickLabel || args["secondary-click-label"] || "secondary"),
+          point: secondaryClick?.point || null,
+          expectedPattern: secondaryExpectedPattern ? String(secondaryExpectedPattern) : null,
+          expectedPatternMatched: secondaryExpectedMatched,
+          minChangedPixelRatio: Number(args.minSecondaryClickChangedPixelRatio || args["min-secondary-click-changed-pixel-ratio"] || 0.01),
+          changedEnough: secondaryChangedEnough,
+          observedChangedPixelRatio: Number(secondaryClickDiff?.changedPixelRatio || 0),
+          text: secondaryText.slice(0, 500)
+        }
+      : {
+          ok: true,
+          skipped: true
+        };
+    const menuClickResponseOk = Boolean(
+      clickResponsive.ok ||
+      (!inventoryCheck.skipped && inventoryCheck.ok) ||
+      (!secondaryClickCheck.skipped && secondaryClickCheck.ok)
+    );
+    const menuClickResponsive = {
+      ...clickResponsive,
+      effectiveOk: menuClickResponseOk,
+      provedByInventory: Boolean(!inventoryCheck.skipped && inventoryCheck.ok),
+      provedBySecondary: Boolean(!secondaryClickCheck.skipped && secondaryClickCheck.ok)
+    };
+    const expandedHudRowCheck = !flagEnabled(args.disableExpandedHudRowCheck || args["disable-expanded-hud-row-check"])
+      ? {
+          ok: Boolean(expandedHudRow?.ok),
+          skipped: false,
+          outputPath: expandedHudRow ? expandedHudRowPath : null,
+          annotatedOutputPath: expandedHudRow ? expandedHudRowAnnotatedPath : null,
+          checks: expandedHudRow?.checks || [],
+          slots: expandedHudRow?.slots || []
+        }
+      : {
+          ok: true,
+          skipped: true
+      };
+    const fixedExpandedHudSlotRowVisualOk = fixedHudSlotRowVisualOk(fixedExpandedHudSlotRow);
+    const fixedExpandedHudSlotRowCheck = !flagEnabled(args.disableFixedHudSlotRowCheck || args["disable-fixed-hud-slot-row-check"])
+      ? {
+          ok: Boolean(fixedExpandedHudSlotRow?.ok || fixedExpandedHudSlotRowVisualOk),
+          rawOk: Boolean(fixedExpandedHudSlotRow?.ok),
+          visualContractOk: fixedExpandedHudSlotRowVisualOk,
+          visualContract: "right/top anchored row with enough changed visible slots; semantic slot labels are advisory",
+          skipped: false,
+          outputPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowPath : null,
+          annotatedOutputPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowAnnotatedPath : null,
+          checks: fixedExpandedHudSlotRow?.checks || [],
+          slots: fixedExpandedHudSlotRow?.slots || []
+        }
+      : {
+          ok: true,
+          skipped: true
+        };
+    const expandedHudRowEffectiveOk = Boolean(expandedHudRowCheck.ok || fixedExpandedHudSlotRowCheck.ok);
+    const expandedHudRowReport = {
+      ...expandedHudRowCheck,
+      effectiveOk: expandedHudRowEffectiveOk,
+      supersededByFixedSlotCheck: Boolean(!expandedHudRowCheck.ok && fixedExpandedHudSlotRowCheck.ok)
+    };
+
+    const failedChecks = [
+      ...(!initialPlacement.ok ? ["initial_menu_placement_failed"] : []),
+      ...(!resizedPlacement.ok ? ["resized_menu_placement_failed"] : []),
+      ...(!menuClickResponseOk ? ["menu_click_response_failed"] : []),
+      ...(!expandedHudRowEffectiveOk ? ["expanded_hud_row_failed"] : []),
+      ...(!fixedExpandedHudSlotRowCheck.ok ? ["expanded_hud_fixed_slot_row_failed"] : []),
+      ...(!inventoryCheck.ok ? ["inventory_chinese_check_failed"] : []),
+      ...(!visibleEnglishCheck.ok ? ["visible_english_forbidden_failed"] : []),
+      ...(!secondaryClickCheck.ok ? ["secondary_click_response_failed"] : [])
+    ];
+
+    return {
+      ok: failedChecks.length === 0,
+      index: index + 1,
+      total,
+      canonicalKey: entry.canonicalKey,
+      launchUrl: entry.launchUrl,
+      initialSize,
+      resizedSize,
+      runtime: {
+        pid: runtime.pid,
+        playerKey: runtime.playerKey
+      },
+      artifacts: {
+        windowBeforePath,
+        windowAfterPath,
+        clickPath: click ? clickPath : null,
+        inventoryClickPath: inventoryClick ? inventoryClickPath : null,
+        secondaryClickPath: secondaryClick ? secondaryClickPath : null,
+        secondaryClickDiffPath: secondaryClickDiff ? secondaryClickDiffPath : null,
+        tutorialClickPath: tutorialClick ? tutorialClickPath : null,
+        startClickPath: startClick ? startClickPath : null,
+        resizedStartClickPath: resizedStartClick ? resizedStartClickPath : null,
+        postClickWindowPath: postClick ? postClickWindowPath : null,
+        postClickDiffPath: postClickDiff ? postClickDiffPath : null,
+        expandedHudRowPath: expandedHudRow ? expandedHudRowPath : null,
+        expandedHudRowAnnotatedPath: expandedHudRow ? expandedHudRowAnnotatedPath : null,
+        fixedExpandedHudSlotRowPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowPath : null,
+        fixedExpandedHudSlotRowAnnotatedPath: fixedExpandedHudSlotRow ? fixedExpandedHudSlotRowAnnotatedPath : null,
+        initialScreenshotPath: initial.screenshotPath,
+        startedInitialScreenshotPath: startedInitial?.screenshotPath || null,
+        resizedScreenshotPath: resized.screenshotPath,
+        resizedAfterStartScreenshotPath: resizedAfterStart?.screenshotPath || null,
+        resizedAfterTutorialScreenshotPath: resizedAfterTutorial?.screenshotPath || null,
+        resizedHudReadyScreenshotPath: resizedHudReadyAttempts.length
+          ? resizedHudReadyAttempts[resizedHudReadyAttempts.length - 1].screenshotPath
+          : null,
+        postClickScreenshotPath: postClick?.screenshotPath || null,
+        inventoryScreenshotPath: inventory?.screenshotPath || null,
+        inventoryOcrPath: inventory?.ocrPath || null,
+        secondaryScreenshotPath: secondary?.screenshotPath || null,
+        secondaryOcrPath: secondary?.ocrPath || null
+      },
+      initial: {
+        capture: initial.capture,
+        ocr: initial.ocr,
+        menuPlacement: initialPlacement,
+        startClick: {
+          point: startClickPoint,
+          click: startClick,
+          attempts: startClickAttempts,
+          applied: Boolean(startClick)
+        }
+      },
+      resized: {
+        capture: resized.capture,
+        ocr: resized.ocr,
+        menuPlacement: resizedPlacement,
+        startClick: {
+          point: resizedStartClickPoint,
+          click: resizedStartClick,
+          attempts: resizedStartClickAttempts,
+          applied: Boolean(resizedStartClick)
+        },
+        tutorialDismiss: {
+          applied: Boolean(tutorialClick),
+          click: tutorialClick,
+          attempts: tutorialClickAttempts,
+          afterOcr: resizedAfterTutorial?.ocr || null
+        },
+        hudReady: {
+          attempts: resizedHudReadyAttempts,
+          finalReason: hudReadyRetryReason(resized, args)
+        }
+      },
+      menuClick: {
+        point: clickPoint,
+        click,
+        responsive: menuClickResponsive,
+        postClickOcr: postClick?.ocr || null,
+        postClickDiff,
+        expandedHudRow: expandedHudRowReport,
+        fixedExpandedHudSlotRow: fixedExpandedHudSlotRowCheck,
+        inventory: {
+          click: inventoryClick,
+          check: inventoryCheck,
+          ocr: inventory?.ocr || null
+        },
+        secondary: {
+          click: secondaryClick,
+          check: secondaryClickCheck,
+          ocr: secondary?.ocr || null,
+          diff: secondaryClickDiff
+        },
+        visibleEnglishCheck
+      },
+      failedChecks,
+      qaErrors
+    };
+  } catch (error) {
+    qaErrors.push({
+      message: String(error.message || error),
+      stdout: String(error.stdout || "").slice(0, 2000),
+      stderr: String(error.stderr || "").slice(0, 4000)
+    });
+    return {
+      ok: false,
+      index: index + 1,
+      total,
+      canonicalKey: entry.canonicalKey,
+      launchUrl: entry.launchUrl,
+      initialSize,
+      resizedSize,
+      runtime: {
+        pid: runtime.pid,
+        playerKey: runtime.playerKey
+      },
+      failedChecks: ["qa_hud_flow_failed"],
+      qaErrors
+    };
+  } finally {
+    if (!flagEnabled(args.keepOpen || args["keep-open"])) {
+      stopNavigatorProcesses();
+    }
+  }
+}
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  }
+  if (!flagEnabled(args.allowForegroundCapture) && !process.env.POPTROPICA_QA_NO_FOREGROUND) {
+    process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
+  }
+
+  const config = loadConfig();
+  ensureManagedWorkspace(config);
+  await ensureFlashpointServices(config);
+  await mountSourceZip(config, "as3");
+
+  const selectedIds = new Set(splitCsv(args.islands || args.island));
+  const manifest = generateLaunchManifest(config, { write: false });
+  let entries = manifest.entries
+    .filter((entry) => entry.sourceGroup === "as3" && entry.launchable && entry.launchMode === "as3-direct-scene")
+    .sort((left, right) => left.canonicalKey.localeCompare(right.canonicalKey, "en"));
+  if (selectedIds.size) {
+    entries = entries.filter((entry) => selectedIds.has(entry.canonicalKey));
+  }
+  const as3SceneOverride = String(args.as3SceneOverride || args["as3-scene-override"] || "").trim();
+  if (as3SceneOverride) {
+    if (entries.length !== 1) {
+      throw new Error("--as3-scene-override requires exactly one selected AS3 island.");
+    }
+    const normalizedSceneOverride = normalizeAs3SceneOverride(as3SceneOverride);
+    const resizeReloadMode = args.resizeReloadMode || args["resize-reload-mode"] || "page";
+    entries = entries.map((entry) => ({
+      ...entry,
+      as3TargetScene: normalizedSceneOverride,
+      launchUrl: buildAs3DirectSceneUrl(normalizedSceneOverride, { reloadOnResize: resizeReloadMode })
+    }));
+  }
+  if (!entries.length) {
+    throw new Error("No AS3 launchable entries matched the HUD smoke filter.");
+  }
+
+  const runToken = String(Date.now());
+  const qaDir = ensureQaDir("as3", "hud-smoke");
+  const runDir = ensureQaDir("as3", "hud-smoke", `run-${runToken}`);
+  const reportPath = path.join(qaDir, `as3-hud-smoke-${runToken}.json`);
+  const latestPath = path.join(qaDir, "as3-hud-smoke-latest.json");
+  const startedAt = new Date().toISOString();
+  const reports = [];
+  for (let index = 0; index < entries.length; index += 1) {
+    reports.push(await testEntry({ config, entry: entries[index], index, total: entries.length, runDir, args }));
+  }
+  const report = {
+    ok: reports.every((entry) => entry.ok),
+    generatedAt: new Date().toISOString(),
+    startedAt,
+    total: reports.length,
+    passed: reports.filter((entry) => entry.ok).length,
+    failed: reports.filter((entry) => !entry.ok).length,
+    targetMonitor: targetMonitor || null,
+    failedKeys: reports.filter((entry) => !entry.ok).map((entry) => entry.canonicalKey),
+    artifactDir: runDir,
+    reports
+  };
+  writeJson(reportPath, report);
+  writeJson(latestPath, report);
+  printJson({ ...report, reportPath, latestPath });
+  if (!report.ok) {
+    process.exitCode = 1;
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

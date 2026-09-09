@@ -1,0 +1,15 @@
+[
+  { "id": "virus-hunter", "canonicalKey": "virus-hunter", "displayName": "Virus Hunter Island", "source": "as3", "runtime": "flash", "releaseYear": 2013, "launchId": "VirusHunter" },
+  { "id": "mocktropica", "canonicalKey": "mocktropica", "displayName": "Mocktropica Island", "source": "as3", "runtime": "flash", "releaseYear": 2013, "launchId": "Mocktropica" },
+  { "id": "monster-carnival", "canonicalKey": "monster-carnival", "displayName": "Monster Carnival Island", "source": "as3", "runtime": "flash", "releaseYear": 2014, "launchId": "MonsterCarnival" },
+  { "id": "survival", "canonicalKey": "survival", "displayName": "Survival Island", "source": "as3", "runtime": "flash", "releaseYear": 2014, "launchId": "Survival" },
+  { "id": "mission-atlantis", "canonicalKey": "mission-atlantis", "displayName": "Mission Atlantis", "source": "as3", "runtime": "flash", "releaseYear": 2014, "launchId": "MissionAtlantis" },
+  { "id": "poptropicon", "canonicalKey": "poptropicon", "displayName": "Poptropicon", "source": "as3", "runtime": "flash", "releaseYear": 2014, "launchId": "Poptropicon" },
+  { "id": "arabian-nights", "canonicalKey": "arabian-nights", "displayName": "Arabian Nights", "source": "as3", "runtime": "flash", "releaseYear": 2014, "launchId": "ArabianNights" },
+  { "id": "mystery-of-the-map", "canonicalKey": "mystery-of-the-map", "displayName": "Mystery of the Map", "source": "as3", "runtime": "flash", "releaseYear": 2015, "launchId": "MysteryOfTheMap" },
+  { "id": "escape-from-pelican-rock", "canonicalKey": "escape-from-pelican-rock", "displayName": "Escape from Pelican Rock", "source": "as3", "runtime": "flash", "releaseYear": 2015, "launchId": "PelicanRock" },
+  { "id": "timmy-failure", "canonicalKey": "timmy-failure", "displayName": "Timmy Failure", "source": "as3", "runtime": "flash", "releaseYear": 2015, "launchId": "TimmyFailure" },
+  { "id": "galactic-hot-dogs", "canonicalKey": "galactic-hot-dogs", "displayName": "Galactic Hot Dogs", "source": "as3", "runtime": "flash", "releaseYear": 2015, "launchId": "GalacticHotDogs" },
+  { "id": "monkey-wrench", "canonicalKey": "monkey-wrench", "displayName": "Monkey Wrench Island", "source": "as3", "runtime": "flash", "releaseYear": 2016, "launchId": "MonkeyWrench" },
+  { "id": "reality-tv-wild-safari", "canonicalKey": "reality-tv-wild-safari", "displayName": "Reality TV: Wild Safari", "source": "as3", "runtime": "flash", "releaseYear": 2016, "launchId": "RealityTVWildSafari" }
+]

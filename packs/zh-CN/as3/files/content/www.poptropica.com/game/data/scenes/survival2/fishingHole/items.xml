@@ -1,0 +1,16 @@
+<items>
+	<item>
+		<id>fishingPole</id>
+		<asset>fishingPole.swf</asset>
+		<x>3054</x>
+		<y>175</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</item>
+</items>

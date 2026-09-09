@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>bottles</id>
+		<asset>bottles.swf</asset>
+		<x>2670</x>
+		<y>1030</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

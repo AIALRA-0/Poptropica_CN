@@ -1,0 +1,19 @@
+<doors><!-- grounds -->
+	<door id="door1">
+		<scene>game.scenes.survival4.mainHall.MainHall</scene>
+		<x>100</x>
+		<y>980</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+
+		</connectingSceneDoors>
+	</door>
+</doors>

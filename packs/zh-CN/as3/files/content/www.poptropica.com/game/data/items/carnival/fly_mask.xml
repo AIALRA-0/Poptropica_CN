@@ -1,0 +1,59 @@
+<item id="fly_mask"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>carnival</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>苍蝇人面具</value>
+  		</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<assetPath>items/carnival/background.swf</assetPath>
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-53</saturation>
+     			<hue>32</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+
+	<buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>穿上</label>
+    		<actions>
+	    		<action type="applyLook"/>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">flyMaskOn</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>脱下</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<looks>
+		<look>
+			<facial>mc_fly_mask</facial>
+		</look>
+	</looks>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+	</conditionals>
+	
+</item>

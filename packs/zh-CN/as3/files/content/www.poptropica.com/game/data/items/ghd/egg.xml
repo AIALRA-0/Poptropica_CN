@@ -1,0 +1,53 @@
+<item id="egg">
+  	<type>island</type>
+  	<subType>ghd</subType>
+  	
+  	<textfields>
+  		<text>
+    		<value>蛋</value>
+  		</text>
+  	</textfields>
+  	
+  	<buttons>
+		<btn>
+ 			<label>使用</label>
+			<actions>
+				<action type="triggerEvent">
+					<conditional id="inScene" isTrue="true"/>
+	  				<parameters>
+			  			<param id="event">use_egg</param>
+			  		</parameters>
+			  	</action>
+				<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="false"/>
+		  			<parameters>
+		  				<param id="event">no_use_egg</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<conditionals>
+    	<conditional type="inScene">
+    		<parameters>
+		  		<param id="validScenes">game.scenes.ghd.prehistoric2.Prehistoric2</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+	
+  	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/ghd/background.swf</assetPath>
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-60</saturation>
+     			<hue>97</hue>
+    		</effect>
+    	</asset>
+   		<asset id="cardContent"/>
+    </assets>
+</item>

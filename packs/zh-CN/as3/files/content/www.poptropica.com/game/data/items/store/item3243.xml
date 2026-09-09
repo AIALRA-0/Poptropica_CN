@@ -1,0 +1,42 @@
+<item id="3243">
+	<type>store</type>
+	<subType>general</subType>
+		
+	<assets>
+		<asset id="cardBack" />
+		<asset id="cardContent"/>
+	</assets>
+	
+	<buttons>
+		<btn>
+		<conditional id="hasLook" isTrue="false"/>
+			<label>穿上</label>
+			<actions>
+			<action type="applyLook"/>
+		</actions>
+		</btn>
+		<btn>
+		<conditional id="hasLook" isTrue="true"/>
+			<label>脱下</label>
+			<actions>
+			<action type="removeLook"/>
+		</actions>
+		</btn>
+	</buttons>
+	
+	<conditionals>
+		<conditional type="hasLook" />	<!-- if no lookId param is given uses first look by default -->
+	</conditionals>
+		
+	<textfields>
+		<text id="storeTitle">
+			<value>骷髅面具</value>
+		</text>
+	</textfields>
+		
+	<looks>
+		<look>
+	 		<facial>skull_mask</facial>
+	 	</look> 
+	</looks> 
+</item>

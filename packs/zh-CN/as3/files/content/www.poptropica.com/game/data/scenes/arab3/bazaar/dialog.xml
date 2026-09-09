@@ -1,0 +1,210 @@
+<dialogs>
+	<character id="player">
+		<statement id="compass">有了它，你就能穿越沙漠，去看看外面的世界了。</statement>
+		<statement id="spyglass">灯神就在那儿——可我怎么才能到那么高的地方去呢？</statement>
+		<statement id="spyglass2">沙漠又恢复了往日的宁静。</statement>
+		<statement id="beholder" link="hide">情人眼里出西施嘛。</statement>
+		<statement id="hide">那个灯神躲哪儿去了？</statement>
+		<statement id="click_barrel">他像虱子一样钻进去了。我得想办法把他弄出来。</statement>
+		<statement id="where">她跑哪儿去了？</statement>
+		<statement id="camel">好骆驼。</statement>
+		<statement id="ewww">噫。</statement>
+		<statement id="compassBazaar">这个指南针挺不错的，不知道有没有人愿意交换。</statement>
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="genie">
+		<statement id="run">抓不到我！</statement>
+
+
+		</character>
+	<character id="sultan">
+		<statement id="blind">我需要的所有宝藏其实就在身边，只是我太盲目，一直没发现。</statement>
+		<statement>我需要的所有宝藏其实就在身边，只是我太盲目，一直没发现。</statement>
+		<statement id="giveMedal" triggerEvent="giveItem" triggerEventArgs="medal_arabian3">为了感谢你的帮助，这个送给你，免费！</statement>
+
+
+
+
+		</character>
+	<character id="thief">
+		<statement id="thanks">谢谢你给我们改过自新的机会。</statement>
+		<statement>谢谢你给我们改过自新的机会。</statement>
+
+
+
+		</character>
+	<character id="vizier">
+		<statement>我做了个奇怪的梦！梦里我在一个山洞里，处境很危险，而且——你知道吗，有个人长得跟你一模一样。</statement>
+
+
+		</character>
+	<character id="trader1">
+		<statement id="comment">这是魔法渡渡鸟的许愿骨！</statement>
+		<statement id="no_items">等你有了可以交换的东西再来吧。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader1">来交易吧！</statement>
+		<statement event="sultan_made_wish">我再也不通宵卖这些破烂了！</statement>
+
+
+
+
+
+		</character>
+	<character id="trader2">
+		<statement id="comment">这块稀有的月光石据说能干扰魔法能量！</statement>
+		<statement id="no_items">等你有了可以交换的东西再来吧。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader2">来交易吧！</statement>
+		<statement event="sultan_made_wish">抱歉，概不退款。</statement>
+
+
+
+
+
+		</character>
+	<character id="trader3">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="trader3">来交易吧！</statement>
+		<statement id="no_items">等你有了可以交换的东西再来吧。</statement>
+		<statement id="comment">这瓶芝麻油可是调制魔药的好材料！</statement>
+		<statement id="returned">我的骆驼回来了！它真机灵，居然能从贼窝里逃出来。</statement>
+		<statement id="camel_run">我的骆驼！快回来！</statement>
+		<statement id="sultan_made_wish">她是不是这片土地上最棒的骆驼？</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="woman">
+		<statement event="sultan_made_wish">集市上平常的一天，我该多买点美容产品！</statement>
+		<statement>要是找到那个灯神，我要许愿成为世界上最漂亮的人！</statement>
+		<conversation event="genie_in_bazaar">
+			<exchange>
+				<question>你怎么了？</question>
+				<answer link="beholder" linkEntityId="player">那个灯神骗了我！我许愿成为世界上最美的女人，结果他把我变得……跟他一模一样！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+		</character>
+	<character id="aladine">
+		<statement>等不及要许愿了！</statement>
+		<statement event="genie_in_bazaar">那个灯神肯定就在附近。</statement>
+		<statement event="sultan_made_wish">盗窃率创历史新低！</statement>
+
+
+
+
+		</character>
+	<character id="townie">
+		<statement>所有商贩都在向想抓灯神的人兜售异域物品。</statement>
+		<statement event="genie_in_bazaar">灯神刚刚飞过去了！</statement>
+		<statement event="sultan_made_wish">这些神灯价格真划算！</statement>
+
+
+
+
+		</character>
+	<character id="jailer">
+		<conversation>
+			<exchange>
+				<question>你在这儿干嘛？</question>
+				<answer>我在欣赏地平线上的美景。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我看就是一片沙子。 </question>
+				<answer>我大半辈子都在监狱里度过。我想看看世界，但又怕在沙漠里迷路。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我能用望远镜看看吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="turn">这风景就是我人生中唯一的冒险——所以快走开！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="use_spyglass">
+			<exchange>
+				<question>我能用望远镜看看吗？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="turn">这风景就是我人生中唯一的冒险——所以快走开！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement id="twist">你实现了我的愿望，而且没有耍什么恶作剧！谢谢！</statement>
+		<statement id="give_key">这个我不需要了。</statement>
+
+
+
+
+
+		</character>
+	<character id="guard1">
+		<statement>看守城市真无聊……</statement>
+
+
+		</character>
+	<character id="guard2">
+		<statement>这儿从来都没什么事发生……</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

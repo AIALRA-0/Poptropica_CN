@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>silverMedal</id>
+		<asset>silverMedal.swf</asset>
+		<x>2276</x>
+		<y>1770</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

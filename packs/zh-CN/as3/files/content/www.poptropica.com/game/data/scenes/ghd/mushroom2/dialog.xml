@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="humphree">
+		<statement>谢天谢地你找到我了！快帮我离开这儿。</statement>
+		<statement id="free">自由啦！咱们船上见。</statement>
+
+
+
+	</character>
+	<character id="player">
+		<statement id="mushy">这些根须看起来急需肥料。</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

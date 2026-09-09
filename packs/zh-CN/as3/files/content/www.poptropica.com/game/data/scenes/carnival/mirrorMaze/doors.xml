@@ -1,0 +1,61 @@
+<doors>
+	<door id="doorMidway">
+		<scene>game.scenes.carnival.midwayDay.MidwayDay</scene>
+		<x>1395</x>
+		<y>1335</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMidway" event="set_night">
+		<scene>game.scenes.carnival.midwayNight.MidwayNight</scene>
+		<x>1395</x>
+		<y>1335</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMidway" event="set_evening">
+		<scene>game.scenes.carnival.midwayEvening.MidwayEvening</scene>
+		<x>1395</x>
+		<y>1335</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMidway" event="set_morning">
+		<scene>game.scenes.carnival.midwayEvening.MidwayEmpty</scene>
+		<x>1395</x>
+		<y>1335</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>geode</id>
+		<asset>geode.swf</asset>
+		<x>3790</x>
+		<y>1440</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

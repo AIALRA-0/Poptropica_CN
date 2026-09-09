@@ -1,0 +1,24 @@
+<dialogs>
+	<character id="player">
+		<statement id="close_guano">说不定这些蘑菇会喜欢这个。</statement>
+		<statement triggeredByEvent="no_use_egg">这是个超大号鸡蛋。</statement>
+		<statement triggeredByEvent="no_use_fruit">那个大个子外星厨师说，他愿意用东西换这种食材。</statement>
+		<statement triggeredByEvent="no_use_empty_fuel_cell">这个还缺个核燃料球。</statement>
+		<statement triggeredByEvent="no_use_full_fuel_cell">科斯莫的核能烤炉需要这个。</statement>
+		<statement triggeredByEvent="no_use_giant_spatula">现在可不是用锅铲的时候。</statement>
+		<statement triggeredByEvent="no_use_guano">这东西是上好的肥料……不过我可不想知道它是哪来的。</statement>
+		<statement triggeredByEvent="no_use_seed_pod">那个大个子外星厨师说，他愿意用东西换这种食材。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

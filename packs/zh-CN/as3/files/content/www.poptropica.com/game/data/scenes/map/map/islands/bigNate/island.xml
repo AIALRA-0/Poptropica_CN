@@ -1,0 +1,18 @@
+<island>
+	<name>大内特岛</name>
+	<island>bigNate</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/bigNate/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<!--<notification>Demo for non-members!</notification>-->
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

@@ -1,0 +1,118 @@
+<dialogs>
+	<character id="player">
+		<statement id="me" link="quitLoafing" linkEntityId="cook">我？</statement>
+		<statement id="serving" triggerEvent="triggerEvent" triggerEventArgs="pointing">上菜？</statement>
+		<statement id="sneaky">不能让他们起疑。先配合一下。</statement>
+		<statement id="leave_tray">把托盘放这儿吧。</statement>
+		<statement id="sucess">混过去了。把这身衣服换掉吧。</statement>
+		<statement id="uhoh">糟了。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="mya">
+		<statement id="chute">所有人进滑道！</statement>
+
+
+	</character>
+	<character id="cook">
+		<statement id="youThere" link="me" linkEntityId="player">喂，说你呢！</statement>
+		<statement id="quitLoafing" link="serving" linkEntityId="player">不是你后面那个巨人，当然是你！别磨蹭了，赶紧去上菜。</statement>
+		<statement id="serveNow">给大伙儿上酒！麻利点！</statement>
+		<statement>给大伙儿上酒！麻利点！</statement>
+		<statement id="catch">那家伙是冒牌货！囚犯要逃跑了！</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="giant">
+		<statement>没有蜜酒，我怎么吃肉？！</statement>
+		<statement id="finally">呃，总算来了！早该上了！</statement>
+		<statement id="myFurs">你在干什么？！你还没挣到你的毛皮呢。</statement>
+		<statement id="thanks">现在不行，没看见我正忙着吗？</statement>
+		<statement id="served_giant">现在不行，没看见我正忙着吗？</statement>
+
+
+
+
+
+
+	</character>
+	<character id="giant2">
+		<statement id="sup">敬礼！</statement>
+		<statement id="catch">囚犯要逃跑了！</statement>
+
+
+
+	</character>
+	<character id="underling_1">
+		<statement id="thanks">谢了，现在你可以走了。</statement>
+		<statement id="joke_setup" link="return" linkEntityId="underling_2">听过这个吗？ &apos;什么东西有六只眼睛、六条胳膊、六条腿、三个脑袋，而且命很短？ &apos;</statement>
+		<statement id="punch_line">三个即将被龙吃掉的人。</statement>
+		<statement id="return" link="punch_line" linkEntityId="underling_3">即兴舞蹈？</statement>
+		<statement id="not_that_one">能给我换个普通杯子吗？</statement>
+		<statement id="hey">敬礼，大个子，宴会进行得怎么样？</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="underling_2">
+		<statement id="thanks">他们是不是没意识到自己一直在讲同样的笑话。</statement>
+		<statement id="joke_setup" link="return" linkEntityId="underling_3">好吧好吧。 &quot;一齿咬，森林之敌。一齿战，北欧皆知。 &quot; 猜猜是什么？</statement>
+		<statement id="punch_line">是斧头！</statement>
+		<statement id="return" link="punch_line" linkEntityId="underling_1">嗯……我放弃了。</statement>
+		<statement id="not_that_one">那个看起来太重了，我拿不动。</statement>
+		<statement id="wait">等等，那个大块头不是已经走过去了吗？</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="underling_3">
+		<statement>他们坐下前应该先拿杯喝的。</statement>
+		<statement id="thanks">和朋友一起吃饭讲笑话，这才是生活！</statement>
+		<statement id="joke_setup" link="return" linkEntityId="underling_1">我有个好玩的。维京人怎么交流？</statement>
+		<statement id="punch_line">用诺尔斯密码！</statement>
+		<statement id="return" link="punch_line" linkEntityId="underling_2">唉，我猜谜语不行……</statement>
+
+
+
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

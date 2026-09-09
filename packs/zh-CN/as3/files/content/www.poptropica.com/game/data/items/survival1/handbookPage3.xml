@@ -1,0 +1,25 @@
+<item id="handbookPage3">
+  	<type>island</type>
+  	<subType>survival1</subType>
+  	
+  	<textfields>
+ 		<text>
+      		<value>手册页</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-40</saturation>
+     			<hue>0</hue>
+    		</effect>
+    	</asset>
+   		<asset id="cardContent">
+ 	  		<assetPath>items/survival1/handbookPage.swf</assetPath>
+   		</asset>
+    </assets>
+</item>

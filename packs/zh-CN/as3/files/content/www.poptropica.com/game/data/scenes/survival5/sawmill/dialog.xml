@@ -1,0 +1,41 @@
+<dialogs>
+	<character id="buren">
+		<statement id="got_you">抓到你了！</statement>
+		<statement id="clever" link="why" linkEntityId="player">真聪明！差点就让你得手了。但没人能骗过迈伦·范布伦。</statement>
+		<statement id="thrill" link="trophy">狩猎的快感，亲爱的！一切都是为了狩猎的快感。</statement>
+		<statement id="trophy">现在……是时候给我的收藏再添一件战利品了。</statement>
+		<statement id="ahh">啊！</statement>
+		<statement id="aim">没关系——我在这里照样能打中！</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="yikes">哎呀！</statement>
+		<statement id="why" link="thrill" linkEntityId="buren" forceOnScreen="true">你为什么要这么做？</statement>
+		<statement id="not" forceOnScreen="true">有我在，休想！</statement>
+		<statement id="own_medicine">让你也尝尝这滋味！</statement>
+
+
+
+
+
+	</character>
+	<character id="max">
+		<statement id="tally">冲啊！</statement>
+		<statement id="last_hunt">范布伦，这是你最后一次狩猎了。</statement>
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

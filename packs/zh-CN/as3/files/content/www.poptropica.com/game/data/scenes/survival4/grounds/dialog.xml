@@ -1,0 +1,22 @@
+<dialogs>
+	<character id="buren">
+		<statement id="eager" triggerEvent="triggerEvent" triggerEventArgs="huntee">这么着急开始啊？那就随你吧。等我的手下吹响号角，狩猎就正式开始。</statement>
+		<statement triggeredByEvent="what_hunt" triggerEvent="triggerEvent" triggerEventArgs="play_horn">你误会了，亲爱的朋友，你才是猎物。</statement>
+
+
+
+		</character>
+	<character id="player">
+		<statement id="dark">外面太黑了，我什么都看不见。</statement>
+		<statement id="free">我自由了。</statement>
+		<statement triggeredByEvent="huntee" triggerEvent="triggerEvent" triggerEventArgs="what_hunt">我们要猎什么？</statement>
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

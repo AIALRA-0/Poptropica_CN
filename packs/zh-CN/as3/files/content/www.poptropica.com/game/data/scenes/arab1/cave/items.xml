@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>salt</id>
+		<asset>salt.swf</asset>
+		<x>3224</x>
+		<y>406</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

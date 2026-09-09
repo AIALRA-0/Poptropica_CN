@@ -1,0 +1,27 @@
+<dialogs>
+	<character id="player">
+		<statement id="no_point_thumb_drive">这里用不上U盘。</statement>
+		<statement id="no_point_torn_page">这张碎纸片像是从书上撕下来的。</statement>
+		<statement id="no_point_blank_paper">我为什么要在这里用这张纸？</statement>
+		<statement id="no_point_screw_driver">这里不需要用螺丝刀。</statement>
+		<statement id="no_point_diary_key">我觉得这把钥匙是开日记本的。</statement>
+		<statement id="no_point_battery">这里没有需要电池的东西。</statement>
+		<statement id="heavy">这颗葡萄可真重！</statement>
+		<statement id="needs_screw_driver">我需要用螺丝刀才能打开它。</statement>
+		<statement id="needs_remote_control">我没有东西能控制它。</statement>
+		<statement id="needs_battery">它需要电池。</statement>
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

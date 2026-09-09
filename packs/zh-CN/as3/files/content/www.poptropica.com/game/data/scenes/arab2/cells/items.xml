@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>viper_skin</id>
+		<asset>viper_skin.swf</asset>
+		<x>472</x>
+		<y>556</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>cell_key</id>
+		<asset>cell_key.swf</asset>
+		<x>1112</x>
+		<y>840</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

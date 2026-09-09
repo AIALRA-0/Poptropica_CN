@@ -1,0 +1,27 @@
+<item id="amulet">
+	<type>island</type>
+	<subType>time</subType>
+	<textfields>
+		<text id="title">
+    		<value>护身符</value>
+  		</text>
+    	<text>
+      		<value>这枚护符是锤子的形状。</value>
+      		<size>18</size>
+      		<y>120</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>-22</brightness>
+     			<contrast>13</contrast>
+     			<saturation>-55</saturation>
+     			<hue>180</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

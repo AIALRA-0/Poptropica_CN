@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="npc">
+		<conversation>
+			<exchange>
+				<question>今晚有点雾蒙蒙的，是吧？</question>
+				<answer>正是，海神尼普顿亲自用薄纱斗篷遮住了大海。</answer>
+			</exchange>
+			<exchange>
+				<question>奇怪，我还以为那只是水汽呢？</question>
+				<answer>没错，你不知道的事还多着呢，哈哈！</answer>
+			</exchange>
+			<exchange>
+				<question>你知道什么好诗吗？</question>
+				<answer>月光惨白如骨，而我独自伫立……</answer>
+			</exchange>
+		</conversation>
+    </character>
+</dialogs>

@@ -1,0 +1,58 @@
+<item id="eggs">
+	<type>island</type>
+	<subType>prison</subType>
+	
+	<contentClass>
+		<className>game.ui.card.MultiFrameContentView</className>
+		<parameters>
+			<param>items/prison/eggs.swf</param>
+		</parameters>
+	</contentClass>
+
+	<textfields>
+  		<text id="title">
+ 			<conditional id="two_egg" isTrue="false"/>
+      		<value>蛋</value>
+    	</text>
+ 		<text id="title">
+ 			<conditional id="two_egg" isTrue="true"/>
+      		<value>鸡蛋</value>
+    	</text>
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>130</hue>
+    		</effect>
+	    </asset>
+    </assets>
+    
+    <conditionals>
+    	<conditional type="checkEvents" id="one_egg">
+    		<parameters>
+    			<param id="event">eggs_collected_1</param>
+    			<param id="true">one</param>
+    		</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="two_egg">
+    		<parameters>
+    			<param id="event">eggs_collected_2</param>
+    			<param id="true">two</param>
+    		</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="three_egg">
+    		<parameters>
+    			<param id="event">eggs_collected_3</param>
+    			<param id="true">three</param>
+    		</parameters>
+    	</conditional>
+    </conditionals>
+</item>

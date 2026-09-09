@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="joe">
+		<statement forceOnScreen="true" id="cramp">哎哟哎哟，抽筋了。</statement>
+		<statement forceOnScreen="true" id="victory">呼，这下舒服多了。</statement>
+
+
+
+		</character>
+
+
+</dialogs>

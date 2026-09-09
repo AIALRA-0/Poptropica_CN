@@ -1,0 +1,247 @@
+<dialogs>
+	<character id="player">
+		<statement id="locked">锁住了。</statement>
+		<statement id="mom" link="help_yourself" linkEntityId="focusTester">你妈妈一定很为你骄傲。</statement>
+		<statement id="rotten" link="cashBaby" linkEntityId="salesManager">这对你的玩家来说有点过分吧。</statement>
+		<statement id="confused" link="monkeys" linkEntityId="projectManager">等等，我有点糊涂。我见过那些高管了，但到底是谁在制作这些岛呢？</statement>
+		<statement id="canITalk" link="myGuest" linkEntityId="projectManager">我能去和他们聊聊吗？</statement>
+		<statement id="whyWant" link="proof" linkEntityId="focusTester">我要那些干嘛？</statement>
+		<statement id="goodPoint" link="surprise" linkEntityId="focusTester">说得对。我想要一些成就。我需要它们。现在就要。怎么才能拿到？</statement>
+		<statement id="noAds" link="yourMoney" linkEntityId="salesManager">没有广告！</statement>
+		<statement id="reallySlow" link="technically" linkEntityId="costCutter">那不会让游戏变得很卡吗？</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="kid1">
+		<statement id="pets" link="hi_kids_2" linkEntityId="focusTester">宠物！</statement>
+		<statement id="yay" triggerEvent="triggerEvent" triggerEventArgs="yayOver">耶！</statement>
+
+
+
+	</character>
+	<character id="kid2">
+		<statement id="pets">宠物！</statement>
+		<statement id="yay">耶！</statement>
+
+
+
+	</character>
+	<character id="kid3">
+		<statement id="pets">宠物！</statement>
+		<statement id="yay">耶！</statement>
+
+
+
+	</character>
+	<character id="kid4">
+		<statement id="pets">宠物！</statement>
+		<statement id="yay">耶！</statement>
+
+
+
+	</character>
+	<character id="focusTester">
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我是焦点测试员。我的工作就是确保玩家得到他们想要的，我们也能赚到最多的钱。知道关键是什么吗？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>关键是什么？</question>
+				<answer>焦点测试！给玩家他们想要的，他们就会求着给你送钱！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question id="crazyTalk">这太疯狂了。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="showYou">不，朋友，这叫生意！我来给你演示！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="hi_kids_1" triggerEvent="triggerEvent" triggerEventArgs="hiKids">嗨，孩子们。如果你们能给Poptropica添加一样东西，会是什么？你们最想看到什么？</statement>
+		<statement id="hi_kids_2" triggerEvent="triggerEvent" triggerEventArgs="yay">那就这么定了！你们都会有宠物！</statement>
+		<statement id="hi_kids_3" triggerEvent="triggerEvent" triggerEventArgs="yay">作为帮忙的报酬，你们都有蛋糕吃！</statement>
+		<statement id="thats_the_way" link="mom" linkEntityId="player">就是这样做的。</statement>
+		<statement id="help_yourself" triggerEvent="triggerEvent" triggerEventArgs="metFocusTester">当然——蛋糕就是她做的！自己拿一块吧。</statement>
+		<statement id="cash">我的目标就是做游戏和赚钱！</statement>
+		<statement id="achievements" link="whyWant" linkEntityId="player">我们有新东西了，很棒——成就系统！</statement>
+		<statement id="proof" link="goodPoint" linkEntityId="player">这能证明你是个多棒的游戏玩家！没有成就证明，你怎么知道自己玩得开心呢？</statement>
+		<statement id="surprise" triggerEvent="triggerEvent" triggerEventArgs="achiever">惊喜！你刚刚获得了一个！</statement>
+		<statement id="loveIt">成就系统！我喜欢！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="safetyInspector">
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我是安全检查员。我确保孩子们在Poptropica里安全。不能再随便攀爬、跳跃和探索了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你听起来真扫兴。</question>
+				<answer>如果有人受伤怎么办？他们会告得我们裤子都不剩！我们可需要裤子……</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你现在在忙什么？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="metSafetyInspector">当然是提高安全性！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="velcro">你们觉得魔术贴鞋子怎么样？给玩家穿的？</statement>
+
+
+
+	</character>
+	<character id="salesManager">
+		<conversation>
+			<exchange>
+				<question>你看起来挺时髦的。</question>
+				<answer>没错！我是广告销售经理！我的任务是增加广告收入。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>那些烦人的广告是你负责的？！我真该踢你小腿！</question>
+				<answer>请别这样。我经常听到这种话。我的小腿都青了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question id="workingOn">你现在在忙什么？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="newAd">看看我们的新广告单元。这是目前最烦人的一个！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="eightCents" link="rotten" linkEntityId="player">这个广告刚赚了八美分！完全值得。</statement>
+		<statement id="cashBaby" link="moneyTalks">别管玩家了——重要的是钱，宝贝！</statement>
+		<statement id="moneyTalks" triggerEvent="triggerEvent" triggerEventArgs="metSalesManager">嘿，如果你有什么想广告的——来找我！有钱好办事！</statement>
+		<statement id="advertiseSomething">想广告什么就告诉我。只要带钱来，广告位就是你的。</statement>
+		<statement id="enoughMoney" link="noAds" linkEntityId="player">这些钱足够买下所有广告位了！你想投放什么样的广告？</statement>
+		<statement id="yourMoney" triggerEvent="triggerEvent" triggerEventArgs="boughtAds">我不明白。怎么会有人想剥夺玩家看精彩广告的权利呢？好吧，是你的钱。你想怎样都行。</statement>
+		<statement id="breaksMyHeart">这么多广告位空着。真让我心碎……</statement>
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="costCutter">
+		<conversation>
+			<exchange>
+				<question>你是谁？</question>
+				<answer>我是成本削减员，但朋友们叫我斯拉什。其实我没有朋友，但如果有，他们会叫我斯拉什！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>为什么他们叫你斯拉什？你弹吉他吗？</question>
+				<answer>不，我削减，削减，削减开支！我刚裁掉了整个写作团队！哗啦！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>没有写手？你们怎么保持岛的新鲜、原创和精彩？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="generator">有了新的故事生成器2000, Poptropica的岛几乎能自己创造自己！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="sweet">我的银行账户超——甜。</statement>
+		<statement id="finestHour" link="reallySlow" linkEntityId="player">这是我最高光的时刻！我几乎淘汰了Poptropica所有的服务器。</statement>
+		<statement id="technically" triggerEvent="triggerEvent" triggerEventArgs="eliminatedServers">技术上是的，但我打赌你察觉不到区别！</statement>
+
+
+
+
+
+
+		</character>
+	<character id="projectManager">
+		<statement id="monkeys" link="canITalk" linkEntityId="player">哦……你是说那些开发猴子？他们被送到地牢——我是说——地下室了。</statement>
+		<statement id="myGuest" triggerEvent="triggerEvent" triggerEventArgs="basementOpen">请便。我一分钟也待不下去了。我要回家办公了。</statement>
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

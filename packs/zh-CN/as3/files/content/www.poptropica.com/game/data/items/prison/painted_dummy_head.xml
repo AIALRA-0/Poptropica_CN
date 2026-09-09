@@ -1,0 +1,40 @@
+<item id="painted_dummy_head">
+	<type>island</type>
+	<subType>prison</subType>
+	
+	<contentClass>
+		<className>game.ui.card.CharacterHeadContentView</className>
+	</contentClass>
+
+	<textfields>
+  		<text>
+    		<value>上色的假人头</value>
+		</text>
+  	</textfields>
+  	
+  	<buttons>
+  		<btn>
+  			<label>使用</label>
+  			<actions>
+  				<action type="triggerEvent">
+  					<parameters>
+  						<param id="event">use_painted_head</param>
+  					</parameters>
+  				</action>
+  			</actions>
+  		</btn>
+  	</buttons>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>130</hue>
+    		</effect>
+	    </asset>
+    </assets>
+</item>

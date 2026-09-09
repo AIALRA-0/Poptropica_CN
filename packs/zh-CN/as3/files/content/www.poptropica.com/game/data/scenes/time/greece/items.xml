@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>phonograph</id>
+		<asset>phonograph.swf</asset>
+		<x>677</x>
+		<y>828</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

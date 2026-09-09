@@ -1,0 +1,78 @@
+<dialogs>
+	<character id="worldGuy">
+		<statement>他们说来参加一次展会就好，还说会给我每天一万的津贴。</statement>
+		<statement id="one_appearance">他们说来参加一次展会就好，还说会给我每天一万的津贴。</statement>
+		<statement id="back_to_broadway">我要回百老汇了！</statement>
+
+
+
+
+		</character>
+	<character id="player">
+		<statement id="lost_shield">我的盾牌融化了！看来过去的日子也没那么好。</statement>
+		<statement id="strike_back">那块水晶看起来快碎了。</statement>
+		<statement id="pre_soda">这台机器真古怪，像是外星来的。说不定附近还有更多这种能量容器。</statement>
+		<statement id="try_soda">嗯，据说喝了这个能让你力气大得能举起一匹马。</statement>
+		<statement id="needs_more_soda">看起来还能放更多罐子。</statement>
+		<statement id="soda1">哇，真不敢相信这招管用了。</statement>
+		<statement id="soda2">说真的，这里面到底加了什么？</statement>
+		<statement id="needs_more_damage">那块水晶看起来还没那么容易碎。</statement>
+		<statement id="banished_omegon">我做到了！我把欧米伽赶走了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="omegon">
+		<statement id="chit_chat1">时机已到，我忠诚的机器仆从们。</statement>
+		<statement id="chit_chat2">很快，超级行动队的力量就归我了！</statement>
+		<statement id="chit_chat3">我们要把他们干瘪的躯壳扔进历史的垃圾堆。</statement>
+		<statement id="chit_chat4">这个世界，就像之前那些可悲的星球一样，将在欧米伽的光芒中重生！</statement>
+		<statement id="chit_chat5">没人能阻挡我们。超级行动队不行，穿热狗服的小鬼更不行。</statement>
+		<statement id="chit_chat6">准备就绪吧，我的仆人们。荣耀在等着你们。</statement>
+		<statement id="wonder1">嗯，我喜欢这把椅子的按摩功能。</statement>
+		<statement id="wonder2">是这里变亮了，还是变吵了，还是我的错觉？</statement>
+		<statement id="wonder3">什么声音？！</statement>
+		<statement id="what_was_that">什么声音？！</statement>
+		<statement id="foolish_child">你不会以为这么简单就能搞定吧？</statement>
+		<statement id="my_power">现在让你见识真正的力量！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="henchbot1">
+		<statement id="no_idea">欧米伽大人，小心！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

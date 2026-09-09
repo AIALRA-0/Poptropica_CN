@@ -1,0 +1,140 @@
+<dialogs>
+	<character id="player">
+		<statement id="stopus1">就这点本事可不行。</statement>
+		<statement id="miss">哇，我得小心点。</statement>
+		<statement id="caught1">刚才太险了。</statement>
+		<statement id="reveal3">克鲁索。</statement>
+		<statement id="reveal6">现在我明白那些猴子为什么那么高兴看我们离开了……</statement>
+		<statement id="caughtup">你没招了，红男爵夫人！</statement>
+		<statement id="heavy1a">特别是克鲁索还拖我们后腿。</statement>
+		<statement id="heavy2">我什么都没了！</statement>
+		<statement id="toss1">现在，赢得这场比赛！</statement>
+		<statement id="win2">让我们完成比赛！</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="pilot">
+		<statement id="catchingup">我们快追上了，再减点重！</statement>
+		<statement id="intro1">我们回来了！</statement>
+		<statement id="intro1b">扔掉这些袋子来追上他们。</statement>
+		<statement id="dropweight">试试扔掉一个袋子！</statement>
+		<statement id="thatsit">有效果。再扔！</statement>
+		<statement id="caught">呼！好险！</statement>
+		<statement id="reveal1">跳下来，让我们赢得比赛！</statement>
+		<statement id="reveal2">我们还得再减点重才能赢。</statement>
+		<statement id="hopdown">跳下来，让我们赢得比赛！</statement>
+		<statement id="caught2">让我们赢得比赛！</statement>
+		<statement id="hammock">扔掉最后一个！</statement>
+		<statement id="heavy1">我们还是太重了！</statement>
+		<statement id="heavy1b">还有什么能扔的？</statement>
+		<statement id="checkinv">检查你的背包。有没有重的东西？</statement>
+		<statement id="heavy3">克鲁索，把那杯饮料扔了！</statement>
+		<statement id="talkSense">你能劝劝他吗？</statement>
+		<statement id="talkSense2">跟克鲁索谈谈，让他扔掉饮料！</statement>
+		<statement id="win1">你做到了！终点就在前面！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="baron">
+		<statement id="intro2">又是你？</statement>
+		<statement id="intro3">谢谢来访！</statement>
+		<statement id="stopus2">好主意！</statement>
+		<statement id="bomb1">天上只有一个王牌飞行员！</statement>
+		<statement id="bomb2">特别快递！</statement>
+		<statement id="bomb3">该死，别动！</statement>
+		<statement id="rush">不玩了！</statement>
+		<statement id="caughtup2">不！</statement>
+		<statement id="wrench">你差点打中我！</statement>
+		<statement id="woops2">你做了什么？</statement>
+		<statement id="woops4">我心爱的飞机！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="crusoe">
+		<statement id="reveal4">我的飞艇成功了？</statement>
+		<statement id="reveal5">我是说……我的飞艇当然成功了！</statement>
+		<statement id="heavy4">但还剩一点。</statement>
+		<statement id="toss2">我的饮料！</statement>
+		<statement id="toss3">呼！还剩一点……</statement>
+		<statement id="woops1">哎呀。</statement>
+		<statement id="woops3">只是线路里进了点果汁。</statement>
+		<statement id="woops5">这情况确实有点棘手。让我想起年轻时……</statement>
+		<conversation id="stillheavy">
+			<exchange>
+				<question>你手里那杯饮料让我们太重了！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="talkSense">我还没喝完。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question id="refill">那……至少让我给你续杯？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="tossDrink">这是你说过最靠谱的话了。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="officiate">
+		<statement id="winner" forceOnScreen="true">恭喜！你们是赢家！</statement>
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

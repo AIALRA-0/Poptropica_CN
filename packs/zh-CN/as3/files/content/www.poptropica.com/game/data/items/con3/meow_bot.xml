@@ -1,0 +1,27 @@
+<item id="omrgon_hench_bot">
+	<type>island</type>
+	<subType>con3</subType>
+	<value>2</value>
+	<textfields>
+ 		<text id="title">
+      		<value>喵喵机器人</value>
+      		<styleFamily>CCG</styleFamily>
+      		<y>-180</y>
+      		<x>-120</x>
+    	</text>
+    	<text id="quotation">
+      		<value>“我从雾中听见低沉的喵声，预告着我的末日……”</value>
+      		<styleFamily>CCG</styleFamily>
+      		<width>250</width>
+      		<y>95</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/con3/background2.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent">
+  			<assetPath>items/con2/meow_bot.swf</assetPath>
+    	</asset>
+    </assets>
+</item>

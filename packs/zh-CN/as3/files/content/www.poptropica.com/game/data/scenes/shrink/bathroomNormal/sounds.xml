@@ -1,0 +1,32 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">Shrink_Ray_Main_Theme.mp3</asset>
+	</sound>
+
+	<sound type="ambient">
+		<asset loop="true" fade="true" exclusiveType="true">air_ducts_1.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="doorOpened">
+		<asset>none</asset>
+		<asset id="doorApartmentNormal">door_light_close_01.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="step">
+		<asset id="baseGround">fs_tile_01.mp3, fs_tile_02.mp3, fs_tile_03.mp3, fs_tile_04.mp3</asset>
+		<asset id="toilet">fs_hollow_plastic_01.mp3, fs_hollow_plastic_02.mp3, fs_hollow_plastic_03.mp3, fs_hollow_plastic_04.mp3</asset>
+		<asset id="tub">fs_plastic_01.mp3, fs_plastic_02.mp3, fs_plastic_03.mp3, fs_plastic_04.mp3</asset>
+		<asset id="hamper">fs_wicker_01.mp3, fs_wicker_02.mp3, fs_wicker_03.mp3, fs_wicker_04.mp3</asset>
+		<asset id="counter">fs_tile_01.mp3, fs_tile_02.mp3, fs_tile_03.mp3, fs_tile_04.mp3</asset>
+		<asset id="rug">fs_carpet_01.mp3, fs_carpet_02.mp3, fs_carpet_03.mp3, fs_carpet_04.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="baseGround">ls_tile_01.mp3, ls_tile_02.mp3</asset>
+		<asset id="toilet">ls_porcelain_01.mp3, ls_porcelain_02.mp3</asset>
+		<asset id="tub">ls_plastic_01.mp3, ls_plastic_02.mp3</asset>
+		<asset id="hamper">ls_wicker_01.mp3, ls_wicker_02.mp3</asset>
+		<asset id="counter">ls_tile_01.mp3, ls_tile_02.mp3</asset>
+		<asset id="rug">ls_carpet_01.mp3, ls_carpet_02.mp3</asset>
+	</sound>
+</sounds>

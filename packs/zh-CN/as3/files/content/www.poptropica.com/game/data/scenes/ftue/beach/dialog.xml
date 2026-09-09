@@ -1,0 +1,35 @@
+<dialogs>
+	<character id="player">
+		<statement id="crabs_hiding">抓它需要帮手。我等会儿再来。</statement>
+		<statement id="crabs_hiding_monkey">只要把它引出来就行。</statement>
+		<statement id="got_wrench">(占位符)螃蟹不再有扳手。</statement>
+		<statement id="where_am_i" link="she_is_over_there" linkEntityId="monkey">这是哪儿？</statement>
+		<statement id="follow">它好像想让我跟着。</statement>
+		<statement id="did_it" triggerEvent="triggerEvent" triggerEventArgs="got_wrench, true">搞定！现在去修飞机。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="monkey">
+		<statement>呜咦咦！</statement>
+		<statement id="r_u_ok" link="where_am_i" linkEntityId="player">呜咦？</statement>
+		<statement id="she_is_over_there">呜咦啊哈！</statement>
+		<statement id="come_on">咦咦！</statement>
+		<statement id="there_it_is">啊啊！</statement>
+		<statement id="good_job">呜呜！</statement>
+
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

@@ -1,0 +1,22 @@
+<doors>
+	<door id="doorRidesLeft">
+		<scene>game.scenes.carnival.ridesEvening.RidesEvening</scene>
+		<x>2740</x>
+		<y>1695</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+		</label>
+	</door>
+	<door id="doorRidesRight">
+		<scene>game.scenes.carnival.ridesEvening.RidesEvening</scene>
+		<x>4710</x>
+		<y>1695</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+		</label>
+	</door>
+</doors>

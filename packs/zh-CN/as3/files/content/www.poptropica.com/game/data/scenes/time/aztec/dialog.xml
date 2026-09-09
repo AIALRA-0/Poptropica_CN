@@ -1,0 +1,92 @@
+<dialogs>
+    <character id="char1">
+	<statement>text1</statement>
+    </character>
+    <character id="char2">
+		<conversation>
+			<exchange>
+				<question>shared.text1</question>
+				<answer>text2</answer>
+			</exchange>
+			<exchange>
+				<question>shared.text8</question>
+				<answer>text3</answer>
+			</exchange>
+			<exchange>
+				<question>shared.text9</question>
+				<answer>text4</answer>
+			</exchange>
+		</conversation>
+		<conversation event="hasItem_sunstone">
+			<exchange>
+				<question>shared.text1</question>
+				<answer>text2</answer>
+			</exchange>
+			<exchange>
+				<question>出什么事了吗？</question>
+				<answer>text3</answer>
+			</exchange>
+			<exchange>
+				<question style="haveitem">text5</question>
+				<answer triggerEvent="takeItem" triggerEventArgs="sunstone, char2">text6</answer>
+			</exchange>
+		</conversation>
+		<conversation event="returned_sunstone">
+			<exchange>
+				<question>shared.text1</question>
+				<answer>text2</answer>
+			</exchange>
+			<exchange>
+				<question>text7</question>
+				<answer>text8</answer>
+			</exchange>
+			<exchange>
+				<question>shared.text2</question>
+				<answer>text9</answer>
+			</exchange>
+		</conversation>
+    </character>
+    <character id="char3">
+	<conversation>
+		<exchange>
+			<question>shared.text1</question>
+			<answer>text10</answer>
+		</exchange>
+		<exchange>
+			<question>shared.text8</question>
+			<answer>text11</answer>
+		</exchange>
+		<exchange>
+			<question>shared.text9</question>
+			<answer>text12</answer>
+		</exchange>
+	</conversation>
+	<statement event="returned_sunstone">text13</statement>
+    </character>
+    <character id="char5">
+	<statement>text14</statement>
+	<statement event="returned_sunstone">text15</statement>
+    </character>
+    <character id="char6">
+	<statement>text16</statement>
+    </character>
+    <character id="char7">
+	<statement>text17</statement>
+	<statement event="returned_sunstone">text18</statement>
+    </character>
+    <character id="char8">
+	<statement>text19</statement>
+    </character>
+    <character id="char9">
+	<statement triggerEvent="giveItem" triggerEventArgs="warriorMask">text20</statement>
+	<statement event="gotItem_warriorMask">text21</statement>
+    </character>
+
+    <character id="attacker1">
+		<statement event="gotItem_goggles">text22</statement>
+	<statement event="warrior_mask_no_goggles" triggerEvent="giveItem" triggerEventArgs="goggles">text23</statement>
+    </character>
+    <character id="attacker2" >
+	<statement event="warriorMaskOn">text24</statement>
+    </character>
+</dialogs>

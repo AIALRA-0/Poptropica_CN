@@ -1,0 +1,56 @@
+<dialogs>
+	<character id="falafelGuy">
+		<statement>我们还没开门。午餐时间再来吧！</statement>
+		<statement event="searched_mail" triggerEvent="triggerEvent" triggerEventArgs="falafelGuyLeaves">抱歉，我得关店五分钟。我要给环球化工办公室送一份大订单。</statement>
+		<statement event="delivered_falafel">抱歉，我刚接到环球化工的大午餐订单。暂时没有多余的鹰嘴豆泥饼了。</statement>
+		<statement event="gotItem_falafel">我已经把多余的鹰嘴豆泥饼给你了。</statement>
+		<conversation event="talked_to_lange_d2">
+			<exchange>
+				<question>有多余的法拉费吗？</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="falafel">你运气真好，我正打算扔掉这个。芝麻酱放太多了！</answer>
+
+
+
+					</exchange>
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="hungryWoman">
+		<statement link="questionWoman">这可是镇上最好吃的鹰嘴豆泥饼！</statement>
+		<statement id="womanComplains">这不公平！我从早上六点就开始等了！</statement>
+		<conversation id="questionWoman">
+			<exchange>
+				<question>这不是镇上唯一的鹰嘴豆泥饼摊吗？</question>
+				<answer>我说鹰嘴豆，你说鹰嘴豆泥。重点是我先来的。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="loiteringGuy">
+		<statement>更奇怪的是，这家音像店居然还开着，而且我还看到有人进进出出！</statement>
+
+
+	</character>
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,104 @@
+<dialogs>
+	<character id="player">
+		<statement id="fallIn">呃……我就是路过打个招呼。</statement>
+		<statement id="gotLamp5">等等！你会——</statement>
+		<statement id="useLamp2">你休想得逞！</statement>
+		<statement id="useLamp7">不管了，试试看吧。</statement>
+		<statement id="examineLamps">我得找人帮忙找到正确的神灯！</statement>
+
+
+
+
+
+
+		</character>
+	<character id="masterThief">
+		<statement id="getLamp">很简单：选一盏灯放在祭坛上就行。</statement>
+		<statement id="getLamp2">要是选对了，你就能重获自由！</statement>
+		<statement id="getLamp4">没错，祭坛会摧毁放错神灯的人。</statement>
+		<statement id="getLamp5">那你最好选对！</statement>
+		<statement id="getLamp8">又来了！</statement>
+		<statement id="getLamp9">神灯还没用完，囚犯倒要先没了。</statement>
+		<statement id="fallIn2">把这个闯入者关进牢房！</statement>
+		<statement id="fallIn3">待会儿再收拾你。大家继续干活。</statement>
+		<statement id="gotLamp2">别想溜。魔法神灯是我的，快交出来！</statement>
+		<statement id="getAwayM">别让他跑了！</statement>
+		<statement id="getAwayF">别让她跑了！</statement>
+		<statement id="useLamp">哎呀呀……这场景似曾相识啊。</statement>
+		<statement id="useLamp3">哈，这话我听得耳朵都起茧了！</statement>
+		<statement id="useLamp5">安静！</statement>
+		<statement id="useLamp6">快点，小子，不然我就让这个小不点教教你。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="prisoner">
+		<statement id="getLamp3">可是……那个……诅咒！</statement>
+		<statement id="getLamp6">呼！</statement>
+		<statement id="getLamp7">……等等，怎么回事？</statement>
+
+
+
+
+	</character>
+	<character id="masterCoin">
+		<statement event="player_disguised">我正忙着呢，你没事可做吗？</statement>
+		<statement id="finalyCounted">太好了，我的宝贝金币终于数完了！</statement>
+		<statement id="catchPlayer">呀！卫兵！</statement>
+		<statement id="catchPlayer2">别碰那些神灯！</statement>
+		<statement id="chaseGold1">糟了！我的金子！</statement>
+		<statement id="chaseGold2">我数乱了！全乱了！</statement>
+		<statement id="chaseGold3">糟了！又来！</statement>
+		<statement id="useLamp4">呃……</statement>
+		<statement id="dontTouchCoins">别碰我的金币，我会数乱的！</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="vizier">
+		<statement id="follow" forceOnScreen="true">跟我来，动作轻点。</statement>
+		<statement id="distract">我们得想办法引开他，才能拿到神灯。</statement>
+		<statement id="fineWork">干得漂亮！快去拿神灯。</statement>
+		<statement id="gotLamp">趁盗贼还没发现，我们快离开这儿！</statement>
+		<statement id="gotLamp3">当然，当然。不必惊慌。</statement>
+		<statement id="gotLamp4">我确实会告诉你哪盏才是真正的神灯。</statement>
+		<statement id="gotLamp6">快走！就现在！</statement>
+		<statement id="stop" forceOnScreen="true">停下，他会看见你的！</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,107 @@
+<dialogs>
+	<character id="player">
+		<statement>嘿，是我眼花吗？那座山好像没做完？</statement>
+		<statement id="seen_that" triggerEvent="triggerEvent" triggerEventArgs="chirp_chair_lift">真希望我早点看到……</statement>
+		<statement triggeredByEvent="not_zen" triggerEvent="triggerEvent" triggerEventArgs="going_back_to_office">输不起是吧？这可不太禅意……</statement>
+		<statement triggeredByEvent="no_pain">哎哟！……等等，一点都不疼嘛。</statement>
+
+
+
+
+
+		</character>
+	<character id="climber">
+		<conversation>
+			<exchange>
+				<question>你还好吗？看起来挺沮丧的。</question>
+				<answer>我本来想爬遍Poptropica所有的山，可这些山都没完工，怎么爬啊！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>山怎么会没完工？</question>
+				<answer>程序偷懒呗。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>真遗憾你没法完成登山计划。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="done_climbing, true">我不玩Poptropica了！我要去那个什么海象窝还是哪儿爬山去。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+	</character>
+	<character id="random1">
+		<statement id="easiest_trip" link="joy" linkEntityId="random2" forceOnscreen="true">史上最轻松旅程！</statement>
+		<statement event="reached_summit">阳光山缆车？你不可能错过，除非你眼神太差。</statement>
+
+
+
+		</character>
+	<character id="random2">
+		<statement id="joy" link="seen_that" linkEntityId="player" forceOnscreen="true">登上那座山顶的感觉真是无与伦比。</statement>
+		<statement event="reached_summit">从这儿都能看见我家了。</statement>
+
+
+
+		</character>
+	<character id="leadDeveloper">
+		<conversation>
+			<exchange>
+				<question>你就是Poptropica开发者比利·乔丹吗？</question>
+				<answer>那确实是我的名字，但它并不能定义我是谁。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你在这儿做什么？看起来怪怪的……</question>
+				<answer>我在寻求顿悟。我正畅游在纯粹现实的海洋中。嗯，本来是的，直到某个讨厌鬼打扰了我。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我需要你回Poptropica全球总部！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="mancala_started">如果你能在曼卡拉游戏中赢我，我就回去。但你赢不了的——这游戏是我编的！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="silly_game" triggerEvent="triggerEvent" triggerEventArgs="not_zen">我本来就不喜欢那个傻游戏！</statement>
+		<statement triggeredByEvent="going_back_to_office" triggerEvent="triggerEvent" triggerEventArgs="mancala_victory">你太不禅了！我这就回办公室去。</statement>
+		<statement id="try_again" triggerEvent="triggerEvent" triggerEventArgs="play_again">你还没与周遭融为一体。静下心来，或许能赢。</statement>
+		<statement event="play_again" triggerEvent="triggerEvent" triggerEventArgs="mancala_started">想再试一次吗？</statement>
+
+
+
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

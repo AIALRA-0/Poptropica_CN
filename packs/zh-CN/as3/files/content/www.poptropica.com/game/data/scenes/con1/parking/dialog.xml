@@ -1,0 +1,177 @@
+<dialogs>
+	<character id="alien_teacher">
+		<statement event="gotItem_fremulon_mask">真厉害！你的努力没白费。</statement>
+		<statement event="gotItem_pamphlet">好好学习！</statement>
+		<conversation>
+			<exchange>
+				<question>我能学会说弗莱蒙语吗？</question>
+				<answer link="link_question">只要你有那个天赋，谁都可以学。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>天赋是什么？</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="pamphlet">你要是会说弗莱蒙语就懂了！好好学吧。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="link_question">
+			<exchange>
+				<question>天赋是什么？</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="pamphlet">你要是会说弗莱蒙语就懂了！好好学吧。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+
+
+	</character>
+	<character id="alien_guy">
+		<statement>...</statement>
+		<statement event="sfFan_quest_accepted" link="first_question">想要这个面具？先看看你能不能和我们用母语简单对话！</statement>
+		<statement id="first_question" link="part1">斯克拉什·萨姆贝拉夫？</statement>
+		<statement event="gotItem_fremulon_mask">这面具是你应得的！</statement>
+		<conversation id="part1">
+			<exchange>
+				<question>快走开，小捣蛋！</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>碎屑贝拉祖！</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>斯克鲁姆贝拉祖！</question>
+				<answer link="part2">克罗兹扎普本布勒克斯？</answer>
+
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+		<conversation id="part2">
+			<exchange>
+				<question>邦普尔阿普弗拉莫赞。</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>本布勒克斯扎普安弗罗赞。</question>
+				<answer link="part3">格罗夫泽鲁克斯斯克鲁姆布尔布勒格？</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>布莱姆布洛克斯阿雷弗罗森。</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+		<conversation id="part3">
+			<exchange>
+				<question>布勒格斯克拉什布尔贝拉扎格尔。</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="fremulon_mask">真让我刮目相看！你是真正的弗莱蒙人。这是你应得的。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>巴格斯克拉布尔鳄鱼。</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+			<exchange>
+				<question>克拉图巴拉达尼克托。</question>
+				<answer>不对。你得好好学弗莱蒙语。</answer>
+
+
+
+					</exchange>
+
+
+
+
+			</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="wizard">
+		<statement>嗯——这些披萨泡芙真好吃！</statement>
+
+
+	</character>
+	<character id="pizza_girl">
+		<statement>佩佩披萨，啦啦啦！</statement>
+
+
+	</character>
+	<character id="viking">
+		<statement>想自己制作服装部件？来这儿就对了！</statement>
+
+
+	</character>
+	<character id="player">
+		<statement id="noInstructions">没有说明书，我不知道该做什么。</statement>
+		<statement id="basicFail">这样不对，我得看看说明书。</statement>
+		<statement id="stickingFail">粘不牢啊！</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

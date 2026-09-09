@@ -1,0 +1,15 @@
+<doors>
+  <door id="mainExit">
+    <scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+    <x>503</x>
+    <y>1430</y>
+    <label>
+      <text>退出</text>
+      <asset>exitPointer3D.swf</asset>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+</doors>

@@ -1,0 +1,27 @@
+<dialogs>
+	<character id="player2">
+		<statement forceOnScreen="true" id="mainbook">嗯……看看这本能不能帮上忙……</statement>
+		<statement forceOnScreen="true" id="mainbook2">这本我已经读过了……</statement>
+		<statement forceOnScreen="true" id="b1">坩埚保养……诅咒……地牢生存指南！天哪！</statement>
+		<statement forceOnScreen="true" id="b2">理财建议……今天就算了……</statement>
+		<statement forceOnScreen="true" id="b3">魔法……动物……</statement>
+		<statement forceOnScreen="true" id="b4">幽灵……这个用不上……</statement>
+		<statement forceOnScreen="true" id="b5">藻类和苔藓……没什么意思……</statement>
+		<statement forceOnScreen="true" id="b6">炼金术士年鉴……要煮四十分钟？算了吧！</statement>
+		<statement forceOnScreen="true" id="b7">这个可能有点意思……</statement>
+		<statement forceOnScreen="true" id="b8">我又不傻……</statement>
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

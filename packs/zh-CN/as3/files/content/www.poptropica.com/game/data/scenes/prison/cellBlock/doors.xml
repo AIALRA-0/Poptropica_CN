@@ -1,0 +1,22 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.prison.metalShop.MetalShop</scene>
+		<x>2600</x>
+		<y>550</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.prison.messHall.MessHall</scene>
+		<x>50</x>
+		<y>425</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+		</label>
+	</door>
+</doors>

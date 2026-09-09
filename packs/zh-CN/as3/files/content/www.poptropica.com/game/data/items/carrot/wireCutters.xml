@@ -1,0 +1,35 @@
+
+<item id="wireCutters">
+	<type>island</type>
+	<subType>carrot</subType>
+	<textfields>
+    	<text>
+      		<value>剪线钳</value>
+      		<effect>
+        		<name>adjustColorFilter</name>
+        		<enabled>true</enabled>
+        		<brightness>0</brightness>
+        		<contrast>0</contrast>
+        		<saturation>-47</saturation>
+        		<hue>150</hue>
+      		</effect>
+    	</text>
+    	<text>
+      		<value>用这个工具可以剪断电线。</value>
+      		<size>18</size>
+      		<y>121</y>
+      		<effect>
+        		<name>adjustColorFilter</name>
+        		<enabled>true</enabled>
+        		<brightness>0</brightness>
+        		<contrast>0</contrast>
+        		<saturation>-47</saturation>
+        		<hue>150</hue>
+      		</effect>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

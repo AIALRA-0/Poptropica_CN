@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorBase">
+		<scene>game.scenes.ghd.adMixed1.AdMixed1</scene>
+		<x>30</x>
+		<y>1070</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.ghd.prehistoric2.Prehistoric2</scene>
+				<x>1850</x>
+				<y>1870</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.ghd.prehistoric1.Prehistoric1</scene>
+				<x>100</x>
+				<y>550</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

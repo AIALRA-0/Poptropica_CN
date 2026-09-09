@@ -1,0 +1,20 @@
+<dialogs>
+	<character id="bubby">
+		<statement link="eek" linkEntityId="sissy" triggerEvent="triggerEvent" triggerEventArgs="bubbyPose">吼，我是怪物！</statement>
+		<statement id="nope">你一点也不吓人！</statement>
+
+
+
+	</character>
+	<character id="sissy">
+		<statement id="eek">哎呀，别抓我，怪物先生！</statement>
+		<statement link="nope" linkEntityId="bubby" triggerEvent="triggerEvent" triggerEventArgs="sissyPose">嗷！我变成怪物了！</statement>
+
+
+
+	</character>
+
+
+
+
+</dialogs>

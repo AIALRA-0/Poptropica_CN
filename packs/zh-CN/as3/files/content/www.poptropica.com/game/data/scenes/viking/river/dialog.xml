@@ -1,0 +1,15 @@
+<dialogs>
+	<character id="raft">
+		<statement id="npc2" link="npc3">我们得在奥克塔维安离开这座岛之前拦住他！</statement>
+		<statement id="npc3" link="npc1">不然我们就要永远困在这里了！</statement>
+		<statement id="npc1" link="npc4">我们可以在海滩上截住他。没问题。</statement>
+		<statement id="npc4">不过，我好像发现了一个问题……</statement>
+
+
+
+
+
+		</character>
+
+
+</dialogs>

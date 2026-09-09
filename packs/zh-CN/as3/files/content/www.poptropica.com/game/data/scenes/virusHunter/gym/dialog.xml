@@ -1,0 +1,32 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="useResistanceBand">这里用不上这个。</statement>
+
+
+		</character>
+	<character id="employee">
+		<statement>今天是免费体验日！随便试试这些器材吧。</statement>
+		<statement id="band" triggerEvent="giveItem" triggerEventArgs="resistanceBand">让你免费进来，你倒开始搞破坏了？出去，把这没用的东西也带走！</statement>
+
+
+
+	</character>
+	<character id="man">
+		<statement>这——*喘气*——是我这辈子最艰难——*哎哟*——的三分半钟！</statement>
+
+
+	</character>
+	<character id="woman">
+		<statement>锻炼得真棒。我的肌肉都懵了！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

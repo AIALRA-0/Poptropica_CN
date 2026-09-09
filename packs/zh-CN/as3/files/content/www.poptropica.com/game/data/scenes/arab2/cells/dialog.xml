@@ -1,0 +1,71 @@
+<dialogs>
+	<character id="player">
+		<statement id="outCold">他昏过去了。</statement>
+		<statement id="heyKey">嘿，他掉了一把钥匙。</statement>
+		<statement id="why" link="me" linkEntityId="vizier">苏丹派我来找回他的神灯。</statement>
+		<statement id="what" link="escape" linkEntityId="vizier">他只说它&quot;与众不同&quot;</statement>
+
+
+
+
+
+	</character>
+	<character id="vizier">
+		<statement id="start" link="why" linkEntityId="player">你为什么在这里？</statement>
+		<statement id="me" link="what" linkEntityId="player">啊……关于这盏灯，他告诉了你什么？</statement>
+		<statement id="escape" triggerEvent="triggerEvent" triggerEventArgs="viz_chatted">我或许能给你点东西，帮你完成任务。想办法不被发现地到我牢房门口来。</statement>
+		<statement event="talked_to_vizier">如果你逃出去了，记得来找我！</statement>
+		<statement event="player_disguised" triggerEvent="giveItem" triggerEventArgs="formula">快！拿着这个配方，你应该能在附近找到材料，然后在工作台上合成。</statement>
+		<statement event="gotItem_formula">去找那些材料吧！</statement>
+		<statement event="gotItem_magic_sand">你做出了魔法沙，太好了！试试用它从楼上的狱卒那里拿到我牢房的钥匙！</statement>
+		<statement event="gotItem_cell_key" triggerEvent="triggerEvent" triggerEventArgs="open_cell">你找到钥匙了，快！把我放出去！</statement>
+		<statement event="vizier_following">我们还等什么？快走吧！</statement>
+		<statement id="out">终于自由了！我们快离开这里！</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="guard0">
+		<statement event="player_disguised">你好啊，小偷同伙！</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+		<statement id="halt" triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+
+
+
+
+	</character>
+	<character id="guard1">
+		<statement event="player_disguised">回你的岗位去。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+		<statement id="halt" triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+
+
+
+
+	</character>
+	<character id="guard2">
+		<statement event="player_disguised">你好，同志！</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+		<statement id="halt" triggerEvent="triggerEvent" triggerEventArgs="player_caught_cells">站住，囚犯！你得回牢房去！</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

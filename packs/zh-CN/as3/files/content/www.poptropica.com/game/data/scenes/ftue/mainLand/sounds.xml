@@ -1,0 +1,32 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">crusoes_castaway.mp3</asset>
+	</sound>
+
+	<sound type="ambient">
+		<asset loop="true">jungle_02_loop.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="water">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+		<asset id="mud">ls_mud_01.mp3, ls_mud_02.mp3</asset>
+		<asset id="grass">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="behind_desk">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="weak_wood">ls_wood_plank_01.mp3, ls_wood_plank_02.mp3</asset>
+		<asset id="strong_wood">ls_wood_01.mp3, ls_wood_02.mp3</asset>
+		<asset id="rock">ls_cobble_01.mp3, ls_cobble_02.mp3</asset>
+		<asset id="hole">ls_wood_plank_01.mp3, ls_wood_plank_02.mp3</asset>
+		<asset id="bounce">ls_bounce_01.mp3, ls_bounce_02.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="step">
+		<asset id="water">fs_water_01.mp3, fs_water_02.mp3, fs_water_03.mp3</asset>
+		<asset id="mud">fs_mud_01.mp3, fs_mud_02.mp3, fs_mud_03.mp3, fs_mud_04.mp3</asset>
+		<asset id="grass">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="behind_desk">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="weak_wood">fs_wood_plank_01.mp3, fs_wood_plank_02.mp3, fs_wood_plank_03.mp3, fs_wood_plank_04.mp3</asset>
+		<asset id="strong_wood">fs_wood_01.mp3, fs_wood_02.mp3, fs_wood_03.mp3, fs_wood_04.mp3</asset>
+		<asset id="rock">fs_cobble_01.mp3, fs_cobble_02.mp3, fs_cobble_03.mp3, fs_cobble_04.mp3</asset>
+		<asset id="hole">fs_wood_plank_01.mp3, fs_wood_plank_02.mp3, fs_wood_plank_03.mp3, fs_wood_plank_04.mp3</asset>
+	</sound>
+</sounds>

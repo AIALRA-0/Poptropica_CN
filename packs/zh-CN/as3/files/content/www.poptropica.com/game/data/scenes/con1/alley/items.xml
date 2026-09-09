@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>backpack_straps</id>
+		<asset>backpack.swf</asset>
+		<x>1220</x>
+		<y>1640</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,41 @@
+<dialogs>
+	<character id="worker1">
+		<statement id="missing_archer">好像就差……精灵射手？对吧？</statement>
+		<statement id="dentists_convention" triggerEvent="triggerEvent" triggerEventArgs="off_to_work">唉……这比牙医大会还糟。我们去找找吧。</statement>
+		<statement id="wrong_costume" link="keep_looking" linkEntityId="worker2">这不是对的服装！</statement>
+		<statement id="found_it">嘿，你找到精灵弓箭手了！</statement>
+		<statement id="unload">算了，先把这些东西卸下来吧。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="worker2">
+		<statement id="silver_age_archer" triggerEvent="triggerEvent" triggerEventArgs="sigh">“白银时代”精灵弓箭手。图纸应该就在这附近。</statement>
+		<statement id="keep_looking" triggerEvent="triggerEvent" triggerEventArgs="off_to_work">唉，继续找吧。</statement>
+		<statement id="found_it">嘿，你找到精灵弓箭手了！</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="locked">肯定有办法进去。也许精灵弓箭手能进去！</statement>
+		<statement id="dat_card">那是“神力行动队”的卡片吗？运气真好！现在只要把它弄下来。</statement>
+		<statement id="so_sneaky">嘿嘿，我太狡猾了。该去偷偷找欧米伽的面具了！</statement>
+		<statement id="sick_mask_bro">哇！我真的很喜欢他新面具的设计方向。这活儿干得真漂亮！</statement>
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

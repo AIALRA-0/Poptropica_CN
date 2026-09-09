@@ -1,0 +1,23 @@
+<dialogs>
+	<character id="player">
+		<statement id="no_use_wrench">用这个就能修好飞机。</statement>
+		<statement id="no_use_">这里用不上这个。</statement>
+		<statement id="no_use_wrench_crank">扳手尺寸不对。得用别的方法帮猴子。</statement>
+		<statement event="cant_use_rope">克鲁斯要绳子是为了让我们重回比赛。</statement>
+		<statement event="cant_use_canvas">克鲁斯会用这块布帮我们离开这座岛。快拿给他。</statement>
+		<statement event="cant_use_drink">不知道克鲁斯为什么要饮料，但最好赶紧给他！</statement>
+		<statement id="not_close_to_crusoe">得靠近克鲁斯才能给他这个。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

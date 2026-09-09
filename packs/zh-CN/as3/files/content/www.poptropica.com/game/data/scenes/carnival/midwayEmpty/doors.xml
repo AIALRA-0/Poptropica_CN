@@ -1,0 +1,45 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.carnival.adStreet.AdStreet</scene>
+		<x>920</x>
+		<y>600</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+				<x>4900</x>
+				<y>1285</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.midwayEmpty.MidwayEmpty</scene>
+				<x>47</x>
+				<y>1758</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorRides">
+		<scene>game.scenes.carnival.ridesEmpty.RidesEmpty</scene>
+		<x>47</x>
+		<y>1758</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+</doors>

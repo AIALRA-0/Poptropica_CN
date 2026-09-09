@@ -1,0 +1,30 @@
+<doors>
+	<door id="mainDeckDoor">
+		<scene>game.scenes.deepDive3.adMixed1.AdMixed1</scene>
+		<x>63</x>
+		<y>1155</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive3.cargoBay.CargoBay</scene>
+				<x>2028</x>
+				<y>936</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive3.mainDeck.MainDeck</scene>
+				<x>100</x>
+				<y>2622</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

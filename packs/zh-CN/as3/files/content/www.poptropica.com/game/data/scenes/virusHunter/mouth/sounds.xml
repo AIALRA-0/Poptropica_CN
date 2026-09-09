@@ -1,0 +1,27 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">Carrot_ShopTheme.mp3</asset>
+	</sound>
+
+	<sound type="effects">
+		<asset triggeredByEvent="hatch_open">door_pressure_short_01.mp3</asset>
+		<asset triggeredByEvent="hatch_close">door_pressure_short_02.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="gums">ls_squishy_muck_01.mp3, ls_squishy_muck_02.mp3</asset>
+		<asset id="tongue">ls_squishy_muck_01.mp3, ls_squishy_muck_02.mp3</asset>
+		<asset id="glands">ls_squishy_muck_01.mp3, ls_squishy_muck_02.mp3</asset>
+		<asset id="teeth">ls_concrete_2_01.mp3, ls_concrete_2_02.mp3</asset>
+		<asset id="snaggleTooth">ls_concrete_2_01.mp3, ls_concrete_2_02.mp3</asset>
+		<asset id="shipFloor">ls_general_metal_01.mp3, ls_general_metal_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="gums">fs_squishy_muck_01.mp3, fs_squishy_muck_02.mp3, fs_squishy_muck_03.mp3, fs_squishy_muck_04.mp3</asset>
+		<asset id="tongue">fs_squishy_muck_01.mp3, fs_squishy_muck_02.mp3, fs_squishy_muck_03.mp3, fs_squishy_muck_04.mp3</asset>
+		<asset id="glands">fs_squishy_muck_01.mp3, fs_squishy_muck_02.mp3, fs_squishy_muck_03.mp3, fs_squishy_muck_04.mp3</asset>
+		<asset id="teeth">fs_concrete_2_01.mp3, fs_concrete_2_02.mp3, fs_concrete_2_03.mp3, fs_concrete_2_04.mp3</asset>
+		<asset id="snaggleTooth">fs_concrete_2_01.mp3, fs_concrete_2_02.mp3, fs_concrete_2_03.mp3, fs_concrete_2_04.mp3</asset>
+		<asset id="shipFloor">fs_general_metal_01.mp3, fs_general_metal_02.mp3, fs_general_metal_03.mp3, fs_general_metal_04.mp3</asset>
+	</sound>
+</sounds>

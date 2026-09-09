@@ -1,0 +1,44 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.deepDive1.adStreet3.AdStreet3</scene>
+		<x>1870</x>
+		<y>1045</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.deepDive1.adMixed2.AdMixed2</scene>
+		<x>50</x>
+		<y>1045</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.deepDive1.maze.Maze</scene>
+				<x>2700</x>
+				<y>447</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.deepDive1.reef.Reef</scene>
+				<x>202</x>
+				<y>1024</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

@@ -1,0 +1,20 @@
+<doors>
+	<door id="doorIntestine">
+		<scene>game.scenes.virusHunter.intestine.Intestine</scene>
+		<x>2520</x>
+		<y>2780</y>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+		</label>
+	</door>
+	<door id="doorBloodStream">
+		<scene>game.scenes.virusHunter.bloodStream.BloodStream</scene>
+		<x>804</x>
+		<y>506</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,40 @@
+<dialogs>
+	<character id="player">
+		<statement id="useful">哇！这魔法沙说不定能派上用场。</statement>
+		<statement id="crazy">太疯狂了！这里面有火药！</statement>
+		<statement id="oil">一罐黏糊糊的黑油。</statement>
+		<statement id="labretry">好像不太对，我得再试试</statement>
+		<statement id="labmissingitems">我得先集齐所有材料才能用这个。</statement>
+		<statement id="labnoformula">这肯定是盗贼们用来制作烟雾弹的工作台。</statement>
+		<statement id="burnedoutfit">我这身易燃的伪装算是白穿了……</statement>
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="master">
+		<statement id="what">什么声音？谁在那儿？</statement>
+		<statement id="burnedOut">这些灯永远装不满油！</statement>
+		<statement id="refilled">好多了，现在继续策划我们下一次大行动吧！</statement>
+		<statement id="caught" triggerEvent="triggerEvent" triggerEventArgs="get_caught">抓住你了，闯入者！</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="get_caught">抓住你了，闯入者！</statement>
+		<statement event="player_disguised">我让你们这些手下回去干活！</statement>
+		<statement id="throw" triggerEvent="triggerEvent" triggerEventArgs="throwfire">我来教教你什么叫偷偷摸摸！</statement>
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

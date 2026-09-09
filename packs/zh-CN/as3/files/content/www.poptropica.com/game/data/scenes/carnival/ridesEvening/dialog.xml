@@ -1,0 +1,69 @@
+<dialogs>
+	<character id="player">
+		<statement id="clickShockAbsorber">机器下面有什么东西在吸收锤子的力道。我得找个有弹性的东西替换它。</statement>
+		<statement id="takeLook" triggerEvent="triggerEvent" triggerEventArgs="takeLookOver">我去看看。</statement>
+
+
+
+		</character>
+	<character id="strengthWorker">
+		<statement id="letsSee" triggerEvent="triggerEvent" triggerEventArgs="tryStrengthGame">让我瞧瞧你这细胳膊有没有力气。</statement>
+		<statement id="cantWinStrength" triggerEvent="triggerEvent" triggerEventArgs="turnAround" link="clickShockAbsorber" linkEntityId="player">哈哈。看来你得去健身房练练肌肉了。</statement>
+		<statement id="wonStrength" triggerEvent="triggerEvent" triggerEventArgs="giveHammer">好大的力气。改天我们一起去举铁吧。在那之前，这把锤子送给你，算是我的一点敬意。</statement>
+		<statement id="suchStrength">好大的力气。改天我们一起去举铁吧。</statement>
+
+
+
+
+
+		</character>
+	<character id="ferrisWheelWorker">
+		<statement>摩天轮可不会为任何人停下。</statement>
+		<statement id="fixedFerrisWheel">你成功拯救了今天。</statement>
+		<statement id="greaseGears" triggerEvent="triggerEvent" triggerEventArgs="needGrease">你从哪儿找到那个操纵杆的，垃圾堆里吗？我们得给这些齿轮上油，不然那些孩子会困在上面一整晚。</statement>
+
+
+
+
+	</character>
+	<character id="loverGirl">
+		<statement id="getOffFerrisWheel" triggerEvent="triggerEvent" triggerEventArgs="loversToTunnel">我再也不会让我男朋友选游乐项目了。现在我们要去玩爱之隧道。</statement>
+
+
+		</character>
+	<character id="tunnelLoveWorker">
+		<statement>这通常是双人项目，不过请便吧。</statement>
+		<statement id="giveHand">嘿，能帮我个忙吗？</statement>
+		<statement id="annoyedAtTeens" triggerEvent="triggerEvent" triggerEventArgs="giveFlashlight">我们有严格的&quot;保持距离&quot;规定，这些青少年必须遵守。我们去给他们个教训。去幽灵实验室拿个面具。你会需要这个。</statement>
+		<statment id="haveFlyMask">太好了。悄悄靠近他们，用面具吓他们一跳。我来停下这个项目。</statment>
+
+
+
+
+
+		</character>
+	<character id="man">
+		<statement>所有游乐场员工都去哪儿了？ </statement>
+		<statement id="carniesGo" link="ranWoods" linkEntityId="woman">所有游乐场员工都去哪儿了？</statement>
+
+
+
+		</character>
+	<character id="woman">
+		<statement>他们都跑进树林里了。肯定有什么怪事发生了。</statement>
+		<statement id="ranWoods" link="takeLook" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="intoWoods">他们都跑进树林里了。肯定有什么怪事发生了。</statement>
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+</dialogs>

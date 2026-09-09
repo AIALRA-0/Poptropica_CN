@@ -1,0 +1,15 @@
+<sounds>
+	<sound type="music">
+		<asset triggeredByEvent="intro" loop="true" fade="true" exclusiveType="true">river_chase.mp3</asset>
+		<asset triggeredByEvent="ceremony" loop="true" fade="true" exclusiveType="true">chase_game_percussion.mp3</asset>
+	</sound>
+	<sound type="effects" action="doorOpened">
+		<asset>openDoor_pushBar.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="floor">ls_concrete_01.mp3, ls_concrete_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="floor">fs_concrete_01.mp3, fs_concrete_02.mp3</asset>
+	</sound>
+</sounds>

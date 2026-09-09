@@ -1,0 +1,32 @@
+<!-- This card was never in Poptropica. It is created for the purpose of accessing inaccessible content. -->
+<item id="7000">
+  	<type>store</type>
+  	<subType>general</subType>
+	<buttons>
+			<btn>
+			<index>0</index>
+			<label>开始游戏</label>
+			<actions>
+				<action type="loadAS2Scene">
+						<parameters>
+							<param id="section">gameplay</param>
+							<param id="island">Cryptid</param>
+							<param id="scene">LochCastle_Promo</param>
+						</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+	
+	<textfields>
+	</textfields>
+	
+  	<assets>
+		<asset id="cardBack">
+			<assetPath>items/ui/background_credits.swf</assetPath>
+		</asset>
+		<asset id="cardContent">
+			<assetPath>items/store/item7000.swf</assetPath>
+		</asset>
+  	</assets>
+</item>

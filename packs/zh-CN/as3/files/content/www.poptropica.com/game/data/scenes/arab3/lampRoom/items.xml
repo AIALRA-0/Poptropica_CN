@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>roc_feather</id>
+		<asset>roc_feather.swf</asset>
+		<x>1500</x>
+		<y>660</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

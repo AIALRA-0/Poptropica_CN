@@ -1,0 +1,25 @@
+<dialogs>
+	<character id="dan">
+		<conversation>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="lock, false">喂……喂？丹博士？</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="dan_ran_away, true">别过来！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+		</character>
+	<character id="player">
+		<statement triggeredByEvent="dan_ran_away">等等！</statement>
+
+
+		</character>
+
+
+
+</dialogs>

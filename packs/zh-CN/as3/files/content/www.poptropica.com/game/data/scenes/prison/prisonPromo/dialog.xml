@@ -1,0 +1,72 @@
+<dialogs>
+	<character id="player">
+		<statement id="what" link="dog" linkEntityId="ratchet">我？我做什么了？</statement>
+		<statement id="wrong" link="all" linkEntityId="ratchet">我没做错任何事。</statement>
+		<statement id="scary" link="yea" linkEntityId="nightingale">鹈鹕岩——那个吓人的监狱岛？</statement>
+		<statement id="care" link="huge" linkEntityId="nightingale">需要我帮你搞定吗？</statement>
+
+
+
+
+
+
+	</character>
+	<character id="ratchet">
+		<statement id="hold" link="what" linkEntityId="player">站住别动！</statement>
+		<statement id="dog" link="wrong" linkEntityId="player">我不知道，但老火花可不喜欢你的气味。</statement>
+		<statement id="all" link="wear">他们都这么说。</statement>
+		<statement id="wear" link="follow" triggerEvent="giveItem" triggerEventArgs="bird_follower">以防万一，你得戴上这个，直到证明你是清白的。</statement>
+		<statement id="follow">老火花也得跟着你到处转悠。</statement>
+		<statement>老实点，小子。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="nightingale">
+		<conversation>
+			<exchange>
+				<question>出什么事了？</question>
+				<answer link="scary" linkEntityId="player">我赶着去鹈鹕岩上班。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement id="yea" link="care" linkEntityId="player">是啊！而且渡轮不让带我的宠物鸟。</statement>
+		<statement id="huge" triggerEvent="giveItem" triggerEventArgs="bird_follower" link="prison">那可帮大忙了！</statement>
+		<statement id="prison" triggerEvent="triggerEvent" triggerEventArgs="night_leaves, false">我得去监狱了。希望不会很快在里面见到你……</statement>
+
+
+
+
+
+		</character>
+	<character id="prisoner1F">
+		<statement>挖洞能磨练性格，至少他们是这么说的……</statement>
+
+
+		</character>
+	<character id="prisoner2F">
+		<statement>只是在偿还对社会的亏欠。</statement>
+
+
+		</character>
+	<character id="prisoner3F">
+		<statement>我能挥鹤嘴锄！</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+</dialogs>

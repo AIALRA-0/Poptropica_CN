@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>gunpowder</id>
+		<asset>gunpowder.swf</asset>
+		<x>2349</x>
+		<y>216</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

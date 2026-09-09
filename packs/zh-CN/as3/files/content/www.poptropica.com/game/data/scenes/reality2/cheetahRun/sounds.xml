@@ -1,0 +1,19 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true">helicopter_chase.mp3</asset>
+	</sound>
+
+	<sound type="effects" action="impact">
+		<asset id="baseGround">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="bush1" baseVolume="2">grass_rustle_01.mp3, bush_rustle_01.mp3</asset>
+		<asset id="bush2" baseVolume="2">grass_rustle_01.mp3, bush_rustle_01.mp3</asset>
+		<asset id="puddle1" baseVolume="2">ls_pond_water_splash_01.mp3, ls_pond_water_splash_02.mp3</asset>
+		<asset id="puddle2" baseVolume="2">ls_pond_water_splash_01.mp3, ls_pond_water_splash_02.mp3</asset>
+		<asset id="tree1" baseVolume="2">ls_leaves_01.mp3</asset>
+		<asset id="tree2" baseVolume="2">ls_leaves_01.mp3</asset>
+		<asset id="pit1" baseVolume="2">leaves_rustle_01.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="baseGround">fs_grass_01.mp3, fs_grass_02.mp3</asset>
+	</sound>
+</sounds>

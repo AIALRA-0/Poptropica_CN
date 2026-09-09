@@ -1,0 +1,43 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.arab1.palaceInterior.PalaceInterior</scene>
+		<x>1800</x>
+		<y>700</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.arab1.adMixed1.AdMixed1</scene>
+		<x>50</x>
+		<y>1045</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab1.palaceExterior.PalaceExterior</scene>
+				<x>2500</x>
+				<y>1280</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab1.bazaar.Bazaar</scene>
+				<x>150</x>
+				<y>1550</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

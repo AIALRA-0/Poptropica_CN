@@ -1,0 +1,54 @@
+<item id="3315">
+	<type>store</type>
+	<subType>general</subType>
+	
+	<contentClass> <!-- This displays avatar  -->
+		<className>game.ui.card.CharacterContentView</className>
+		<parameters>
+			<param id="gender">true</param>
+		</parameters>
+	</contentClass>
+	
+	<buttons>
+ 		<btn>
+	 		<label>换装</label>
+	 		<actions>
+				<action type="costumize"/>
+			</actions>
+ 		</btn>
+	</buttons>
+	
+	<textfields>
+		<text id="storeSubTitle">
+			<value>守夜人岛</value>
+		</text>
+		<text id="storeTitle">
+			<value>飞贼服装</value>
+			<size>27</size>
+		</text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack" />
+	</assets>
+	
+	<looks>
+		<look id="male">
+			<mouth>fisherman</mouth>
+			<facial>stor_catburglar</facial>
+			<hair>31</hair>
+			<pants>astroalien1</pants>
+			<item>stor_catburglar</item>
+			<overshirt>stor_catburglar</overshirt>
+		</look>
+		<look id="female">
+			<mouth>skullpirate3</mouth>
+			<marks>stor_catburglar</marks>
+			<facial>stor_catburglar</facial>
+			<hair>31</hair>
+			<pants>astroalien1</pants>
+			<pack>stor_catburglar</pack>
+			<overshirt>stor_catburglar</overshirt>
+		</look>
+	</looks> 
+</item>

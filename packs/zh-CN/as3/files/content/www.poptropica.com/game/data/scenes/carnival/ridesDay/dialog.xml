@@ -1,0 +1,35 @@
+<dialogs>
+	<character id="player">
+		<statement id="ferrisWheelWrong" link="ferrisAnswerWrong" linkEntityId="ferrisWheelWorker">出什么事了？</statement>
+		<statement id="ferrisWheelFix" link="ferrisAnswerFix" linkEntityId="ferrisWheelWorker">你能修好它吗？</statement>
+		<statement id="doorClosed">这个游乐设施没开放。</statement>
+
+
+
+
+		</character>
+	<character id="ferrisWheelWorker">
+		<statement id="wheelTooFast" link="ferrisWheelWrong" linkEntityId="player">这些人肯定会失望的，但我不能让他们玩这个。</statement>
+		<statement id="findLever">这东西需要一个新的操纵杆！</statement>
+		<statement id="ferrisAnswerWrong" link="ferrisWheelFix" linkEntityId="player">我没办法让这个摩天轮慢下来，只要这个操纵杆是坏的就不行！</statement>
+		<statement id="ferrisAnswerFix" triggerEvent="triggerEvent" triggerEventArgs="closeOpeningDialog">不行，修不好了。我需要一个新的。</statement>
+		<statement id="fixedFerrisWheel" triggerEvent="triggerEvent" triggerEventArgs="wheelFixed">你拯救了今天！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="edgar">
+		<statement id="weCanOpen" triggerEvent="triggerEvent" triggerEventArgs="openCarnival">你做到了！我们可以开园了！</statement>
+
+
+		</character>
+
+
+
+
+
+
+</dialogs>

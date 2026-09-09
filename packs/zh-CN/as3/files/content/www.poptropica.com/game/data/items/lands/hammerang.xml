@@ -1,0 +1,40 @@
+<item id="hammerang">
+	<type>island</type>
+	<subType>lands</subType>
+		
+	<textfields>
+  		<text id="title">
+    		<value>回旋锤</value>
+  		</text>
+		<text>
+    		<value>已解锁</value>
+   			<size>15</size>
+    		<y>-140</y>
+  		</text>
+		<text>
+    		<value>在采矿模式中使用这项能力。</value>
+   			<size>15</size>
+    		<y>150</y>
+  		</text>
+  	</textfields>
+  	
+  	<!--<buttons>
+  		<btn>
+  			<label>USE</label>
+  			<actions>
+  				<action type="triggerEvent">
+	  				<parameters>
+			  			<param id="event">use_full_pitcher</param>
+			  		</parameters>
+			  	</action>
+  			</actions>
+  		</btn>
+  	</buttons>-->
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundBlue.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>    
+</item>

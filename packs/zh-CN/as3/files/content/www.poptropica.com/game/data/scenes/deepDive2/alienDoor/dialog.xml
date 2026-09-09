@@ -1,0 +1,32 @@
+<dialogs>
+	<character id="cam">
+		<statement id="what">这是什么地方？</statement>
+		<statement id="doorway">那是扇门吗？肯定有办法打开它。四处找找！</statement>
+		<statement id="found">你发现了什么？快告诉我！</statement>
+		<statement id="come_in">有人吗？快进来！</statement>
+		<statement id="who">那是谁——或者说，是什么？</statement>
+		<statement id="glyphs">adrkv jgepko qwihy zjskbqjf ojqj osndl mfoaj aegh anhxry</statement>
+		<statement id="film_this">你能拍下墙上的那些标记吗？</statement>
+
+
+
+
+
+
+
+
+		</character>
+	<character id="dummyPlayer">
+		<statement id="city">是座城市！一座巨大的海底城市！</statement>
+		<statement id="no_power">没反应。可能得先给它充能。</statement>
+		<statement id="no_piece">我肯定漏掉了什么……</statement>
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

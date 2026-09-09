@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="timmy">
+		<statement id="getting_away">这次你赢不了我的，科琳娜·科琳娜！</statement>
+		<statement id="getting_away2">他们要逃走了！快追！</statement>
+		<statement id="faster">胡说！再快点！</statement>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="watch_out">卡车要停了，小心！</statement>
+
+
+		</character>
+
+
+
+</dialogs>

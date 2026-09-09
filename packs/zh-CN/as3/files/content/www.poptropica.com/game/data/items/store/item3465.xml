@@ -1,0 +1,50 @@
+<item id="3465">
+		<type>store</type>
+		<subType>general</subType>
+
+			<contentClass> <!-- This displays avatar  -->
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+
+	
+	<buttons>
+			<btn>
+				<index>0</index>
+				<conditional id="hasLook" isTrue="false"/>
+				<label>穿上</label>
+				<actions>
+					<action type="applyLook"> 
+				</action>
+			</actions>
+			</btn>
+		<btn>
+				<index>0</index>
+ 			<conditional id="hasLook" isTrue="true"/>
+				<label>脱下</label>
+				<actions>
+					<action type="removeLook"/>
+			</actions>
+			</btn>	
+		</buttons>
+
+	<textfields>
+		<text id="storeTitle">
+			<value>猫头鹰</value>
+		</text>
+		
+	</textfields>
+	
+		<assets>			<asset id="cardBack" />
+		</assets>
+
+	<conditionals>
+			<conditional type="hasLook" />
+		</conditionals>
+	
+		<looks>
+			<look>
+			 <pack>stor_owl</pack>
+		</look>
+	</looks> 
+
+</item>

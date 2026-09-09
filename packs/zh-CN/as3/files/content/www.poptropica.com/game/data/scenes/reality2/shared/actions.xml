@@ -1,0 +1,197 @@
+<actions>
+	<actionChain id="ceremony">
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">winners</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">3</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">second</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">2</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">drum roll</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">1</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">4</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">congrats</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">next</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="false">
+			<parameters>
+				<param type="function">close</param>
+			</parameters>
+		</action>
+	</actionChain>
+	<actionChain id="ceremony2">
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">winners2</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">3</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">second2</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">2</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">drum roll</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">1</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">4</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">congrats</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">next2</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="false">
+			<parameters>
+				<param type="function">close</param>
+			</parameters>
+		</action>
+	</actionChain>
+	<actionChain id="ceremony3">
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">winners3</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">3</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">second3</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">2</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">drum roll</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">1</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">4</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">congrats</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">next3</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">player</param>
+				<param type="string">me</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">monkeys</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="false">
+			<parameters>
+				<param type="function">close</param>
+			</parameters>
+		</action>
+	</actionChain>
+</actions>

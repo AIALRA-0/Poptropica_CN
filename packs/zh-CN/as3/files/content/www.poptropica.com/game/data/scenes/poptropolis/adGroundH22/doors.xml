@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorMainStreet">
+		<scene>game.scenes.poptropolis.mainStreet.MainStreet</scene>
+		<x>4100</x>
+		<y>1700</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorColiseum">
+		<scene>game.scenes.poptropolis.coliseum.Coliseum</scene>
+		<x>30</x>
+		<y>1288</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-50</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

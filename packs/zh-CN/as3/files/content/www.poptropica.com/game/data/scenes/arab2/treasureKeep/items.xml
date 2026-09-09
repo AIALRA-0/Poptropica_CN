@@ -1,0 +1,22 @@
+<items>
+	<item>
+		<id>quicksilver</id>
+		<asset>quicksilver.swf</asset>
+		<x>2772</x>
+		<y>351</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+	<item>
+		<id>white_robe</id>
+		<asset>white_robe.swf</asset>
+		<x>2217</x>
+		<y>576</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

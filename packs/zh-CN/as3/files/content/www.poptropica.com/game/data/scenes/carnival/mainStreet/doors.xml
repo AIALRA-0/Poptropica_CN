@@ -1,0 +1,169 @@
+<doors>
+	<door id="doorApothecary">
+		<scene>game.scenes.carnival.apothecary.Apothecary</scene>
+		<x>435</x>
+		<y>980</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+
+	<door id="doorAutoRepair">
+		<scene>game.scenes.carnival.autoRepair.AutoRepair</scene>
+		<x>450</x>
+		<y>978</y>
+		<direction>left</direction>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+
+
+	<door id="doorMidway">
+		<scene>game.scenes.carnival.adStreet.AdStreet</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+				<x>4900</x>
+				<y>1285</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.midwayDay.MidwayDay</scene>
+				<x>47</x>
+				<y>1950</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorMidway" event="set_night">
+		<scene>game.scenes.carnival.adStreet.AdStreet</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+				<x>4900</x>
+				<y>1285</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.midwayNight.MidwayNight</scene>
+				<x>47</x>
+				<y>1950</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorMidway" event="set_evening">
+		<scene>game.scenes.carnival.adStreet.AdStreet</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+				<x>4900</x>
+				<y>1285</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.midwayEvening.MidwayEvening</scene>
+				<x>47</x>
+				<y>1950</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorMidway" event="set_morning">
+		<scene>game.scenes.carnival.adStreet.AdStreet</scene>
+		<x>40</x>
+		<y>600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.carnival.mainStreet.MainStreet</scene>
+				<x>4900</x>
+				<y>1285</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.carnival.midwayEmpty.MidwayEmpty</scene>
+				<x>47</x>
+				<y>1950</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorCommon">
+		<scene>game.scenes.carnival.common.Common</scene>
+		<x>603</x>
+		<y>939</y>
+		<direction>left</direction>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>旅行</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

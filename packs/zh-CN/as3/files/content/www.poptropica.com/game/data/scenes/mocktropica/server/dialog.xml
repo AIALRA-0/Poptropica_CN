@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="success">太好了，服务器负载现在分散了。</statement>
+		<statement id="intro">我在哪儿？这是……Poptropica服务器内部？</statement>
+
+
+
+	</character>
+
+
+</dialogs>

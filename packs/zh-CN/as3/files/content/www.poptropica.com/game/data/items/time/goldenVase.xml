@@ -1,0 +1,27 @@
+<item id="goldenVase">
+	<type>island</type>
+	<subType>time</subType>
+	<textfields>
+		<text id="title">
+    		<value>金花瓶</value>
+  		</text>
+    	<text>
+      		<value>这个花瓶看起来是纯金打造的！</value>
+      		<size>20</size>
+      		<y>105</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>7</brightness>
+     			<contrast>0</contrast>
+     			<saturation>11</saturation>
+     			<hue>14</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

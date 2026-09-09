@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>fruit</id>
+		<asset>fruit.swf</asset>
+		<x>178</x>
+		<y>1050</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

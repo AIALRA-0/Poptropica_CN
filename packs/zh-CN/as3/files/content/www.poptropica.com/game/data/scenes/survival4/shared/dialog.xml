@@ -1,0 +1,22 @@
+<dialogs>
+	<character id="player">
+		<statement id="caught">我触发了警报……看来他们发现我了……</statement>
+		<statement id="no_use">这东西在这儿没用。</statement>
+		<statement id="locked">锁住了。我得找到钥匙。</statement>
+		<statement id="wrong_key">这把钥匙不对。</statement>
+
+
+
+
+
+		</character>
+	<character id="recording_entity">
+		<statement id="trigger">发现目标！</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

@@ -1,0 +1,60 @@
+<doors>
+	<door id="doorBedroomShrunk01">
+		<scene>game.scenes.shrink.adMixed.AdMixed</scene>
+		<x>1950</x>
+		<y>940</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>110</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.bedroomShrunk01.BedroomShrunk01</scene>
+				<x>2750</x>
+				<y>1780</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.livingRoomShrunk.LivingRoomShrunk</scene>
+				<x>50</x>
+				<y>1790</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorBathroomShrunk01">
+		<scene>game.scenes.shrink.bathroomShrunk01.BathroomShrunk01</scene>
+		<x>3583</x>
+		<y>1690</y>
+		<label>
+			<text>进入</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="doorKitchenShrunk01">
+		<scene>game.scenes.shrink.kitchenShrunk01.KitchenShrunk01</scene>
+		<x>40</x>
+		<y>1700</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-100</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

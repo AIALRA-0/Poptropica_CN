@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorTown">
+		<scene>game.scenes.hub.town.Town</scene>
+		<x>4720</x>
+		<y>875</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

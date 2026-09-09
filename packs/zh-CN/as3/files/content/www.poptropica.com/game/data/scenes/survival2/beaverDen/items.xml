@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>hook</id>
+		<asset>hook.swf</asset>
+		<x>3450</x>
+		<y>855</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

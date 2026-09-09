@@ -1,0 +1,428 @@
+const { looksLikeProtectedIdentifier, normalizeWhitespace } = require("./text-utils");
+
+const PROTECTED_CONTEXT_SUFFIXES = new Set([
+  "@_id",
+  "@_hit",
+  "@_action",
+  "@_class",
+  "@_compression",
+  "@_data",
+  "@_direction",
+  "@_dna",
+  "@_encoding",
+  "@_ease",
+  "@_event",
+  "@_ai",
+  "@_alt",
+  "@_campaign_type",
+  "@_color",
+  "@_gender",
+  "@_graphic",
+  "@_href",
+  "@_rel",
+  "@_lang",
+  "@_link",
+  "@_linkEntityId",
+  "@_modifier",
+  "@_modifiers",
+  "@_name",
+  "@_npc",
+  "@_nowrap",
+  "@_onclick",
+  "@_onfocus",
+  "@_platform",
+  "@_playerLoc",
+  "@_rootLandMap",
+  "@_scene",
+  "@_sides",
+  "@_style",
+  "@_target",
+  "@_tileSet",
+  "@_trigger",
+  "@_triggeredByEvent",
+  "@_triggerEvent",
+  "@_triggerEventArgs",
+  "@_type",
+  "@_variant",
+  "absoluteFilePaths",
+  "action",
+  "animation",
+  "asset",
+  "assets",
+  "background",
+  "bitmap",
+  "body",
+  "bottom",
+  "card",
+  "class",
+  "clip",
+  "color",
+  "component",
+  "condition",
+  "data",
+  "defaultDirection",
+  "direction",
+  "elementsToBitmap",
+  "event",
+  "eventsClass",
+  "eyeState",
+  "eyes",
+  "facial",
+  "folder",
+  "fontfamily",
+  "gender",
+  "gameVersion",
+  "hair",
+  "hairColor",
+  "head",
+  "hit",
+  "hitChild",
+  "id",
+  "island",
+  "islandFolder",
+  "islandMain",
+  "item",
+  "item2",
+  "layout",
+  "marks",
+  "medallion",
+  "movieClip",
+  "mouth",
+  "overpants",
+  "overshirt",
+  "pack",
+  "pageFolder",
+  "param",
+  "pants",
+  "path",
+  "platform",
+  "playerMap",
+  "queryString",
+  "scene",
+  "sceneId",
+  "sceneLink",
+  "sceneType",
+  "scenetype",
+  "shirt",
+  "skin",
+  "skinColor",
+  "source",
+  "styleId",
+  "subGroup",
+  "target",
+  "talkMouth",
+  "top",
+  "type",
+  "url",
+  "variant",
+  "videoId",
+  "visible"
+]);
+
+const PROTECTED_LITERAL_VALUES = new Set([
+  "--- RECORDSEPARATOR ---",
+  "DISABLED",
+  "Flash",
+  "'S",
+  "'T",
+  "`l",
+  "AAAAA",
+  "AAAAAsadfasdfsdf",
+  "AS",
+  "AX",
+  "A-Z",
+  "AA",
+  "Ben 10",
+  "Cutestbear",
+  "D!",
+  "DJ",
+  "ER",
+  "ERS",
+  "GSM",
+  "H2O",
+  "HBr",
+  "H8R-bot",
+  "II",
+  "III",
+  "IV",
+  "IX",
+  "K?",
+  "KI",
+  "KLLKOEPA",
+  "LE",
+  "LOTMKXVXOTZ",
+  "Na",
+  "NaCl",
+  "NaOH",
+  "NE",
+  "NES",
+  "NG",
+  "NUM",
+  "OF",
+  "OO",
+  "Poptropica",
+  "POPTROPICA",
+  "RA",
+  "RR",
+  "T P",
+  "T SEE",
+  "TIMESTAMPS",
+  "TYR-1",
+  "Timestamps for the elements of this page",
+  "USED PAI",
+  "V",
+  "VI",
+  "VII",
+  "VIII",
+  "WBC",
+  "WE",
+  "Wayback Machine",
+  "X",
+  "XI",
+  "XII",
+  "YX DRO BYYP",
+  "ZENAYPEKJ",
+  "_template",
+  "addClue",
+  "adrkv jgepko qwihy zjskbqjf ojqj osndl mfoaj aegh anhxry",
+  "asdfa dgaw aeer adaf<br/><br/><br/>hajnja ioweutvm skaoh",
+  "avarus animus nullo",
+  "default",
+  "desktop",
+  "down",
+  "ddd",
+  "ejlkfmk wkfjbvc kwls<br/><br/><br/>tutous flmns",
+  "false",
+  "fuzzybunny",
+  "left",
+  "l.",
+  "mobile",
+  "npc",
+  "platform",
+  "player",
+  "qmodphz fltg kwls<br/><br/><br/>rwqnn fdgfzdgb",
+  "right",
+  "satiatur lucro",
+  "text",
+  "thought",
+  "true",
+  "up",
+  "utf-8",
+  "utf8",
+  "F.R.E.D.",
+  "S.O.S."
+]);
+
+function parseContext(row) {
+  if (!row || typeof row.context_json !== "string") {
+    return {};
+  }
+  try {
+    return JSON.parse(row.context_json) || {};
+  } catch (_error) {
+    return {};
+  }
+}
+
+function normalizedAssetPath(row) {
+  return String(row?.asset_path || row?.assetPath || "").replace(/\\/gu, "/");
+}
+
+function isItemXmlAsset(row) {
+  return /\/game\/data\/items\/[^/]+\/[^/]+\.xml$/iu.test(normalizedAssetPath(row));
+}
+
+function contextSegments(row) {
+  const context = parseContext(row);
+  if (Array.isArray(context.path)) {
+    return context.path.map((item) => String(item || ""));
+  }
+  return String(row?.context_key || row?.contextKey || "")
+    .split(/[/.\\]+/u)
+    .filter(Boolean);
+}
+
+function contextSuffix(row) {
+  const context = parseContext(row);
+  if (context.kind === "xml-attr" && context.attr) {
+    return `@_${String(context.attr)}`;
+  }
+  const segments = contextSegments(row);
+  return segments.length > 0 ? segments[segments.length - 1] : "";
+}
+
+function isFrameworkConfigRuntimeMetadata(row) {
+  if (!/\/framework\/data\/config\.xml$/iu.test(normalizedAssetPath(row))) {
+    return false;
+  }
+  return /^framework_config\/islands\/island\/\[\d+\]\/(?:name|islandMain|gameVersion|islandFolder|pages\/page\/(?:@_class|properties\/pageFolder))$/iu
+    .test(String(row?.context_key || row?.contextKey || ""));
+}
+
+function isLanguageXmlText(row) {
+  if (!/\/game\/data\/languages\//iu.test(normalizedAssetPath(row))) {
+    return false;
+  }
+  const context = parseContext(row);
+  return context.kind === "xml-text";
+}
+
+function isItemXmlVisibleText(row) {
+  if (!isItemXmlAsset(row)) {
+    return false;
+  }
+  const context = parseContext(row);
+  if (context.kind !== "xml-text") {
+    return false;
+  }
+  const key = String(row?.context_key || row?.contextKey || "");
+  return /^item\/textfields\/text(?:\/\[\d+\])?\/value$/u.test(key) ||
+    /^item\/buttons\/btn(?:\/\[\d+\])?\/label$/u.test(key);
+}
+
+function looksLikeRuntimeToken(value) {
+  const text = normalizeWhitespace(value);
+  if (!text) {
+    return true;
+  }
+  if (PROTECTED_LITERAL_VALUES.has(text)) {
+    return true;
+  }
+  if (/^(?:game|scenes|assets|entity|framework|content)\b[./\\]/iu.test(text)) {
+    return true;
+  }
+  if (/^(?:pop|mailto):\/\//iu.test(text)) {
+    return true;
+  }
+  if (/^[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+$/u.test(text)) {
+    return true;
+  }
+  if (/^\?[A-Za-z0-9_.~=&%+-]+$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)+$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+(?:\\[A-Za-z0-9_.-]+)+$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+\.(?:swf|xml|json|png|jpg|jpeg|gif|mp3|wav)$/iu.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+\.(?:mp3|wav)(?:\s*,\s*[A-Za-z0-9_.-]+\.(?:mp3|wav))+$/iu.test(text)) {
+    return true;
+  }
+  if (/^game\.scenes\.[A-Za-z0-9_.]+$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_-]+\.text\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z]\.[A-Za-z](?:\.[A-Za-z])+\.?$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z]{2,}(?:\s*=\s*[-+]?\d+(?:\.\d+)?)$/u.test(text)) {
+    return true;
+  }
+  if (/^text\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^_[A-Za-z0-9_.-]+$/u.test(text)) {
+    return true;
+  }
+  if (/^[a-z][A-Za-z0-9]*$/u.test(text) && /[A-Z]/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z]\s*-\s*[A-Z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[`'][A-Za-z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Z][!?]$/u.test(text)) {
+    return true;
+  }
+  if (/^(?:\d+\s*&nbsp;\s*)+\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^X-?\d+\s+Y-?\d+$/iu.test(text)) {
+    return true;
+  }
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if (text.length >= 5 && alphabet.includes(text.replace(/\s+/gu, "").toUpperCase())) {
+    return true;
+  }
+  if (/^[A-Za-z0-9_.-]+>$/u.test(text)) {
+    return true;
+  }
+  if (/^<br\s*\/?>$/iu.test(text)) {
+    return true;
+  }
+  if (/^<font\b[^>]*>[0-9+]+<\/font>$/iu.test(text)) {
+    return true;
+  }
+  if (/^lorem ipsum\b/iu.test(text)) {
+    return true;
+  }
+  if (/^0x[0-9a-f]*$/iu.test(text) || /^[0-9a-f]{6}$/iu.test(text)) {
+    return true;
+  }
+  if (/^-?\d+(?:\.\d+)?\s*°[FC](?:,\s*-?\d+(?:\.\d+)?\s*°[FC])?$/u.test(text)) {
+    return true;
+  }
+  if (/^x\s*\d+$/iu.test(text)) {
+    return true;
+  }
+  if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9 -]{3,}$/u.test(text)) {
+    return true;
+  }
+  if (/^(?:[A-Z]\s+){5,}[A-Z]$/u.test(text)) {
+    return true;
+  }
+  if (/^[A-Za-z0-9+/]{24,}={0,2}$/u.test(text)) {
+    return true;
+  }
+  if (/Wayback Machine|web\.archive\.org|Live Proxy|Save Page Now/iu.test(text)) {
+    return true;
+  }
+  return looksLikeProtectedIdentifier(text);
+}
+
+function isProtectedContext(row) {
+  const suffix = contextSuffix(row);
+  if (PROTECTED_CONTEXT_SUFFIXES.has(suffix)) {
+    return true;
+  }
+  const key = String(row?.context_key || row?.contextKey || "");
+  return /(?:^|\/)(?:connectingSceneDoors|defaultScene|permanentEvents\/event|progress\/events\/event|layers\/layer\/\[\d+\]\/condition|layout\/assets\/asset|map\/islands\/island|template\/map|land\/world\/biome\/scene\/\[\d+\]\/map|hits\/hit|sounds\/sound(?:s)?\/(?:\[\d+\]\/)?asset|looks\/look\/\[\d+\]\/tags\/tag|photos\/photo\/param|npcs\/npc\/\[\d+\]\/position\/#text|script|style|skin|label\/type|SayText\/@_type|Action\/@_type|Response\/\[\d+\]\/@_npc)(?:\/|$)/iu.test(key);
+}
+
+function isProtectedTranslationRow(row) {
+  if (!row) {
+    return false;
+  }
+  if (isFrameworkConfigRuntimeMetadata(row)) {
+    return true;
+  }
+  if (isItemXmlAsset(row)) {
+    return !isItemXmlVisibleText(row);
+  }
+  if (isLanguageXmlText(row)) {
+    return looksLikeRuntimeToken(row.source_text || row.sourceText);
+  }
+  if (isProtectedContext(row)) {
+    return true;
+  }
+  if (looksLikeRuntimeToken(row.source_text || row.sourceText)) {
+    return true;
+  }
+  return looksLikeRuntimeToken(row.source_text || row.sourceText) &&
+    /\/(?:game\/data\/scenes|game\/assets\/scenes|flashpoint\/originals\/game\/data\/scenes|flashpoint\/originals\/game\/assets\/scenes)\//iu.test(normalizedAssetPath(row));
+}
+
+module.exports = {
+  isItemXmlVisibleText,
+  isProtectedTranslationRow,
+  looksLikeRuntimeToken,
+  normalizedAssetPath
+};

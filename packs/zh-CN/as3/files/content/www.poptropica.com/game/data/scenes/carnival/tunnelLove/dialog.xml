@@ -1,0 +1,29 @@
+<dialogs>
+	<character id="player">
+		<statement id="yuck" triggerEvent="triggerEvent" triggerEventArgs="fell_in_water,true">咦，好恶心！</statement>
+		<statement id="awkward" triggerEvent="triggerEvent" triggerEventArgs="fell_in_water,true">……好尴尬</statement>
+
+
+
+		</character>
+	<character id="loverGirl">
+		<statement id="stayNight" triggerEvent="triggerEvent" triggerEventArgs="popPlayer">也许我们可以在这里待一整晚……</statement>
+		<statement id="girlSqueal" link="justTalking" linkEntityId="loverBoy">呀！</statement>
+
+
+
+		</character>
+	<character id="loverBoy">
+		<statement id="bestRide" link="stayNight" linkEntityId="loverGirl">这是最棒的游乐项目！</statement>
+		<statement id="justTalking" triggerEvent="triggerEvent" triggerEventArgs="loversRun">我们只是在聊天，我发誓！</statement>
+		<statement id="busyHere" link="awkward" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="loversNotScared">没看见我们正忙着吗？快走开！</statement>
+
+
+
+
+		</character>
+
+
+
+
+</dialogs>

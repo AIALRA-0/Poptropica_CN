@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>vikingSuit</id>
+		<asset>vikingSuit.swf</asset>
+		<x>4010</x>
+		<y>736</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

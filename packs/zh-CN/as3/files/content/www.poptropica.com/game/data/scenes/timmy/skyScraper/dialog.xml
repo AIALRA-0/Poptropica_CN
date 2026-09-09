@@ -1,0 +1,25 @@
+<dialogs>
+	<character id="timmy">
+		<statement id="see_it" link="solution">从这儿就能看见，但我们得想办法追上去。</statement>
+		<statement id="solution" triggerEvent="triggerEvent" triggerEventArgs="talked_with_timmy">有个办法：用克里斯平·弗拉维乌斯的车。我猜他正想刷新他那糟糕的保龄球记录呢。</statement>
+		<statement>有个办法：用克里斯平·弗拉维乌斯的车。我猜他正想刷新他那糟糕的保龄球记录呢。</statement>
+		<statement id="steal_the_car" link="find_it">干得好。现在只要找到克里斯平的车，这案子就快解决了。</statement>
+		<statement id="find_it">他通常把车停在保龄球馆附近。去找找看，然后追上那辆垃圾车。</statement>
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="pants" link="see_it" linkEntityId="timmy">裤子可能在垃圾车里。</statement>
+
+
+	</character>
+
+
+
+
+</dialogs>

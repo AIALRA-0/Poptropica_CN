@@ -1,0 +1,69 @@
+<item id="hardHat">
+	<type>island</type>
+	<subType>survival3</subType>
+	
+	<buttons>
+  		<btn>
+			<conditional id="hasLook" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="applyLook"/>
+				<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">hardHatOn</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="removeLook"/>
+				<action type="triggerEvent">
+					<parameters>
+						<param id="event">hardHatOff</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<textfields>
+  		<text>
+    		<value>安全帽</value>
+  		</text>
+  		
+  		<text>
+    		<value>一定要戴好可靠的安全帽，以防你自己，或者更糟的别的东西，从高处掉下来。</value>
+   			<size>15</size>
+    		<y>65</y>
+  		</text>
+  		
+  	</textfields>
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/survival1/background.swf</assetPath>
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-80</saturation>
+     			<hue>25</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+    
+    <looks>
+	    <look>
+		 	<facial>hard_hat</facial>
+	   	</look> 
+	</looks>  
+	
+	<conditionals>
+    	<conditional type="hasLook" />	<!-- if no lookId param is given uses first look by default -->
+    </conditionals>
+</item>

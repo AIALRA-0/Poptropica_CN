@@ -1,0 +1,79 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true">Survival_3_Main_Theme.mp3</asset>
+	</sound>
+	<sound type="ambient">
+	<asset loop="true">forest_ambiance_01_loop.mp3</asset>
+    </sound>
+	<sound type="effects" action="step">
+		<asset id="water">fs_swim_water_01.mp3, fs_swim_water_02.mp3, fs_swim_water_03.mp3</asset>
+		<asset id="snow">fs_snow_01.mp3, fs_snow_02.mp3, fs_snow_03.mp3, fs_snow_04.mp3</asset>
+		<asset id="grass">fs_grass_01.mp3, fs_grass_02.mp3, fs_grass_03.mp3, fs_grass_04.mp3</asset>
+		<asset id="tree">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="planePlatform0">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform1">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform2">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform3">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform4">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform5">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform6">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform7">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform8">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform9">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform10">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform11">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform12">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform13">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform14">fs_metal_01.mp3, fs_metal_02.mp3, fs_metal_03.mp3, fs_metal_04.mp3</asset>
+		<asset id="planePlatform15">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
+		<asset id="planePlatform16">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
+		<asset id="planePlatform17">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
+		<asset id="planePlatform18">fs_cloth_01.mp3, fs_cloth_02.mp3, fs_cloth_03.mp3, fs_cloth_04.mp3</asset>
+		<asset id="treePlatform0">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform1">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform2">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform3">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform4">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform5">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatform6">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="treePlatformBranch">fs_tree_01.mp3,fs_tree_02.mp3,fs_tree_03.mp3,fs_tree_04.mp3</asset>
+		<asset id="rock">fs_concrete_01.mp3,fs_concrete_02.mp3,fs_concrete_03.mp3,fs_concrete_04.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="water">ls_water_splash_01.mp3, ls_water_splash_02.mp3</asset>
+		<asset id="snow">ls_snow_01.mp3, ls_snow_02.mp3</asset>
+		<asset id="grass">ls_grass_01.mp3, ls_grass_02.mp3</asset>
+		<asset id="tree">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="planePlatform0">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform1">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform2">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform3">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform4">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform5">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform6">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform7">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform8">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform9">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform10">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform11">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform12">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform13">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform14">ls_metal_01.mp3,ls_metal_02.mp3</asset>
+		<asset id="planePlatform15">ls_cloth_01.mp3,ls_cloth_02.mp3</asset>
+		<asset id="planePlatform16">ls_cloth_01.mp3,ls_cloth_02.mp3</asset>
+		<asset id="planePlatform17">ls_cloth_01.mp3,ls_cloth_02.mp3</asset>
+		<asset id="planePlatform18">ls_cloth_01.mp3,ls_cloth_02.mp3</asset>
+		<asset id="treePlatform0">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform1">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform2">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform3">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform4">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform5">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatform6">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="treePlatformBranch">ls_tree_01.mp3,ls_tree_02.mp3</asset>
+		<asset id="rock">ls_concrete_01.mp3,ls_concrete_02.mp3</asset>
+		<asset id="bounce0">ls_bounce_01.mp3,ls_bounce_02.mp3</asset>
+		<asset id="bounce1">ls_bounce_01.mp3,ls_bounce_02.mp3</asset>
+		<asset id="bounce2">ls_bounce_01.mp3,ls_bounce_02.mp3</asset>
+	</sound>
+</sounds>

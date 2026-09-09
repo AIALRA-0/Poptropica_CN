@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="tex">
+		<statement id="take_away" triggerEvent="triggerEvent" triggerEventArgs="take_away">把他带走，伙计们。</statement>
+
+
+	</character>
+
+
+</dialogs>

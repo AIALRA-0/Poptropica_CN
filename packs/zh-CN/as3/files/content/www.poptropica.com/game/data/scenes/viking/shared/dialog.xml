@@ -1,0 +1,31 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="nothing_to_dig">这里没什么可挖的。</statement>
+		<statement triggeredByEvent="no_gunpowder">这里用不着火药。</statement>
+		<statement triggeredByEvent="cant_use_rope">绳子在这儿没用。</statement>
+		<statement triggeredByEvent="cant_use_helmet">尺寸不对。</statement>
+		<statement triggeredByEvent="cant_use_furs">这皮子给我当帐篷倒不错。</statement>
+		<statement triggeredByEvent="cant_use_axe">这儿没什么要砍的。</statement>
+		<statement triggeredByEvent="cant_use_lens">这东西在这儿没用。</statement>
+		<statement triggeredByEvent="cant_use_candybar">现在没空吃零食。</statement>
+		<statement triggeredByEvent="cant_use_goblet">这东西在这儿没用。</statement>
+		<statement triggeredByEvent="cant_use_drippings">这玩意儿连鸟都不吃。</statement>
+		<statement triggeredByEvent="cant_use_furs">尺寸不对。</statement>
+		<statement triggeredByEvent="cant_use_helmet">尺寸不对。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

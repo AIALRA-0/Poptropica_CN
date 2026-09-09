@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>watch_parts</id>
+		<asset>watchParts.swf</asset>
+		<x>2410</x>
+		<y>970</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,28 @@
+<doors>
+	<door id="doorGrove">
+		<scene>game.scenes.myth.grove.Grove</scene>
+		<x>4600</x>
+		<y>730</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorBeach">
+		<scene>game.scenes.myth.poseidonBeach.PoseidonBeach</scene>
+		<x>3721</x>
+		<y>760</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

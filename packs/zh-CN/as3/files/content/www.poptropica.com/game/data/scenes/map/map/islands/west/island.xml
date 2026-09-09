@@ -1,0 +1,16 @@
+<island>
+	<name>狂野西部岛</name>
+	<island>west</island>
+	<gameVersion>AS2</gameVersion>
+	<islandFolder>scenes/map/map/islands/west/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

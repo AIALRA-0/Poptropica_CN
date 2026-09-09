@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="noHideOut">这里不可能是四十大盗的藏身处。什么都没有。</statement>
+		<statement id="campSite">住在这里的人早就离开了。</statement>
+
+
+
+	</character>
+
+
+</dialogs>

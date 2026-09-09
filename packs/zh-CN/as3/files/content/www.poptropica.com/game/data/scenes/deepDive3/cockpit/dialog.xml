@@ -1,0 +1,15 @@
+<dialogs>
+	<character id="player">
+		<statement id="who" triggerEvent="triggerEvent" triggerEventArgs="whoOver">你是谁？</statement>
+		<statement id="thisWhole" triggerEvent="triggerEvent" triggerEventArgs="thisWholeOver">原来我一直是在跟你说话？</statement>
+		<statement id="years" triggerEvent="triggerEvent" triggerEventArgs="yearsOver">你是说……你被困在这里几百万年了？</statement>
+		<statement id="getOut" triggerEvent="triggerEvent" triggerEventArgs="getOutOver">我得赶紧离开这儿！</statement>
+
+
+
+
+
+	</character>
+
+
+</dialogs>

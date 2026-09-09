@@ -1,0 +1,206 @@
+<dialogs>
+	<character id="player">
+		<statement id="boy">一定有办法把那孩子救出来……</statement>
+		<statement id="bear">糟了，现在小全能卡在里面了！</statement>
+		<statement id="total_stuck">我该怎么把一只北极熊从滑梯里弄出来？</statement>
+		<statement id="quiz" link="round1" linkEntityId="rollo">我听说明天有个随堂测验。</statement>
+		<statement id="wait">呃，等等，我好像搞错了。</statement>
+		<statement id="clogged">我得先把滑梯清空，不然我也会卡住的。</statement>
+		<statement id="help" link="brave" linkEntityId="molly">有什么我能帮忙的吗？</statement>
+		<statement id="vote" link="cat" linkEntityId="molly">谢谢你的信任。需要我帮什么忙？</statement>
+		<statement id="buy" link="coins" linkEntityId="molly">你为什么不能直接从贩卖机买点东西？</statement>
+		<statement id="take" link="shoes" linkEntityId="molly">我拿上钱，再想办法。</statement>
+		<statement id="find_shoes" triggerEvent="triggerEvent" triggerEventArgs="unlock">鞋子？提米可能在他总部藏了一双</statement>
+		<statement id="round1" link="round2" linkEntityId="rollo">是啊，等你发现还有时间限制会更惊讶！</statement>
+		<statement id="round2" link="round3" linkEntityId="rollo">还有一个你绝对想不到的转折。</statement>
+		<statement id="mistaken" link="oh" linkEntityId="rollo" triggerEvent="triggerEvent" triggerEventArgs="such_relief">哦，抱歉，我想到下周的事了。</statement>
+		<statement id="buy_these" link="deal" linkEntityId="molly">要不要来一双八成新的好鞋？</statement>
+		<statement id="this_yours">这是你要找的那只猫吗？</statement>
+		<statement id="found_them" link="slouch" linkEntityId="molly">Timmy的裤子在那辆卡车后面！</statement>
+		<statement id="no_time" triggerEvent="triggerEvent" triggerEventArgs="on_tower">看来只能由我来调查了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="rollo">
+		<statement id="school">我还没玩过滑梯呢，课间休息时总是排长队。</statement>
+		<statement id="help" link="boy" linkEntityId="player">救命！我卡住了！</statement>
+		<statement id="thanks">谢谢！我最讨厌挤在狭小的地方了。</statement>
+		<statement id="garbanzo">拜托，这种滑稽装扮吓不到我，我只怕考砸！</statement>
+		<statement id="round1" link="convo1">突击测验？天哪！你知道考哪科吗？</statement>
+		<statement id="round2" link="convo2">为什么，时间限制怎么了？</statement>
+		<statement id="round3" link="convo3">还能有什么更糟的？</statement>
+		<statement id="must_study" link="mistaken" linkEntityId="player">啊啊啊！我得学习了！</statement>
+		<statement id="oh">哦。总算松了口气！</statement>
+		<statement id="relief">我准备好应对测验了！</statement>
+		<statement id="distracted">没想到北极熊协调性这么好，也许它能教我几招。</statement>
+		<conversation id="convo1">
+			<exchange>
+				<question>地理。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">没问题。地理是我最拿手的科目。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="higher">英语。</question>
+				<answer link="round1" linkEntityId="player">那是我最差的科目！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>数学。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">数学？还行吧。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="convo2">
+			<exchange>
+				<question>要考半小时。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">这有什么问题吗？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>要考一小时！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">我喜欢长考试，有更多时间思考！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="higher">只有十分钟。</question>
+				<answer link="round2" linkEntityId="player">十分钟？万一我答不完怎么办？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="convo3">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="higher">这次考试会记入你的永久档案！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="end_test">天哪！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这次测验占你总成绩的10%。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">10%是不少……但也没那么多。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>这次测验只有及格和不及格。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="over">呼！那就好。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="molly">
+		<statement id="where" link="help" linkEntityId="player">提米在哪儿？到底在哪儿？我需要提米的帮助！</statement>
+		<statement id="brave" link="vote" linkEntityId="player">你看起来没提米勇敢，也没他一半帅，但将就一下吧。</statement>
+		<statement id="cat" link="buy" linkEntityId="player">是我的猫，布利托先生！它卡在保龄球馆的自动售货机里了！</statement>
+		<statement id="coins" link="take" linkEntityId="player" triggerEvent="triggerEvent" triggerEventArgs="mollys_onto_you, true">它只收硬币，可我只有纸币！</statement>
+		<statement id="shoes" link="find_shoes" linkEntityId="player">这招对你管用吗？我可以买点东西——比如鞋子——但不会白给你零花钱。</statement>
+		<statement id="spend_cash">我可以买点东西——比如鞋子——但不会白给你零花钱。</statement>
+		<statement id="deal" triggerEvent="triggerEvent" triggerEventArgs="trade_shoes">成交！</statement>
+		<statement id="wheres_the_cat">好吧，钱给你了。布利托先生在哪儿？</statement>
+		<statement id="the_best">我错看你了！下次我第一个找你。</statement>
+		<statement id="likes_you">布利托先生和我永远不会忘记你为我们做的事。</statement>
+		<statement id="slouch" link="no_time" linkEntityId="player">我本想让你找提米，但他好像还在塔上。</statement>
+		<statement id="tower">提米再在塔上瞎玩，客户都要跑光了。</statement>
+		<statement id="tired">发生了这么多事，我得去疯狂购物压压惊。</statement>
+		<statement id="distracted">天哪，马戏团来镇上了？我最爱看马戏表演了！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,30 @@
+<doors><!-- vanBuren room -->
+	<door id="door1">
+		<scene>game.scenes.survival4.adMixed2.AdMixed2</scene>
+		<x>1736</x>
+		<y>1030</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival4.mainHall.MainHall</scene>
+				<x>2590</x>
+				<y>495</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival4.vanBurenRoom.VanBurenRoom</scene>
+				<x>180</x>
+				<y>800</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

@@ -1,0 +1,56 @@
+<language>
+	<shared>
+		<settings>
+			<settings>设置</settings>
+			<loggedIn>登录账号：</loggedIn>
+			<sounds>声音</sounds>
+			<music>音乐</music>
+			<effects>音效</effects>
+			<quality>画质</quality>
+			<dialog>对话速度</dialog>
+			<slow>慢</slow>
+			<medium>中</medium>
+			<fast>快</fast>
+			<lowq>低</lowq>
+			<mediumq>中</mediumq>
+			<highq>高</highq>
+			<logOut>退出登录</logOut>
+			<logOutText>确定要退出登录吗？</logOutText>
+			<changeGraphicsQualityText>确定要更改画质吗？当前场景会重新加载。</changeGraphicsQualityText>
+			<accountSettings>账号设置</accountSettings>
+			<help>帮助与支持</help>
+			<waitRestore>正在恢复购买内容，请稍候...</waitRestore>
+			<connectRestore>需要连接互联网才能恢复购买内容。</connectRestore>
+		</settings>
+		
+		<hud>
+			<map>确定要前往地图吗？</map>
+			<home>确定要返回家园吗？</home>
+			<store>进入商店？</store>
+			<realms>确定要离开这个岛，前往创世空间吗？</realms>
+		</hud>
+		
+		<costumizer>
+			<selectCharacter>选择角色</selectCharacter>
+			<maxLooks>衣橱已经存满 30 套造型。请先移除一套，再添加新造型。</maxLooks>
+			<membership>开通会员后，可在专属衣橱中保存最多 30 套造型！</membership>
+			<saveGame>保存游戏后，这套造型会存入你的专属衣橱。</saveGame>
+		</costumizer>
+		
+		<closetPopup>
+			<deleteLook>确定要删除这套造型吗？</deleteLook>
+			<defaultMessage>开通会员后，可在专属衣橱中保存最多 30 套造型！</defaultMessage>
+		</closetPopup>
+		
+		<inventory>
+			<island>岛屿</island>
+			<custom>奖品</custom>
+			<store>商店</store>
+			<noIslandCards><![CDATA[背包里还没有物品。<br/>去岛上探索，看看能找到什么！]]></noIslandCards>
+			<noCustomCards><![CDATA[你还没有赞助任务物品。<br/>完成赞助任务，<br/>领取专属服装和奖励。]]></noCustomCards>
+			<noStoreCards><![CDATA[你还没有商店物品。<br/>去商店看看，<br/>获取新服装和酷道具。]]></noStoreCards>
+			<goldCards>金卡</goldCards>
+			<costumes>服装</costumes>
+		</inventory>
+	</shared>
+</language>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>old_shield</id>
+		<asset>old_shield.swf</asset>
+		<x>2689</x>
+		<y>879</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,30 @@
+<dialogs>
+	<character id="player">
+		<statement forceOnScreen="true" id="check">是这个吗？</statement>
+		<statement forceOnScreen="true" id="which">到底是哪一个？</statement>
+
+
+
+		</character>
+	<character id="vizier2">
+		<statement forceOnScreen="true" id="intro">你说苏丹称它为“独一无二的灯”，把符合这个描述的灯给我！</statement>
+		<statement forceOnScreen="true" id="success">就是这个！我们必须立刻把它带给苏丹！</statement>
+		<statement forceOnScreen="true" id="nope0">这个肯定不对。</statement>
+		<statement forceOnScreen="true" id="nope1">不对，我家里好像就有一个这样的。</statement>
+		<statement forceOnScreen="true" id="nope2">那边还有一个一模一样的，再试试。</statement>
+		<statement forceOnScreen="true" id="nope3">不是这个，它上面还有价签！而且很便宜！</statement>
+		<statement forceOnScreen="true" id="nope4">闪闪发亮，但看起来也没什么特别的。</statement>
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

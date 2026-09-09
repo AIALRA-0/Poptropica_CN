@@ -1,0 +1,11 @@
+<doors>
+	<door id="doorCityRight">
+		<scene>game.scenes.virusHunter.cityRight.CityRight</scene>
+		<x>1533</x>
+		<y>1355</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,46 @@
+<item id="3188">
+		<type>store</type>
+		<subType>general</subType>
+		
+					<contentClass> <!-- This displays avatar  -->
+		<className>game.ui.card.CharacterContentView</className>
+	</contentClass>
+
+
+	
+	<buttons>
+			<btn>
+					<label>换装</label>
+					<actions>
+						<action type="costumize"/>
+					</actions>
+			</btn>
+		</buttons>
+
+	<textfields>
+			<text id="storeTitle">
+			<value>横纲</value>
+			</text>
+		<text id="storeSubTitle">
+			<value>红龙岛</value>
+			</text>
+		<text id="storeInstructions">
+			<web>Tap space bar to activate&#10;this outfit’s special action!</web>
+			<mobile>Tap ACTION to activate&#10;this outfit’s special action!</mobile>
+		</text>
+ 	</textfields>
+		
+		<assets>
+		<asset id="cardBack" />
+		</assets>
+		
+		<looks>
+			<look>
+			<marks>pmthsumo4</marks>
+					<hair>mthtownie03</hair>
+					<shirt>pmthsumo4</shirt>
+			<pants>pmthsumo4</pants>
+					<overpants>pmthsumo4</overpants>
+			</look>
+		</looks>
+</item>

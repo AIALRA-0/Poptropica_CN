@@ -1,0 +1,91 @@
+<dialogs>
+	<character id="player">
+		<statement id="wantWinWeight">想赢这游戏，我得想办法骗过那个猜体重的家伙。</statement>
+		<statement id="gotBluntedDart">怪不得扎不破气球——飞镖头都磨平了。</statement>
+		<statement id="askFryOil">其实，我想跟你讨一杯炸东西的油。</statement>
+		<statement id="notThirsty">我现在不渴。</statement>
+
+
+
+
+
+	</character>
+	<character id="bubby">
+		<statement id="bluntDart" triggerEvent="triggerEvent" triggerEventArgs="giveBluntedDart">我扎了三次气球，一个都没破。这玩意儿怎么回事？</statement>
+		<statement id="ballonsWontPop">我扎了三次气球，一个都没破。</statement>
+
+
+
+	</character>
+	<character id="sissy">
+		<statement>巴比答应给我赢个泰迪熊的。我要告诉妈妈。</statement>
+
+
+	</character>
+	<character id="foodstandWorker">
+		<statement id="thanksSugar">谢谢你帮我弄到糖。</statement>
+		<statement id="wantSoda">来杯汽水吗？</statement>
+		<statement id="giveFryOil">不合我口味，不过嘛，我崇尚自由。想吃啥就吃啥。</statement>
+		<statement id="gaveFryOil">一杯炸东西的油……</statement>
+
+
+
+
+
+	</character>
+	<character id="father">
+		<statement>跟我小时候那次嘉年华一模一样。希望别像上次那样……闹得不愉快。</statement>
+
+
+	</character>
+	<character id="junior">
+		<statement>安静点，我在吃东西。</statement>
+
+
+	</character>
+	<character id="guesser">
+		<statement id="stepUpGuess" triggerEvent="triggerEvent" triggerEventArgs="getOnScale">快过来，让我猜猜你的体重。要是误差超过十磅，你就能赢到难以置信的奖品。</statement>
+		<statement id="guessWeightStart">你，我的朋友，体重115磅。</statement>
+		<statement id="guessWeightRight">又一次完美预测。</statement>
+		<statement id="guessWeightWrong">难以置信。我从来没猜错过。好吧，我说话算话，这是你的奖品。</statement>
+		<statement id="wonGuess">你今天已经赢过了。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="woman">
+		<statement>他猜对了我的体重。</statement>
+		<statement id="guesserCheating">这家伙肯定作弊了。他从来没猜错过。</statement>
+
+
+
+	</character>
+	<character id="edgar">
+		<statement id="noPopping">我也不知道气球为什么扎不破。</statement>
+		<statement id="poppedBalloon" triggerEvent="triggerEvent" triggerEventArgs="giveSouvenirCup">抱歉，泰迪熊只是展示品。这个杯子给你吧。</statement>
+		<statement id="wonBallon">抱歉，每天只能领一次奖品。</statement>
+
+
+
+
+	</character>
+	<character id="duckGameWorker">
+		<statement>选对鸭子就能赢奖品！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

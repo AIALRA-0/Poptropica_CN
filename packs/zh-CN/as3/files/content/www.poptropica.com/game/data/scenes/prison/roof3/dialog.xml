@@ -1,0 +1,38 @@
+<dialogs>
+	<character id="player">
+		<statement id="trapped">我被困住了。</statement>
+		<statement id="thank_bird">谢谢你，小家伙。</statement>
+
+
+
+		</character>
+	<character id="nightingale">
+		<statement id="footsteps">我跟你说了，典狱长，我听到这里有脚步声。</statement>
+		<statement id="nothing">看来是虚惊一场。</statement>
+
+
+
+		</character>
+	<character id="ratchet">
+		<statement id="end">我一直想亲手抓住越狱犯。</statement>
+		<statement id="gone">什么脚步声。哼。</statement>
+
+
+
+		</character>
+	<character id="warden">
+		<statement id="no_escape">在我当班时，没人能从鹈鹕岩逃出去。我们要把屋顶搜个底朝天。</statement>
+		<statement id="escaped">嗯……</statement>
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+</dialogs>

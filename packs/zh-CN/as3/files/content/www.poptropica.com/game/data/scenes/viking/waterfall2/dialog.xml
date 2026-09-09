@@ -1,0 +1,18 @@
+<dialogs>
+	<character id="player">
+		<statement id="need_goblet">太滑了抓不住。我得找个东西装它。</statement>
+		<statement id="equip_goblet">也许这个能帮我抓到一条鱼。</statement>
+		<statement id="catch_fish">这个应该能装住它。</statement>
+		<statement id="has_fish">我不需要更多鱼了。</statement>
+		<statement id="river">那场山崩把整条河都改道了。</statement>
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

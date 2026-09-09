@@ -1,0 +1,42 @@
+<dialogs>
+	<character id="player">
+		<statement id="capture_jinn">以神灯之力，我命令你，狡猾的精灵萨——</statement>
+
+
+		</character>
+	<character id="jinn">
+		<statement>别再关我了……我不想回去……</statement>
+		<statement id="yes_master">主人，您的愿望就是我的命令。</statement>
+
+
+
+		</character>
+	<character id="thief">
+		<statement id="no_more_running">别想再逃了！该实现我的愿望了！</statement>
+		<statement id="jinn_powers">萨姆哈尔……我要你的力量！</statement>
+		<statement id="my_kingdom">王国是我的了！</statement>
+		<statement id="not_likely">尽管试试，我现在可是无所不能的精灵！</statement>
+
+
+
+
+
+		</character>
+	<character id="sultan">
+		<statement id="wait">等等！</statement>
+		<statement id="stop_her">你得阻止她！</statement>
+		<statement id="do_anything">无论如何，求你了，一定要把她带回来。</statement>
+
+
+
+
+		</character>
+
+
+
+
+
+
+
+
+</dialogs>

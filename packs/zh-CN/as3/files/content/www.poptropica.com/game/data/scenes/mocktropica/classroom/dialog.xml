@@ -1,0 +1,102 @@
+<dialogs>
+	<character id="player">
+		<statement id="teachThem" link="classicPoem" linkEntityId="leadWriter">你想教他们什么？</statement>
+		<statement id="onFetchingSoda" triggerEvent="triggerEvent" triggerEventArgs="searchingSoda">包在我身上，老师！</statement>
+		<statement id="sodaNotWork" link="broughtSoda" linkEntityId="leadWriter">嘿，这可不是这么玩的。</statement>
+		<statement id="whatNightmares" link="haveNightmares" linkEntityId="leadWriter">什么噩梦？</statement>
+		<statement id="wheresScript" link="findScript" linkEntityId="leadWriter">Poptropica的剧本会在哪儿呢？</statement>
+
+
+
+
+
+
+		</character>
+	<character id="leadWriter">
+		<statement id="studyPoem" link="megaBotsOne" linkEntityId="student1">安静，同学们。今天我们来学习诗歌《哦，船长！我的船长！ 》</statement>
+		<statement id="changeLives" link="teachThem" linkEntityId="player">我知道我能打动这些孩子。我要改变他们的人生。</statement>
+		<statement id="classicPoem" triggerEvent="triggerEvent" triggerEventArgs="givePoem">经典诗歌《哦，船长！我的船长！ 》. 我希望它能培养大家对诗歌的热爱。作为一名教育者，我其实更喜欢苏格拉底式教学法……</statement>
+		<statement id="onlyPoem" link="fetchSoda" triggerEvent="triggerEvent" triggerEventArgs="askedForSoda">啊！那是我唯一的副本……我需要更多汽水来熬过这一天。</statement>
+		<statement id="fetchSoda" link="onFetchingSoda" linkEntityId="player">这是老作家的诀窍。总要给玩家一些东西去寻找。提示一下。</statement>
+		<statement id="wantSoda">哦，玩家！哦，玩家！给我找些汽水来！</statement>
+		<statement id="sodaNotEnough" link="sodaNotWork" linkEntityId="player">谢谢，但这还不够让我重新振作起来。</statement>
+		<statement id="broughtSoda" link="whatNightmares" linkEntityId="player">你确实给我带来了汽水……但我担心如果回去，噩梦又会回来。</statement>
+		<statement id="haveNightmares" link="wheresScript" linkEntityId="player">我以前常做噩梦，梦见Poptropica剧本里有错别字。我会整晚待在办公室修改它们！如果我现在看到一份剧本，我肯定会忍不住去修改！</statement>
+		<statement id="findScript" triggerEvent="triggerEvent" triggerEventArgs="askedForScript">我总是把它们放在该放的地方——垃圾桶里！提示一下。</statement>
+		<statement id="wantScript">我总是把剧本扔进垃圾桶！</statement>
+		<statement id="givenScript" triggerEvent="triggerEvent" triggerEventArgs="giveBadge">这么多错别字！谁打的字，三趾树懒吗？我得去我的写作站了！</statement>
+		<statement id="studentsChanted" link="playBots" linkEntityId="student1">哦天啊……我所有的辛勤工作，对你们这些孩子来说真的有意义……这一切都值得了。</statement>
+		<statement id="notAsHoped" triggerEvent="triggerEvent" triggerEventArgs="writerLeaveScene">这和我预想的不太一样……</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="student1">
+		<statement id="megaBotsOne" link="megaBotsTwo" linkEntityId="student2">才不要！我们要玩《巨型战斗机器人》！</statement>
+		<statement id="megaBotsThree" link="megaBotsFour" linkEntityId="student2">我的机器人会碾碎你的机器人！</statement>
+		<statement id="chantStart" link="chantContinue" linkEntityId="student2" triggerEvent="triggerEvent" triggerEventArgs="captainChant">哦，船长！我的船长！我们可怕的航程已经结束。</statement>
+		<statement id="playBots" link="playBotsContinue" linkEntityId="student2">那又不是为你准备的。是为另一个准备的。既然你放弃了，我们可以整天玩《巨型战斗机器人》了！</statement>
+		<statement>等我长大了，我要当职业玩家！</statement>
+		<statement triggeredByEvent="lostMegaFightingBots">哈哈，你游戏玩得真烂！</statement>
+
+
+
+
+
+
+
+		</character>
+	<character id="student2">
+		<statement id="megaBotsTwo" link="megaBotsThree" linkEntityId="student1" triggerEvent="triggerEvent" triggerEventArgs="turnBackStudent">巨型战斗机器人！巨型战斗机器人！</statement>
+		<statement id="megaBotsFour" triggerEvent="triggerEvent" triggerEventArgs="doneBickering">想得美，菜鸟。我的机器人87级了！</statement>
+		<statement id="chantContinue" link="studentsChanted" linkEntityId="leadWriter">船已历经风浪，我们追寻的奖赏已经赢得。</statement>
+		<statement id="playBotsContinue" link="notAsHoped" linkEntityId="leadWriter">巨型战斗机器人！巨型战斗机器人！</statement>
+		<statement>《巨型战斗机器人》是最棒的！</statement>
+
+
+
+
+
+
+		</character>
+	<character id="student3">
+		<statement>我妈妈说孩子是未来。然后她摇了摇头。</statement>
+
+
+		</character>
+	<character id="student4">
+		<statement>我从来轮不到玩。</statement>
+
+
+		</character>
+	<character id="student5">
+		<statement>别告诉别人，其实我想学那首诗。</statement>
+
+
+		</character>
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

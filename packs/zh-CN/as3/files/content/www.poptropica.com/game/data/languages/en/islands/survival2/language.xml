@@ -1,0 +1,24 @@
+<language>
+	<island>
+		<beaverDen>
+			<text1>水位这么高，我肯定拿不到那个钩子。</text1>
+			<text2>水好像在流走！</text2>
+			<text3>但我得想办法阻止它们把洞补上！</text3>
+			<text4>河狸走了，这下我肯定能拿到钩子了！</text4>
+			<text5>现在我应该能够到那个钩子了！</text5>
+		</beaverDen>
+		
+		<fishingHole>
+			<text1>这没用——只是个障眼法！</text1>
+			<text2>我用的鱼饵可能不对。</text2>
+			<text3>我可能没找对钓鱼的位置。</text3>
+		</fishingHole>
+		
+		<shared>
+			<text1>没必要在这里用这个。</text1>
+			<text2>我没有东西可以装它。</text2>
+			<text3>我得想办法拿到那只靴子！</text3>
+			<text4>我没有工具来抓鱼！</text4>
+		</shared>
+	</island>
+</language>

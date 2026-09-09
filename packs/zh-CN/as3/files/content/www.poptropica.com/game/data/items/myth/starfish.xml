@@ -1,0 +1,63 @@
+<item id="starfish">
+  	<type>island</type>
+  	<subType>myth</subType>
+  	<buttons>
+  		<btn>
+  			<label>使用</label>
+			<actions>
+	    		<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="true"/>
+		  			<parameters>
+		  				<param id="event">poseidon_offering</param>
+					</parameters>
+				</action>
+				<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="false"/>
+		  			<parameters>
+		  				<param id="event">no_reason_to_use_item_default</param>
+					</parameters>
+				</action>
+			</actions>
+		</btn>
+	</buttons>
+  	<textfields>
+ 		<text>
+      		<value>海星</value>
+    	</text>
+    	<text>
+      		<value>一闪一闪亮晶晶。</value>
+      		<size>18</size>
+      		<y>105</y>
+      		<width>210</width>
+      		<textColor>0x6E7A80</textColor>
+      	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>6</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-46</saturation>
+     			<hue>160</hue>
+    		</effect>
+    	</asset>
+   		<asset id="cardContent"/>
+    </assets>
+    
+     <conditionals>
+    	<conditional type="inScene">
+    		<parameters>
+		  		<param id="validScenes">game.scenes.myth.poseidonTemple.PoseidonTemple</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+</item>
+
+<!--  usable in poseidon's temple
+	use water
+	
+	else
+	No point in using it here.
+ -->

@@ -1,0 +1,37 @@
+<dialogs>
+	<character id="sultan">
+		<conversation>
+			<exchange>
+				<question>抱歉。我本来拿到了神灯，但又弄丢了。</question>
+				<answer>要是我的宰相朋友在这儿就好了。他肯定知道该怎么办。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我在盗贼巢穴遇到他了！他帮我找到了神灯。</question>
+				<answer>他既睿智又勇敢！快告诉我，有他的消息吗？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="lockScene">呃……怎么说呢，我最后看见他时，他就那么凭空消失了。</question>
+				<answer link="mustFind" linkEntityId="sultan">呵，这倒像他的作风。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="mustFind" triggerEvent="triggerEvent" triggerEventArgs="sultanLeave">我必须找到那个灯神。你可以留在宫里，但别在这儿到处乱翻。</statement>
+
+
+
+	</character>
+
+
+</dialogs>

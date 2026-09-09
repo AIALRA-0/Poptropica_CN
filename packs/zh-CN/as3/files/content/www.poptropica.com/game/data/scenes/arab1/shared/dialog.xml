@@ -1,0 +1,25 @@
+<dialogs>
+	<character id="player">
+		<statement id="no_use_spy_glass">这里没什么好看的。</statement>
+		<statement id="no_use_salt">这里没什么需要调味的。也许别人会用得上这盐。</statement>
+		<statement id="no_use_grain">也许有人比我更需要这些谷物。</statement>
+		<statement id="no_use_cloth">不是我的风格。我应该看看有没有人愿意和我交换。</statement>
+		<statement id="no_use_lamp">这根本一点都不神奇！骗人的吧。</statement>
+		<statement id="no_use_camel_harness">没有骆驼，这缰绳就没用。</statement>
+		<statement id="no_use_crown_jewel">这宝石无疑价值连城，但在集市上没用！</statement>
+		<statement id="no_use_pearl">明智的做法是把它换成更有价值的东西。</statement>
+		<statement id="no_use_ivory_camel">收藏家会喜欢，但我不需要。</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

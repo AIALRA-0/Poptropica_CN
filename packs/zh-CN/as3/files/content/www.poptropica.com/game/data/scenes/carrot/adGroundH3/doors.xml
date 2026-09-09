@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.carrot.farm.Farm</scene>
+		<x>3490</x>
+		<y>1100</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorRight">
+		<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+		<x>40</x>
+		<y>940</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

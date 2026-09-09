@@ -1,0 +1,42 @@
+<doors>
+	<door id="doorPrincess">
+		<scene>game.scenes.arab3.princessRoom.PrincessRoom</scene>
+		<x>275</x>
+		<y>780</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+		<direction>right</direction>
+	</door>
+	<door id="doorPalace">
+		<scene>game.scenes.arab3.palaceInterior.PalaceInterior</scene>
+		<x>295</x>
+		<y>534</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+		<direction>right</direction>
+	</door>
+	<door id="doorLamp">
+		<scene>game.scenes.arab3.lampRoom.LampRoom</scene>
+		<x>275</x>
+		<y>775</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+		<direction>right</direction>
+	</door>
+	<door id="doorVizier">
+		<scene>game.scenes.arab3.vizierRoom.VizierRoom</scene>
+		<x>30</x>
+		<y>1850</y>
+		<label>
+			<text>进入</text>
+			<type>exitRight</type>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

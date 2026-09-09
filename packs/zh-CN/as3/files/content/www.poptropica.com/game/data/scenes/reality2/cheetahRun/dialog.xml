@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="vanBurenTalker">
+		<statement id="start" forceOnScreen="true">太好了！快跑吧，小伙子！一场狩猎好不好，就看追逐够不够精彩！</statement>
+		<statement id="start_lass" forceOnScreen="true">太好了！快跑吧，小姑娘！一场狩猎好不好，就看追逐够不够精彩！</statement>
+    </character>
+
+    <character id="buren">
+	<statement id="lost_him">看来我们跟丢踪迹了。</statement>
+	<statement id="setup_camp">没关系，我们就在这里扎营，待会儿继续狩猎！</statement>
+    </character>
+</dialogs>

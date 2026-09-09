@@ -1,0 +1,20 @@
+<dialogs>
+	<character id="char1">
+		<statement>今晚的科学展览会你一定要去看看。</statement>
+		<statement event="got_shrink_medallion">你看到C. J. 的科学项目了吗。</statement>
+
+
+
+	</character>
+	<character id="char2">
+		<statement>这地方太棒了。</statement>
+		<statement event="got_shrink_medallion">糖果吃多了都眼花了。我好像看到一个小人开着迷你车经过。</statement>
+
+
+
+	</character>
+
+
+
+
+</dialogs>

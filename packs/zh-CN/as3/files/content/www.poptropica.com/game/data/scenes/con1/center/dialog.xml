@@ -1,0 +1,311 @@
+<dialogs>
+	<character id="costume">
+		<statement id="ask_tutorial" link="tutorial">在Poptropicon岛，你会经常更换装扮。想学习如何换装吗？</statement>
+		<statement>你可以装扮成展会上看到的任何角色！</statement>
+		<statement id="tutorial_done">如果你不想丢失任何装扮部件，记得先保存当前造型。</statement>
+		<conversation id="tutorial">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="start_tutorial">是。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="no_tutorial">不用了。</question>
+				<answer>如果你不想丢失任何装扮部件，记得先保存当前造型。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+	</character>
+	<character id="fantasy">
+		<conversation>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer link="first_link">我帮朋友留了一张，但不知道他在哪儿。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>他长什么样？</question>
+				<answer link="friend_quest_accepted" triggerEvent="triggerEvent" triggerEventArgs="friend_quest_accepted,true">他打扮成巫师的样子，你肯定能认出来：尖顶黑帽、带月亮护符的长袍、白胡子、木杖。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="first_link">
+			<exchange>
+				<question>他长什么样？</question>
+				<answer link="friend_quest_accepted" triggerEvent="triggerEvent" triggerEventArgs="friend_quest_accepted,true">他打扮成巫师的样子，你肯定能认出来：尖顶黑帽、带月亮护符的长袍、白胡子、木杖。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="some_wizard_parts">
+			<exchange>
+				<question>我来了！现在把票给我吧。</question>
+				<answer id="show_selfie">你不是我朋友，他长这样。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="take_ticket">
+			<exchange>
+				<question>我来了！现在把票给我吧。</question>
+				<answer link="ticket_link">你总算从洗手间回来了，好吧，东西在哪儿？</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation id="ticket_link">
+			<exchange>
+				<question>什么东西在哪儿？</question>
+				<answer link="promise_reply" linkEntityId="player">说好的，我给你票，你给我承诺的东西。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="gotItem_mjolnir">
+			<exchange>
+				<question>我找到你要的东西了！</question>
+				<answer link="outdoor_toilet">你绝对配得上这张多余的票了！你在哪儿找到的？</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation id="outdoor_toilet">
+			<exchange>
+				<question>在一个户外厕所里。</question>
+				<answer link="deal_off" linkEntityId="player">呃……交易取消。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<statement event="deal_off">交易取消！</statement>
+		<statement event="friend_quest_accepted">这是我们之前拍的自拍。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="racer">
+		<statement event="racer_not_beat" link="race">力量护符不能赠送，只能靠实力赢得。在水塔顶上赢过我，它就是你的了！</statement>
+		<statement event="racer_beat" link="race">哇，你动作真快！想不想再试试能不能赢我？</statement>
+		<conversation id="race">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="play_race">一言为定！</question>
+
+
+					</exchange>
+			<exchange>
+				<question>也许下次吧。</question>
+
+
+					</exchange>
+
+
+
+			</conversation>
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="promise_reply" triggerEvent="triggerEvent" triggerEventArgs="friend_quest_complete,true">当然，我，呃，马上回来。</statement>
+		<statement id="noon">中午有服装比赛，对吧？</statement>
+		<statement id="deal_off" triggerEvent="triggerEvent" triggerEventArgs="deal_off">糟糕。我得另找办法进去。</statement>
+
+
+
+
+	</character>
+	<character id="line1">
+		<conversation>
+			<exchange>
+				<question>你还等什么？</question>
+				<answer link="extra_ticket">《强力行动队》预告片！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>没有。票几个月前就卖光了。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="extra_ticket">
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>没有。票几个月前就卖光了。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+
+
+	</character>
+	<character id="line2">
+		<conversation>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>你在开玩笑吗？</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+	</character>
+	<character id="line3">
+		<conversation>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>快走开，地球人！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+	</character>
+	<character id="line4">
+		<conversation>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>没门！</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+	</character>
+	<character id="wizard_line">
+		<conversation>
+			<exchange>
+				<question>你有多余的票吗？</question>
+				<answer>我不是魔术师，我是巫师。我可没法从帽子里变出票来。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+
+
+	</character>
+	<character id="witch">
+		<statement>别告诉别人我在这儿！</statement>
+
+
+	</character>
+	<character id="wizard_soda">
+		<statement>机器吞了我的钱！</statement>
+
+
+	</character>
+	<character id="soda">
+		<statement>这苏打水真好喝！</statement>
+
+
+	</character>
+	<character id="eater">
+		<statement>吧唧吧唧！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

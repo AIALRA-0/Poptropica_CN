@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>metal_cup</id>
+		<asset>metal_cup.swf</asset>
+		<x>886</x>
+		<y>927</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

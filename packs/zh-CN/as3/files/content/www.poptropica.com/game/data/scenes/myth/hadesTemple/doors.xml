@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorGrove">
+		<scene>game.scenes.myth.grove.Grove</scene>
+		<x>2890</x>
+		<y>1670</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorPit">
+		<scene>game.scenes.myth.hadesPit1.HadesPit1</scene>
+		<x>470</x>
+		<y>790</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

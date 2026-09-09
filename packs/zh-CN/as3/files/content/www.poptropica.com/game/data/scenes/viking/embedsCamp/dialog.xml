@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="player">
+		<statement id="snoozeville">他搭上快车直奔梦乡了。</statement>
+		<statement id="scary">他看起来好危险！我还是离远点。</statement>
+
+
+
+	</character>
+	<character id="embed">
+		<statement id="whosThere" triggerEvent="triggerEvent" triggerEventArgs="lose_mind">谁在那儿？</statement>
+		<statement id="foolMind" triggerEvent="triggerEvent" triggerEventArgs="return_pan">我在这儿都快疯掉了。</statement>
+
+
+
+	</character>
+
+
+
+</dialogs>

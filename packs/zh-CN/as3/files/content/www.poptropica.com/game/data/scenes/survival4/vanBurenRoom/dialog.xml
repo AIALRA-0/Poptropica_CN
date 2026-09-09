@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement id="cant_reach">肯定有办法拿到钥匙。</statement>
+
+
+		</character>
+
+
+</dialogs>

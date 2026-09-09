@@ -1,0 +1,11 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+		<x>923</x>
+		<y>940</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+</doors>

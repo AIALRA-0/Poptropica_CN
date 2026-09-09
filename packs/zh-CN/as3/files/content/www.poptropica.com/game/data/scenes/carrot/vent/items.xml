@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>wireCutters</id>
+		<asset>wireCutters.swf</asset>
+		<x>1026</x>
+		<y>2050</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

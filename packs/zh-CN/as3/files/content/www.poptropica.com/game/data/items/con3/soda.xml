@@ -1,0 +1,82 @@
+<item id="soda">
+	<type>island</type>
+	<subType>con3</subType>
+	<textfields>
+ 		<text id="title">
+ 			<conditional id="one_soda" isTrue="true"/>
+      		<value>能量饮料</value>
+    	</text>
+ 		<text id="title">
+ 			<conditional id="one_soda" isTrue="false"/>
+      		<value>能量饮料</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>0</saturation>
+     			<hue>-67</hue>
+    		</effect>
+    	</asset>
+    	<!-- 
+    	<asset id="cardContent">
+			<conditional id="one_soda" isTrue="true"/>
+			<assetPath>items/con3/soda.swf</assetPath>
+		</asset>
+		<asset id="cardContent">
+			<conditional id="two_soda" isTrue="true"/>
+			<assetPath>items/con3/two_soda.swf</assetPath>
+		</asset>
+		<asset id="cardContent">
+			<conditional id="three_soda" isTrue="true"/>
+			<assetPath>items/con3/three_soda.swf</assetPath>
+		</asset> -->
+    </assets>
+    
+    <buttons>
+  		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">use_soda</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<contentClass>
+		<className>game.ui.card.MultiFrameContentView</className>
+		<parameters>
+			<param>items/con3/soda.swf</param>
+		</parameters>
+	</contentClass>
+	
+    <conditionals>
+    	<conditional type="checkEvents" id="one_soda">
+    		<parameters>
+		  		<param id="event">one_soda</param>
+		  		<param id="true">one</param>
+			</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="two_soda">
+    		<parameters>
+		  		<param id="event">two_soda</param>
+		  		<param id="true">two</param>
+			</parameters>
+    	</conditional>
+    	
+    	<conditional type="checkEvents" id="three_soda">
+    		<parameters>
+		  		<param id="event">three_soda</param>
+		  		<param id="true">three</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+</item>

@@ -1,0 +1,24 @@
+<dialogs>
+	<character id="dummyPlayer">
+		<statement id="trapped">看来那条路是走不通了……</statement>
+		<statement id="thatYou">卡姆？是你吗？</statement>
+		<statement id="whatARush">太刺激了！那些画面就像直接在我脑子里播放一样！</statement>
+
+
+
+
+
+
+	</character>
+	<character id="cam">
+		<statement id="this">ejlkfmk wkfjbvc kwls&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;tutous flmns</statement>
+		<statement id="that">&lt;br/&gt;...Emergency Power...</statement>
+
+
+
+		</character>
+
+
+
+
+</dialogs>

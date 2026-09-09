@@ -1,0 +1,28 @@
+<doors>
+  <door id="door1">
+    <scene>game.scenes.virusHunter.cityRight.CityRight</scene>
+    <x>646</x>
+    <y>1355</y>
+    <label>
+      <text>退出</text>
+      <type>exit3D</type>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+  <door id="door2">
+    <scene>game.scenes.virusHunter.pdcLab.PdcLab</scene>
+    <x>612</x>
+    <y>494</y>
+    <label>
+      <text>退出</text>
+      <type>exit3D</type>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+</doors>

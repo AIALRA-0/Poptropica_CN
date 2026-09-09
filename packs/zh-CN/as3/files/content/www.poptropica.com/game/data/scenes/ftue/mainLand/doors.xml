@@ -1,0 +1,30 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.ftue.forest.Forest</scene>
+		<x>2800</x>
+		<y>570</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.ftue.shipWreck.ShipWreck</scene>
+		<x>100</x>
+		<y>3600</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,12 @@
+<doors>
+	<door id="doorPoptropicaHQ">
+		<scene>game.scenes.mocktropica.poptropicaHQ.PoptropicaHQ</scene>
+		<x>879</x>
+		<y>1625</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+		</label>
+	</door>
+</doors>

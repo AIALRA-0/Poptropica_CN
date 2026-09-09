@@ -1,0 +1,71 @@
+<dialogs>
+	<character id="player">
+		<statement id="total">北极熊怎么会跑到离北极这么远的地方来？不过它看起来确实饿坏了。</statement>
+		<statement id="total2">托托总在厨房待着，肯定是在等好吃的。</statement>
+		<statement id="amazing">这东西太棒了！能自动吸走地上的所有东西。</statement>
+		<statement id="key_inside">我得找个工具打开它，拿到钥匙。</statement>
+		<statement id="roomba_broken" link="bear">嘿，扫地机器人坏了！怎么回事。</statement>
+		<statement id="bear">我得看看懒熊2000有没有录下什么。</statement>
+		<statement id="screwdriver2">拆开之前，我得先看看录像。</statement>
+		<statement id="screwdriver">没必要拆开扫地机器人。</statement>
+		<statement id="whoops">哎呀！希望这东西不重要……</statement>
+		<statement id="locked">儿童安全锁，看来北极熊也打不开……</statement>
+		<statement id="shears">这里没什么可切的了。</statement>
+		<statement id="locked2">锁住了，附近应该能找到钥匙。</statement>
+		<statement id="key">嘿，扫地机器人吞了把钥匙！</statement>
+		<statement id="record">懒熊2000还没录到东西，我晚点再来看看。</statement>
+		<statement id="phone">还是别碰了，我可不想惹麻烦。</statement>
+		<statement id="missing_pieces">懒熊的零件还没凑齐。</statement>
+		<statement id="treats_found">啊……原来它想要的是这个。</statement>
+		<statement id="shoes_found">呃……这就是提米的办公室？看起来像个储物间嘛，不过这双鞋不错，说不定能用上。</statement>
+		<statement id="treats">哇，为了这些零食，它真是跟到哪儿都行。</statement>
+		<statement id="sitting">他就站在这儿，啥也没干。</statement>
+		<statement id="how">我们该怎么办？</statement>
+		<statement id="where">现在去哪儿找齐这些东西呢……</statement>
+		<statement id="what">提米不该把这东西放外面，会吓到人的！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="timmy">
+		<statement id="fast">别想跑！我可不会让你轻易带走我的搭档。</statement>
+		<statement id="slack">问题就在这儿。得全天盯着他，免得他整天在厨房偷懒。</statement>
+		<statement id="lazy">很简单：用懒熊2000. 我太忙了，所以这个任务交给你。这是说明书。</statement>
+		<statement id="nice">干得漂亮。这下能逮到我那偷懒的搭档了。</statement>
+		<statement id="lead">我还有个线索。我有个同学最近特别热情——有点过头了。你去查查他。</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+</dialogs>

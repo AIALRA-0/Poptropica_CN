@@ -1,0 +1,25 @@
+<item id="crownJewel">
+	<type>island</type>
+	<subType>arab1</subType>
+	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">crown_jewel</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+	<textfields>
+ 		<text>
+      		<value>王冠宝石</value>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

@@ -1,0 +1,26 @@
+<sounds>
+	<sound type="music">
+		<asset>megaFightingBots-TitleScreen96.mp3</asset>
+		<asset triggeredByEvent="ladderTheme" loop="true" exclusiveType="true">megaFightingBots-Menu-loop96.mp3</asset>
+		<asset triggeredByEvent="battleLoop" loop="true" exclusiveType="true" baseVolume=".65">megaFightingBots-FightTheme-loop96.mp3</asset>
+		<asset triggeredByEvent="losing" exclusiveType="true" baseVolume=".65">megaFightingBots-FightThemeFASTupWholeStep-loop96.mp3</asset>
+		<asset triggeredByEvent="lose" exclusiveType="true">megaFightingBots-Lose96.mp3</asset>
+		<asset triggeredByEvent="win" exclusiveType="true">megaFightingBots_Win96.mp3</asset>
+		<asset triggeredByEvent="continue" exclusiveType="true">megaFightingBots-Continue96.mp3</asset>
+		<asset triggeredByEvent="mainTheme" exclusiveType="true">megaFightingBots-TitleScreen96.mp3</asset>
+		<asset triggeredByEvent="mainStart" exclusiveType="true">retro_select_03.mp3</asset>
+		<asset triggeredByEvent="coinUp" exclusiveType="true" absoluteUrl="true">effects/coin_up_v2_01.mp3</asset>
+	</sound>
+	<sound type="ambient">
+		<asset loop="true" fade="true" exclusiveType="true" baseVolume=".6">ambient/arena_crowd_01_L.mp3</asset>
+	</sound>
+	<sound type="effects">
+		<asset loop="true" fade="true" exclusiveType="true" baseVolume=".6">ambient/arena_crowd_01_L.mp3</asset>
+		<asset triggeredByEvent="cheer">CrowdCheer_01.mp3</asset>
+		<asset triggeredByEvent="crowdStomp" loop="true">cheer_stomp.mp3</asset>
+		<asset triggeredByEvent="round1">round_one_01.mp3</asset>
+		<asset triggeredByEvent="round2">round_two_01.mp3</asset>
+		<asset triggeredByEvent="finalRound">final_round_01.mp3</asset>
+		<asset triggeredByEvent="go">go_01.mp3</asset>
+	</sound>
+</sounds>

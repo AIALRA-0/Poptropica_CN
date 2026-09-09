@@ -1,0 +1,18 @@
+<item id="crowbar">
+	<type>island</type>
+	<subType>carrot</subType>
+	<textfields>
+ 		<text>
+      		<value>撬棍</value>
+    	</text>
+    	<text>
+      		<value>If at first you don’t succeed, pry, pry again.</value>
+      		<size>18</size>
+      		<y>111</y>
+    	</text>
+  	</textfields>
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

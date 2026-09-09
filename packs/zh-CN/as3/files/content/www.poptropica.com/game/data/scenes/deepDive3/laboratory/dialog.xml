@@ -1,0 +1,31 @@
+<dialogs>
+	<character id="dummyPlayer">
+		<statement id="living">这些生物还活着吗？</statement>
+		<statement id="creature">这些罐子好像启动了……等等，那是什么？</statement>
+		<statement id="creature2">哇！那东西好大！</statement>
+		<statement id="creatureEscaped1">哦不，这下糟了。</statement>
+		<statement id="creatureEscaped2">那边有东西。</statement>
+
+
+
+
+
+
+	</character>
+	<character id="cam">
+		<statement id="this">asdfa dgaw aeer adaf&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;hajnja ioweutvm skaoh</statement>
+		<statement id="that">&lt;br/&gt;   ...Find Me. Find Me...</statement>
+		<statement id="alienSpeak">asdfa dgaw aeer adaf&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;hajnja ioweutvm skaoh</statement>
+		<statement id="englishSpeak">&lt;br/&gt;</statement>
+		<statement id="static">|</statement>
+
+
+
+
+
+
+		</character>
+
+
+
+</dialogs>

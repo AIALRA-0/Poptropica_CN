@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="drLang">
+		<statement forceOnScreen="true" triggeredByEvent="tryagain">不错，但看来我们还需要更多测试对象来检验这艘飞船的性能。</statement>
+		<statement forceOnScreen="true" triggeredByEvent="congrats">嘿，干得不错！想再试一次吗？我们总是需要更多数据来改进飞船！</statement>
+
+
+
+	</character>
+
+
+</dialogs>

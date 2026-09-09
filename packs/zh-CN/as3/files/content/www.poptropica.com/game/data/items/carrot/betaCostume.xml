@@ -1,0 +1,33 @@
+
+<item id="betaCostume">
+  	<type>island</type>
+  	<subType>carrot</subType>
+  	<contentClass> game.ui.card.CharacterContentView </contentClass>
+  	<buttons>
+	    	<btn>
+	      		<label>换装</label>
+	      		<actions>
+		  			<action type="costumize"/>
+		  		</actions>
+	    	</btn>
+  	</buttons>
+  	<textfields>
+   	 	<text>
+      		<value>24 胡萝卜测试服装</value>
+   	 	</text>
+  	</textfields>
+  	<assets>
+		<asset id="cardBack">
+    		<assetPath>items/shared/PaidBackground.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent"/>
+  	</assets>
+  	<looks>
+	    <look>
+	    	<mouth>15</mouth>>
+	    	<facial>24_beta</facial>
+		 	<overshirt>24_beta</overshirt>
+	   	</look> 
+	</looks> 
+</item>
+

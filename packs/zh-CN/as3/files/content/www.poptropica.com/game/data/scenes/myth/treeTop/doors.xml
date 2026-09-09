@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorTreeBottom">
+		<scene>game.scenes.myth.treeBottom.TreeBottom</scene>
+		<x>2600</x>
+		<y>100</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

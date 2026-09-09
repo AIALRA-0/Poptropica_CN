@@ -1,0 +1,105 @@
+<dialogs>
+	<character id="dan">
+		<statement link="why" linkEntityId="player">别伤害我！</statement>
+		<statement id="tail" triggerEvent="triggerEvent" triggerEventArgs="dan_show_tail">就因为这个！</statement>
+		<statement id="yes" link="but" linkEntityId="player">是的。这些年来，我一直向镇民们隐瞒自己的真实身份。</statement>
+		<statement id="bird" link="help" linkEntityId="player">你看到他们是怎么对待那个鸟男孩的！我可不想落得那种下场。我一直在研究解药，但昨晚之后，我没法回镇上了。</statement>
+		<statement id="chem" triggerEvent="giveItem" triggerEventArgs="chemical_x_formula" link="hurry">你可以用我的店铺来配制我需要的化学药剂。这是配方。</statement>
+		<statement id="hurry">快！我时间不多了。</statement>
+		<statement event="gotItem_chemical_x_formula">你可以用我的店铺来配制我需要的化学药剂。快！</statement>
+		<statement event="hasItem_chemical_x" triggerEvent="takeItem" triggerEventArgs="chemical_x, dan" link="here">你拿到化学药剂了吗？</statement>
+		<statement id="here" triggerEvent="triggerEvent" triggerEventArgs="dan_drink_potion">成败在此一举……</statement>
+		<statement triggeredByEvent="gave_potion" triggerEvent="triggerEvent" triggerEventArgs="dan_drink_potion">成败在此一举……</statement>
+		<statement triggeredByEvent="dan_drank_potion">啊！好烫！好烫！它……</statement>
+		<statement id="dan_potion_failed" link="oops" linkEntityId="player">更糟了！我现在长角了！</statement>
+		<statement id="diet" link="low" linkEntityId="player">无糖的？难怪没用。谁都知道无糖可乐只是正品的拙劣模仿！</statement>
+		<statement id="leave" triggerEvent="triggerEvent" triggerEventArgs="enter_search_party">我别无选择。我必须离开小镇。不能让镇民知道我的秘密。</statement>
+		<statement id="there" link="think" linkEntityId="marnie">别过来！我见过镇上的人是怎么对付怪物的。</statement>
+		<statement id="hide" link="cool" linkEntityId="bubby">你是说……我再也不用隐藏自己的身份了？</statement>
+		<statement id="keep" triggerEvent="giveItem" triggerEventArgs="chemical_x_award">看来我用不上这个了。送给你吧，说不定对你有用。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="where">丹博士为什么躲着我？</statement>
+		<statement id="why" link="tail" linkEntityId="dan">我为什么要伤害你？</statement>
+		<statement triggeredByEvent="dan_show_tail" link="yes" linkEntityId="dan">尾巴？你是……怪物？</statement>
+		<statement id="but" link="bird" linkEntityId="dan">可是为什么？</statement>
+		<statement id="help" link="chem" linkEntityId="dan">也许我能帮忙。</statement>
+		<statement id="oops" link="diet" linkEntityId="dan">我不明白。我按配方做了：蘑菇、泡菜汁、健怡可乐……</statement>
+		<statement id="low" link="leave" linkEntityId="dan">有些人就喜欢低卡路里的口味。</statement>
+		<statement id="givetodan">我应该把这个交给丹博士。</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="marnie">
+		<statement id="startEnd" link="there" linkEntityId="dan">丹博士！你在这儿啊！</statement>
+		<statement id="think" link="cure" linkEntityId="man">哦，丹博士，你是这么想的吗？以为我们是来伤害你的？镇上每个人都爱戴你！</statement>
+		<statement id="best" link="hide" linkEntityId="dan">你是我遇到过最好的邻居。我们出来找你是因为担心你，丹博士。</statement>
+
+
+
+
+	</character>
+	<character id="man">
+		<statement id="cure" link="vital" linkEntityId="woman">你治好了我的脚气！</statement>
+
+
+	</character>
+	<character id="woman">
+		<statement id="vital" link="best" linkEntityId="marnie">你的药剂让我恢复了活力！</statement>
+
+
+	</character>
+	<character id="bubby">
+		<statement id="cool" link="chant" linkEntityId="sissy">怪物最酷了！</statement>
+
+
+	</character>
+	<character id="sissy">
+		<statement id="chant" triggerEvent="triggerEvent" triggerEventArgs="exit_search_party, true">对，怪物，怪物！</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

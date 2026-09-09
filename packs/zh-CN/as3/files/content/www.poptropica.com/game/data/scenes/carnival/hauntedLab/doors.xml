@@ -1,0 +1,61 @@
+<doors>
+	<door id="doorRides">
+		<scene>game.scenes.carnival.ridesDay.RidesDay</scene>
+		<x>6572</x>
+		<y>1523</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorRides" event="set_morning">
+		<scene>game.scenes.carnival.ridesEmpty.RidesEmpty</scene>
+		<x>6572</x>
+		<y>1523</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorRides" event="set_night">
+		<scene>game.scenes.carnival.ridesNight.RidesNight</scene>
+		<x>6572</x>
+		<y>1523</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorRides" event="set_evening">
+		<scene>game.scenes.carnival.ridesEvening.RidesEvening</scene>
+		<x>6572</x>
+		<y>1523</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,27 @@
+<doors>
+	<door id="doorUniversity">
+		<scene>game.scenes.mocktropica.university.University</scene>
+		<x>3950</x>
+		<y>1670</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorCheeseInterior">
+		<scene>game.scenes.mocktropica.cheeseInterior.CheeseInterior</scene>
+		<x>235</x>
+		<y>885</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+</doors>

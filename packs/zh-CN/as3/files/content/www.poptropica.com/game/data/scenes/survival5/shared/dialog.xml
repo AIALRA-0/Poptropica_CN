@@ -1,0 +1,13 @@
+<dialogs>
+	<character id="player">
+		<statement id="no_use">这东西在这儿没用。</statement>
+		<statement id="no_use_gear">这看起来能插进方孔里。</statement>
+		<statement id="no_use_rope">没地方可以绑。</statement>
+
+
+
+
+	</character>
+
+
+</dialogs>

@@ -1,0 +1,52 @@
+<dialogs>
+	<character id="player">
+		<statement id="needInApothecary">我得进去看看！</statement>
+		<statement id="whoAreYou">你是谁？</statement>
+		<statement id="youNervous">你看起来有点紧张。</statement>
+		<statement id="howHelp">我能帮上什么忙吗？</statement>
+
+
+
+
+
+		</character>
+	<character id="man">
+		<statement>这么多年了，嘉年华终于又回到镇上了！我都等不及了！</statement>
+		<statement id="qaMan" timeOverride="60">这么多年了，嘉年华终于又回到镇上了！我都等不及了！</statement>
+
+
+		</character>
+	<character id="woman">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="showPaperPop">嘉年华开幕夜，太让人兴奋了！报纸上全是相关报道！</statement>
+
+
+		</character>
+	<character id="father">
+		<statement>小朱尼尔最爱吃冰淇淋了，我只希望他坐游乐设施的时候别吐出来。</statement>
+		<statement id="qaFather" timeOverride="60">小朱尼尔最爱吃冰淇淋了，我只希望他坐游乐设施的时候别吐出来。</statement>
+
+
+		</character>
+	<character id="junior">
+		<statement>想吃自己买去。</statement>
+		<statement id="qaJunior" timeOverride="60">想吃自己买去。</statement>
+
+
+		</character>
+	<character id="edgar">
+		<statement id="imEdgar">我是埃德加——一名自豪的嘉年华学徒。</statement>
+		<statement id="waitingCarnival">大家都在等着嘉年华开幕，但我觉得它没法按时准备好。</statement>
+		<statement id="bigHelp">如果你能和其他工作人员聊聊，看看他们有什么需要，那就帮大忙了。嘉年华往这边走。</statement>
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,35 @@
+<item id="journal">
+	<type>island</type>
+	<subType>lands</subType>
+		
+	<textfields>
+  		<text id="title">
+    		<value>研究日志</value>
+  		</text>
+		<!--<text>
+    		<value>This ancient hammer seems to glow with power.</value>
+   			<size>15</size>
+    		<y>120</y>
+  		</text>-->
+  	</textfields>
+  	
+  	<buttons>
+		<btn>
+    		<label>查看</label>
+    		<actions>
+				<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.lands.shared.JournalPopup</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+  	
+	<assets>
+  		<asset id="cardBack">
+  			<assetPath>items/shared/PaidLimitedBackgroundBlue.swf</assetPath>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>    
+</item>

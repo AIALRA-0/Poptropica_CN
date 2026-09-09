@@ -1,0 +1,61 @@
+<dialogs>
+	<character id="timmy">
+		<statement id="evil_doings" link="such_as" linkEntityId="player">喂！新来的！小心点。这附近有坏事发生。</statement>
+		<statement id="missing_pants" link="be_careful" linkEntityId="player">有人偷了我的裤子！</statement>
+		<statement id="catch_the_criminal" link="idle" linkEntityId="player">光小心可不够。既然你是新来的，我只能信任你了。你愿意帮我抓住罪犯吗？</statement>
+		<statement id="split_up" link="business_partner">太好了。我们得分头行动，不过我会在镇上留下我的侦探日志页来帮你。</statement>
+		<statement id="business_partner" triggerEvent="triggerEvent" triggerEventArgs="get_detective_log">首先，你可以去调查一下我以前的生意伙伴。他的忠诚度很可疑。</statement>
+		<statement id="lounging">他通常在我家闲逛，等着有人把食物放在那儿没人看管。</statement>
+		<statement id="dont_remind">哎呀，别这么大声说嘛。</statement>
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="such_as" link="missing_pants" linkEntityId="timmy">比如？</statement>
+		<statement id="be_careful" link="catch_the_criminal" linkEntityId="timmy">我……会小心的。</statement>
+		<statement id="idle" link="split_up" linkEntityId="timmy">我绝不能袖手旁观，让一个偷裤贼在这座美丽的城市里横行霸道。</statement>
+		<statement id="no_pants">哦！我没想到你说的是你身上穿的裤子！</statement>
+		<statement id="locked">门锁着。</statement>
+		<statement id="boo" link="yikes" linkEntityId="scutaro">哇！</statement>
+		<statement id="ooga" link="monster" linkEntityId="scutaro">呜嘎布嘎！</statement>
+		<statement id="here_we_go" forceOnScreen="true">追那条裤子！</statement>
+		<statement id="no_keys">哪个笨蛋把车停在路中间啊？</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="scutaro">
+		<statement>我只能把这个交给科琳娜·科琳娜。</statement>
+		<statement id="qaScutaro" timeOverride="60">哎呀！嘿，这可不好玩。要不是你长得这么滑稽，真能吓我一跳。</statement>
+		<statement id="knock">有人吗？科琳娜·科琳娜，你要的监控设备到了。</statement>
+		<statement id="yikes" link="beat_it">哎呀！嘿，这可不好玩。要不是你长得这么滑稽，真能吓我一跳。</statement>
+		<statement id="beat_it" triggerEvent="triggerEvent" triggerEventArgs="beat_it">总之，快走开。我只能把这个交给科琳娜·科琳娜。</statement>
+		<statement id="monster">呀啊啊！有怪物！</statement>
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

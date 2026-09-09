@@ -1,0 +1,46 @@
+<doors>
+	<door id="doorPen">
+		<scene>game.scenes.viking.pen.Pen</scene>
+		<x>100</x>
+		<y>800</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+	<door id="doorThroneRoom">
+		<scene>game.scenes.viking.throneRoom.ThroneRoom</scene>
+		<x>1600</x>
+		<y>850</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+	<door id="doorRiver">
+		<scene>game.scenes.viking.fortress.Fortress</scene>
+		<!-- <x>2675</x>
+		<y>1114</y> -->
+		<x>600</x>
+		<y>950</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+</doors>

@@ -1,0 +1,16 @@
+<doors>
+	<door id="doorHill">
+		<scene>game.scenes.prison.hill.Hill</scene>
+		<x>1674</x>
+		<y>4</y>
+		<direction>left</direction>
+		<label>
+			<text>向下走</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

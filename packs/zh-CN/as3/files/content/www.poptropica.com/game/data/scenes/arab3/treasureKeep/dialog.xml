@@ -1,0 +1,49 @@
+<dialogs>
+	<character id="masterThief">
+		<statement id="stand">大家退后！强大的精灵就要现身了！</statement>
+		<statement id="power">你就是那个无所不能的精灵？</statement>
+		<statement id="wish">伟大又强大的精灵，我希望——</statement>
+		<statement id="break">你都干了什么？整个洞穴都要塌了！</statement>
+
+
+
+
+
+		</character>
+	<character id="masterCoin">
+		<statement id="out">我们得赶紧离开这儿！</statement>
+
+
+		</character>
+	<character id="jailer">
+		<statement id="out">我们得赶紧离开这儿！</statement>
+
+
+		</character>
+	<character id="enforcer">
+		<statement id="smash">我希望拥有粉碎一切触碰之物的力量！</statement>
+		<statement id="me">我先来！</statement>
+		<statement id="uhoh">糟了</statement>
+
+
+
+
+		</character>
+	<character id="genie">
+		<statement id="command">你的愿望就是我的命令……</statement>
+		<statement id="anything">你确实说了粉碎一切……</statement>
+		<statement id="small">好东西总是小巧玲珑，亲爱的！你想要什么？</statement>
+		<statement id="free">我自由了！我终于自由了！</statement>
+
+
+
+
+
+		</character>
+
+
+
+
+
+
+</dialogs>

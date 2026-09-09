@@ -1,0 +1,81 @@
+<item id="tribal_jersey">
+	<type>island</type>
+	<subType>poptropolis</subType>
+	<contentClass>
+		<className>game.ui.card.CharacterContentView</className> 
+		<y>7</y>
+	</contentClass>
+
+	<buttons>
+		<btn>
+			<label>换装</label>
+			<actions>
+				<action type="costumize"/>
+			</actions>
+		</btn>
+	</buttons>
+
+	<textfields>
+		<text id="title">
+			<value>部落球衣</value>
+			<y>-190</y>
+		</text>
+	</textfields>
+	
+	<assets>
+		<asset id="cardBack">
+			<effect> 
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>36</brightness>
+     			<contrast>-17</contrast>
+     			<saturation>-100</saturation>
+     			<hue>12</hue>
+    		</effect>
+		</asset>
+		<asset id="cardContent"/>
+	</assets>
+	
+	<value>
+		<conditional id="checkTribe"/>
+	</value>
+	
+	<conditionals>
+    	<conditional type="checkTribe"/>
+    </conditionals>
+
+	<looks>
+		<look id="yellow">
+			<shirt>pg_jersey_yellowj</shirt>
+			<pants>pg_jersey_yellowj</pants>
+		</look>
+		<look id="path">
+			<shirt>pg_jersey_path</shirt>
+			<pants>pg_jersey_path</pants>
+		</look>
+		<look  id="night">
+			<shirt>pg_jersey_night</shirt>
+			<pants>pg_jersey_night</pants>
+		</look>
+		<look id="flags">
+			<shirt>pg_jersey_flags</shirt>
+			<pants>pg_jersey_flags</pants>
+		</look>
+		<look id="wildfire">
+			<shirt>pg_jersey_wildfire</shirt>
+			<pants>pg_jersey_wildfire</pants>
+		</look>
+		<look id="nanobots">
+			<shirt>pg_jersey_nanobots</shirt>
+			<pants>pg_jersey_nanobots</pants>
+		</look>
+		<look id="squid">
+			<shirt>pg_jersey_squid</shirt>
+			<pants>pg_jersey_squid</pants>
+		</look>
+		<look id="seraphim">
+			<shirt>pg_jersey_seraphins</shirt>
+			<pants>pg_jersey_seraphins</pants>
+		</look>
+	</looks>
+</item>

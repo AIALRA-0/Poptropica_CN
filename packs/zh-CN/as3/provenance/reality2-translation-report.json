@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "generatedAt": "2026-06-17T22:38:40.640Z",
+  "root": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2",
+  "translationCount": 275,
+  "fileCount": 8,
+  "translated": [
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/cheetahRun/dialog.xml",
+      "changed": 4
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/common/doors.xml",
+      "changed": 1
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/deepDive/dialog.xml",
+      "changed": 6
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/gameShow/dialog.xml",
+      "changed": 217
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/island.xml",
+      "changed": 2
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/mainStreet/dialog.xml",
+      "changed": 30
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/mainStreet/doors.xml",
+      "changed": 2
+    },
+    {
+      "file": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/shared/dialog.xml",
+      "changed": 13
+    }
+  ],
+  "unmapped": []
+}

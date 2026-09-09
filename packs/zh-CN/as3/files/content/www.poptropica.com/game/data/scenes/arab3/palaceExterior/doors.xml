@@ -1,0 +1,49 @@
+<doors>
+	<door id="doorBazaar">
+		<scene>game.scenes.arab3.adMixed2.AdMixed2</scene>
+		<x>50</x>
+		<y>1440</y>
+		<direction>right</direction>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab3.palaceExterior.PalaceExterior</scene>
+				<x>2500</x>
+				<y>1280</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab3.bazaar.Bazaar</scene>
+				<x>150</x>
+				<y>1550</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="doorPalace">
+		<scene>game.scenes.arab3.adStreet3.AdStreet3</scene>
+		<x>1830</x>
+		<y>1440</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.arab3.palaceInterior.PalaceInterior</scene>
+				<x>1800</x>
+				<y>775</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.arab3.palaceExterior.PalaceExterior</scene>
+				<x>800</x>
+				<y>1250</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

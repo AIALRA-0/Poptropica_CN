@@ -1,0 +1,29 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.processing.Processing</scene>
+		<x>3264</x>
+		<y>1540</y>
+		<label>
+			<text>退出</text>
+			<asset>exit3D</asset>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="ropeExit">
+		<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+		<x>2760</x>
+		<y>900</y>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

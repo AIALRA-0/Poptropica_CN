@@ -1,0 +1,25 @@
+<item id="developer_id">
+	<type>island</type>
+	<subType>mocktropica</subType>
+	
+	<textfields>
+  		<text>
+    		<value>开发者工牌</value>
+  		</text>
+  	</textfields>
+	
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-48</saturation>
+     			<hue>170</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+
+</item>

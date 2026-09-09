@@ -1,0 +1,20 @@
+[
+  { "id": "steam-mythology-classic", "canonicalKey": "mythology", "displayName": "Mythology (classic)", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "mythology-classic" },
+  { "id": "steam-shrink-ray", "canonicalKey": "shrink-ray", "displayName": "Shrink Ray", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "shrink-ray" },
+  { "id": "steam-poptropolis", "canonicalKey": "poptropolis-games", "displayName": "Poptropolis", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "poptropolis" },
+  { "id": "steam-monster-carnival", "canonicalKey": "monster-carnival", "displayName": "Monster Carnival", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "monster-carnival" },
+  { "id": "steam-time-tangled", "canonicalKey": "time-tangled", "displayName": "Time Tangled", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "time-tangled" },
+  { "id": "steam-mystery-of-the-map", "canonicalKey": "mystery-of-the-map", "displayName": "Mystery Of the Map", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "mystery-of-the-map" },
+  { "id": "steam-virus-hunter", "canonicalKey": "virus-hunter", "displayName": "Virus Hunter", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "virus-hunter" },
+  { "id": "steam-24-carrot", "canonicalKey": "24-carrot", "displayName": "24 Carrot", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "24-carrot" },
+  { "id": "steam-galactic-hot-dogs", "canonicalKey": "galactic-hot-dogs", "displayName": "Galactic Hot Dogs", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "galactic-hot-dogs" },
+  { "id": "steam-mocktropica", "canonicalKey": "mocktropica", "displayName": "Mocktropica", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "mocktropica" },
+  { "id": "steam-pelican-rock", "canonicalKey": "escape-from-pelican-rock", "displayName": "Escape From Pelican Rock", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "escape-from-pelican-rock" },
+  { "id": "steam-reality-tv-wild-safari", "canonicalKey": "reality-tv-wild-safari", "displayName": "Reality Tv: Wild Safari", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "reality-tv-wild-safari" },
+  { "id": "steam-timmy-failure", "canonicalKey": "timmy-failure", "displayName": "Timmy Failure", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "timmy-failure" },
+  { "id": "steam-survival", "canonicalKey": "survival", "displayName": "Survival", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "survival" },
+  { "id": "steam-poptropicon", "canonicalKey": "poptropicon", "displayName": "Poptropicon", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "poptropicon" },
+  { "id": "steam-arabian-nights", "canonicalKey": "arabian-nights", "displayName": "Arabian Nights", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "arabian-nights" },
+  { "id": "steam-mission-atlantis", "canonicalKey": "mission-atlantis", "displayName": "Mission Atlantis", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "mission-atlantis" },
+  { "id": "steam-realms", "canonicalKey": "realms", "displayName": "Poptropica Realms", "source": "steam", "runtime": "air", "releaseYear": 2022, "launchId": "realms" }
+]

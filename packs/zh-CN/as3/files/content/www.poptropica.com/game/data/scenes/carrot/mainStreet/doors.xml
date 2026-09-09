@@ -1,0 +1,103 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.adGroundH3.AdGroundH3</scene>
+		<x>900</x>
+		<y>1620</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.carrot.farm.Farm</scene>
+				<x>3490</x>
+				<y>1100</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+				<x>40</x>
+				<y>940</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="door3">
+		<scene>game.scenes.carrot.diner.Diner</scene>
+		<x>1516</x>
+		<y>475</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+	<door id="door2">
+		<scene>game.scenes.carrot.adGroundH3R.AdGroundH3R</scene>
+		<x>60</x>
+		<y>1620</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-160</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.carrot.mainStreet.MainStreet</scene>
+				<x>4030</x>
+				<y>940</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.carrot.factory.Factory</scene>
+				<x>160</x>
+				<y>1669</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+		<x>0</x>
+		<y>0</y>
+		<label>
+			<text>旅行</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="exitCommonRoom">
+		<scene>Cinema</scene>
+		<x>472</x>
+		<y>347</y>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="door5">
+		<scene>game.scenes.carrot.surplus.Surplus</scene>
+		<x>258</x>
+		<y>653</y>
+		<direction>right</direction>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+		</label>
+	</door>
+</doors>

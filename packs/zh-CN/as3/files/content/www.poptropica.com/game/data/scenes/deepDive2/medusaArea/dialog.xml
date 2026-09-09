@@ -1,0 +1,24 @@
+<dialogs>
+	<character id="player">
+    </character>
+	<character id="cam">
+		<statement id="circuitry">那是电路吗？看起来像一套电力系统！</statement>
+		<statement id="keepDistance">保持距离！它们会让你的飞船过载的。</statement>
+		<statement id="openDoors">它打开了那扇门。也许你可以用水母来打开其他门！</statement>
+		<statement id="astonishing">太神奇了……那条鱼的能量正在给别处的东西供能！</statement>
+
+
+
+
+
+		</character>
+	<character id="dummyPlayer">
+		<statement id="zap">啊！</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

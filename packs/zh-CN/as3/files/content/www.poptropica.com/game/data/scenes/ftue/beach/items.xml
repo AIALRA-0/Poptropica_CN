@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>wrench</id>
+		<asset>wrench.swf</asset>
+		<x>2600</x>
+		<y>950</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

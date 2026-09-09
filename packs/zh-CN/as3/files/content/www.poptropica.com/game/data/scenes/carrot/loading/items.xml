@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>systemPassword</id>
+		<asset>systemPassword.swf</asset>
+		<x>561.3</x>
+		<y>1550.75</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

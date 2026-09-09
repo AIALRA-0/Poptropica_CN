@@ -1,0 +1,23 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="cant_use_compass">看起来就是个普通指南针，那家伙肯定被骗了。</statement>
+		<statement triggeredByEvent="cant_use_drawing">看起来像是小孩子的涂鸦。</statement>
+		<statement id="drawn">看起来像是小孩子的涂鸦。</statement>
+		<statement triggeredByEvent="cant_use_geode">里面好像有水晶。要是能拿出来就好了……</statement>
+		<statement triggeredByEvent="cant_use_lamp">这个……这是个魔法容器。</statement>
+		<statement triggeredByEvent="cant_use_moonstone">好漂亮的石头。</statement>
+		<statement triggeredByEvent="cant_use_skeleton_key">用这个我什么都能打开！</statement>
+		<statement triggeredByEvent="cant_use_wishbone">要是能掰断它，说不定愿望就能实现了。</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

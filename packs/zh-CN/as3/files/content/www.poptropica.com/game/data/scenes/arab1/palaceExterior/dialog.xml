@@ -1,0 +1,89 @@
+<dialogs>
+	<character id="player">
+		<statement id="wait5" link="wait6" linkEntityId="guard1">我想是吧。</statement>
+
+
+		</character>
+	<character id="guard1">
+		<statement id="halt">站住！</statement>
+		<statement id="bored2" link="bored3" linkEntityId="guard2">40什么？</statement>
+		<statement id="bored4" link="bored5" linkEntityId="guard2">哦，对！我就知道。</statement>
+		<statement id="bored6" link="bored7" linkEntityId="guard1">真的？让我看看。</statement>
+		<statement id="bored7" link="bored8" linkEntityId="guard2">哎呀，那不过是把生锈的旧匕首。</statement>
+		<statement id="bored9" link="bored10" linkEntityId="guard2">那些划痕？有什么特别的？</statement>
+		<statement id="bored13" link="bored14" linkEntityId="guard2" triggerEvent="triggerEvent" triggerEventArgs="splitGuard">嘿，我们还在执勤呢。快进入角色。</statement>
+		<statement id="betM" link="bet2" linkEntityId="guard2">我就说他们会回来的</statement>
+		<statement id="bet3" link="bet4" linkEntityId="guard2">看来我赢了赌局。</statement>
+		<statement id="bet5" link="bet6" linkEntityId="guard2" triggerEvent="triggerEvent" triggerEventArgs="gotoGuard">那好，讲个笑话听听。</statement>
+		<statement id="bet8" link="bet9" linkEntityId="guard2">谁在那儿？</statement>
+		<statement id="bet10" link="bet11" linkEntityId="guard2">苏丹是谁？</statement>
+		<statement id="bet12" link="bet13" linkEntityId="guard1">说得好！</statement>
+		<statement id="bet13" link="bored14" linkEntityId="guard2" triggerEvent="triggerEvent" triggerEventArgs="splitGuard">好了，我们回去干活吧。</statement>
+		<statement id="wait" link="wait2" linkEntityId="guard2">喂！你怎么从那里出来的？</statement>
+		<statement id="wait3" link="wait4" linkEntityId="guard2">我不能丢了这份工作。这是我仅剩的一切了！</statement>
+		<statement id="wait6" triggerEvent="triggerEvent" triggerEventArgs="guards_stand_down,true">毕竟，沙漠里的事就留在沙漠里！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="guard2">
+		<statement id="halt">闲人止步。</statement>
+		<statement id="continue" link="bored" linkEntityId="guard2">我刚才说到哪了……</statement>
+		<statement id="bored" link="bored2" linkEntityId="guard1">你真觉得有40个吗。</statement>
+		<statement id="bored3" link="bored4" linkEntityId="guard1">40个大盗。你那头盔太厚了。</statement>
+		<statement id="bored5" link="bored6" linkEntityId="guard1" triggerEvent="triggerEvent" triggerEventArgs="gotoGuard">前几天我捡到了他们的东西。</statement>
+		<statement id="bored8" link="bored9" linkEntityId="guard1">是啊，但你看这些标记！</statement>
+		<statement id="bored10" triggerEvent="triggerEvent" triggerEventArgs="awkwardPause">一共有40个。</statement>
+		<statement id="bored12" link="bored13" linkEntityId="guard1">不，真的。你数数看。</statement>
+		<statement id="bored14" triggerEvent="triggerEvent" triggerEventArgs="finishGossip">没错！</statement>
+		<statement id="bet2" link="bet3" linkEntityId="guard1">那些爱管闲事的小鬼！苏丹已经够烦的了。</statement>
+		<statement id="bet4" link="bet5" linkEntityId="guard1">打赌？可我什么都没了。</statement>
+		<statement id="bet6" link="bet7" linkEntityId="guard2">好吧，我有个笑话，但别让老大听见。</statement>
+		<statement id="bet7" link="bet8" linkEntityId="guard1">咚咚咚。</statement>
+		<statement id="bet9" link="bet10" linkEntityId="guard1">苏丹。</statement>
+		<statement id="bet11" linkEntityId="guard1" triggerEvent="triggerEvent" triggerEventArgs="guardsLaugh">苏丹胡椒。</statement>
+		<statement id="wait2" link="wait3" linkEntityId="guard1">要是老大知道了，我们可就惨了。</statement>
+		<statement id="wait4" link="wait5" linkEntityId="player">帮个忙，别把这事说出去好吗。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+</dialogs>

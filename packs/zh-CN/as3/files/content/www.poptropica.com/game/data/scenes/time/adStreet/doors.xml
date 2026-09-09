@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.time.desolation.Desolation</scene>
+		<x>1898</x>
+		<y>639</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<!--
+	<door id="doorRight">
+		<scene>game.scenes.time.lab.Lab</scene>
+		<x>1655</x>
+		<y>937</y>
+		<label>
+			<text>GO RIGHT</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-150</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	-->
+</doors>

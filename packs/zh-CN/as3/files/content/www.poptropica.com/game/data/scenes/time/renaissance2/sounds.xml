@@ -1,0 +1,31 @@
+<sounds>
+	<sound type="music">
+		<asset loop="true" fade="true" exclusiveType="true">DaVinci_Theme.mp3</asset>
+	</sound>
+	<sound type="ambient">
+		<asset loop="true" fade="true" exclusiveType="true">sunny_clear_day.mp3</asset>
+	</sound>
+	<sound type="effects" action="doorOpened">
+		<asset>door_heavy_open_creak_01.mp3</asset>
+	</sound>
+	<sound type="effects" action="impact">
+		<asset id="baseGround">ls_linoleum_verb_01.mp3, ls_linoleum_verb_02.mp3</asset>
+		<asset id="floor">ls_linoleum_verb_01.mp3, ls_linoleum_verb_02.mp3</asset>
+		<asset id="rock">ls_concrete_01.mp3, ls_concrete_02.mp3 </asset>
+		<asset id="wood">ls_wood_plank_01.mp3,ls_wood_plank_02.mp3</asset>
+		<asset id ="cloth">ls_cardboard_01.mp3,ls_cardboard_02.mp3</asset>
+	</sound>
+	<sound type="effects" action="step">
+		<asset id="baseGround">fs_linoleum_verb_01.mp3, fs_linoleum_verb_02.mp3, fs_linoleum_verb_03.mp3, fs_linoleum_verb_04.mp3</asset>
+		<asset id="floor">fs_linoleum_verb_01.mp3, fs_linoleum_verb_02.mp3, fs_linoleum_verb_03.mp3, fs_linoleum_verb_04.mp3</asset>
+		<asset id="rock">fs_concrete_01.mp3, fs_concrete_02.mp3, fs_concrete_03.mp3, fs_concrete_04.mp3 </asset>
+		<asset id="wood">fs_wood_plank_01.mp3,fs_wood_plank_02.mp3,fs_wood_plank_03.mp3,fs_wood_plank_04.mp3</asset>
+		<asset id ="cloth">fs_cardboard_01.mp3,fs_cardboard_02.mp3,fs_cardboard_03.mp3,fs_cardboard_04.mp3</asset>
+	</sound>
+	<sound type="effects" action="climb">
+		<asset id="climb1" allowOverlap="false">fs_rope_01.mp3,fs_rope_02.mp3,fs_rope_03.mp3,fs_rope_04.mp3</asset>
+	</sound>
+	<sound type="effects" action="bubble">
+		<asset id="bubblingVial" loop="true">ambient/bubbling.mp3</asset>
+	</sound>
+</sounds>

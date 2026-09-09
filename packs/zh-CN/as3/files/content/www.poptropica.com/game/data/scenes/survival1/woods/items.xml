@@ -1,0 +1,45 @@
+<items>
+	<item>
+		<id>nest</id>
+		<asset>nest.swf</asset>
+		<x>4570</x>
+		<y>645</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+
+	<item>
+		<id>handbook</id>
+		<asset>survivalHandbook.swf</asset>
+		<x>350</x>
+		<y>1705</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+
+	<item>
+		<id>handbookPage4</id>
+		<asset>handbookPage.swf</asset>
+		<x>1275</x>
+		<y>1030</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+
+	<item>
+		<id>handbookPage3</id>
+		<asset>handbookPage.swf</asset>
+		<x>2455</x>
+		<y>1200</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

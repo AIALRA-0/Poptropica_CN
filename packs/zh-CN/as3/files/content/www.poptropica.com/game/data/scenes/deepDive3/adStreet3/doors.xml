@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorLeft">
+		<scene>game.scenes.deepDive3.laboratory.Laboratory</scene>
+		<x>878</x>
+		<y>157</y>
+		<direction>down</direction>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorRight">
+		<scene>game.scenes.deepDive3.livingQuarters.LivingQuarters</scene>
+		<x>652</x>
+		<y>2741</y>
+		<direction>up</direction>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

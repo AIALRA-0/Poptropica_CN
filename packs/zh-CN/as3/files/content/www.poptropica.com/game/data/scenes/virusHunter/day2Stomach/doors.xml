@@ -1,0 +1,30 @@
+<doors>
+	<door id="doorMouth">
+		<scene>game.scenes.virusHunter.day2Mouth.Day2Mouth</scene>
+		<x>4955</x>
+		<y>810</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>300</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorIntestine">
+		<scene>game.scenes.virusHunter.day2Intestine.Day2Intestine</scene>
+		<x>50</x>
+		<y>2000</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>-300</y>
+			</offset>
+		</label>
+	</door>
+</doors>

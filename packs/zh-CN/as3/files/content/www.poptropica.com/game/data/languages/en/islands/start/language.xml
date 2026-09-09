@@ -1,0 +1,26 @@
+<language>
+	<island>
+		<startScreen>
+			<new><![CDATA[<p align="center"><font face="_sans" size="17" color="#FFFFFF">&#26032;<br/>&#29609;&#23478;</font></p>]]></new>
+			<returning><![CDATA[<p align="center"><font face="_sans" size="17" color="#FFFFFF">&#32487;&#32493;<br/>&#28216;&#25103;</font></p>]]></returning>
+			<maleOrFemale><![CDATA[<font face="_sans" size="31" color="#FFFFFF">&#20320;&#26159;&#30007;&#23401;&#36824;&#26159;&#22899;&#23401;? </font>]]></maleOrFemale>
+			<male><![CDATA[<font face="_sans" size="25" color="#FFFFFF">&#30007;&#23401;</font>]]></male>
+			<female><![CDATA[<font face="_sans" size="25" color="#FFFFFF">&#22899;&#23401;</font>]]></female>
+			<age><![CDATA[<font face="_sans" size="31" color="#FFFFFF">&#20320;&#20960;&#23681;&#20102;? </font>]]></age>
+			<five><![CDATA[<font face="_sans" size="60" color="#FFFFFF">5</font>]]></five>
+			<six><![CDATA[<font face="_sans" size="60" color="#FFFFFF">6</font>]]></six>
+			<seven><![CDATA[<font face="_sans" size="60" color="#FFFFFF">7</font>]]></seven>
+			<eight><![CDATA[<font face="_sans" size="60" color="#FFFFFF">8</font>]]></eight>
+			<nine><![CDATA[<font face="_sans" size="60" color="#FFFFFF">9</font>]]></nine>
+			<ten><![CDATA[<font face="_sans" size="60" color="#FFFFFF">10</font>]]></ten>
+			<eleven><![CDATA[<font face="_sans" size="60" color="#FFFFFF">11</font>]]></eleven>
+			<twelve><![CDATA[<font face="_sans" size="60" color="#FFFFFF">12</font>]]></twelve>
+			<thirteen><![CDATA[<font face="_sans" size="60" color="#FFFFFF">13</font>]]></thirteen>
+			<plus><![CDATA[<font face="_sans" size="60" color="#FFFFFF">+</font>]]></plus>
+			<changeAll><![CDATA[<p align="center"><font face="_sans" size="20" color="#FFFFFF">&#20840;&#37096;<br/>&#37325;&#36873;</font></p>]]></changeAll>
+			<changeColors><![CDATA[<p align="center"><font face="_sans" size="20" color="#FFFFFF">&#26356;&#25442;<br/>&#39068;&#33394;</font></p>]]></changeColors>
+			<importLook><![CDATA[<p align="center"><font face="_sans" size="20" color="#FFFFFF">&#23548;&#20837;<br/>&#24418;&#35937;</font></p>]]></importLook>
+			<done><![CDATA[<font face="_sans" size="34" color="#FFFFFF">&#23436;&#25104;</font>]]></done>
+		</startScreen>
+	</island>
+</language>

@@ -1,0 +1,11 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.carrot.farm.Farm</scene>
+		<x>2600</x>
+		<y>450</y>
+		<label>
+			<text>退出</text>
+			<type>exitUp</type>
+		</label>
+	</door>
+</doors>

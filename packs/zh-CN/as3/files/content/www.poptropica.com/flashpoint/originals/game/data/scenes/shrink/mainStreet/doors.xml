@@ -1,0 +1,88 @@
+<doors>
+	<door id="doorCommon">
+		<scene>ShrinkCommon</scene>
+		<x>600</x>
+		<y>815</y>
+		<direction>left</direction>
+		<label>
+			<text>公共房间</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorSchoolInterior">
+		<scene>game.scenes.shrink.adStreet3.AdStreet3</scene>
+		<x>160</x>
+		<y>590</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+				<x>3015</x>
+				<y>1360</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.schoolInterior.SchoolInterior</scene>
+				<x>2265</x>
+				<y>460</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+		<direction>right</direction>
+	</door>
+
+	<door id="doorAdGroundH15">
+		<scene>game.scenes.shrink.adStreet2.AdStreet2</scene>
+		<x>50</x>
+		<y>1135</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-120</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="exitLeft">
+				<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+				<x>5400</x>
+				<y>1454</y>
+				<direction>left</direction>
+			</door>
+			<door id="exitRight">
+				<scene>game.scenes.shrink.avenueA.AvenueA</scene>
+				<x>50</x>
+				<y>1135</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+		<direction>right</direction>
+	</door>
+
+	<door id="exitToMap">
+		<scene>game.scenes.map.map.Map</scene>
+	    <x>0</x>
+	    <y>0</y>
+	    <label>
+	      <text>旅行</text>
+	      <asset>exitUp</asset>
+	      <offset>
+	        <x>0</x>
+	        <y>0</y>
+	      </offset>
+	    </label>
+	</door>
+</doors>

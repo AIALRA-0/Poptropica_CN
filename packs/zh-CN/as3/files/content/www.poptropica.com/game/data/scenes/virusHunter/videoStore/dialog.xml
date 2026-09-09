@@ -1,0 +1,46 @@
+<dialogs>
+	<character id="npc">
+		<conversation>
+			<exchange>
+				<question>刚才有人经过这里吗？</question>
+				<answer>没有。</answer>
+
+
+
+							</exchange>
+			<exchange>
+				<question>你确定吗？她穿着白大褂。</question>
+				<answer>就我和这些录像带，伙计。</answer>
+
+
+
+							</exchange>
+			<exchange>
+				<question>好吧。你有什么电影推荐？</question>
+				<answer>没看见我正忙着吗？</answer>
+
+
+
+							</exchange>
+
+
+
+
+				</conversation>
+		<statement id="noEntry">嘿，员工专用！</statement>
+		<statement id="seenBadge" link="seenBadge2">哦！我没注意到你是PDC的人。</statement>
+		<statement id="seenBadge2" link="seenBadge3">我还以为你是那种还在用录像机的怪人呢。</statement>
+		<statement id="seenBadge3" triggerEvent="triggerEvent" triggerEventArgs="used_badge,true">进来吧。</statement>
+
+
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

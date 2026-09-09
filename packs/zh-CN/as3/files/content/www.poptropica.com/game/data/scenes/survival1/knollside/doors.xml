@@ -1,0 +1,57 @@
+<doors>
+	<door id="doorHillSide">
+		<scene>game.scenes.survival1.adStreet3.AdStreet3</scene>
+		<x>50</x>
+		<y>1045</y>
+		<label>
+			<text>向右走</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival1.knollside.Knollside</scene>
+				<x>2350</x>
+				<y>1750</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival1.hillside.Hillside</scene>
+					<x>180</x>
+					<y>55</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+
+	<door id="doorWoods">
+		<scene>game.scenes.survival1.adMixed2.AdMixed2</scene>
+		<x>1735</x>
+		<y>1020</y>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival1.woods.Woods</scene>
+				<x>4720</x>
+				<y>1650</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival1.knollside.Knollside</scene>
+				<x>40</x>
+				<y>1840</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

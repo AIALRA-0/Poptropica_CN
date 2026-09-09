@@ -1,0 +1,256 @@
+<dialogs>
+	<character id="player">
+		<statement id="bandit">我什么都没做！</statement>
+		<statement id="proof">我能证明的，只要我能查出那些罪犯在搞什么鬼……</statement>
+		<statement id="done">我今天收工了。</statement>
+		<statement id="need_bit">这东西可能有用，如果能偷偷带过警卫的话。</statement>
+		<statement id="has_bit">想用这个钻头，我得找个东西让它转起来。</statement>
+		<statement id="pasta">看来守卫还没发现调包的事。</statement>
+		<statement id="need_distraction">我得先引开守卫才能用这个。</statement>
+		<statement id="plates_finished">今天的车牌我已经做够数了。</statement>
+		<statement id="nothing_grind">现在没什么可磨的。</statement>
+		<statement id="help_guy">我得先帮马里昂拿到那个钻头。</statement>
+		<statement id="one_plate">走之前至少得做一块车牌。</statement>
+		<statement id="done_pressing">机器开始过热了，我觉得今天做的车牌够多了。</statement>
+		<statement id="times_up">时间到了，只能明天再试了。</statement>
+		<statement id="vents">我觉得搞定了，现在通风口通到警卫室上面了。</statement>
+		<statement id="right">没错。</statement>
+		<statement id="all">这是我所有的口香糖。</statement>
+		<statement id="paint">我得先借到钻头，才能把它换掉。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="marion">
+		<statement id="bad">你肯定干了什么坏事，今早把“大金枪鱼”气成那样。</statement>
+		<statement id="sure">是是是，这里头个个都是冤枉的……</statement>
+		<statement id="files">只要价钱合适，我能帮你搞到他们的档案。不过你得先赚点“棍子”。</statement>
+		<statement id="teach">来吧，我先教你用机器。先去从守卫那儿给我弄个钻头来。</statement>
+		<statement id="thanks" triggerEvent="triggerEvent" triggerEventArgs="borrowed_tool, true">谢了，现在我们可以开工了，用左边那台机器打印车牌吧。</statement>
+		<statement id="pay">我们打印的车牌越多，赚的口香糖就越多。</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="drill_plz">钻头搞到手了吗？</statement>
+		<statement id="escape">听说你今晚要越狱。</statement>
+		<statement id="help">如果你想洗清罪名，大概需要那些囚犯档案吧，有什么能拿来交换的吗？</statement>
+		<statement id="deal">我想这应该够了，给你。</statement>
+		<statement event="borrowed_tool">用左边那台机器打印车牌。</statement>
+		<statement event="metal_day_1_complete">想要那些文件，就带着口香糖到院子里找我。</statement>
+		<statement event="gotItem_prison_files">别让守卫看到那些文件。</statement>
+		<statement event="hasItem_spoon">那边的磨床能把任何金属块磨成好用的凿子。</statement>
+		<statement event="hasItem_sharpened_spoon">牢房后面空间大得很，你只需要凿开栅栏就行。</statement>
+		<statement event="cell_grate_open">听说几年前有个囚犯越狱了，做了个假人头留在铺位上糊弄守卫。</statement>
+		<statement event="hasItem_dummy_head">晚上是黑，但也没那么黑。那个亮白的脑袋可蒙混不过去。</statement>
+		<statement event="hasItem_painted_dummy_head">想把钻头偷出去，唯一的办法是给守卫一个他以为是钻头的东西。</statement>
+		<statement event="hasItem_painted_pasta">“闪电”脾气火爆。你要能在食堂惹毛他，说不定就能趁机拿走“火焰”的搅拌器。</statement>
+		<statement event="drilled_plate">祝你好运！</statement>
+		<statement id="luck">祝你好运！</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="guard">
+		<statement id="duty">从今天起你负责打印车牌，做得越多，赚的口香糖就越多。</statement>
+		<statement id="duty2">进车间干活去。</statement>
+		<statement event="guard_glasses_steamed">什么都看不见。</statement>
+		<statement id="block_grinder">喂！不准打磨未经许可的材料！</statement>
+		<statement id="fan">除了我，谁都不准开风扇！</statement>
+		<statement id="back">用完记得还回来。</statement>
+		<statement id="gum">你做了[x]块车牌。这是你的口香糖。</statement>
+		<statement id="gum2">你做了[x]块车牌，抱歉，这还不够换口香糖。</statement>
+		<statement id="what">你做了什么？让我看看。</statement>
+		<statement id="junk">啊！我什么都看不见了！</statement>
+		<statement id="steam">算了，我眼镜起雾什么都看不见！</statement>
+		<statement id="cool">先让它凉快会儿，我明天会修好的。</statement>
+		<statement id="see">怎么回事？！我什么都看不见了！</statement>
+		<statement id="bit">把你借的钻头还回来。</statement>
+		<statement id="bit2">来还你借的钻头？</statement>
+		<statement id="crude_bit">别想用这个粗制滥造的仿品糊弄我，戴上这副眼镜我视力好得很！</statement>
+		<statement id="raw_bit">嘿，这钻头是黄色的，等等，这只是一根面条！你想耍什么花招？</statement>
+		<statement id="bit_sneak">该死，什么都看不见……看起来差不多，过去吧！</statement>
+		<conversation id="guard_intro">
+			<exchange>
+				<question>算了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question>我能走了吗？</question>
+				<answer>等你学会用那台车牌机再说。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>请给我一个钻头。</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="drill_bit">用完记得还回来。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="guard_locked">
+			<exchange>
+				<question>算了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question>我能走了吗？</question>
+				<answer>等你学会用那台车牌机再说。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="guard_normal">
+			<exchange>
+				<question>算了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="return_stuff">我今天干完了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question>请给我一个钻头。</question>
+				<answer triggerEvent="giveItem" triggerEventArgs="drill_bit">用完记得还回来。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="guard_leave">
+			<exchange>
+				<question>算了。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="return_stuff">我今天干完了。</question>
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

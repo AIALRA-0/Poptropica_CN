@@ -1,0 +1,16 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.prison.yard.Yard</scene>
+		<x>240</x>
+		<y>1500</y>
+		<direction>left</direction>
+		<label>
+			<text>向左走</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

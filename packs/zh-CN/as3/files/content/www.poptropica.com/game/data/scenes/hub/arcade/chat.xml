@@ -1,0 +1,57 @@
+<chat>
+	<subject id="Greeting">
+		<msg id="1">今天来游戏厅玩真是太棒了！</msg>
+		<reply replyId="1">游戏厅里每天都是好日子！</reply>
+
+
+
+		</subject>
+	<subject id="Compliment">
+		<msg id="1">我打赌你玩这里的游戏超厉害！</msg>
+		<msg id="2">我就盼着今天能在游戏厅见到你！</msg>
+		<msg id="3">没有你，游戏厅就不完整了。</msg>
+		<reply replyId="1">你肯定也是！</reply>
+		<reply replyId="2">我尽力让你开心！</reply>
+		<reply replyId="3">希望这不是句“代币”客套话！</reply>
+
+
+
+
+
+
+
+		</subject>
+	<subject id="Question">
+		<msg id="1">你最喜欢这里的哪个游戏？</msg>
+		<msg id="2">游戏厅里你最喜欢什么？</msg>
+		<msg id="3">你觉得桶桶机器人跳舞跳得好吗？</msg>
+		<msg id="4">谁把饮料放在代币机上了？</msg>
+		<reply replyId="1">我喜欢星际连线！</reply>
+		<reply replyId="1">我喜欢高空跳伞！</reply>
+		<reply replyId="2">玩游戏！</reply>
+		<reply replyId="2">在球上蹦来蹦去！</reply>
+		<reply replyId="2">在风扇上面飞！</reply>
+		<reply replyId="3">他舞步真带劲。</reply>
+		<reply replyId="3">他看起来像出故障了。</reply>
+		<reply replyId="4">不是我干的，我发誓！</reply>
+		<reply replyId="4">八成是哪个超级反派干的。</reply>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</subject>
+
+
+
+
+</chat>

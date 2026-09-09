@@ -1,0 +1,9 @@
+<dialogs>
+	<character id="player">
+		<statement id="too_risky">在开阔地带拿太冒险了，我得另想办法。</statement>
+
+
+	</character>
+
+
+</dialogs>

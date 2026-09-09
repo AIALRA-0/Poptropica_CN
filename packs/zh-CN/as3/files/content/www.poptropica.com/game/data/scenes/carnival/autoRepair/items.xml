@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id> pickle_juice</id>
+		<asset>pickle_juice.swf</asset>
+		<x>100</x>
+		<y>665</y>
+		<label>
+			<text>查看</text>
+			<type>click</type>
+		</label>
+	</item>
+</items>

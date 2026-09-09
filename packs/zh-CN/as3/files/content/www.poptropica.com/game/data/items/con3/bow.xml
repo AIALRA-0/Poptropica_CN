@@ -1,0 +1,63 @@
+<item id="bow">
+	<type>island</type>
+	<subType>con3</subType>
+	<textfields>
+ 		<text>
+      		<value>弓</value>
+    	</text>
+    	<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="false"></conditional>
+			<value>按空格键射箭！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+		<text id="islandgray">
+			<conditional type="checkIfMobile" isTrue="true"></conditional>
+			<value>按动作键射箭！</value>
+			<width>190</width>
+  			<y>90</y>
+		</text>
+  	</textfields>
+  	
+  	 <buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>装备</label>
+    		<actions>
+	    		<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>移除</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+	
+	<looks>
+		<look>
+			<item>bow</item>
+		</look>
+	</looks>
+	
+	<conditionals>
+		<conditional type="hasLook"/>
+		<conditional type="checkIfMobile"/>
+	</conditionals>
+	
+	<assets>
+  		<asset id="cardBack">
+  			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>-40</brightness>
+     			<contrast>0</contrast>
+     			<saturation>0</saturation>
+     			<hue>40</hue>
+    		</effect>
+    	</asset>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

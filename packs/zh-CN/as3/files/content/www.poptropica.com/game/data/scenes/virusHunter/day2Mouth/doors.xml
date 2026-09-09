@@ -1,0 +1,44 @@
+<doors>
+	<door id="doorStomach">
+		<scene>game.scenes.virusHunter.day2Stomach.Day2Stomach</scene>
+		<x>70</x>
+		<y>735</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-600</x>
+				<y>300</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorLungs">
+		<scene>game.scenes.virusHunter.day2Lungs.Day2Lungs</scene>
+		<x>0</x>
+		<y>1585</y>
+		<label>
+			<text>退出</text>
+			<type>exitDown</type>
+			<offset>
+				<x>0</x>
+				<y>-300</y>
+			</offset>
+		</label>
+	</door>
+
+	<door id="doorMainStreet">
+		<scene>game.scenes.virusHunter.mainStreet.MainStreet</scene>
+		<x>260</x>
+		<y>1440</y>
+		<direction>right</direction>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>300</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

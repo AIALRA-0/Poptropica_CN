@@ -1,0 +1,27 @@
+<item id="lamp">
+	<type>island</type>
+	<subType>arab1</subType>
+	<textfields>
+ 		<text>
+      		<value>油灯</value>
+    	</text>
+  	</textfields>
+  	
+  	<buttons>
+		<btn>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">lamp</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+  	
+	<assets>
+  		<asset id="cardBack"/>
+    	<asset id="cardContent"/>
+    </assets>
+</item>

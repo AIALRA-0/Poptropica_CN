@@ -1,0 +1,145 @@
+<item id="wagon"> <!-- Make sure the id name is the same as your .xml and the .swf art you want to load on the card -->
+	<type>island</type>
+	<subType>timmy</subType> <!-- Set subType to the location of card .swf art - bin/assets/items/"folder" -->
+
+	<textfields>
+  		<text>
+    		<value>马车</value>
+		</text>
+<!-- Optional description text, often used for spacebar action items when equipped
+		<text>
+  			<conditional id="checkIfMobile" isTrue="false"></conditional>
+      		<value>Press SPACEBAR to use!</value>
+      		<y>100</y>
+    	</text>
+    	<text>
+  			<conditional id="checkIfMobile" isTrue="true"></conditional>
+      		<value>Tap the ACTION to use!</value>
+      		<y>100</y>
+    	</text> 
+-->
+  	</textfields>
+
+	<assets>
+  		<asset id="cardBack">
+			<!-- These effect settings change the color of the background card, you get the numbers from Flash's "Adjust Color" filter -->
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>-42</hue>
+    			</effect>
+	    	</asset>
+	    	<asset id="cardContent"/>
+    </assets>
+	
+<!-- BUTTON TYPES -->	
+<!-- USE BUTTON
+	<buttons>
+		<btn>
+    		<label>USE</label>
+    		<actions>
+	    		<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="true"/>
+		  			<parameters>
+		  				<param id="event">axe_used</param>
+					</parameters>
+				</action>
+				<action type="triggerEvent">
+	    			<conditional id="inScene" isTrue="false"/>
+		  			<parameters>
+		  				<param id="event">cant_use_axe</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+-->
+<!-- EXAMINE BUTTON --
+	<buttons>
+    	<btn>
+    		<label>EXAMINE</label>
+    		<actions>
+	    		<action type="openPopup">
+		  			<parameters>
+		  				<param id="className">game.scenes.arab3.vizierRoom.popups.MagicBookPopup</param>
+					</parameters>
+				</action>
+			</actions>	
+		</btn>
+	</buttons>
+-->	
+<!-- PUT ON BUTTON --		
+    <buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>PUT ON</label>
+    		<actions>
+	    		<action type="applyLook"/>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">player_disguised</param>
+		  				<param id="save">true</param>		  				
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>REMOVE</label>
+    		<actions>
+	    		<action type="removeLook"/>   
+	    		<action type="removeEvent">
+		  			<parameters>
+		  				<param id="event">player_disguised</param>
+					</parameters>
+				</action> 		
+			</actions>
+  		</btn>
+	</buttons>
+-->
+<!-- EQUIP BUTTON --	
+    <buttons>
+		<btn>
+			<conditional id="hasLook" isTrue="false"></conditional>
+    		<label>EQUIP</label>
+    		<actions>
+	    		<action type="applyLook"/>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasLook" isTrue="true"></conditional>
+    		<label>REMOVE</label>
+    		<actions>
+	    		<action type="removeLook"/>
+			</actions>
+  		</btn>
+	</buttons>
+-->	
+
+<!-- LOOKS --
+	<looks>
+		<look>
+			<facial>an2_player</facial>
+			<overshirt>an2_player</overshirt>
+			<item>an_magic_sand</item>
+		</look>
+	</looks>
+-->
+
+
+<!-- CONDITIONALS --
+     <conditionals>
+ 		<conditional type="hasLook"/>
+		<conditional type="checkIfMobile"/>
+    	<conditional type="inScene">
+    		<parameters>
+		  		<param id="validScenes">game.scenes.arab2.sanctum.Sanctum</param>
+			</parameters>
+    	</conditional>
+    </conditionals>
+-->
+	
+</item>

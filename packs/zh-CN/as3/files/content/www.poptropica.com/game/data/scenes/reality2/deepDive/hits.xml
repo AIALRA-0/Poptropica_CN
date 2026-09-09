@@ -1,0 +1,13 @@
+<hits>
+	<hit id="radial" color="0x990099">
+		<component type="radial">
+			<rebound>0.1</rebound>
+		</component>
+	</hit>
+	<hit id="waterDive" color="0x0000ff">
+		<component type="water">
+			<density>0.76</density>
+			<sceneWide>true</sceneWide>
+		</component>
+	</hit>
+</hits>

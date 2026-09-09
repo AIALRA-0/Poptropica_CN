@@ -1,0 +1,35 @@
+<dialogs>
+	<character id="npc">
+		<statement triggerEvent="triggerEvent" triggerEventArgs="view_race" id="first">第一个爬到水塔顶的人就能赢得奖品！</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="head_start" id="set" link="go">1... 2... </statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="start_race" id="go">3!</statement>
+		<statement id="win1">正义的力量再次获胜！</statement>
+		<statement id="loose1">我怎么会输？</statement>
+		<statement id="fine">好吧，一言为定。护身符归你了。</statement>
+		<statement id="win2">哈，我根本不需要那个护身符！</statement>
+		<statement id="loose2" link="can i haz">没有力量护身符，我太慢了！</statement>
+		<statement id="can i haz" link="nope" linkEntityId="player">能把力量护身符还给我吗？</statement>
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="player">
+		<statement id="cheetah">作弊者永远不会成功！</statement>
+		<statement id="nope">不行！</statement>
+
+
+
+	</character>
+
+
+
+
+</dialogs>

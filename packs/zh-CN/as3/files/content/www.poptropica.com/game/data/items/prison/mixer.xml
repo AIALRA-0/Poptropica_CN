@@ -1,0 +1,64 @@
+<item id="mixer">
+	<type>island</type>
+	<subType>prison</subType>
+  	
+  	<textfields>
+  		<text id="title">
+ 			<conditional id="has_drill" isTrue="false"/>
+      		<value>搅拌机</value>
+    	</text>
+ 		<text id="title">
+ 			<conditional id="has_drill" isTrue="true"/>
+      		<value>装上钻头的搅拌器</value>
+    	</text>
+  	</textfields>
+  	
+  	<contentClass>
+		<className>game.ui.card.MultiFrameContentView</className>
+		<parameters>
+			<param>items/prison/mixer.swf</param>
+		</parameters>
+	</contentClass>
+	
+	<conditionals>
+    	<conditional type="checkEvents" id="has_drill">
+    		<parameters>
+    			<param id="event">combined_drill_bit</param>
+    			<param id="true">drill</param>
+    		</parameters>
+    	</conditional>
+    	<conditional type="checkEvents" id="no_has_drill">
+    		<parameters>
+    			<param id="event">combined_drill_bit</param>
+    			<param id="false">noDrill</param>	
+    		</parameters>
+    	</conditional>
+    </conditionals>
+    
+    <buttons>
+		<btn>
+			<conditional id="has_drill" isTrue="true"/>
+    		<label>使用</label>
+    		<actions>
+	    		<action type="triggerEvent">
+		  			<parameters>
+		  				<param id="event">use_mixer</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+	</buttons>
+
+	<assets>
+  		<asset id="cardBack">
+			<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-77</saturation>
+     			<hue>130</hue>
+    			</effect>
+	    	</asset>
+    </assets>
+</item>

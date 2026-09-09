@@ -1,0 +1,15 @@
+<doors>
+  <door id="condoExit">
+    <scene>game.scenes.virusHunter.condoInterior.CondoInterior</scene>
+    <x>321</x>
+    <y>388</y>
+    <label>
+      <text>退出</text>
+      <asset>exitPointer3D.swf</asset>
+      <offset>
+        <x>0</x>
+        <y>0</y>
+      </offset>
+    </label>
+  </door>
+</doors>

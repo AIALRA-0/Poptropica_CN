@@ -1,0 +1,273 @@
+<dialogs>
+	<character id="tailor">
+		<statement>嗨！进来改变造型吧。</statement>
+		<statement id="hurray">干得漂亮！</statement>
+
+
+
+	</character>
+	<character id="bundleNpc">
+		<statement>商店里有很多有趣的东西。进来看看有什么新品吧。</statement>
+
+
+	</character>
+	<character id="player">
+		<statement id="what_race">在哪儿见面？</statement>
+		<statement id="thanks1">谢谢大家，也谢谢你，阿米莉亚！</statement>
+		<statement id="thanks2">真是场冒险！</statement>
+
+
+
+
+	</character>
+	<character id="amelia">
+		<statement event="new_user" link="start_tutorial">你想学习如何玩Poptropica吗？</statement>
+		<statement link="start_tutorial">你想学习如何玩Poptropica吗？</statement>
+		<statement event="tutorial_started" link="start_tutorial2">准备好回去赢得比赛了吗？</statement>
+		<statement event="ftue_tutorial_completed" link="questions_completed">你好[Player Name]！有什么需要帮忙的吗？</statement>
+		<statement id="poptropica_is_new">神秘、动作、喜剧、剧情——应有尽有！</statement>
+		<statement id="want_to_save">你好[Player Name]！你想保存进度吗？</statement>
+		<statement id="thanks3">但这只是个开始！</statement>
+		<conversation id="start_tutorial">
+			<exchange>
+				<question id="welcome_yes" triggerEvent="triggerEvent" triggerEventArgs="start_race">是的！</question>
+
+
+						</exchange>
+			<exchange>
+				<question id="welcome_no" triggerEvent="triggerEvent" triggerEventArgs="no_has_questions">不，我有些问题想问。</question>
+				<answer link="questions_incomplete">好的，有什么需要帮忙的吗？</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="start_tutorial2">
+			<exchange>
+				<question id="welcome_yes" triggerEvent="triggerEvent" triggerEventArgs="start_race">是的，我们出发吧！</question>
+
+
+						</exchange>
+			<exchange>
+				<question id="welcome_no" triggerEvent="triggerEvent" triggerEventArgs="no_has_questions">还没，我有些问题想问。</question>
+				<answer link="questions_incomplete2">好的，有什么需要帮忙的吗？</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="questions_incomplete">
+			<exchange>
+				<question>Poptropica是关于什么的？</question>
+				<answer link="poptropica_is_new">Poptropica就是关于冒险的！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我还能做些什么？</question>
+				<answer link="what_else">那你对什么感兴趣呢？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我准备好出发了！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="start_race, true">太好了，我在比赛现场等你！</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="questions_incomplete2">
+			<exchange>
+				<question>Poptropica是关于什么的？</question>
+				<answer link="poptropica_is_new">Poptropica就是关于冒险的！</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>我还能做些什么？</question>
+				<answer link="what_else">那你对什么感兴趣呢？</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="start_race, true">我准备好出发了！</question>
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<conversation id="questions_completed">
+			<exchange>
+				<question>我准备好迎接更多冒险了！</question>
+				<answer>太棒了，登上飞艇就能选择下一个岛了。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>除了冒险还有别的吗？</question>
+				<answer link="what_else">当然可以。你对什么感兴趣呢？</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="adventurer">
+		<statement link="answer">你想进行更多冒险吗？</statement>
+		<statement id="to_map" triggerEvent="triggerEvent" triggerEventArgs="show_blimp_tutorial">我来告诉你去哪里！</statement>
+		<statement id="to_island" link="answer_island">[Island Name]岛很适合新手玩家。现在想去那里吗？</statement>
+		<conversation id="answer">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="said_more_to_adventure">当然想！</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="no_to_adventure, true">现在不想。</question>
+				<answer>如果你改变主意了，随时告诉我。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+		<conversation id="answer_island">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="said_yes_to_island">当然要！</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="no_to_island, true">也许下次吧。</question>
+				<answer>如果你改变主意了，随时告诉我。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="officiate">
+		<statement id="welcome1">恭喜你赢得了比赛！</statement>
+		<statement id="award">我荣幸地向[Player Name]颁发……</statement>
+		<statement id="award2">岛奖章！</statement>
+
+
+
+
+	</character>
+	<character id="wheelGuy">
+		<statement id="not_registered" link="show">抱歉！你需要保存游戏才能转轮盘。</statement>
+		<statement id="show" link="how">需要我教你怎么做吗？</statement>
+		<statement triggerEvent="triggerEvent" triggerEventArgs="open_wheel" id="spin">转动转盘赢大奖！</statement>
+		<statement id="nospin">明天再来转一次吧！</statement>
+		<conversation id="how">
+			<exchange>
+				<question>好啊！</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="play_save_tutorial">没问题。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>也许下次吧。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="decline_to_save">别紧张，但没账户我们没法给你发奖品。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dialogs>

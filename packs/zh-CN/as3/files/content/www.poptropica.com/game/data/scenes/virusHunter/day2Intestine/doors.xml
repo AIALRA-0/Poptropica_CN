@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorStomach">
+		<scene>game.scenes.virusHunter.day2Stomach.Day2Stomach</scene>
+		<x>1045</x>
+		<y>2500</y>
+		<label>
+			<text>退出</text>
+			<type>exitLeft</type>
+			<offset>
+				<x>300</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

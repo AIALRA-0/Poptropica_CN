@@ -1,0 +1,21 @@
+<dialogs>
+	<character id="player">
+		<statement triggeredByEvent="cant_use_battery">电池没地方插也没用啊。</statement>
+		<statement id="cant_use_soda">我现在不渴。</statement>
+		<statement id="need_fuel">要是有办法给它们充能就好了。</statement>
+		<statement id="too_much_going_on_soda">现在事情太多，没空停下来喝冷饮。</statement>
+		<statement id="no_power">我现在没办法给它充能。</statement>
+		<statement id="nice_gloves">这手套道具不错，但不像漫画里那样会发光。</statement>
+		<statement id="got_power">现在，我拥有了金面人的真正力量！</statement>
+
+
+
+
+
+
+
+
+	</character>
+
+
+</dialogs>

@@ -1,0 +1,11 @@
+<dialogs>
+	<character id="player">
+		<statement id="owMyNoggin">哎哟！我的脑袋！</statement>
+		<statement id="cheap">抠门的成本控制……这儿怎么回事？</statement>
+
+
+
+		</character>
+
+
+</dialogs>

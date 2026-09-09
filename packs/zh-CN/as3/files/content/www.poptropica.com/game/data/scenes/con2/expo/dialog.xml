@@ -1,0 +1,119 @@
+<dialogs>
+	<character id="player">
+		<statement id="gotIt" triggerEvent="triggerEvent" triggerEventArgs="give_back_phone">拿到了。</statement>
+		<statement id="locked">嗯……还没开门呢。</statement>
+		<statement id="need" link="we_need" linkEntityId="forrest">那你需要什么。</statement>
+		<statement id="i_spy" link="def" linkEntityId="forrest">我能当个间谍吗。</statement>
+
+
+
+
+
+		</character>
+	<character id="costume">
+		<statement id="ask_tutorial" link="tutorial">又见面了，真高兴。想学怎么搭配装扮吗？</statement>
+		<statement>如果你不想丢失任何装扮部件，记得先保存当前造型。</statement>
+		<statement id="tutorial_done">如果你不想丢失任何装扮部件，记得先保存当前造型。</statement>
+		<conversation id="tutorial">
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="start_tutorial">是。</question>
+
+
+						</exchange>
+			<exchange>
+				<question triggerEvent="triggerEvent" triggerEventArgs="no_tutorial">不用了。</question>
+				<answer>如果你不想丢失任何装扮部件，记得先保存当前造型。</answer>
+
+
+
+						</exchange>
+
+
+
+				</conversation>
+
+
+
+
+
+	</character>
+	<character id="forrest">
+		<statement id="comere" link="spies">嘿，小朋友，过来一下。有个超棒的机会想跟你聊聊！</statement>
+		<statement id="spies" link="need" linkEntityId="player">《酷炫新闻》靠线人获取内幕消息——但我们对《强力行动队》电影几乎一无所知！</statement>
+		<statement id="we_need" link="i_spy" linkEntityId="player">我们得在预告片首映前，抢先公布欧米伽的外形。线索肯定就散落在附近。</statement>
+		<statement id="def" triggerEvent="triggerEvent" triggerEventArgs="givePhone">当然。给你一部手机。拍到欧米伽的照片，我就帮你做一套超酷的装扮！</statement>
+		<statement id="get_photos">拍到欧米伽的照片，我就帮你做一套超酷的装扮！</statement>
+		<statement id="scoop" link="deal">真是大新闻！我马上发布——当然会加上剧透警告。</statement>
+		<statement id="deal" triggerEvent="triggerEvent" triggerEventArgs="getCostume">我没忘咱们的约定。稍等片刻，我给你做一套能拿奖的装扮。</statement>
+		<statement id="here_you_go" triggerEvent="triggerEvent" triggerEventArgs="giveCostume">给你！</statement>
+		<statement id="nice_costume">这套装扮真不错！</statement>
+
+
+
+
+
+
+
+
+
+
+	</character>
+	<character id="stan">
+		<conversation>
+			<exchange>
+				<question>你知道在哪儿能找到《强力行动队》电影里欧米伽的样子吗？</question>
+				<answer>天啊，又来一个？刚才还有人想卖给我欧米伽的幕后照片呢。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>还有谁在找欧米伽？</question>
+				<answer>萨莎·卡彭——《酷炫新闻》最大对手《超酷新闻》的站长。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>她长什么样？</question>
+				<answer link="there" triggerEvent="triggerEvent" triggerEventArgs="turn_stan">金发，戴眼镜，扎马尾，穿红色皮夹克。</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement id="there" triggerEvent="triggerEvent" triggerEventArgs="show_sasha">她就在那边。</statement>
+		<statement id="everyone">大家都想知道欧米伽长什么样。</statement>
+
+
+
+
+	</character>
+	<character id="pizza">
+		<statement>这身装扮总算派上用场了。他们让我免费入场！</statement>
+
+
+	</character>
+	<character id="eahero1">
+		<statement>这些微缩模型太棒了！</statement>
+
+
+	</character>
+	<character id="sasha">
+		<statement>这次大会全是劲爆新闻。</statement>
+
+
+	</character>
+
+
+
+
+
+
+
+
+</dialogs>

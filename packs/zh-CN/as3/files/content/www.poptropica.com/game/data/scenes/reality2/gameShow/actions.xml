@@ -1,0 +1,157 @@
+<actions>
+	<actionChain id="intro">
+		<action class="AnimationAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="class">game.data.animation.entity.character.Grief</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">eek</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">spiders</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">like</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c1</param>
+				<param type="point">225, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c2</param>
+				<param type="point">350, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c3</param>
+				<param type="point">475, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c4</param>
+				<param type="point">600, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c5</param>
+				<param type="point">725, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" noWait="true" lockInput="true">
+			<parameters>
+				<param type="entity">c6</param>
+				<param type="point">850, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="MoveAction" lockInput="true">
+			<parameters>
+				<param type="entity">c7</param>
+				<param type="point">975, 550</param>
+				<param type="point">40,50</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="false">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">choose</param>
+			</parameters>
+		</action>
+	</actionChain>
+	<actionChain id="ceremony">
+		<action class="TimelineAction" lockInput="true">
+			<parameters>
+				<param type="entity">transition</param>
+				<param type="string">start</param>
+				<param type="string">animDone</param>
+			</parameters>
+		</action>
+		<action class="SetVisibleAction" lockInput="true">
+			<parameters>
+				<param type="entity">transition</param>
+				<param type="boolean">false</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">winners</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">3</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">second</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">2</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">drum roll</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="5" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">1</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" lockInput="true">
+			<parameters>
+				<param type="function">awardPlace</param>
+				<param type="int">4</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">congrats</param>
+			</parameters>
+		</action>
+		<action class="TalkAction" lockInput="true">
+			<parameters>
+				<param type="entity">probably</param>
+				<param type="string">credits</param>
+			</parameters>
+		</action>
+		<action class="CallFunctionAction" endDelay="3" lockInput="true">
+			<parameters>
+				<param type="function">awardCredits</param>
+			</parameters>
+		</action>
+	</actionChain>
+</actions>

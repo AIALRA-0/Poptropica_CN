@@ -1,0 +1,31 @@
+<doors>
+	<door id="exitLeft">
+		<scene>game.scenes.shrink.mainStreet.MainStreet</scene>
+		<x>3015</x>
+		<y>1359</y>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>left</direction>
+	</door>
+
+	<door id="exitRight">
+		<scene>game.scenes.shrink.schoolInterior.SchoolInterior</scene>
+		<x>2265</x>
+		<y>460</y>
+		<label>
+			<text>进入</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

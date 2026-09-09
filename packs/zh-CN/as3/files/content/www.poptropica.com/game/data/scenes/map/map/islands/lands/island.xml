@@ -1,0 +1,35 @@
+<island>
+	<name>地图之谜</name>
+	<island>lands</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/lands/</islandFolder>
+	<numEpisodes>0</numEpisodes>
+	<showProgress>false</showProgress>
+	
+	<components>
+		<component class="engine.components.SpatialAddition"/>
+		<component class="game.components.motion.WaveMotion">
+			<properties>
+				<add function="true">
+					<constructor>
+						<data class="game.data.WaveMotionData">
+							<constructor>
+								<property>y</property>
+								<velocity>5</velocity>
+								<step>0.05</step>
+							</constructor>
+						</data>
+					</constructor>
+				</add>
+			</properties>
+		</component>
+	</components>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.GenericPage">
+			<properties>
+				<pageFolder>island/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

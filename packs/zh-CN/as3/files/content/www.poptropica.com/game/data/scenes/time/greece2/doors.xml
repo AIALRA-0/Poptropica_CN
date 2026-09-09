@@ -1,0 +1,15 @@
+<doors>
+	<door id="door1">
+		<scene>game.scenes.time.greece.Greece</scene>
+		<x>3108</x>
+		<y>1070</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

@@ -1,0 +1,15 @@
+<doors>
+	<door id="doorPit">
+		<scene>game.scenes.myth.hadesPit1.HadesPit1</scene>
+		<x>1384</x>
+		<y>680</y>
+		<label>
+			<text>向上走</text>
+			<type>exitUp</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+</doors>

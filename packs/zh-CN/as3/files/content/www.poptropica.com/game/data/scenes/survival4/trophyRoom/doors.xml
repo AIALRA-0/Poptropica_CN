@@ -1,0 +1,30 @@
+<doors><!-- trophy room -->
+	<door id="door1">
+		<scene>game.scenes.survival4.adMixed1.AdMixed1</scene>
+		<x>1736</x>
+		<y>1010</y>
+		<direction>left</direction>
+		<label>
+			<text>退出</text>
+			<type>exit3D</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<connectingSceneDoors>
+			<door id="doorLeft">
+				<scene>game.scenes.survival4.mainHall.MainHall</scene>
+				<x>2580</x>
+				<y>980</y>
+				<direction>left</direction>
+			</door>
+			<door id="doorRight">
+				<scene>game.scenes.survival4.trophyRoom.TrophyRoom</scene>
+				<x>300</x>
+				<y>950</y>
+				<direction>right</direction>
+			</door>
+		</connectingSceneDoors>
+	</door>
+</doors>

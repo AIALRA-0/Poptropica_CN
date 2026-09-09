@@ -1,0 +1,24 @@
+<dialogs>
+	<character id="player">
+		<statement id="back_up_thumb_drive">我得先备份这些数据再销毁。</statement>
+		<statement id="thumb_drive_in_toilet">得赶紧冲掉它。</statement>
+		<statement id="thumb_drive_flushed_2">呼，好险。现在该回望远镜那儿看看C. J. 有没有新消息了。</statement>
+		<statement id="read_magazine">不知道C. J. 会不会也用这种密码。</statement>
+		<statement id="overdue">这马桶早该冲了。</statement>
+
+
+
+
+
+
+		</character>
+	<character id="char1">
+		<statement id="thumb_drive_flushed">可恶！她把那个该死的u盘藏哪儿了？</statement>
+
+
+		</character>
+
+
+
+
+</dialogs>

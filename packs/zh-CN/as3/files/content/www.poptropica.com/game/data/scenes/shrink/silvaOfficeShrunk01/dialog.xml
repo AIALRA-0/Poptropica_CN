@@ -1,0 +1,25 @@
+<dialogs>
+	<character id="cj">
+		<statement id="gj" link="better idea">干得漂亮！现在把缩小射线枪的开关调到&apos;放大&apos;模式！</statement>
+		<statement id="better idea">等我们恢复正常大小后，我有个新科学项目的点子。</statement>
+
+
+
+	</character>
+	<character id="mrSilva">
+		<statement id="let me out">放我出去啊啊啊！</statement>
+
+
+	</character>
+	<character id="player">
+		<statement id="karma" link="let me out" linkEntityId="mrSilva">欢迎来到我的世界！希望你喜欢和蚂蚁们的新家。</statement>
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

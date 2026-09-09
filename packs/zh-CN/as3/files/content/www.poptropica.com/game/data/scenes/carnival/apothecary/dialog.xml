@@ -1,0 +1,146 @@
+<dialogs>
+	<character id="player">
+		<statement id="helpFillOrder" triggerEvent="triggerEvent" triggerEventArgs="receiveSaltFormula">当然。</statement>
+		<statement id="needWeight" link="takeWeight" linkEntityId="drdan">那个嘉年华有点不对劲。我需要一个小而重的东西来糊弄猜重游戏。</statement>
+		<statement id="noThanks">现在不用了，谢谢。</statement>
+		<statement id="noSoda">我现在不需要汽水。</statement>
+		<statement id="gotOsmium" triggerEvent="triggerEvent" triggerEventArgs="receiveOsmium">哇，这玩意儿真沉！我感觉自己变重了。</statement>
+		<statement id="newspapers" triggerEvent="triggerEvent" triggerEventArgs="removePapers">这些旧报纸挡路了。</statement>
+		<statement id="blueChem1" triggerEvent="triggerEvent" triggerEventArgs="saltReagent">氢氧化钠……</statement>
+		<statement id="yellowChem1" triggerEvent="triggerEvent" triggerEventArgs="saltReagent">盐酸……</statement>
+		<statement id="blueChem2" triggerEvent="triggerEvent" triggerEventArgs="sugarReagent">果糖……</statement>
+		<statement id="purpleChem1" triggerEvent="triggerEvent" triggerEventArgs="sugarReagent">葡萄糖……</statement>
+		<statement id="yellowChem2" triggerEvent="triggerEvent" triggerEventArgs="truthReagent">溴戊烷……</statement>
+		<statement id="blueChem3" triggerEvent="triggerEvent" triggerEventArgs="truthReagent">乙基丙二酸酯……</statement>
+		<statement id="redChem1" triggerEvent="triggerEvent" triggerEventArgs="truthReagent">硫代硫酸钠……</statement>
+		<statement id="error1">我觉得现在不该碰那个。</statement>
+		<statement id="error2">嘿，试着快速念五遍。</statement>
+		<statement id="error3">听起来很危险……也许晚点再说。</statement>
+		<statement id="error4">现在不需要这个。</statement>
+		<statement id="error5">嗯，化学听起来真复杂。</statement>
+		<statement id="dontHave">还不行，我需要更多试剂。</statement>
+		<statement id="alreadyHave">我已经有了，也许需要别的？</statement>
+		<statement id="haveAll">应该可以了。</statement>
+		<statement id="getIt">我需要这个，还有别的……</statement>
+		<statement id="useReactor">我不需要更多试剂了。该用反应器了。</statement>
+		<statement id="reactorNotReady1">我需要配方和一些试剂来操作。</statement>
+		<statement id="reactorNotReady2">我的配方里还缺东西。</statement>
+		<statement id="chemXReactor" triggerEvent="triggerEvent" triggerEventArgs="enteredChemX">可乐，蘑菇和腌黄瓜汁……试试看吧！</statement>
+		<statement id="chemXFinish">我成功了！丹博士马上就能痊愈了。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</character>
+	<character id="drdan">
+		<conversation event="hasItem_salt">
+			<exchange>
+				<question id="saltWater" linkEntityId="drdan">&apos;氯化钠&apos;？这不就是普通食盐嘛。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="gave_salt,true">没错，但换个花哨的名字就能卖高价了。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation event="ask_to_use_lab">
+			<exchange>
+				<question id="askLab" linkEntityId="drdan">我能再用一下你的实验室吗？我需要为嘉年华做点东西。</question>
+				<answer triggerEvent="triggerEvent" triggerEventArgs="makeSugar">嘉年华……？你可以用我的实验室，但要小心。那个大篷车去过一些黑暗的地方。</answer>
+
+
+
+						</exchange>
+
+
+				</conversation>
+		<conversation>
+			<exchange>
+				<question>你这里卖什么？</question>
+				<answer>化学药剂和分子，用来恢复生命活力。</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question>什么恢复什么？</question>
+				<answer>You know --  cures for diseases.</answer>
+
+
+
+						</exchange>
+			<exchange>
+				<question id="helpWithOrder">你早这么说就好了。</question>
+				<answer link="helpFillOrder" linkEntityId="player">说这些也没用。我现在视力不行，做不了药了。对了，你能帮我完成这个订单吗？</answer>
+
+
+
+						</exchange>
+
+
+
+
+				</conversation>
+		<statement event="ask_for_order">对了，我给你的订单完成了吗？</statement>
+		<statement event="thanks_for_salt">谢谢你的帮助。随时欢迎再来。</statement>
+		<statement event="after_sugar" link="noThanks" linkEntityId="player">今天还需要别的吗？</statement>
+		<statement event="need_weight" link="needWeight" linkEntityId="player">这么快就回来了？</statement>
+		<statement id="takeWeight" triggerEvent="triggerEvent" triggerEventArgs="allowedOsmium">你找到什么都可以拿走。</statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</character>
+
+
+
+
+
+
+</dialogs>

@@ -1,0 +1,12 @@
+<items>
+	<item>
+		<id>droneEars</id>
+		<asset>droneEars.swf</asset>
+		<x>1493</x>
+		<y>318</y>
+		<label>
+			<text>查看</text>
+			<type>exitDown</type>
+		</label>
+	</item>
+</items>

@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="genie">
+		<statement id="tricks">我的头巾里还藏着不少把戏呢！看看你能不能找到我藏身的地方。</statement>
+		<statement id="enough">这些游戏玩够了！</statement>
+		<statement id="hide1">阿布拉卡达布拉！</statement>
+		<statement id="hide2">这次你绝对抓不到我。</statement>
+		<statement id="hide3">我的魔法可不是你能对付的。</statement>
+		<statement id="hide4">试试看能不能破解这个咒语。</statement>
+
+
+
+
+
+
+
+		</character>
+
+
+</dialogs>

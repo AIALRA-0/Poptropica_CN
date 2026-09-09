@@ -1,0 +1,19 @@
+<dialogs>
+	<character id="player">
+    </character>
+	<character id="cam">
+		<statement id="fishMoved">我敢打赌，我们可以引导那些鱼去我们想去的地方。</statement>
+		<statement id="fishTrapped">我觉得那玩意儿已经好久没启动过了！</statement>
+		<statement id="spotPuzzlePiece">管道里卡着一件文物。你得想办法把它弄出来。</statement>
+
+
+
+
+
+
+
+		</character>
+
+
+
+</dialogs>

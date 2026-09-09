@@ -1,0 +1,40 @@
+<island>
+	<name>生存岛</name>
+	<island>survival</island>
+	<gameVersion>AS3</gameVersion>
+	<islandFolder>scenes/map/map/islands/survivalEpisodic/</islandFolder>
+	<numEpisodes>5</numEpisodes>
+	<showProgress>true</showProgress>
+	
+	<pages>
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode1/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode2/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode3/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode4/</pageFolder>
+			</properties>
+		</page>
+		
+		<page class="game.scenes.map.map.groups.IslandPage">
+			<properties>
+				<pageFolder>episode5/</pageFolder>
+			</properties>
+		</page>
+	</pages>
+</island>

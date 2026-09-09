@@ -1,0 +1,29 @@
+<doors>
+	<door id="doorMap">
+		<scene>game.scenes.viking.fortress.Fortress</scene>
+		<x>500</x>
+		<y>500</y>
+		<label>
+			<text>退出</text>
+			<type>exitRight</type>
+			<offset>
+				<x>-75</x>
+				<y>0</y>
+			</offset>
+		</label>
+	</door>
+	<door id="doorFortress" event="peak_exploded">
+		<scene>game.scenes.viking.diningHall.DiningHall</scene>
+		<x>550</x>
+		<y>744</y>
+		<label>
+			<text>进入</text>
+			<type>exitRight</type>
+			<offset>
+				<x>0</x>
+				<y>0</y>
+			</offset>
+		</label>
+		<direction>right</direction>
+	</door>
+</doors>

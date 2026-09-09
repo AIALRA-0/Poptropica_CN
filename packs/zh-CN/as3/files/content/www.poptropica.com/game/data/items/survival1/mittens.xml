@@ -1,0 +1,54 @@
+<item id="mittens">
+  	<type>island</type>
+  	<subType>survival1</subType>
+  	
+  	<textfields>
+ 		<text id="title">
+      		<value>手套</value>
+    	</text>
+  	</textfields>
+  	
+  	<buttons>
+    	<btn>
+			<conditional id="hasAbility" isTrue="false"/>
+    		<label>穿上</label>
+    		<actions>
+				<action type="activatePower">
+					<parameters>
+					  		<param id="trigger">true</param>
+					</parameters>
+				</action>
+			</actions>
+  		</btn>
+  		<btn>
+			<conditional id="hasAbility" isTrue="true"/>
+    		<label>脱下</label>
+    		<actions>
+				<action type="deactivatePower"/>
+			</actions>
+  		</btn>
+  	</buttons>
+
+	<assets>
+  		<asset id="cardBack">
+       		<effect>
+      			<name>adjustColorFilter</name>
+      			<enabled>true</enabled>
+      			<brightness>0</brightness>
+     			<contrast>0</contrast>
+     			<saturation>-55</saturation>
+     			<hue>-36</hue>
+    		</effect>
+    	</asset>
+   		<asset id="cardContent"/>
+    </assets>
+
+ 	 <specials>
+	    <specialAbility>mittens</specialAbility>
+	</specials>
+	
+	<conditionals>
+    		<conditional type="hasAbility" />
+    </conditionals>
+    
+</item>
