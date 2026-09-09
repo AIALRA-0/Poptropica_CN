@@ -362,6 +362,33 @@ function syncRecoveredAs2EmbeddedSounds() {
   copied += fallbackResult.copied;
   skipped += fallbackResult.skipped;
 
+  // A migrated checkout may not include the original FFDec extraction tree
+  // referenced by the audit report. Preserve any already present embedded
+  // audio files in the generated manifest so a local runtime can still serve
+  // them and the QA gate can verify their hashes.
+  for (const entry of fs.readdirSync(soundRoot, { withFileTypes: true })) {
+    if (!entry.isFile() || !USER_AUDIO_EXTENSIONS.includes(path.extname(entry.name).toLowerCase())) {
+      continue;
+    }
+    const soundKey = sanitizeAs2SoundName(path.basename(entry.name, path.extname(entry.name)));
+    if (!soundKey || nextManifest.entries[soundKey]) {
+      continue;
+    }
+    const sourcePath = path.join(soundRoot, entry.name);
+    nextManifest.entries[soundKey] = {
+      soundName: soundKey,
+      sourceType: "preserved-embedded-audio",
+      sourceGroup: "as2",
+      sourceAssetPath: null,
+      sourceSoundPath: entry.name,
+      fileName: entry.name,
+      bytes: fs.statSync(sourcePath).size,
+      sha256: sha256File(sourcePath),
+      confidence: "preserved-local-file",
+      reason: "Original embedded audio retained during migration; FFDec extraction source is unavailable locally."
+    };
+  }
+
   writeJson(manifestPath, nextManifest);
   return { copied, skipped, manifestPath };
 }
@@ -605,6 +632,18 @@ function ensurePhpCgiWrapperBuild() {
     throw new Error("php-cgi wrapper project files are missing.");
   }
 
+  // The wrapper targets the .NET 9 runtime. Older or minimal Windows
+  // installations can still run Flashpoint's native PHP CGI binary, so do
+  // not make the whole local runtime unusable when .NET 9 is absent.
+  const dotnetRuntimes = spawnSync("dotnet", ["--list-runtimes"], {
+    encoding: "utf8",
+    windowsHide: true,
+    timeout: 10000
+  });
+  if (dotnetRuntimes.status !== 0 || !/Microsoft\.NETCore\.App\s+9\./u.test(String(dotnetRuntimes.stdout || ""))) {
+    return null;
+  }
+
   const sourceState = {
     projectHash: hashFile(projectFile),
     programHash: hashFile(programFile)
@@ -675,19 +714,24 @@ function ensureManagedServiceRoot(config) {
   };
   const existingMeta = readJson(serviceMetaPath, null);
   const wrapperExe = ensurePhpCgiWrapperBuild();
-  const wrapperHash = hashFile(wrapperExe);
+  const wrapperHash = wrapperExe ? hashFile(wrapperExe) : null;
   const managedPhpCgi = path.join(managedLegacyDir, "php-cgi.exe");
   const managedPhpCgiReal = path.join(managedLegacyDir, "php-cgi-real.exe");
   const managedPhpCgiHash = hashIfExists(managedPhpCgi);
   const managedPhpCgiRealHash = hashIfExists(managedPhpCgiReal);
-  const shouldReuseLegacy =
-      fileExists(managedPhpCgi) &&
+  const shouldReuseLegacy = wrapperHash
+    ? fileExists(managedPhpCgi) &&
       fileExists(managedPhpCgiReal) &&
       existingMeta &&
       existingMeta.routerHash === currentSourceState.routerHash &&
       existingMeta.wrapperHash === wrapperHash &&
       managedPhpCgiHash === wrapperHash &&
-      managedPhpCgiRealHash === currentSourceState.phpCgiHash;
+      managedPhpCgiRealHash === currentSourceState.phpCgiHash
+    : fileExists(managedPhpCgi) &&
+      !fileExists(managedPhpCgiReal) &&
+      existingMeta &&
+      existingMeta.routerHash === currentSourceState.routerHash &&
+      managedPhpCgiHash === currentSourceState.phpCgiHash;
 
   ensureDirSync(managedRoot);
   clearStaleOriginalWrapperMarker();
@@ -700,10 +744,12 @@ function ensureManagedServiceRoot(config) {
     if (fileExists(managedPhpCgiReal)) {
       fs.rmSync(managedPhpCgiReal, { force: true });
     }
-    if (fileExists(managedPhpCgi)) {
-      fs.renameSync(managedPhpCgi, managedPhpCgiReal);
+    if (wrapperExe) {
+      if (fileExists(managedPhpCgi)) {
+        fs.renameSync(managedPhpCgi, managedPhpCgiReal);
+      }
+      fs.copyFileSync(wrapperExe, managedPhpCgi);
     }
-    fs.copyFileSync(wrapperExe, managedPhpCgi);
   }
 
   mirrorPhpScriptsIntoCgiBin(managedLegacyDir);
@@ -784,6 +830,14 @@ function ensureManagedServiceRoot(config) {
 function ensureOriginalLegacyPhpCgiWrapper(config) {
   const flashpoint = getFlashpointPaths(config);
   const wrapperExe = ensurePhpCgiWrapperBuild();
+  if (!wrapperExe) {
+    return {
+      originalPhpCgi: path.join(flashpoint.root, "Legacy", "php-cgi.exe"),
+      originalPhpCgiReal: null,
+      wrapped: false,
+      reason: "dotnet9_unavailable"
+    };
+  }
   const legacyDir = path.join(flashpoint.root, "Legacy");
   const originalPhpCgi = path.join(legacyDir, "php-cgi.exe");
   const originalPhpCgiReal = path.join(legacyDir, "php-cgi-real.exe");
@@ -1201,8 +1255,9 @@ async function mountSourceZip(config, sourceGroup) {
     runtimeState.lastMountedZip &&
     path.resolve(runtimeState.lastMountedZip) === path.resolve(target.targetZipPath) &&
     runtimeState.lastMountedZipHash === targetZipHash;
+  const forceRemount = process.env.POPTROPICA_FORCE_REMOUNT === "1";
 
-  if (runtimeState.lastMountedZip && !sameAsLastMount) {
+  if (runtimeState.lastMountedZip && (!sameAsLastMount || forceRemount)) {
     await postZipServer("unmountzip", runtimeState.lastMountedZip).catch(() => null);
   }
 

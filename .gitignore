@@ -33,3 +33,9 @@ packs/zh-CN/as3/*
 !packs/zh-CN/as3/files/**
 !packs/zh-CN/as3/provenance/
 !packs/zh-CN/as3/provenance/**
+!packs/zh-CN/as3/swf/
+!packs/zh-CN/as3/swf/content/
+!packs/zh-CN/as3/swf/content/www.poptropica.com/
+!packs/zh-CN/as3/swf/content/www.poptropica.com/game/
+!packs/zh-CN/as3/swf/content/www.poptropica.com/game/Shell.swf
+packs/zh-CN/as3/swf/content/www.poptropica.com/flashpoint/
