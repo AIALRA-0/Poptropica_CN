@@ -1302,7 +1302,7 @@
       "runtime": "flash",
       "launchable": true,
       "islandParam": "virusHunter",
-      "roomParam": "adStreet",
+      "roomParam": "mainStreet",
       "startupPath": "gameplay",
       "sceneFolder": "virusHunter",
       "discoveredRooms": [
