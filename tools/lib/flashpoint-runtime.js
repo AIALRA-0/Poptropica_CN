@@ -1470,6 +1470,10 @@ function sanitizeNavigatorProfile(config) {
     ["media.gmp-manager.url", "\"http://127.0.0.1/flashpoint-gmp-dummy.xml\""],
     ["media.gmp-manager.url.override", "\"http://127.0.0.1/flashpoint-gmp-dummy.xml\""],
     ["browser.sessionstore.resume_from_crash", "false"],
+    // Flash-era SWFs can issue repeated plugin popup requests; keep them
+    // inside the managed game window instead of spawning native windows.
+    ["privacy.popups.disable_from_plugins", "1"],
+    ["dom.popup_allowed_events", "\"click auxclick pointerdown\""],
     ["toolkit.legacyUserProfileCustomizations.stylesheets", "true"],
     ["layers.acceleration.disabled", "true"],
     ["gfx.direct2d.disabled", "true"],
