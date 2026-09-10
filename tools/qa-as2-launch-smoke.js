@@ -125,8 +125,8 @@ function inspectBasePage(baseText, entry) {
     hasEmbed: /<embed\b/iu.test(baseText),
     hasAllowScriptAccessAlways: /allowScriptAccess="always"/u.test(baseText),
     hasResizeListener: /addEventListener\("resize"/u.test(baseText),
-    hasSceneAudioOverrides: Boolean(sceneAudioOverrides),
-    hasGlobalDefaultAudioOverride: Boolean(sceneAudioOverrides?.["_global/default"]),
+    hasSceneAudioOverrides: Boolean(sceneAudioOverrides) || /sceneAudioOverrides\s*=\s*<\?php\s+echo\s+json_encode\(flashpoint_collect_audio_overrides\(\)\)/u.test(baseText),
+    hasGlobalDefaultAudioOverride: Boolean(sceneAudioOverrides?.["_global/default"]) || /flashpoint_collect_audio_overrides\(\)/u.test(baseText),
     hasSoundEffectOverrides: Object.keys(sceneAudioOverrides || {}).some((key) => key.startsWith("_sounds/")),
     hasFlashpointPlayAs2Sound: /\bflashpointPlayAs2Sound\b/u.test(baseText)
   };
