@@ -1934,7 +1934,10 @@ function spawnRuntimeLayoutWatcher(command, runtimePid, sourceGroup) {
   const startDelayMs = Number.isFinite(requestedStartDelayMs)
     ? Math.max(0, Math.round(requestedStartDelayMs))
     : 0;
-  const resizeRelaunch = String(sourceGroup || "").toLowerCase() === "as3" && process.env.POPTROPICA_QA_RESIZE_RELAUNCH !== "0";
+  // Relaunching the player from a resize watcher is a QA-only experiment.
+  // Keeping it enabled during normal clicks can create a relaunch loop when
+  // the window manager reports successive geometry changes.
+  const resizeRelaunch = String(sourceGroup || "").toLowerCase() === "as3" && process.env.POPTROPICA_QA_RESIZE_RELAUNCH === "1";
   const resizeRelaunchMinDelta = Number(process.env.POPTROPICA_QA_RESIZE_RELAUNCH_MIN_DELTA || 24);
   const resizeRelaunchStableMs = Number(process.env.POPTROPICA_QA_RESIZE_RELAUNCH_STABLE_MS || 900);
   const helperArgs = [

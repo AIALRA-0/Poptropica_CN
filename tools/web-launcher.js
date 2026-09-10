@@ -16,6 +16,7 @@ const DEFAULT_PORT = 22800;
 // value lets the runtime choose the primary display; callers can still pass
 // an explicit monitor when a multi-display setup needs one.
 const DEFAULT_TARGET_MONITOR = "";
+let launchInFlight = false;
 const MAX_BODY_BYTES = 1024 * 1024;
 
 function flagEnabled(value, fallback = false) {
@@ -256,7 +257,18 @@ function runLaunch(launchPlan, dryRun, serverOptions = {}) {
         : "Dry-run request; this API returned the launch plan without starting a local Flashpoint Navigator process."
     };
   }
-  return runNodeJson("launch.js", launchPlan.args, 90000).output;
+  if (launchInFlight) {
+    return {
+      ok: false,
+      error: "已有启动操作正在进行，请等待当前窗口完成初始化。"
+    };
+  }
+  launchInFlight = true;
+  try {
+    return runNodeJson("launch.js", launchPlan.args, 90000).output;
+  } finally {
+    launchInFlight = false;
+  }
 }
 
 async function handlePrepare(serverOptions = {}) {
@@ -547,12 +559,13 @@ function renderPage(serverOptions = {}) {
     <script>
       const SERVER_LAUNCH_MODE = "${launchMode}";
       const SERVER_SPAWN_ENABLED = ${spawnEnabled};
-      const state = { payload: null, filter: "", source: "" };
+      const state = { payload: null, filter: "", source: "", busy: false };
       const $ = (id) => document.getElementById(id);
       function statusClass(value) {
         return /可玩|已验收|已就绪/u.test(String(value || "")) ? "ok" : /损坏|未导入|未解析/u.test(String(value || "")) ? "bad" : "";
       }
       function setBusy(busy) {
+        state.busy = busy;
         ["refreshButton", "prepareButton", "launchAs3Button", "launchAs2Button"].forEach((id) => $(id).disabled = busy);
         document.querySelectorAll("button[data-island]").forEach((button) => button.disabled = busy);
       }
@@ -615,6 +628,7 @@ function renderPage(serverOptions = {}) {
         renderTable();
       }
       async function run(label, fn) {
+        if (state.busy) return;
         setBusy(true);
         $("output").textContent = label + "...";
         try {
