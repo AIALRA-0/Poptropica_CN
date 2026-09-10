@@ -49,6 +49,13 @@ for (const matrix of matrixRuns) {
     islands[item.canonicalKey] = {
       playabilityStatus: playable ? "可玩" : "已知损坏",
       translationStatus,
+      acceptanceEvidence: {
+        level: playable ? "启动与场景烟测" : "烟测未通过",
+        fullRouteVerified: false,
+        saveReloadVerified: false,
+        naturalAudioVerified: audioOk,
+        renderedChineseVerified: false
+      },
       lastVerifiedAt: item.generatedAt || report.generatedAt || null,
       notes: [
         `${matrix.source.toUpperCase()} 全量现场验收：${matrixRun.name}`,

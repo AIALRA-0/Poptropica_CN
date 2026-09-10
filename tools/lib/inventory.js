@@ -164,6 +164,7 @@ function buildInventory(config) {
       },
       playabilityStatus: buildPlayabilityStatus(entry, availability, launchEntry, verification),
       translationStatus: buildTranslationStatus(entry, packState, progressMap, verification),
+      acceptanceEvidence: verified?.acceptanceEvidence || null,
       lastVerifiedAt: verified?.lastVerifiedAt || null,
       notes: [
         ...buildNotes(entry, config, availability),
@@ -201,6 +202,7 @@ function buildInventory(config) {
       availability,
       playabilityStatus: preferred?.playabilityStatus || "未导入",
       translationStatus: preferred?.translationStatus || "未提取",
+      acceptanceEvidence: preferred?.acceptanceEvidence || null,
       lastVerifiedAt: preferred?.lastVerifiedAt || null,
       launchTarget: preferred?.launchTarget || null,
       notes: preferred?.notes || [],
