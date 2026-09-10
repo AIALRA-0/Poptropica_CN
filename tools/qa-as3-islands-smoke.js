@@ -1668,7 +1668,9 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   if (flagEnabled(args.requireSceneEvidence) && !sceneEvidence.ok) {
     failedChecks.push("scene_evidence_missing");
   }
-  if (isLikelyLoadingScreen(ocr, logSummary)) {
+  // Direct-scene launches may omit analytics progress events; only classify
+  // the logo heuristic as stuck when the rendered frame also fails visually.
+  if (isLikelyLoadingScreen(ocr, logSummary) && !visualGuard?.ok) {
     failedChecks.push("loading_screen_stuck");
   }
   if (shouldFailOnMissingRequests(args) && Number(logSummary.missingCount || 0) > 0) {
