@@ -253,7 +253,7 @@ async function main() {
     });
     assert(runtimeDryRun.ok, "runtime dry-run failed");
     assert(hasArgPair(runtimeDryRun.payload.args, "--runtime", "as3"), "runtime dry-run missing --runtime as3");
-    assert(hasArgPair(runtimeDryRun.payload.args, "--targetMonitor", "G32QC"), "runtime dry-run missing G32QC target");
+    assert(!hasArgPair(runtimeDryRun.payload.args, "--targetMonitor", "G32QC"), "runtime dry-run should not assume an unavailable monitor");
     assert(runtimeDryRun.payload.args.includes("--maximize"), "runtime dry-run missing --maximize");
     assert(runtimeDryRun.payload.windowGeometry?.mode === "as3-safe-maximize", "runtime dry-run did not resolve AS3 safe maximize");
     report.checks.push({
