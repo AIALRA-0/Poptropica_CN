@@ -40,7 +40,11 @@ function splitCsv(value) {
 }
 
 function applyVisibleQaDefaults(args) {
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  // Leave monitor selection automatic unless the caller explicitly names one.
+  // The old hard-coded G32QC default made QA fail on machines whose display
+  // inventory does not expose that monitor alias, even when the game window
+  // was healthy and rendering correctly.
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }

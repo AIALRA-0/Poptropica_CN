@@ -108,7 +108,9 @@ function shouldFailOnMissingRequests(args) {
 }
 
 function applyVisibleQaDefaults(args) {
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  // Select a monitor only when explicitly requested; do not assume a
+  // physical display model that may not exist on the current QA host.
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   const windowGeometry = resolveWindowGeometry(args);
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
@@ -469,7 +471,13 @@ function hasSceneProgressSignal(logSummary) {
   if (!logSummary) {
     return false;
   }
-  return Number(logSummary.sceneLoadedCount || 0) > 0 || Number(logSummary.sceneMediaRequestCount || 0) > 0;
+  // Direct-scene launches do not always emit the analytics SceneLoaded event,
+  // but they do fetch the scene manifest and its backdrop/interactive assets.
+  // Those requests are a stronger local proof that the playable scene loaded
+  // than requiring a remote tracking callback.
+  return Number(logSummary.sceneLoadedCount || 0) > 0
+    || Number(logSummary.sceneMediaRequestCount || 0) > 0
+    || (Array.isArray(logSummary.sceneSamples) && logSummary.sceneSamples.length > 0);
 }
 
 function decodeLogLine(line) {

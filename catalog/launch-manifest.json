@@ -1,26 +1,26 @@
 {
-  "generatedAt": "2026-06-21T22:18:28.562Z",
+  "generatedAt": "2026-09-10T00:06:51.494Z",
   "sources": {
     "as2Configured": true,
     "as3Configured": true,
     "as2Archive": {
-      "archivePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-      "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS2.zip",
-      "runtimeZip": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
+      "archivePath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
+      "sourceZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\AS2.zip",
+      "runtimeZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
       "usesRuntimeZip": true
     },
     "as3Archive": {
-      "archivePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
-      "sourceZip": "E:\\Poptropica\\POPTROPICA_FLASH\\AS3.zip",
-      "runtimeZip": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
+      "archivePath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
+      "sourceZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\AS3.zip",
+      "runtimeZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as3-runtime.zip",
       "usesRuntimeZip": true
     }
   },
   "as3Shell": {
     "shellPath": "content/www.poptropica.com/game/Shell.swf",
     "inspected": true,
-    "compressedBytes": 5036337,
-    "searchableBytes": 10373901
+    "compressedBytes": 5035813,
+    "searchableBytes": 10379132
   },
   "summary": {
     "totalEntries": 47,
@@ -1349,8 +1349,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1360,7 +1360,7 @@
       "runtime": "flash",
       "launchable": true,
       "islandParam": "mocktropica",
-      "roomParam": "mainStreet",
+      "roomParam": "adStreet",
       "startupPath": "gameplay",
       "sceneFolder": "mocktropica",
       "discoveredRooms": [
@@ -1392,8 +1392,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1443,8 +1443,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1480,8 +1480,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1516,8 +1516,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1555,8 +1555,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1592,8 +1592,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1637,8 +1637,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1680,8 +1680,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1729,8 +1729,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1776,8 +1776,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1810,8 +1810,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     },
@@ -1844,8 +1844,8 @@
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
         "inspected": true,
-        "compressedBytes": 5036337,
-        "searchableBytes": 10373901,
+        "compressedBytes": 5035813,
+        "searchableBytes": 10379132,
         "targetClassPresent": true
       }
     }

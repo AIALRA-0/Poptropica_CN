@@ -4086,12 +4086,19 @@ def command_audio_check(args):
     sessions = []
     for session in AudioUtilities.GetAllSessions():
         process = session.Process
-        process_name = process.name().lower() if process else None
+        # A Flash window can exit between CoreAudio enumerating a session and
+        # reading its process metadata. Treat that race as a vanished session
+        # instead of failing the whole island smoke run.
+        try:
+            process_name = process.name().lower() if process else None
+            process_pid = process.pid if process else None
+        except Exception:
+            continue
         if process_names and process_name not in process_names:
             continue
         sessions.append({
             "processName": process_name,
-            "pid": process.pid if process else None,
+            "pid": process_pid,
             "displayName": session.DisplayName,
             "state": int(session.State),
             "volume": round(float(session.SimpleAudioVolume.GetMasterVolume()), 4),
