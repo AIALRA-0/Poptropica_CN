@@ -12,7 +12,10 @@ const paths = require("./lib/paths");
 
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 22800;
-const DEFAULT_TARGET_MONITOR = "G32QC";
+// Do not assume a monitor model that may not exist on the host. An empty
+// value lets the runtime choose the primary display; callers can still pass
+// an explicit monitor when a multi-display setup needs one.
+const DEFAULT_TARGET_MONITOR = "";
 const MAX_BODY_BYTES = 1024 * 1024;
 
 function flagEnabled(value, fallback = false) {
@@ -497,7 +500,7 @@ function renderPage(serverOptions = {}) {
           <span class="status-line"><span class="dot" id="proxyDot"></span>Proxy</span>
           <span class="status-line"><span class="dot" id="zipDot"></span>ZIP</span>
           <span class="status-line"><span class="dot" id="phpDot"></span>PHP</span>
-          <span class="status-line"><span class="dot ok"></span><span id="monitorLabel">G32QC</span></span>
+          <span class="status-line"><span class="dot ok"></span><span id="monitorLabel">自动显示器</span></span>
           <span class="status-line"><span class="dot ok"></span><span id="launchModeLabel">${launchMode}</span></span>
         </div>
         <div class="notice" id="noSpawnNotice" hidden>部署预览模式已启用：启动按钮只返回命令计划，不会在服务器主机上启动 Flashpoint Navigator。</div>
@@ -566,7 +569,7 @@ function renderPage(serverOptions = {}) {
       }
       function launchPayload(extra = {}) {
         const size = $("sizeSelect").value;
-        return { targetMonitor: "G32QC", ...(size ? { windowSize: size, maximize: false } : { maximize: true }), ...extra };
+        return { ...(size ? { windowSize: size, maximize: false } : { maximize: true }), ...extra };
       }
       function renderSummary() {
         const summary = state.payload?.inventory?.summary || {};
@@ -580,7 +583,7 @@ function renderPage(serverOptions = {}) {
         $("proxyDot").classList.toggle("ok", Boolean(healthy.proxy));
         $("zipDot").classList.toggle("ok", Boolean(healthy.zip));
         $("phpDot").classList.toggle("ok", Boolean(healthy.php));
-        $("monitorLabel").textContent = state.payload?.app?.defaultTargetMonitor || "G32QC";
+        $("monitorLabel").textContent = state.payload?.app?.defaultTargetMonitor || "自动显示器";
         $("launchModeLabel").textContent = state.payload?.app?.launchMode || SERVER_LAUNCH_MODE;
         $("noSpawnNotice").hidden = Boolean(state.payload?.app?.spawnEnabled ?? SERVER_SPAWN_ENABLED);
       }

@@ -24,7 +24,7 @@ const {
 
 let mainWindow = null;
 let activeRuntime = null;
-const DEFAULT_RUNTIME_TARGET_MONITOR = "G32QC";
+const DEFAULT_RUNTIME_TARGET_MONITOR = "";
 const electronProfileRoot = path.join(
   paths.runtimeDataDir,
   process.env.POPTROPICA_UI_TEST
