@@ -1,6 +1,6 @@
 const path = require("node:path");
 const fs = require("node:fs");
-const { spawn, spawnSync } = require("node:child_process");
+const { execFileSync, spawn, spawnSync } = require("node:child_process");
 const paths = require("./paths");
 const { ensureDirSync, writeJson } = require("./fs-utils");
 
@@ -18,6 +18,18 @@ function getPythonBinary() {
 
 function getQaHelperPath() {
   return path.join(paths.toolsRoot, "qa-helper.py");
+}
+
+function getProjectRevision() {
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: paths.projectRoot,
+      encoding: "utf8",
+      windowsHide: true
+    }).trim() || null;
+  } catch (_error) {
+    return null;
+  }
 }
 
 function hasCliArg(args, name) {
@@ -350,6 +362,7 @@ module.exports = {
   acquireQaLock,
   buildAs2SceneEvidence,
   ensureQaDir,
+  getProjectRevision,
   isMissingRequestLine,
   runPythonQa,
   spawnPythonQa,

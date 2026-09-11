@@ -65,7 +65,7 @@ function getVisibleIslands(payload) {
 }
 
 function getStatusClass(status) {
-  if (["可玩", "已验收可见中文", "已就绪"].includes(status)) {
+  if (["启动烟测通过", "基础交互通过", "完整路线通过", "最终验收通过", "已验收可见中文", "已就绪"].includes(status)) {
     return "ready";
   }
   if (["待验证", "已提取待翻译", "已打包未验收", "检查中"].includes(status)) {
@@ -108,7 +108,7 @@ function renderHeader(payload) {
   byId("readyBadge").className = `pill ${ready ? "ready" : "waiting"}`;
   byId("launchableCount").textContent = `${launchSummary.launchableCount || 0} / ${launchSummary.totalEntries || 0}`;
   byId("verifiedChineseCount").textContent = String(inventorySummary.verifiedChineseCount || 0);
-  byId("verifiedPlayableCount").textContent = String(inventorySummary.verifiedPlayableCount || 0);
+  byId("verifiedPlayableCount").textContent = String(inventorySummary.smokeVerifiedCount || 0);
 
   if (state.lastStatusPayload?.message) {
     byId("progressMessage").textContent = state.lastStatusPayload.message;

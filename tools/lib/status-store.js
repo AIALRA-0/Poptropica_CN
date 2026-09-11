@@ -40,6 +40,48 @@ const DEFAULT_WINDOW_AUDIT = {
   processes: []
 };
 
+const ACCEPTANCE_LEVELS = Object.freeze({
+  smoke: "启动烟测通过",
+  interaction: "基础交互通过",
+  route: "完整路线通过",
+  final: "最终验收通过"
+});
+
+function acceptanceEvidenceComplete(evidence = {}) {
+  return evidence.fullRouteVerified === true &&
+    evidence.saveReloadVerified === true &&
+    evidence.renderedChineseVerified === true &&
+    evidence.windowStableVerified === true;
+}
+
+function derivePlayabilityStatus({
+  available = true,
+  smokeVerified = false,
+  interactionVerified = false,
+  evidence = {},
+  failed = false
+} = {}) {
+  if (!available) {
+    return "未导入";
+  }
+  if (failed) {
+    return "已知损坏";
+  }
+  if (acceptanceEvidenceComplete(evidence)) {
+    return ACCEPTANCE_LEVELS.final;
+  }
+  if (evidence.fullRouteVerified === true) {
+    return ACCEPTANCE_LEVELS.route;
+  }
+  if (interactionVerified) {
+    return ACCEPTANCE_LEVELS.interaction;
+  }
+  if (smokeVerified) {
+    return ACCEPTANCE_LEVELS.smoke;
+  }
+  return "待验证";
+}
+
 function loadIslandVerification() {
   return readJson(paths.islandVerificationPath, DEFAULT_ISLAND_VERIFICATION);
 }
@@ -85,6 +127,9 @@ function saveWindowAudit(payload) {
 }
 
 module.exports = {
+  ACCEPTANCE_LEVELS,
+  acceptanceEvidenceComplete,
+  derivePlayabilityStatus,
   loadIslandVerification,
   loadPlayerCompatibility,
   loadWindowAudit,

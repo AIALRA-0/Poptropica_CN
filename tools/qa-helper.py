@@ -37,6 +37,12 @@ RUNTIME_BROWSER_PROCESS_NAMES = {
     "basiliskii.exe",
     "firefox.exe",
 }
+RUNTIME_PLUGIN_PROCESS_NAMES = {
+    "flashplayerplugin.exe",
+    "flashplayerplugin_32bit.exe",
+    "plugin-container.exe",
+    "flashpointsecureplayer.exe",
+}
 KNOWN_MODEL_SIZE_HINTS = {
     "g32qc": (2560, 1440),
     "g32qc a": (2560, 1440),
@@ -371,6 +377,77 @@ def safe_process_row(pid):
             "exe": None,
             "cmdline": [],
         }
+
+
+def runtime_process_snapshot():
+    """Return Navigator/plugin processes and their descendants for QA evidence."""
+    rows = []
+    by_pid = {}
+    try:
+        for proc in psutil.process_iter(["pid", "ppid", "name", "exe", "cmdline"]):
+            info = proc.info
+            pid = int(info.get("pid") or 0)
+            if pid <= 0:
+                continue
+            row = {
+                "pid": pid,
+                "ppid": int(info.get("ppid") or 0),
+                "processName": info.get("name"),
+                "exe": info.get("exe"),
+                "cmdline": info.get("cmdline") or [],
+            }
+            by_pid[pid] = row
+    except Exception:
+        return []
+
+    root_pids = {
+        pid for pid, row in by_pid.items()
+        if str(row.get("processName") or "").lower() in (
+            RUNTIME_WINDOW_PROCESS_NAMES | RUNTIME_PLUGIN_PROCESS_NAMES
+        )
+    }
+    relevant = set(root_pids)
+    changed = True
+    while changed:
+        changed = False
+        for pid, row in by_pid.items():
+            if pid in relevant:
+                continue
+            if int(row.get("ppid") or 0) in relevant:
+                relevant.add(pid)
+                changed = True
+
+    for pid in sorted(relevant):
+        row = by_pid.get(pid)
+        if row:
+            rows.append(row)
+    return rows
+
+
+def summarize_runtime_windows(windows):
+    runtime_names = RUNTIME_WINDOW_PROCESS_NAMES | RUNTIME_PLUGIN_PROCESS_NAMES
+    rows = [
+        row for row in windows
+        if str(row.get("processName") or "").lower() in runtime_names
+    ]
+    navigator_rows = [
+        row for row in rows
+        if str(row.get("processName") or "").lower() in RUNTIME_BROWSER_PROCESS_NAMES
+    ]
+    plugin_rows = [
+        row for row in rows
+        if str(row.get("processName") or "").lower() in RUNTIME_PLUGIN_PROCESS_NAMES
+        or str(row.get("className") or "").lower() in {
+            "geckopluginwindow",
+            "geckofpsandboxchildwindow",
+        }
+    ]
+    return {
+        "runtimeWindowCount": len(rows),
+        "navigatorWindowCount": len(navigator_rows),
+        "pluginWindowCount": len(plugin_rows),
+        "windows": rows,
+    }
 
 
 def window_row(hwnd):
@@ -1033,6 +1110,7 @@ def monitor_popup_windows(duration_ms, interval_ms):
     seen_shell = {}
     visible_shell = {}
     samples = []
+    process_samples = []
     baseline_windows = enum_windows(include_untitled=True)
     baseline_keys = {
         f"{row.get('processName')}:{row.get('pid')}:{row.get('title')}:{row.get('handle')}"
@@ -1045,10 +1123,30 @@ def monitor_popup_windows(duration_ms, interval_ms):
             row for row in windows
             if is_shell_popup_candidate(row)
         ]
+        runtime_summary = summarize_runtime_windows(windows)
+        runtime_processes = runtime_process_snapshot()
+        process_samples.append({
+            "at": now_iso(),
+            "runtimeProcessCount": len(runtime_processes),
+            "navigatorProcessCount": sum(
+                str(row.get("processName") or "").lower() in RUNTIME_BROWSER_PROCESS_NAMES
+                for row in runtime_processes
+            ),
+            "pluginProcessCount": sum(
+                str(row.get("processName") or "").lower() in RUNTIME_PLUGIN_PROCESS_NAMES
+                for row in runtime_processes
+            ),
+            "runtimeProcesses": runtime_processes,
+            **runtime_summary,
+        })
         samples.append({
             "at": now_iso(),
             "visibleWindowCount": len(windows),
             "shellPopupCount": len(shell_rows),
+            **{
+                key: runtime_summary[key]
+                for key in ("runtimeWindowCount", "navigatorWindowCount", "pluginWindowCount")
+            },
         })
         for row in shell_rows:
             window_key = f"{row['processName']}:{row['pid']}:{row['title']}:{row['handle']}"
@@ -1076,6 +1174,9 @@ def monitor_popup_windows(duration_ms, interval_ms):
         "visibleShellPopups": list(visible_shell.values()),
         "shellPopups": list(seen_shell.values()),
         "samples": samples,
+        "processSamples": process_samples,
+        "runtimeProcesses": runtime_process_snapshot(),
+        "runtimeWindows": summarize_runtime_windows(enum_windows(include_untitled=True)),
         "windows": enum_windows(include_untitled=True),
     }
 
@@ -1308,6 +1409,7 @@ def command_wait_window(args):
     deadline = time.time() + (args.timeout_ms / 1000.0)
     match = None
     placement = None
+    placement_error = None
     while time.time() < deadline:
         match = guess_runtime_window(process_names, title_contains, pid, cmdline_contains)
         if match:
@@ -1321,11 +1423,17 @@ def command_wait_window(args):
                         maximize=getattr(args, "maximize", False),
                     )
                     match = placement.get("windowAfterMove") or window_row(int(match["handle"])) or match
-                except RuntimeError:
-                    match = None
-                    placement = None
-                    time.sleep(args.poll_ms / 1000.0)
-                    continue
+                except RuntimeError as error:
+                    placement_error = {
+                        "type": error.__class__.__name__,
+                        "message": str(error),
+                        "requested": getattr(args, "target_monitor", None),
+                    }
+                    # The runtime window itself is still valid when monitor
+                    # placement fails. Keep the match and let capture proceed
+                    # on its current monitor; the error remains explicit in
+                    # the artifact instead of being misreported as
+                    # window_not_found.
             break
         time.sleep(args.poll_ms / 1000.0)
 
@@ -1334,6 +1442,7 @@ def command_wait_window(args):
         "generatedAt": now_iso(),
         "match": match,
         "placement": placement,
+        "placementError": placement_error,
         "searched": {
             "processNames": sorted(process_names),
             "titleContains": title_contains,
@@ -1356,14 +1465,22 @@ def command_capture_window(args):
     cmdline_contains = [fragment.strip().lower() for fragment in (getattr(args, "cmdline_contains", "") or "").split(",") if fragment.strip()]
     pid = int(args.pid) if getattr(args, "pid", None) else None
     placement = None
+    placement_error = None
     if getattr(args, "target_monitor", None):
-        placement = position_window_on_target_monitor(
-            hwnd,
-            args.target_monitor,
-            width=getattr(args, "window_width", None),
-            height=getattr(args, "window_height", None),
-            maximize=args.maximize,
-        )
+        try:
+            placement = position_window_on_target_monitor(
+                hwnd,
+                args.target_monitor,
+                width=getattr(args, "window_width", None),
+                height=getattr(args, "window_height", None),
+                maximize=args.maximize,
+            )
+        except RuntimeError as error:
+            placement_error = {
+                "type": error.__class__.__name__,
+                "message": str(error),
+                "requested": getattr(args, "target_monitor", None),
+            }
     elif args.maximize:
         try:
             win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
@@ -1435,6 +1552,7 @@ def command_capture_window(args):
         "window": row,
         "targetWindow": target_row,
         "placement": placement,
+        "placementError": placement_error,
         "layoutSync": layout_sync,
         "captureMode": "client" if args.client_only else "window",
         "topmostDuringCapture": bool(topmost_applied),
@@ -3729,20 +3847,28 @@ def command_click_window(args):
     requested_x = int(args.x)
     requested_y = int(args.y)
     placement = None
+    placement_error = None
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
     if not row and cmdline_contains:
         row = guess_runtime_window(process_names, title_contains, None, cmdline_contains)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     if getattr(args, "target_monitor", None):
-        placement = position_window_on_target_monitor(
-            int(row["handle"]),
-            args.target_monitor,
-            width=getattr(args, "window_width", None),
-            height=getattr(args, "window_height", None),
-            maximize=getattr(args, "maximize", False),
-        )
-        row = placement.get("windowAfterMove") or window_row(int(row["handle"])) or row
+        try:
+            placement = position_window_on_target_monitor(
+                int(row["handle"]),
+                args.target_monitor,
+                width=getattr(args, "window_width", None),
+                height=getattr(args, "window_height", None),
+                maximize=getattr(args, "maximize", False),
+            )
+            row = placement.get("windowAfterMove") or window_row(int(row["handle"])) or row
+        except RuntimeError as error:
+            placement_error = {
+                "type": error.__class__.__name__,
+                "message": str(error),
+                "requested": getattr(args, "target_monitor", None),
+            }
     if not getattr(args, "post_message", False):
         bring_to_front(int(row["handle"]))
     target_row = row
@@ -3810,6 +3936,7 @@ def command_click_window(args):
         "window": row,
         "targetWindow": target_row,
         "placement": placement,
+        "placementError": placement_error,
         "delivery": delivery,
         "point": {
             "x": point[0],
@@ -3885,20 +4012,28 @@ def command_key_window(args):
     cmdline_contains = [fragment.strip().lower() for fragment in (getattr(args, "cmdline_contains", "") or "").split(",") if fragment.strip()]
     pid = int(args.pid) if getattr(args, "pid", None) else None
     placement = None
+    placement_error = None
     row = resolve_window_row(hwnd, process_names, title_contains, pid, cmdline_contains)
     if not row and cmdline_contains:
         row = guess_runtime_window(process_names, title_contains, None, cmdline_contains)
     if not row:
         raise RuntimeError(f"Window handle {hwnd} is not valid.")
     if getattr(args, "target_monitor", None):
-        placement = position_window_on_target_monitor(
-            int(row["handle"]),
-            args.target_monitor,
-            width=getattr(args, "window_width", None),
-            height=getattr(args, "window_height", None),
-            maximize=getattr(args, "maximize", False),
-        )
-        row = placement.get("windowAfterMove") or window_row(int(row["handle"])) or row
+        try:
+            placement = position_window_on_target_monitor(
+                int(row["handle"]),
+                args.target_monitor,
+                width=getattr(args, "window_width", None),
+                height=getattr(args, "window_height", None),
+                maximize=getattr(args, "maximize", False),
+            )
+            row = placement.get("windowAfterMove") or window_row(int(row["handle"])) or row
+        except RuntimeError as error:
+            placement_error = {
+                "type": error.__class__.__name__,
+                "message": str(error),
+                "requested": getattr(args, "target_monitor", None),
+            }
     if not getattr(args, "post_message", False):
         bring_to_front(int(row["handle"]))
     target_row = row
@@ -3946,6 +4081,7 @@ def command_key_window(args):
         "targetWindow": target_row,
         "foregroundWindow": foreground_row,
         "placement": placement,
+        "placementError": placement_error,
         "delivery": delivery,
         "key": {
             "value": str(args.key),

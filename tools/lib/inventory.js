@@ -5,7 +5,7 @@ const { describeConfiguredSources } = require("./config");
 const { ensureDirSync, readJson, writeJson } = require("./fs-utils");
 const { loadLaunchManifest } = require("./launch-manifest");
 const { openIndexDb } = require("./db");
-const { loadIslandVerification } = require("./status-store");
+const { derivePlayabilityStatus, loadIslandVerification } = require("./status-store");
 
 function getPackState() {
   const packMeta = readJson(paths.packMetaPath, null);
@@ -105,16 +105,18 @@ function buildPlayabilityStatus(entry, availability, launchEntry, verification) 
     return "范围外";
   }
   const verified = getVerificationForKey(verification, entry.canonicalKey);
-  if (verified?.playabilityStatus) {
-    return verified.playabilityStatus;
-  }
   if (availability === "missing") {
     return "未导入";
   }
-  if (launchEntry?.launchable) {
-    return "待验证";
-  }
-  return "未解析";
+  const evidence = verified?.acceptanceEvidence || {};
+  return derivePlayabilityStatus({
+    available: availability === "present",
+    smokeVerified: evidence.smokeVerified === true,
+    interactionVerified: evidence.interactionVerified === true ||
+      verified?.playabilityStatus === "基础交互通过",
+    evidence,
+    failed: verified?.smokeFailed === true || verified?.playabilityStatus === "已知损坏"
+  });
 }
 
 function buildInventory(config) {
@@ -223,7 +225,13 @@ function buildInventory(config) {
     duplicateCount: matrixEntries.filter((entry) => entry.availability === "duplicate").length,
     missingCount: matrixEntries.filter((entry) => entry.availability === "missing").length,
     verifiedChineseCount: flashIslands.filter((entry) => entry.translationStatus === "已验收可见中文").length,
-    verifiedPlayableCount: flashIslands.filter((entry) => entry.playabilityStatus === "可玩").length
+    verifiedPlayableCount: flashIslands.filter((entry) =>
+      ["完整路线通过", "最终验收通过"].includes(entry.playabilityStatus)
+    ).length,
+    smokeVerifiedCount: flashIslands.filter((entry) => entry.playabilityStatus === "启动烟测通过").length,
+    interactionVerifiedCount: flashIslands.filter((entry) => entry.playabilityStatus === "基础交互通过").length,
+    routeVerifiedCount: flashIslands.filter((entry) => entry.playabilityStatus === "完整路线通过").length,
+    finalAcceptanceCount: flashIslands.filter((entry) => entry.playabilityStatus === "最终验收通过").length
   };
 
   return {

@@ -4,7 +4,7 @@ const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
+const { ensureQaDir, getProjectRevision, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { buildAs3DirectSceneUrl } = require("./lib/as3-direct-wrapper");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
@@ -19,6 +19,7 @@ const {
 } = require("./lib/flashpoint-runtime");
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
+const PROJECT_REVISION = getProjectRevision();
 const AS3_SMOKE_LOCK_NAME = ".qa-as3-islands-smoke.lock";
 const AS3_SMOKE_REPORT_RE = /^as3-island-smoke-\d+\.json$/u;
 const AS3_SAFE_MAXIMIZE_WIDTH = 2300;
@@ -1376,7 +1377,26 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
       timeoutMs: windowTimeoutMs + 5000
     });
   } catch (error) {
-    qaErrors.push(formatQaError("wait-window", error));
+    let fallbackWindow = null;
+    try {
+      fallbackWindow = runPythonQa(buildWaitArgs({
+        runtime,
+        timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+        outputPath: recaptureAnyPidWindowPath,
+        includePid: false,
+        args
+      }), {
+        timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+      });
+    } catch (_fallbackError) {
+      fallbackWindow = null;
+    }
+    if (fallbackWindow?.match?.handle) {
+      runtimeWindow = fallbackWindow;
+      runtimeWindow.pidScopedWaitFallback = true;
+    } else {
+      qaErrors.push(formatQaError("wait-window", error));
+    }
   }
   await sleep(settleMs);
 
@@ -1459,7 +1479,27 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
         timeoutMs: 30000
       });
     } catch (error) {
-      qaErrors.push(formatQaError("analyze-stage", error));
+      const stageRetryDelayMs = Math.max(0, Number(
+        args.initialStageRetryDelayMs ||
+        args["initial-stage-retry-delay-ms"] ||
+        250
+      ));
+      if (stageRetryDelayMs > 0) {
+        await sleep(stageRetryDelayMs);
+      }
+      try {
+        stage = runPythonQa([
+          "analyze-stage",
+          "--input",
+          screenshotPath,
+          "--output",
+          stagePath
+        ], {
+          timeoutMs: 30000
+        });
+      } catch (retryError) {
+        qaErrors.push(formatQaError("analyze-stage", retryError));
+      }
     }
     visualGuard = runVisualGuard({
       screenshotPath,
@@ -1694,6 +1734,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
 
   return {
     ok: failedChecks.length === 0,
+    projectRevision: PROJECT_REVISION,
     generatedAt: new Date().toISOString(),
     index: index + 1,
     total,
@@ -1754,6 +1795,7 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
 function buildSummary(startedAt, reports) {
   return {
     ok: reports.length > 0 && reports.every((report) => report.ok),
+    projectRevision: PROJECT_REVISION,
     generatedAt: new Date().toISOString(),
     startedAt,
     total: reports.length,
@@ -1781,6 +1823,7 @@ function writeSmokeReport({ reportPath, latestPath, startedAt, artifactDir, repo
   const summary = buildSummary(startedAt, reports);
   const report = {
     ...summary,
+    projectRevision: PROJECT_REVISION,
     artifactDir,
     reports
   };
@@ -1900,6 +1943,7 @@ function writeAggregateSmokeReport({ config, args, qaDir, startedAt }) {
   const latestPath = path.join(qaDir, "as3-island-smoke-latest.json");
   const report = {
     ...summary,
+    projectRevision: PROJECT_REVISION,
     ok: summary.ok && missingKeys.length === 0,
     aggregate: true,
     aggregateMode: "latest-passing-per-island",
@@ -1967,6 +2011,7 @@ function writeFatalSmokeReport({ reportPath, latestPath, startedAt, artifactDir,
   const summary = buildSummary(startedAt, reports);
   const report = {
     ...summary,
+    projectRevision: PROJECT_REVISION,
     ok: false,
     generatedAt: new Date().toISOString(),
     failed: Math.max(summary.failed, 1),
@@ -2033,6 +2078,7 @@ async function main() {
     }
     const report = {
       ok: false,
+      projectRevision: PROJECT_REVISION,
       generatedAt: new Date().toISOString(),
       startedAt,
       total: 0,
@@ -2065,6 +2111,7 @@ async function main() {
       if (runtimeConflicts.length > 0) {
         const report = {
           ok: false,
+          projectRevision: PROJECT_REVISION,
           generatedAt: new Date().toISOString(),
           startedAt,
           total: 0,
@@ -2150,6 +2197,7 @@ async function main() {
       } catch (error) {
         reports.push({
           ok: false,
+          projectRevision: PROJECT_REVISION,
           generatedAt: new Date().toISOString(),
           index: index + 1,
           total: entries.length,

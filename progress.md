@@ -5590,3 +5590,74 @@ Original prompt: 继续全量迭代这个poptropica项目 E:\Poptropica\POPTROPI
   - After updating `.gitignore`, `git status --short --branch` shows only the `.gitignore` / `progress.md` source changes pending for this batch.
 - Scope note:
   - This does not prove the full game goal by itself; it removes generated local workspaces from the sync signal so future completion evidence reflects real source changes.
+
+## 2026-09-10 AS3 Initial Stage Analysis Retry
+
+- Added a minimal retry to `tools/qa-as3-islands-smoke.js` for the initial `analyze-stage` call.
+- If the first analysis fails, the same captured screenshot is re-analyzed after a 250 ms delay; the QA error is recorded only if both attempts fail.
+- No game/runtime launch was performed.
+- Verification:
+  - `node --check tools\\qa-as3-islands-smoke.js` passed.
+  - Offline `analyze-stage` replay of `runtime-data/qa/as3/islands-smoke/run-1782219601793/01-poptropicon-map.png` passed with `stageCoverageRatio=0.967105`.
+- Next step: run one controlled AS3 smoke only after the user permits runtime execution, and confirm whether the transient `qa_analyze_stage_failed` evidence disappears.
+
+## 2026-09-10 AS3 Smoke Attempt Blocked by Node Runtime
+
+- The requested single-target AS3 smoke was not started.
+- The initial `node tools\\qa-as3-islands-smoke.js --help` invocation failed before script startup because the active shell is Node `v20.20.0`, while `tools/lib/flashpoint-runtime.js` requires the built-in `node:sqlite` module available in the project's Node 24 environment.
+- Per controlled recovery rules, no retry, alternate command, or second runtime launch was attempted.
+- Git changes remain limited to the stage retry implementation and these progress notes.
+- Next step: rerun the same single-target smoke only from the configured Node 24 workspace runtime.
+
+## 2026-09-10 AS3 Single-Target Smoke After Node 24 Switch
+
+- Ran exactly one controlled `poptropicon` smoke with Node `v24.19.0`, `--target-monitor G32QC`, `--window-size 1600x900`, `--no-foreground-capture=1`, `--windowTimeoutMs 60000`, `--settleMs 22000`, and runtime mute enabled.
+- Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1789076795204.json`.
+- Result: `ok=false`; `failedChecks=window_not_found, non_game_window_too_small, stage_not_detected_or_too_small, initial_visual_guard_failed, qa_wait_window_failed`; `sceneEvidencePassed=1`; no stage result was produced, so the new stage retry was not exercised.
+- The run's managed runtime PID was `7756`; no `flashpointnavigator` or `FlashpointSecurePlayer` process remained afterward.
+- Next step: diagnose the single-run window discovery/launch failure before attempting another smoke; do not interpret this run as evidence that stage retry failed.
+
+## 2026-09-10 AS3 Window Discovery Diagnostic
+
+- Read-only audit of `as3-island-smoke-1789076795204.json`, its window artifact, and server log confirms the AS3 launch itself reached `con1/parking`: launch health was HTTP 200, 14 target scene data requests and 6 target asset requests succeeded, `SceneLoaded` tracking was present, and `missingCount=0`.
+- The failure occurred in the initial `wait-window`: it searched for `flashpointnavigator.exe`, exact child PID `7756`, and a title containing `poptropica` for 60 seconds, returning `match=null`; therefore no capture or stage analysis ran. The runtime marker was cleaned afterward and no residual player process remained.
+- Comparison with nearby successful reports shows the same harness normally finds a `Flashpoint Navigator` window, so this is a transient window discovery/PID association failure rather than evidence of a stage-rendering failure. The server log proves the browser/runtime was serving the requested scene while discovery failed.
+- Minimal repair candidate: after PID-scoped wait timeout, perform one bounded any-PID window lookup for the same process/title criteria before classifying `window_not_found`; preserve the PID mismatch in diagnostics and do not weaken capture PID checks.
+- No code was changed in this diagnostic step. Next step is to review/implement that bounded fallback only after a fresh Git check.
+
+## 2026-09-10 AS3 PID-Scoped Window Fallback
+
+- Added a bounded any-PID `wait-window` fallback after the initial PID-scoped wait fails in `tools/qa-as3-islands-smoke.js`.
+- The fallback uses the existing `recaptureWindowTimeoutMs` value (default 10 seconds) and writes the existing any-PID window artifact. It marks `pidScopedWaitFallback=true` for diagnostics.
+- Subsequent capture still uses the normal runtime PID constraint and `rejectMismatchedCapture()`, so a different process cannot pass QA silently.
+- Verification:
+  - `node --check tools\\qa-as3-islands-smoke.js` passed under Node 24.19.0.
+  - Static assertions confirmed both the fallback marker and `includePid: false` wait path are present.
+  - No game/runtime launch was performed.
+- Next step: one controlled AS3 smoke can test whether the fallback recovers the transient window discovery case; if it finds a mismatched PID, the existing capture guard should reject it explicitly.
+
+## 2026-09-10 AS3 PID Fallback Smoke Result
+
+- Ran exactly one controlled `poptropicon` smoke with Node `v24.19.0`, G32QC, 1600x900, no-foreground capture, runtime mute, and a 60-second window timeout.
+- Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1789077150634.json`.
+- Result: `ok=false`; `failedChecks=window_not_found, non_game_window_too_small, stage_not_detected_or_too_small, initial_visual_guard_failed, qa_wait_window_failed`.
+- `pidScopedWaitFallback` was not set because the any-PID fallback also found no matching window; `stageCoverageRatio` is null because capture never began. `sceneEvidencePassed=1`, so the server still reached the target scene.
+- No `flashpointnavigator` or `FlashpointSecurePlayer` process remained after the run.
+- Conclusion: the fallback implementation did not recover this case; the remaining blocker is window creation/discovery before stage QA, not stage analysis. Do not rerun until the launch/window lifecycle is diagnosed further.
+
+## 2026-09-10 AS3 Window Launch Parameter Diagnostic
+
+- Read-only comparison found the historical successful report `as3-island-smoke-1789075049623.json` used the same Navigator executable/process name and PID-scoped title matching, but had `targetMonitor=null` and a matched `Flashpoint Navigator` window.
+- The failed run `as3-island-smoke-1789077150634.json` requested `targetMonitor=G32QC` and `1600x900`; its `wait-window` artifact has `match=null` and `placement=null` despite HTTP 200 launch and scene evidence. `noForegroundCapture` only controls capture behavior through environment defaults and does not suppress Navigator creation.
+- `qa-helper.py command_wait_window` discards a found match when `position_window_on_target_monitor()` raises, then continues polling without recording the placement exception. This can present as `window_not_found` even if the process/window was created but monitor placement failed or the target monitor is unavailable.
+- Minimal repair candidate: preserve the existing process/title/PID filters, but record placement failure separately and allow a bounded fallback lookup without target-monitor placement (or explicitly fail as `target_monitor_unavailable`) before classifying `window_not_found`.
+- No code was changed in this diagnostic step; only this checkpoint was updated. Next step is to inspect the target-monitor placement helper and its exception paths before implementing a narrow diagnostic fix.
+
+## 2026-09-10 AS3 Smoke Without Target Monitor Pinning
+
+- Ran exactly one controlled `poptropicon` smoke with Node `v24.19.0`, 1600x900, `targetMonitor=null`, no-foreground capture, runtime mute, 60-second window timeout, `settleMs=22000`, and skipped interaction.
+- Report: `runtime-data/qa/as3/islands-smoke/as3-island-smoke-1789077572248.json`.
+- Result: `ok=true`, `failedChecks=[]`, `stage.ok=true`, `stageCoverageRatio=0.967105`, and `visualGuard.ok=true`.
+- Window discovery succeeded directly: runtime PID and window PID were both `14668`, title `Flashpoint Navigator`; `pidScopedWaitFallback` was not needed.
+- No `flashpointnavigator` or `FlashpointSecurePlayer` process remained after the run.
+- Conclusion: the prior failure is isolated to the requested `G32QC` target-monitor placement/window discovery path. This run validates the stage analyzer path and does not require the new fallback; next step is a narrow target-monitor placement diagnostic or explicit monitor-unavailable handling.

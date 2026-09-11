@@ -3,7 +3,7 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { parseArgs, printJson } = require("./lib/cli");
 const paths = require("./lib/paths");
-const { ensureQaDir, runPythonQa, writeQaReport } = require("./lib/qa");
+const { ensureQaDir, getProjectRevision, runPythonQa, writeQaReport } = require("./lib/qa");
 const {
   loadPlayerCompatibility,
   saveIslandVerification,
@@ -44,7 +44,7 @@ function flagEnabled(value) {
 }
 
 function applyVisibleQaDefaults(args) {
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }
@@ -365,7 +365,7 @@ function runtimeWindowPidArgs(runtimeWindow) {
 function buildIslandVerification(candidateReport, sourceGroup) {
   const verdict = candidateReport.verdict;
   const failedChecks = verdict.failedChecks || [];
-  const playabilityStatus = verdict.verdict === "pass" ? "可玩" : "已知损坏";
+  const playabilityStatus = verdict.verdict === "pass" ? "基础交互通过" : "已知损坏";
   const translationStatus =
     verdict.verdict === "pass" && verdict.staticSignZhSeen && verdict.dialogueChineseVisible
       ? "已验收可见中文"
@@ -376,6 +376,16 @@ function buildIslandVerification(candidateReport, sourceGroup) {
       [SUPER_POWER_TARGET.islandId]: {
         playabilityStatus,
         translationStatus,
+        acceptanceEvidence: {
+          smokeVerified: verdict.verdict === "pass",
+          interactionVerified: verdict.verdict === "pass",
+          fullRouteVerified: false,
+          saveReloadVerified: false,
+          renderedChineseVerified: false,
+          windowStableVerified: false,
+          naturalAudioVerified: Boolean(verdict.audioActive),
+          sourceRevision: getProjectRevision()
+        },
         lastVerifiedAt: new Date().toISOString(),
         notes: [
           `运行器：${candidateReport.player.label}`,

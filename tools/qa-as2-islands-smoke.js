@@ -3,7 +3,7 @@ const path = require("node:path");
 const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
-const { acquireQaLock, buildAs2SceneEvidence, ensureQaDir, isMissingRequestLine, runPythonQa } = require("./lib/qa");
+const { acquireQaLock, buildAs2SceneEvidence, ensureQaDir, getProjectRevision, isMissingRequestLine, runPythonQa } = require("./lib/qa");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
 const { clearPoptropicaFlashState } = require("./lib/flash-state");
 const { writeJson } = require("./lib/fs-utils");
@@ -17,6 +17,7 @@ const {
 } = require("./lib/flashpoint-runtime");
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
+const PROJECT_REVISION = getProjectRevision();
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
@@ -498,6 +499,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
 
   return {
     ok: failedChecks.length === 0,
+    projectRevision: PROJECT_REVISION,
     generatedAt: new Date().toISOString(),
     index: index + 1,
     total,
@@ -551,6 +553,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
 function buildSummary(startedAt, reports) {
   return {
     ok: reports.length > 0 && reports.every((report) => report.ok),
+    projectRevision: PROJECT_REVISION,
     generatedAt: new Date().toISOString(),
     startedAt,
     total: reports.length,
@@ -612,6 +615,7 @@ async function main() {
       } catch (error) {
         reports.push({
           ok: false,
+          projectRevision: PROJECT_REVISION,
           generatedAt: new Date().toISOString(),
           index: index + 1,
           total: entries.length,

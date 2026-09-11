@@ -505,7 +505,7 @@ function renderPage(serverOptions = {}) {
         <div class="stats">
           <div class="stat"><span class="muted">可启动入口</span><strong id="launchableCount">0 / 0</strong></div>
           <div class="stat"><span class="muted">Flash 岛屿</span><strong id="flashIslandCount">0</strong></div>
-          <div class="stat"><span class="muted">可玩验收</span><strong id="playableCount">0</strong></div>
+          <div class="stat"><span class="muted">启动烟测通过</span><strong id="playableCount">0</strong></div>
           <div class="stat"><span class="muted">中文验收</span><strong id="chineseCount">0</strong></div>
         </div>
         <div class="toolbar">
@@ -539,7 +539,7 @@ function renderPage(serverOptions = {}) {
                 <th>中文名</th>
                 <th>英文名</th>
                 <th>来源</th>
-                <th>可玩</th>
+                <th>验收阶段</th>
                 <th>汉化</th>
                 <th>最近验证</th>
                 <th></th>
@@ -562,7 +562,7 @@ function renderPage(serverOptions = {}) {
       const state = { payload: null, filter: "", source: "", busy: false };
       const $ = (id) => document.getElementById(id);
       function statusClass(value) {
-        return /可玩|已验收|已就绪/u.test(String(value || "")) ? "ok" : /损坏|未导入|未解析/u.test(String(value || "")) ? "bad" : "";
+        return /通过|已验收|已就绪/u.test(String(value || "")) ? "ok" : /损坏|未导入|未解析/u.test(String(value || "")) ? "bad" : "";
       }
       function setBusy(busy) {
         state.busy = busy;
@@ -590,7 +590,7 @@ function renderPage(serverOptions = {}) {
         $("subtitle").textContent = window.location.origin;
         $("launchableCount").textContent = (launch.launchableCount || 0) + " / " + (launch.totalEntries || 0);
         $("flashIslandCount").textContent = String(summary.flashIslandCount || 0);
-        $("playableCount").textContent = String(summary.verifiedPlayableCount || 0);
+        $("playableCount").textContent = String(summary.smokeVerifiedCount || 0);
         $("chineseCount").textContent = String(summary.verifiedChineseCount || 0);
         const healthy = state.payload?.doctorReport?.services?.healthy || {};
         $("proxyDot").classList.toggle("ok", Boolean(healthy.proxy));
