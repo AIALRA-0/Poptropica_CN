@@ -56,10 +56,32 @@ function runChild(command, args, options = {}) {
 function parseLastJson(stdout) {
   const text = String(stdout || "").trim();
   if (!text) return null;
+  // Most QA commands print a pretty-printed JSON object, so the old
+  // line-only parser could never see the result (the first line is just
+  // "{"). Try the whole stream first, then scan balanced JSON objects from
+  // the end while retaining the line fallback for compact diagnostics.
+  try {
+    return JSON.parse(text);
+  } catch (_error) {
+    // Continue with mixed diagnostic + JSON output.
+  }
+  const candidates = [];
+  for (let index = text.length - 1; index >= 0; index -= 1) {
+    if (text[index] === "{") {
+      candidates.push(text.slice(index));
+    }
+  }
+  for (const candidate of candidates) {
+    try {
+      return JSON.parse(candidate);
+    } catch (_error) {
+      // The candidate may contain a later diagnostic line; keep scanning.
+    }
+  }
   const lines = text.split(/\r?\n/gu).reverse();
   for (const line of lines) {
     try {
-      return JSON.parse(line);
+      return JSON.parse(line.trim());
     } catch (_error) {
       // The QA children may print diagnostics before their final JSON line.
     }
@@ -169,6 +191,8 @@ async function main() {
   const smokeSummary = parseLastJson(qaResult.stdout);
   const report = {
     ok: Boolean(audit) &&
+      qaResult.status === 0 &&
+      smokeSummary?.ok === true &&
       auditSummary.duplicateNavigatorSampleCount === 0 &&
       auditSummary.shellPopupCount === 0 &&
       auditSummary.visibleShellPopupCount === 0,
@@ -189,6 +213,9 @@ async function main() {
     auditSummary,
     failedChecks: [
       ...(!audit ? ["window_audit_missing"] : []),
+      ...(qaResult.status !== 0 ? ["smoke_process_failed"] : []),
+      ...(smokeSummary && smokeSummary.ok !== true ? ["smoke_failed"] : []),
+      ...(!smokeSummary ? ["smoke_summary_missing"] : []),
       ...(auditSummary.duplicateNavigatorSampleCount > 0 ? ["duplicate_navigator_windows"] : []),
       ...(auditSummary.shellPopupCount > 0 ? ["shell_popup_seen"] : []),
       ...(auditSummary.visibleShellPopupCount > 0 ? ["visible_shell_popup_seen"] : [])
@@ -211,4 +238,3 @@ main().catch((error) => {
   });
   process.exitCode = 1;
 });
-

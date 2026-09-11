@@ -18,6 +18,13 @@ const {
 
 const GAME_SERVER_LOG_PATH = path.join(paths.managedLogsDir, "flashpoint-game-server.log");
 const PROJECT_REVISION = getProjectRevision();
+// Super Power's original AS2 scene bank loads a large set of avatar and
+// scene dependencies before advancing past the real Loading screen. Keep the
+// default smoke run patient for this one known slow entry while preserving
+// caller-supplied settle times for every other island.
+const ISLAND_SETTLE_MINIMUMS = {
+  "super-power": 45000
+};
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
@@ -303,6 +310,13 @@ function selectEntries(manifest, args) {
   return Number.isFinite(limit) && limit > 0 ? entries.slice(0, limit) : entries;
 }
 
+function resolveSettleMs(entry, args) {
+  const requested = Number(args.settleMs || 10000);
+  const fallback = Number.isFinite(requested) && requested > 0 ? requested : 10000;
+  const minimum = Number(ISLAND_SETTLE_MINIMUMS[entry?.canonicalKey] || 0);
+  return Math.max(fallback, minimum);
+}
+
 async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const safeStem = `${String(index + 1).padStart(2, "0")}-${safeFileSegment(entry.canonicalKey)}`;
   const windowPath = path.join(runDir, `${safeStem}-window.json`);
@@ -314,7 +328,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const ocrPath = path.join(runDir, `${safeStem}-ocr.json`);
   const audioPath = path.join(runDir, `${safeStem}-audio.json`);
   const logSegmentPath = path.join(runDir, `${safeStem}-server.log`);
-  const settleMs = Number(args.settleMs || 10000);
+  const settleMs = resolveSettleMs(entry, args);
   const windowTimeoutMs = Number(args.windowTimeoutMs || 45000);
 
   if (!flagEnabled(args.preserveFlashState)) {
