@@ -90,6 +90,11 @@ def normalize_token(value):
     return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
 
 
+def is_runtime_plugin_process_name(value):
+    name = str(value or "").lower()
+    return name in RUNTIME_PLUGIN_PROCESS_NAMES or name.startswith("flashplayerplugin")
+
+
 def rect_payload(rect):
     left, top, right, bottom = [int(item) for item in rect]
     return {
@@ -402,8 +407,9 @@ def runtime_process_snapshot():
 
     root_pids = {
         pid for pid, row in by_pid.items()
-        if str(row.get("processName") or "").lower() in (
-            RUNTIME_WINDOW_PROCESS_NAMES | RUNTIME_PLUGIN_PROCESS_NAMES
+        if (
+            str(row.get("processName") or "").lower() in RUNTIME_WINDOW_PROCESS_NAMES
+            or is_runtime_plugin_process_name(row.get("processName"))
         )
     }
     relevant = set(root_pids)
@@ -425,10 +431,12 @@ def runtime_process_snapshot():
 
 
 def summarize_runtime_windows(windows):
-    runtime_names = RUNTIME_WINDOW_PROCESS_NAMES | RUNTIME_PLUGIN_PROCESS_NAMES
     rows = [
         row for row in windows
-        if str(row.get("processName") or "").lower() in runtime_names
+        if (
+            str(row.get("processName") or "").lower() in RUNTIME_WINDOW_PROCESS_NAMES
+            or is_runtime_plugin_process_name(row.get("processName"))
+        )
     ]
     navigator_rows = [
         row for row in rows
@@ -436,7 +444,7 @@ def summarize_runtime_windows(windows):
     ]
     plugin_rows = [
         row for row in rows
-        if str(row.get("processName") or "").lower() in RUNTIME_PLUGIN_PROCESS_NAMES
+        if is_runtime_plugin_process_name(row.get("processName"))
         or str(row.get("className") or "").lower() in {
             "geckopluginwindow",
             "geckofpsandboxchildwindow",
@@ -1146,7 +1154,7 @@ def monitor_popup_windows(duration_ms, interval_ms):
                 for row in runtime_processes
             ),
             "pluginProcessCount": sum(
-                str(row.get("processName") or "").lower() in RUNTIME_PLUGIN_PROCESS_NAMES
+                is_runtime_plugin_process_name(row.get("processName"))
                 for row in runtime_processes
             ),
             "runtimeProcesses": runtime_processes,
