@@ -29,6 +29,29 @@ const DEFAULT_REPRESENTATIVE_KEYS = [
   "astro-knights",
   "zomberry"
 ];
+// The initial gameplay frame for these banks arrives after a large asset
+// burst.  Keep interaction evidence from racing the real loading screen.
+const ISLAND_SETTLE_MINIMUMS = {
+  "charlie-and-the-chocolate-factory": 45000,
+  counterfeit: 45000,
+  cryptids: 45000,
+  "ghost-story": 45000,
+  mythology: 45000,
+  "night-watch": 45000,
+  "reality-tv": 45000,
+  "red-dragon": 45000,
+  "shark-tooth": 45000,
+  "shrink-ray": 45000,
+  skullduggery: 45000,
+  steamworks: 45000,
+  "super-power": 45000,
+  "super-villain": 45000,
+  "twisted-thicket": 45000,
+  "vampires-curse": 45000,
+  "wild-west": 45000,
+  "wimpy-boardwalk": 45000,
+  zomberry: 45000
+};
 
 function flagEnabled(value) {
   return value === true || /^(1|true|yes|y)$/iu.test(String(value || ""));
@@ -769,6 +792,13 @@ function selectEntries(manifest, args) {
   return Number.isFinite(limit) && limit > 0 ? entries.slice(0, limit) : entries;
 }
 
+function resolveInteractionSettleMs(entry, args = {}) {
+  const requested = Number(args.settleMs || 9000);
+  const fallback = Number.isFinite(requested) && requested > 0 ? requested : 9000;
+  const minimum = Number(ISLAND_SETTLE_MINIMUMS[entry?.canonicalKey] || 0);
+  return Math.max(fallback, minimum);
+}
+
 function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErrors, args, useWindowGeometry = true }) {
   if (!runtimeWindow?.match?.handle) {
     return {
@@ -928,7 +958,10 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
   };
   const hiddenUrl = withLaunchQuery(entry.launchUrl, hiddenArgs);
   const windowTimeoutMs = Number(args.hudBaselineWindowTimeoutMs || args["hud-baseline-window-timeout-ms"] || args.windowTimeoutMs || 45000);
-  const settleMs = Number(args.hudBaselineSettleMs || args["hud-baseline-settle-ms"] || args.settleMs || 9000);
+  const settleMs = Math.max(
+    Number(args.hudBaselineSettleMs || args["hud-baseline-settle-ms"] || args.settleMs || 9000),
+    Number(ISLAND_SETTLE_MINIMUMS[entry?.canonicalKey] || 0)
+  );
 
   try {
     const rowAnalysis = runPythonQa([
@@ -2095,7 +2128,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   const windowPath = path.join(runDir, `${stem}-window.json`);
   const audioPath = path.join(runDir, `${stem}-audio.json`);
   const logPath = path.join(runDir, `${stem}-server.log`);
-  const settleMs = Number(args.settleMs || 9000);
+  const settleMs = resolveInteractionSettleMs(entry, args);
   const windowTimeoutMs = Number(args.windowTimeoutMs || 45000);
   const qaErrors = [];
 
