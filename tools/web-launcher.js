@@ -73,6 +73,46 @@ function getLaunchManifest(config) {
   return loadLaunchManifest() || generateLaunchManifest(config);
 }
 
+function processIsAlive(pid) {
+  const numericPid = Number(pid);
+  if (!Number.isInteger(numericPid) || numericPid <= 0) {
+    return false;
+  }
+  try {
+    process.kill(numericPid, 0);
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+
+function readActiveRuntime() {
+  const markerPath = path.join(paths.managedWorkspaceDir, "active-runtime.json");
+  const marker = readJson(markerPath, null);
+  if (!marker || !processIsAlive(marker.pid)) {
+    return null;
+  }
+  return marker;
+}
+
+function activeRuntimeMatchesLaunch(launchPlan, marker) {
+  if (!marker) {
+    return false;
+  }
+  const args = Array.isArray(launchPlan?.args) ? launchPlan.args : [];
+  const modeIndex = args.indexOf("--runtime");
+  if (modeIndex >= 0) {
+    return String(marker.sourceGroup || "").toLowerCase() === String(args[modeIndex + 1] || "").toLowerCase();
+  }
+  const islandIndex = args.indexOf("--island");
+  if (islandIndex >= 0) {
+    const requestedIsland = String(args[islandIndex + 1] || "").toLowerCase();
+    const lastPlan = readJson(paths.lastLaunchPlanPath, null);
+    return String(lastPlan?.islandId || "").toLowerCase() === requestedIsland;
+  }
+  return false;
+}
+
 function getState(serverOptions = {}) {
   const resolvedOptions = resolveServerOptions(serverOptions);
   const config = loadConfig();
@@ -261,6 +301,20 @@ function runLaunch(launchPlan, dryRun, serverOptions = {}) {
     return {
       ok: false,
       error: "已有启动操作正在进行，请等待当前窗口完成初始化。"
+    };
+  }
+  const activeRuntime = readActiveRuntime();
+  if (activeRuntimeMatchesLaunch(launchPlan, activeRuntime)) {
+    return {
+      ok: false,
+      busy: true,
+      error: "该岛已经在运行中，已忽略重复启动请求。",
+      activeRuntime: {
+        pid: activeRuntime.pid,
+        sourceGroup: activeRuntime.sourceGroup,
+        requestedUrl: activeRuntime.requestedUrl || activeRuntime.url || null,
+        startedAt: activeRuntime.startedAt || null
+      }
     };
   }
   launchInFlight = true;
