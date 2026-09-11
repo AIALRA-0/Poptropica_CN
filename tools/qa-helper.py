@@ -22,6 +22,11 @@ from pywinauto import mouse
 SHELL_PROCESS_NAMES = {"cmd.exe", "powershell.exe", "pwsh.exe", "conhost.exe", "wscript.exe", "cscript.exe"}
 TERMINAL_HOST_PROCESS_NAMES = {"windowsterminal.exe", "opconsole.exe", "openconsole.exe", "wt.exe"}
 OCR_ENGINE = None
+# Window audits can run alongside a busy Codex desktop where the terminal
+# host exposes hundreds of child windows.  Process metadata is identical for
+# all handles belonging to one PID, so cache it while a QA helper process is
+# alive instead of asking psutil for exe/cmdline once per handle per sample.
+PROCESS_ROW_CACHE = {}
 RUNTIME_WINDOW_PROCESS_NAMES = {
     "flashpointnavigator.exe",
     "fpnavigator.exe",
@@ -367,21 +372,26 @@ def position_window_on_target_monitor(hwnd, target, width=None, height=None, max
 
 
 def safe_process_row(pid):
+    cached = PROCESS_ROW_CACHE.get(int(pid))
+    if cached is not None:
+        return dict(cached)
     try:
         proc = psutil.Process(pid)
-        return {
+        row = {
             "pid": pid,
             "processName": proc.name(),
             "exe": proc.exe(),
             "cmdline": proc.cmdline(),
         }
     except Exception:
-        return {
+        row = {
             "pid": pid,
             "processName": None,
             "exe": None,
             "cmdline": [],
         }
+    PROCESS_ROW_CACHE[int(pid)] = row
+    return dict(row)
 
 
 def runtime_process_snapshot():
@@ -389,7 +399,10 @@ def runtime_process_snapshot():
     rows = []
     by_pid = {}
     try:
-        for proc in psutil.process_iter(["pid", "ppid", "name", "exe", "cmdline"]):
+        # Query only the cheap identity fields for the whole process table.
+        # Accessing exe/cmdline for every process is very slow on a busy
+        # Windows desktop (and made a 60-second audit sample only once).
+        for proc in psutil.process_iter(["pid", "ppid", "name"]):
             info = proc.info
             pid = int(info.get("pid") or 0)
             if pid <= 0:
@@ -398,8 +411,6 @@ def runtime_process_snapshot():
                 "pid": pid,
                 "ppid": int(info.get("ppid") or 0),
                 "processName": info.get("name"),
-                "exe": info.get("exe"),
-                "cmdline": info.get("cmdline") or [],
             }
             by_pid[pid] = row
     except Exception:
@@ -426,7 +437,15 @@ def runtime_process_snapshot():
     for pid in sorted(relevant):
         row = by_pid.get(pid)
         if row:
-            rows.append(row)
+            # Enrich only the runtime roots and descendants that are actually
+            # part of this audit.  The cache avoids repeating this work for
+            # every 200ms sample when a PID remains alive.
+            details = safe_process_row(pid)
+            rows.append({
+                **row,
+                "exe": details.get("exe"),
+                "cmdline": details.get("cmdline") or [],
+            })
     return rows
 
 
@@ -489,12 +508,34 @@ def window_row(hwnd):
         return None
 
 
-def enum_windows(include_untitled=False):
+def enum_windows(include_untitled=False, process_names=None):
     rows = []
+    allowed_process_names = {
+        str(name).lower()
+        for name in (process_names or set())
+        if str(name).strip()
+    } or None
+    allowed_pids = None
+    if allowed_process_names is not None:
+        allowed_pids = set()
+        try:
+            for proc in psutil.process_iter(["pid", "name"]):
+                name = str(proc.info.get("name") or "").lower()
+                if name in allowed_process_names:
+                    allowed_pids.add(int(proc.info.get("pid") or 0))
+        except Exception:
+            allowed_pids = set()
 
     def callback(hwnd, _):
         if not win32gui.IsWindowVisible(hwnd):
             return
+        if allowed_pids is not None:
+            try:
+                _, pid = win32process.GetWindowThreadProcessId(hwnd)
+            except Exception:
+                return
+            if int(pid) not in allowed_pids:
+                return
         row = window_row(hwnd)
         if not row:
             return
@@ -510,6 +551,85 @@ def enum_windows(include_untitled=False):
     win32gui.EnumWindows(callback, None)
     rows.sort(key=lambda item: (item["title"] == "", -item["rect"]["width"] * item["rect"]["height"]))
     return rows
+
+
+def enum_window_skeletons():
+    """Enumerate visible windows without querying process exe/cmdline metadata.
+
+    The desktop used for development can expose hundreds of Terminal/Codex
+    embedding handles.  A full psutil lookup for each handle on every 200 ms
+    sample starves the audit loop.  The popup audit only needs cheap Win32
+    title/class/pid data for the first pass; process metadata is enriched for
+    likely runtime or shell candidates below.
+    """
+    rows = []
+
+    def callback(hwnd, _):
+        if not win32gui.IsWindowVisible(hwnd):
+            return
+        try:
+            rect = win32gui.GetWindowRect(hwnd)
+            width = max(0, int(rect[2] - rect[0]))
+            height = max(0, int(rect[3] - rect[1]))
+            if width < 80 or height < 80:
+                return
+            title = win32gui.GetWindowText(hwnd) or ""
+            class_name = win32gui.GetClassName(hwnd) or ""
+            if not title.strip() and not class_name:
+                return
+            _, pid = win32process.GetWindowThreadProcessId(hwnd)
+            rows.append({
+                "handle": int(hwnd),
+                "title": title,
+                "className": class_name,
+                "rect": {
+                    "left": int(rect[0]),
+                    "top": int(rect[1]),
+                    "right": int(rect[2]),
+                    "bottom": int(rect[3]),
+                    "width": width,
+                    "height": height,
+                },
+                "pid": int(pid or 0),
+                "visible": True,
+                "minimized": bool(win32gui.IsIconic(hwnd)),
+            })
+        except Exception:
+            return
+
+    try:
+        win32gui.EnumWindows(callback, None)
+    except Exception:
+        return []
+    rows.sort(key=lambda item: (
+        item["title"] == "",
+        -item["rect"]["width"] * item["rect"]["height"]
+    ))
+    return rows
+
+
+def enrich_window_candidates(rows):
+    """Add process metadata only for windows relevant to this audit."""
+    enriched = []
+    for row in rows:
+        title = str(row.get("title") or "").lower()
+        class_name = str(row.get("className") or "").lower()
+        likely_runtime = (
+            "poptropica" in title
+            or class_name in RUNTIME_RESIZE_CHILD_CLASSES
+            or "gecko" in class_name
+        )
+        likely_shell = (
+            any(token in title for token in ("powershell", "command prompt", "cmd", "terminal", "php"))
+            or "cascadia_hosting_window_class" in class_name
+        )
+        if not (likely_runtime or likely_shell):
+            continue
+        enriched.append({
+            **row,
+            **safe_process_row(int(row.get("pid") or 0)),
+        })
+    return enriched
 
 
 def parse_csv(value):
@@ -1132,20 +1252,39 @@ def monitor_popup_windows(duration_ms, interval_ms):
     visible_shell = {}
     samples = []
     process_samples = []
-    baseline_windows = enum_windows(include_untitled=True)
-    baseline_keys = {
-        f"{row.get('processName')}:{row.get('pid')}:{row.get('title')}:{row.get('handle')}"
+    baseline_all_windows = enum_window_skeletons()
+    baseline_windows = enrich_window_candidates(baseline_all_windows)
+    baseline_shell_process_keys = {
+        f"{row.get('processName')}:{row.get('pid')}"
         for row in baseline_windows
+        if is_shell_popup_candidate(row)
     }
 
     while time.time() < end_at:
-        windows = enum_windows(include_untitled=True)
-        shell_rows = [
+        all_windows = enum_window_skeletons()
+        windows = enrich_window_candidates(all_windows)
+        runtime_summary = summarize_runtime_windows(windows)
+        # Shell/terminal windows opened by a runtime are identified from the
+        # enriched candidate rows.  This avoids scanning all process metadata
+        # on every sample while preserving Navigator/plugin/shell counts.
+        runtime_processes = []
+        seen_pids = set()
+        for row in windows:
+            pid = int(row.get("pid") or 0)
+            process_name = str(row.get("processName") or "").lower()
+            if pid <= 0 or pid in seen_pids:
+                continue
+            if (
+                process_name in RUNTIME_WINDOW_PROCESS_NAMES
+                or is_runtime_plugin_process_name(process_name)
+                or is_shell_popup_candidate(row)
+            ):
+                seen_pids.add(pid)
+                runtime_processes.append(safe_process_row(pid))
+        shell_processes = [
             row for row in windows
             if is_shell_popup_candidate(row)
         ]
-        runtime_summary = summarize_runtime_windows(windows)
-        runtime_processes = runtime_process_snapshot()
         process_samples.append({
             "at": now_iso(),
             "runtimeProcessCount": len(runtime_processes),
@@ -1162,19 +1301,19 @@ def monitor_popup_windows(duration_ms, interval_ms):
         })
         samples.append({
             "at": now_iso(),
-            "visibleWindowCount": len(windows),
-            "shellPopupCount": len(shell_rows),
+            "visibleWindowCount": len(all_windows),
+            "shellPopupCount": len(shell_processes),
             **{
                 key: runtime_summary[key]
                 for key in ("runtimeWindowCount", "navigatorWindowCount", "pluginWindowCount")
             },
         })
-        for row in shell_rows:
-            window_key = f"{row['processName']}:{row['pid']}:{row['title']}:{row['handle']}"
-            visible_shell[window_key] = row
-            if window_key in baseline_keys:
+        for row in shell_processes:
+            process_key = f"{row.get('processName')}:{row.get('pid')}"
+            visible_shell[process_key] = row
+            if process_key in baseline_shell_process_keys:
                 continue
-            key = f"{row['processName']}:{row['pid']}:{row['title']}"
+            key = process_key
             if key not in seen_shell:
                 seen_shell[key] = {
                     **row,
@@ -1196,9 +1335,11 @@ def monitor_popup_windows(duration_ms, interval_ms):
         "shellPopups": list(seen_shell.values()),
         "samples": samples,
         "processSamples": process_samples,
-        "runtimeProcesses": runtime_process_snapshot(),
-        "runtimeWindows": summarize_runtime_windows(enum_windows(include_untitled=True)),
-        "windows": enum_windows(include_untitled=True),
+        "runtimeProcesses": runtime_processes,
+        "runtimeWindows": summarize_runtime_windows(
+            enrich_window_candidates(enum_window_skeletons())
+        ),
+        "windows": enrich_window_candidates(enum_window_skeletons()),
     }
 
 

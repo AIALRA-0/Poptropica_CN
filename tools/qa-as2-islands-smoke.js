@@ -22,8 +22,32 @@ const PROJECT_REVISION = getProjectRevision();
 // scene dependencies before advancing past the real Loading screen. Keep the
 // default smoke run patient for this one known slow entry while preserving
 // caller-supplied settle times for every other island.
+// Several AS2 banks load a large number of avatar, scene and popup assets
+// before the first gameplay frame becomes visible.  A short smoke settle
+// therefore produces a false "stage too small" / "loading stuck" result even
+// though the same entry is healthy once its initial asset burst completes.
+// Keep the ordinary smoke run fast for the small banks, but give the known
+// slow banks the same evidence window used by the focused recheck.
 const ISLAND_SETTLE_MINIMUMS = {
-  "super-power": 45000
+  "charlie-and-the-chocolate-factory": 45000,
+  counterfeit: 45000,
+  cryptids: 45000,
+  "ghost-story": 45000,
+  mythology: 45000,
+  "night-watch": 45000,
+  "reality-tv": 45000,
+  "red-dragon": 45000,
+  "shark-tooth": 45000,
+  "shrink-ray": 45000,
+  skullduggery: 45000,
+  steamworks: 45000,
+  "super-power": 45000,
+  "super-villain": 45000,
+  "twisted-thicket": 45000,
+  "vampires-curse": 45000,
+  "wild-west": 45000,
+  "wimpy-boardwalk": 45000,
+  zomberry: 45000
 };
 
 function flagEnabled(value) {
