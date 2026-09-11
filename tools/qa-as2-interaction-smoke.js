@@ -1644,7 +1644,12 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
     const mapOpenedByVisualGuard = Boolean(postCapture.visualGuard?.ok);
     const mapRequestRequired = flagEnabled(args.requireMapRequest);
     return {
-      ok: stageStable && (!mapRequestRequired || mapRequestSeen),
+      // A few AS2 shells preload the map SWF during framework startup.  In
+      // that case the click still opens a real map, but no new map request is
+      // emitted in the post-click log segment.  A passing map visual guard is
+      // stronger evidence than a duplicate request and must satisfy the
+      // request requirement for those shells.
+      ok: stageStable && (!mapRequestRequired || mapRequestSeen || mapOpenedByVisualGuard),
       skipped: false,
       clickPoint: point,
       clickPointSource: point.source || "stage-relative",
@@ -2365,7 +2370,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!map.skipped && !map.ok) {
     failedChecks.push("map_post_message_click_failed");
   }
-  if (!map.skipped && flagEnabled(args.requireMapRequest) && !map.mapRequestSeen) {
+  if (!map.skipped && flagEnabled(args.requireMapRequest) && !map.mapRequestSeen && !map.mapOpenedByVisualGuard) {
     failedChecks.push("map_request_not_seen");
   }
   if (!map.skipped && shouldRequireVisualGuard(args) && !map.visualGuard?.ok) {
@@ -2544,7 +2549,12 @@ function isPassingIslandReport(report) {
 }
 
 function hasMapEvidence(report) {
-  return Boolean(report?.map && !report.map.skipped && report.map.ok && report.map.mapRequestSeen);
+  return Boolean(
+    report?.map &&
+    !report.map.skipped &&
+    report.map.ok &&
+    (report.map.mapRequestSeen || report.map.mapOpenedByVisualGuard)
+  );
 }
 
 function hasSceneEvidence(report) {

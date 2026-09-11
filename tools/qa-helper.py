@@ -2574,7 +2574,24 @@ def command_analyze_map_popup_guard(args):
     min_margin = int(args.min_margin)
     right_margin = int(width - paper_box["right"])
     bottom_margin = int(height - paper_box["bottom"])
+    paper_width_ratio = paper_box["width"] / max(1, width)
+    paper_height_ratio = paper_box["height"] / max(1, height)
     center_delta_ratio = abs(float(paper_box["centerX"]) - width / 2.0) / max(1, width)
+    # Some AS2 map popups are intentionally taller than the Navigator client
+    # viewport.  In that layout the map's paper panel is clipped at the top
+    # and bottom while the blue frame remains visible along the outer edges.
+    # Treat that as a valid map shape when the panel is still centered, wide
+    # enough, and spans essentially the full capture height.  The old margin
+    # and blue-edge checks were written for a contained popup and rejected
+    # this legitimate, clipped variant.
+    full_height_clipped_map = (
+        paper_pixels > 0
+        and paper_width_ratio >= max(0.55, float(args.min_paper_width_ratio))
+        and paper_height_ratio >= 0.95
+        and paper_box["left"] >= min_margin
+        and right_margin >= min_margin
+        and center_delta_ratio <= float(args.max_center_x_delta_ratio)
+    )
     checks = [
         {
             "name": "paper_pixel_pct",
@@ -2584,14 +2601,14 @@ def command_analyze_map_popup_guard(args):
         },
         {
             "name": "paper_width_ratio",
-            "ok": (paper_box["width"] / max(1, width)) >= float(args.min_paper_width_ratio),
-            "observed": round(float(paper_box["width"] / max(1, width)), 6),
+            "ok": paper_width_ratio >= float(args.min_paper_width_ratio),
+            "observed": round(float(paper_width_ratio), 6),
             "min": float(args.min_paper_width_ratio),
         },
         {
             "name": "paper_height_ratio",
-            "ok": (paper_box["height"] / max(1, height)) >= float(args.min_paper_height_ratio),
-            "observed": round(float(paper_box["height"] / max(1, height)), 6),
+            "ok": paper_height_ratio >= float(args.min_paper_height_ratio),
+            "observed": round(float(paper_height_ratio), 6),
             "min": float(args.min_paper_height_ratio),
         },
         {
@@ -2608,15 +2625,17 @@ def command_analyze_map_popup_guard(args):
         },
         {
             "name": "paper_top_margin",
-            "ok": paper_box["top"] >= min_margin,
+            "ok": paper_box["top"] >= min_margin or full_height_clipped_map,
             "observed": paper_box["top"],
             "min": min_margin,
+            "allowFullHeightClippedMap": full_height_clipped_map,
         },
         {
             "name": "paper_bottom_margin",
-            "ok": bottom_margin >= int(args.min_bottom_margin),
+            "ok": bottom_margin >= int(args.min_bottom_margin) or full_height_clipped_map,
             "observed": bottom_margin,
             "min": int(args.min_bottom_margin),
+            "allowFullHeightClippedMap": full_height_clipped_map,
         },
         {
             "name": "paper_center_x_delta_ratio",
@@ -2635,9 +2654,10 @@ def command_analyze_map_popup_guard(args):
     checks.extend([
         {
             "name": f"{name}_blue_pct",
-            "ok": pct <= max_blue_edge_pct,
+            "ok": pct <= max_blue_edge_pct or full_height_clipped_map,
             "observedPct": pct,
             "maxPct": max_blue_edge_pct,
+            "allowFullHeightClippedMap": full_height_clipped_map,
         }
         for name, pct in blue_edge_regions.items()
     ])
@@ -2648,6 +2668,9 @@ def command_analyze_map_popup_guard(args):
         "input": args.input,
         "imageSize": { "width": width, "height": height },
         "paperBox": paper_box,
+        "paperWidthRatio": round(float(paper_width_ratio), 6),
+        "paperHeightRatio": round(float(paper_height_ratio), 6),
+        "fullHeightClippedMap": full_height_clipped_map,
         "paperPixelPct": paper_pct,
         "blueButtonComponents": blue_button_components[:12],
         "blueEdgeRegions": blue_edge_regions,
