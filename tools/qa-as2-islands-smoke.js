@@ -343,8 +343,8 @@ function selectEntries(manifest, args) {
 }
 
 function resolveSettleMs(entry, args) {
-  const requested = Number(args.settleMs || 10000);
-  const fallback = Number.isFinite(requested) && requested > 0 ? requested : 10000;
+  const requested = Number(args.settleMs || 45000);
+  const fallback = Number.isFinite(requested) && requested > 0 ? Math.max(requested, 45000) : 45000;
   const minimum = Number(ISLAND_SETTLE_MINIMUMS[entry?.canonicalKey] || 0);
   return Math.max(fallback, minimum);
 }
