@@ -1,0 +1,7420 @@
+{
+  "generatedAt": "2026-09-11T08:13:08.587Z",
+  "sourceRevision": "342ad282f6f320604a0ae058fc0b0f20096cce35",
+  "total": 47,
+  "routes": [
+    {
+      "canonicalKey": "24-carrot",
+      "displayName": "24-carrot",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=CarrotMain&island=Carrot&startup_path=gameplay",
+      "internalIsland": "Carrot",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "CarrotMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "CarrotMain",
+            "game.scenes.carrot.mainStreet.MainStreet",
+            "farm",
+            "mainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "betaCostume",
+            "bowlOfMilk",
+            "carrotTransporter"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "destroyed_rabbot"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medalCarrot"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "carrot",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/carrot/island.xml",
+        "firstScene": "CarrotMain",
+        "keyScenes": [
+          "CarrotMain",
+          "game.scenes.carrot.mainStreet.MainStreet",
+          "farm",
+          "mainStreet",
+          "factory",
+          "sewer",
+          "vent",
+          "adGroundH3R",
+          "farmHouse",
+          "adGroundH3",
+          "diner",
+          "map",
+          "Cinema",
+          "surplus",
+          "smelter",
+          "robot",
+          "processing",
+          "engine",
+          "freezer",
+          "loading",
+          "Diner",
+          "Factory",
+          "Farm",
+          "FarmHouse",
+          "Loading",
+          "Processing",
+          "Robot",
+          "Surplus"
+        ],
+        "requiredItems": [
+          "betaCostume",
+          "bowlOfMilk",
+          "carrotTransporter",
+          "crowbar",
+          "droneEars",
+          "emptyBowl",
+          "medalCarrot",
+          "systemPassword",
+          "ventBlueprints",
+          "wireCutters"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "destroyed_rabbot"
+        ],
+        "completionEvents": [
+          "sewer_opened",
+          "security_disabled",
+          "milk_given",
+          "engine_on",
+          "destroyed_rabbot",
+          "cat_returned",
+          "all_drones_free",
+          "started"
+        ],
+        "reward": "medalCarrot",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneCarrotMain.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneDiner.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneFactory.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneFarm.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneFarmHouse.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneLoading.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneProcessing.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneRobot.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandCarrot/sceneSurplus.swf",
+          "carrot/adGroundH3/doors.xml",
+          "carrot/adGroundH3R/doors.xml",
+          "carrot/diner/doors.xml",
+          "carrot/engine/doors.xml",
+          "carrot/factory/doors.xml",
+          "carrot/factory/items.xml",
+          "carrot/farm/doors.xml",
+          "carrot/farmHouse/doors.xml",
+          "carrot/farmHouse/items.xml",
+          "carrot/freezer/doors.xml",
+          "carrot/loading/doors.xml",
+          "carrot/loading/items.xml",
+          "carrot/mainStreet/doors.xml",
+          "carrot/processing/doors.xml",
+          "carrot/robot/doors.xml",
+          "carrot/sewer/doors.xml",
+          "carrot/sewer/items.xml",
+          "carrot/smelter/doors.xml",
+          "carrot/smelter/items.xml",
+          "carrot/surplus/doors.xml",
+          "carrot/vent/doors.xml",
+          "carrot/vent/items.xml"
+        ],
+        "as2Folder": "islandCarrot"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "arabian-nights",
+      "displayName": "arabian-nights",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.arab1.bazaar.Bazaar&reloadOnResize=frame",
+      "internalIsland": "arab1",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.arab1.bazaar.Bazaar",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.arab1.bazaar.Bazaar",
+            "palaceExterior",
+            "bazaar",
+            "desert"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "camel_harness",
+            "cloth",
+            "crown_jewel"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "intro_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_arabian1"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "arab1",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/arab1/island.xml",
+        "firstScene": "game.scenes.arab1.bazaar.Bazaar",
+        "keyScenes": [
+          "game.scenes.arab1.bazaar.Bazaar",
+          "palaceExterior",
+          "bazaar",
+          "desert",
+          "cliff",
+          "adMixed1",
+          "adMixed2",
+          "Arab1Common",
+          "adStreet3",
+          "cave",
+          "mainStreet",
+          "palaceInterior"
+        ],
+        "requiredItems": [
+          "camel_harness",
+          "cloth",
+          "crown_jewel",
+          "grain",
+          "ivory_camel",
+          "lamp",
+          "pearl",
+          "salt",
+          "smoke_bomb",
+          "spy_glass",
+          "medal_arabian1"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "intro_complete"
+        ],
+        "completionEvents": [
+          "guards_stand_down",
+          "player_holding_camel",
+          "smoke_bomb_left",
+          "cloth_on_dias",
+          "salt_on_dias",
+          "grain_on_dias",
+          "camel_on_dias",
+          "camel_taken"
+        ],
+        "reward": "medal_arabian1",
+        "sourceFiles": [
+          "arab1/adMixed1/doors.xml",
+          "arab1/adMixed2/doors.xml",
+          "arab1/adStreet3/doors.xml",
+          "arab1/bazaar/doors.xml",
+          "arab1/cave/doors.xml",
+          "arab1/cave/items.xml",
+          "arab1/cliff/doors.xml",
+          "arab1/desert/doors.xml",
+          "arab1/desertScope/doors.xml",
+          "arab1/palaceExterior/doors.xml",
+          "arab1/palaceInterior/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "astro-knights",
+      "displayName": "astro-knights",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=AstroMain&island=Astro&startup_path=gameplay",
+      "internalIsland": "Astro",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "AstroMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "AstroMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "fuel_rod",
+            "gold_coin",
+            "rope"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "beatFireBoss",
+            "beatIceBoss",
+            "beatJungleBoss"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "beatFireBoss",
+            "beatIceBoss",
+            "beatJungleBoss",
+            "beatMordred",
+            "destroyedDroid"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_astro"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "astro",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/astro/island.xml",
+        "firstScene": "AstroMain",
+        "keyScenes": [
+          "AstroMain"
+        ],
+        "requiredItems": [
+          "fuel_rod",
+          "gold_coin",
+          "rope",
+          "manure",
+          "cheese",
+          "mechanical_mouse",
+          "symbols",
+          "coordinates",
+          "secret_message",
+          "pamphlet",
+          "tale",
+          "journal",
+          "journal_6",
+          "weapons",
+          "note",
+          "slip",
+          "key",
+          "shield",
+          "laser",
+          "arrow",
+          "medal_astro"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "beatFireBoss",
+          "beatIceBoss",
+          "beatJungleBoss"
+        ],
+        "settlementEvents": [
+          "beatFireBoss",
+          "beatIceBoss",
+          "beatJungleBoss",
+          "beatMordred",
+          "destroyedDroid"
+        ],
+        "completionEvents": [
+          "openedHideout",
+          "openedPortal",
+          "reachedPrincessDoor",
+          "unlockedMill",
+          "usedBowRope",
+          "usedManure",
+          "usedMuseumCoin",
+          "usedGuide"
+        ],
+        "reward": "medal_astro",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "back-lot",
+      "displayName": "back-lot",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=BacklotMain&island=Backlot&startup_path=gameplay",
+      "internalIsland": "Backlot",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "BacklotMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "BacklotMain",
+            "game.scenes.backlot.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_backlot",
+            "film",
+            "camera"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completeSoundstage2",
+            "completeSoundstage4",
+            "completedEditing",
+            "completedFoley",
+            "day2Completed"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_backlot"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "backlot",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/backlot/island.xml",
+        "firstScene": "BacklotMain",
+        "keyScenes": [
+          "BacklotMain",
+          "game.scenes.backlot.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "medal_backlot",
+          "film",
+          "camera",
+          "coffeeCupLeft",
+          "coffeeCupRight",
+          "screenplayPages",
+          "headShot",
+          "whiteHat",
+          "blackHat",
+          "reels",
+          "kirkCoffeeCup",
+          "movieCamera"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "completeSoundstage1",
+          "completeSoundstage2",
+          "completeSoundstage4",
+          "completedEditing",
+          "completedFoley",
+          "day2Completed"
+        ],
+        "completionEvents": [
+          "day2Completed",
+          "sawMovie",
+          "sawSisters",
+          "blockedFromBonus",
+          "metSofia",
+          "gotFilm",
+          "sawSidewalk",
+          "orderedScriptPages"
+        ],
+        "reward": "medal_backlot",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "big-nate",
+      "displayName": "big-nate",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=BigNateMain&island=BigNate&startup_path=gameplay",
+      "internalIsland": "BigNate",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "BigNateMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "BigNateMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "gum",
+            "scuba_gear",
+            "old_photo"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completedComic"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_big_nate"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "bigNate",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/bigNate/island.xml",
+        "firstScene": "BigNateMain",
+        "keyScenes": [
+          "BigNateMain"
+        ],
+        "requiredItems": [
+          "gum",
+          "scuba_gear",
+          "old_photo",
+          "blueprint",
+          "stink_bomb",
+          "crackers",
+          "trap",
+          "lobster",
+          "capsule_map",
+          "comic",
+          "keys",
+          "bell_clapper",
+          "jokes",
+          "medal_big_nate"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "completedComic"
+        ],
+        "completionEvents": [
+          "completedComic",
+          "turnedLightHouse",
+          "sawMap",
+          "rangSchoolBell",
+          "foundCapsule",
+          "openedLocker",
+          "madeStinkBomb",
+          "usedStinkBomb"
+        ],
+        "reward": "medal_big_nate",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "charlie-and-the-chocolate-factory",
+      "displayName": "charlie-and-the-chocolate-factory",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=CharlieMain&island=Charlie&startup_path=gameplay",
+      "internalIsland": "Charlie",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "CharlieMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "CharlieMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "golden_ticket",
+            "silver_coin",
+            "cane"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "startedMaze",
+            "wonJuicingGame"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "savedCharlie",
+            "rescuedMike",
+            "wonJuicingGame",
+            "day2Complete",
+            "rescuedAugustus"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_charlie"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "charlie",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/charlie/island.xml",
+        "firstScene": "CharlieMain",
+        "keyScenes": [
+          "CharlieMain"
+        ],
+        "requiredItems": [
+          "golden_ticket",
+          "silver_coin",
+          "cane",
+          "walnut",
+          "whipped_cream",
+          "fizzy_drink",
+          "medal_charlie"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "startedMaze",
+          "wonJuicingGame"
+        ],
+        "settlementEvents": [
+          "metWonka",
+          "rescuedVeruca",
+          "savedCharlie",
+          "rescuedMike",
+          "wonJuicingGame",
+          "day2Complete",
+          "rescuedAugustus"
+        ],
+        "completionEvents": [
+          "bonusChat",
+          "day2Start",
+          "day2Complete",
+          "watchedAugustus",
+          "rescuedAugustus",
+          "blockedFromBonus",
+          "bonusStarted",
+          "juicePreview"
+        ],
+        "reward": "medal_charlie",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "counterfeit",
+      "displayName": "counterfeit",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=CounterMain&island=Counter&startup_path=gameplay",
+      "internalIsland": "Counter",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "CounterMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "CounterMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "ticket",
+            "torn_paper",
+            "xray_wand"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "beatBoss",
+            "openedVault"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completedTunnelTour",
+            "beatBoss"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_counter"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "counter",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/counter/island.xml",
+        "firstScene": "CounterMain",
+        "keyScenes": [
+          "CounterMain"
+        ],
+        "requiredItems": [
+          "ticket",
+          "torn_paper",
+          "xray_wand",
+          "timecard",
+          "screen_print",
+          "key",
+          "secret_ingredient",
+          "crepe",
+          "key_card",
+          "starry_night",
+          "art_watch",
+          "tickets",
+          "medal_counter"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "beatBoss",
+          "openedVault"
+        ],
+        "settlementEvents": [
+          "completedTunnelTour",
+          "beatBoss"
+        ],
+        "completionEvents": [
+          "gotPiece2",
+          "gotPiece3",
+          "gotPiece4",
+          "gotPiece5",
+          "gotPiece6",
+          "gaveBalloon",
+          "showedScreenPrint",
+          "openedVault"
+        ],
+        "reward": "medal_counter",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "cryptids",
+      "displayName": "cryptids",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=CryptidMain&island=Cryptid&startup_path=gameplay",
+      "internalIsland": "Cryptid",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "CryptidMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "CryptidMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "flyer",
+            "five_bill",
+            "sports_drink"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "lostDartGame2",
+            "wonDartGame2",
+            "lostDartGame3"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonDartGame2",
+            "beatMonk"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_cryptid"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "cryptid",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/cryptid/island.xml",
+        "firstScene": "CryptidMain",
+        "keyScenes": [
+          "CryptidMain"
+        ],
+        "requiredItems": [
+          "flyer",
+          "five_bill",
+          "sports_drink",
+          "shears",
+          "rope",
+          "bolt_cutters",
+          "door",
+          "directions",
+          "lantern",
+          "matches",
+          "hook",
+          "shells",
+          "camera",
+          "photo",
+          "darts",
+          "whistle",
+          "rowboat",
+          "submarine",
+          "fur",
+          "tooth",
+          "track",
+          "kite",
+          "medal_cryptid"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "lostDartGame2",
+          "wonDartGame2",
+          "lostDartGame3"
+        ],
+        "settlementEvents": [
+          "wonDartGame2",
+          "beatMonk"
+        ],
+        "completionEvents": [
+          "beatMonk",
+          "balloonLeft",
+          "pushedGlider",
+          "usedShears",
+          "hiredSherpa",
+          "didClimb",
+          "gotRowboat",
+          "openedDumpster"
+        ],
+        "reward": "medal_cryptid",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "early-poptropica",
+      "displayName": "early-poptropica",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=City2&island=Early&startup_path=gameplay",
+      "internalIsland": "Early",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "City2",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "City2",
+            "Balance",
+            "City",
+            "Jamestown"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "bucket",
+            "egg",
+            "flag"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "returnFlag",
+            "returnPig",
+            "FLKey1",
+            "FLKey2",
+            "FLKey3"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_early"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "early",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/early/island.xml",
+        "firstScene": "City2",
+        "keyScenes": [
+          "City2",
+          "Balance",
+          "City",
+          "Jamestown",
+          "Museum",
+          "Pit"
+        ],
+        "requiredItems": [
+          "bucket",
+          "egg",
+          "flag",
+          "glowstick",
+          "jetpack",
+          "pig",
+          "medal_early"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "returnFlag",
+          "returnPig",
+          "FLKey1",
+          "FLKey2",
+          "FLKey3"
+        ],
+        "completionEvents": [
+          "started",
+          "returnBucket",
+          "returnEgg",
+          "returnFlag",
+          "returnPig",
+          "FLKey1",
+          "FLKey2",
+          "FLKey3"
+        ],
+        "reward": "medal_early",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneBalance.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneCity.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneCity2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneJamestown.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/sceneMuseum.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandEarly/scenePit.swf"
+        ],
+        "as2Folder": "islandEarly"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "escape-from-pelican-rock",
+      "displayName": "escape-from-pelican-rock",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.prison.hill.Hill&reloadOnResize=frame",
+      "internalIsland": "prison",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.prison.mainStreet.MainStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.prison.mainStreet.MainStreet",
+            "yard",
+            "mainStreet",
+            "hill"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_prison",
+            "cup_of_plaster",
+            "cup_of_water"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "metal_day_1_complete",
+            "mess_day_1_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_prison"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "prison",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/prison/island.xml",
+        "firstScene": "game.scenes.prison.mainStreet.MainStreet",
+        "keyScenes": [
+          "game.scenes.prison.mainStreet.MainStreet",
+          "yard",
+          "mainStreet",
+          "hill",
+          "cellBlock",
+          "metalShop",
+          "messHall",
+          "adStreet1",
+          "tower",
+          "map",
+          "roof2",
+          "roof1",
+          "roof3"
+        ],
+        "requiredItems": [
+          "medal_prison",
+          "cup_of_plaster",
+          "cup_of_water",
+          "drill_bit",
+          "dummy_head",
+          "eggs",
+          "metal_cup",
+          "mixer",
+          "painting",
+          "painted_dummy_head",
+          "painted_pasta",
+          "prison_files",
+          "sharpened_spoon",
+          "spoon",
+          "cafe_spoon",
+          "stick_of_gum",
+          "sunflower",
+          "sunflower_seeds",
+          "uncooked_pasta"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "metal_day_1_complete",
+          "mess_day_1_complete"
+        ],
+        "completionEvents": [
+          "used_plaster",
+          "started_food_fight",
+          "ended_food_fight",
+          "drilled_plate",
+          "bandit_captured",
+          "escaped_big_tuna",
+          "tricked_guard_first",
+          "combined_drill_bit"
+        ],
+        "reward": "medal_prison",
+        "sourceFiles": [
+          "prison/adMixed2/doors.xml",
+          "prison/adStreet1/doors.xml",
+          "prison/adStreet3/doors.xml",
+          "prison/cellBlock/doors.xml",
+          "prison/cellBlock/items.xml",
+          "prison/hill/doors.xml",
+          "prison/mainStreet/doors.xml",
+          "prison/messHall/doors.xml",
+          "prison/messHall/items.xml",
+          "prison/metalShop/doors.xml",
+          "prison/prisonPromo/doors.xml",
+          "prison/roof1/doors.xml",
+          "prison/roof2/doors.xml",
+          "prison/roof3/doors.xml",
+          "prison/tower/doors.xml",
+          "prison/yard/items.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "galactic-hot-dogs",
+      "displayName": "galactic-hot-dogs",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ghd.barren1.Barren1&reloadOnResize=frame",
+      "internalIsland": "ghd",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.ghd.spacePort.SpacePort",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.ghd.spacePort.SpacePort",
+            "prehistoric2",
+            "prehistoric1",
+            "mushroom1"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "egg",
+            "fuel_cell",
+            "fruit"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [
+            "queen",
+            "dagger",
+            "jack0"
+          ],
+          "evidence": [
+            "npcVisible",
+            "dialogueVisible"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "ghd/arena",
+            "ready_for_contest",
+            "talked_to_arena_guards"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "found_planet_barren",
+            "found_lost_triangle",
+            "found_transmission_cosmoe",
+            "found_transmission_dagger",
+            "found_transmission_humphree"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_ghd"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "ghd",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/ghd/island.xml",
+        "firstScene": "game.scenes.ghd.spacePort.SpacePort",
+        "keyScenes": [
+          "game.scenes.ghd.spacePort.SpacePort",
+          "prehistoric2",
+          "prehistoric1",
+          "mushroom1",
+          "mushroom2",
+          "arena",
+          "spacePort",
+          "barren1",
+          "barren2",
+          "adStreet1",
+          "neonWiener",
+          "adStreet2",
+          "mainStreet",
+          "adMixed2",
+          "adMixed1",
+          "store",
+          "common"
+        ],
+        "requiredItems": [
+          "egg",
+          "fuel_cell",
+          "fruit",
+          "gelatin_salad",
+          "giant_spatula",
+          "guano",
+          "map_o_sphere",
+          "seed_pod",
+          "medal_ghd"
+        ],
+        "keyNpcs": [
+          "queen",
+          "dagger",
+          "jack0",
+          "jack1",
+          "alien3",
+          "alien1",
+          "alien2",
+          "alien4"
+        ],
+        "minigames": [
+          "ghd/arena",
+          "ready_for_contest",
+          "talked_to_arena_guards"
+        ],
+        "settlementEvents": [
+          "found_planet_barren",
+          "found_lost_triangle",
+          "found_transmission_cosmoe",
+          "found_transmission_dagger",
+          "found_transmission_humphree"
+        ],
+        "completionEvents": [
+          "talked_to_arena_guards",
+          "found_planet_prehistoric",
+          "found_planet_mushroom",
+          "found_planet_barren",
+          "found_lost_triangle",
+          "found_transmission_cosmoe",
+          "found_transmission_dagger",
+          "found_transmission_humphree"
+        ],
+        "reward": "medal_ghd",
+        "sourceFiles": [
+          "ghd/adMixed1/doors.xml",
+          "ghd/adMixed2/doors.xml",
+          "ghd/adStreet1/doors.xml",
+          "ghd/adStreet2/doors.xml",
+          "ghd/arena/doors.xml",
+          "ghd/arena/npcs.xml",
+          "ghd/arena/scene.xml",
+          "ghd/barren1/doors.xml",
+          "ghd/barren1/items.xml",
+          "ghd/barren2/doors.xml",
+          "ghd/common/doors.xml",
+          "ghd/ghostShip/doors.xml",
+          "ghd/lostTriangle/doors.xml",
+          "ghd/mushroom1/doors.xml",
+          "ghd/mushroom1/items.xml",
+          "ghd/mushroom2/doors.xml",
+          "ghd/neonWiener/doors.xml",
+          "ghd/outerSpace/doors.xml",
+          "ghd/prehistoric1/doors.xml",
+          "ghd/prehistoric1/items.xml",
+          "ghd/prehistoric2/doors.xml",
+          "ghd/spacePort/doors.xml",
+          "ghd/spacePort/npcs.xml",
+          "ghd/store/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "game-show",
+      "displayName": "game-show",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=GameShowMain&island=GameShow&startup_path=gameplay",
+      "internalIsland": "GameShow",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "GameShowMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "GameShowMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "heat_goggles",
+            "toolkit",
+            "fan"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "beatSlidePuzzle1",
+            "beatSlidePuzzle2",
+            "beatSlidePuzzle3",
+            "beatSlidePuzzle4"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "savedPrizes",
+            "wonSpin",
+            "wonScaredy",
+            "wonBrainiacs",
+            "wonKerplunk"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_game"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "gameShow",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/gameShow/island.xml",
+        "firstScene": "GameShowMain",
+        "keyScenes": [
+          "GameShowMain"
+        ],
+        "requiredItems": [
+          "heat_goggles",
+          "toolkit",
+          "fan",
+          "nickel",
+          "jet_remote",
+          "thumb_drive",
+          "brainiac_ticket",
+          "scaredy_ticket",
+          "spin_ticket",
+          "kerplunk_ticket",
+          "yoshi_ticket",
+          "medal_game"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "beatSlidePuzzle1",
+          "beatSlidePuzzle2",
+          "beatSlidePuzzle3",
+          "beatSlidePuzzle4",
+          "wonSpin",
+          "chasedInventor"
+        ],
+        "settlementEvents": [
+          "beatSlidePuzzle1",
+          "beatSlidePuzzle2",
+          "beatSlidePuzzle3",
+          "beatSlidePuzzle4",
+          "savedPrizes",
+          "wonSpin",
+          "wonScaredy",
+          "wonBrainiacs",
+          "wonKerplunk"
+        ],
+        "completionEvents": [
+          "foundInventor",
+          "sawInventor",
+          "fixedBAPower",
+          "wonBrainiacs",
+          "wonKerplunk",
+          "didMoscow",
+          "enteredClub",
+          "gotYoshiTicket"
+        ],
+        "reward": "medal_game",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "ghost-story",
+      "displayName": "ghost-story",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=GhostMain&island=Ghost&startup_path=gameplay",
+      "internalIsland": "Ghost",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "GhostMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "GhostMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "net",
+            "detector",
+            "scanner"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "openedBankVault"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "shipWreckOpen",
+            "playedViolin",
+            "foundExitB",
+            "foundExitA",
+            "editorEvidence"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_ghost"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "ghost",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/ghost/island.xml",
+        "firstScene": "GhostMain",
+        "keyScenes": [
+          "GhostMain"
+        ],
+        "requiredItems": [
+          "net",
+          "detector",
+          "scanner",
+          "thermometer",
+          "camera",
+          "torch",
+          "sardines",
+          "pickaxe",
+          "buns",
+          "voilin_music",
+          "mug_shot",
+          "note",
+          "binoculars",
+          "files",
+          "key",
+          "salt",
+          "money",
+          "locket",
+          "ring",
+          "scrapbook",
+          "pamphlet",
+          "photo",
+          "medal_ghost"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "openedBankVault"
+        ],
+        "settlementEvents": [
+          "shipWreckOpen",
+          "playedViolin",
+          "foundExitB",
+          "foundExitA",
+          "editorEvidence"
+        ],
+        "completionEvents": [
+          "stairsBroke",
+          "removedCloth",
+          "prisonOpen",
+          "shipWreckOpen",
+          "playedViolin",
+          "foundExitB",
+          "foundExitA",
+          "editorEvidence"
+        ],
+        "reward": "medal_ghost",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "great-pumpkin",
+      "displayName": "great-pumpkin",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=PeanutsMain&island=Peanuts&startup_path=gameplay",
+      "internalIsland": "Peanuts",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "PeanutsMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "PeanutsMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "bag",
+            "sucker",
+            "invitation"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "wonPartyGames",
+            "wonPartyGames1",
+            "wonPartyGames2",
+            "wonPartyGames3"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonPartyGames1",
+            "wonPartyGames2",
+            "wonPartyGames3",
+            "wonPartyGames4",
+            "wonLeaves"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_peanuts"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "peanuts",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/peanuts/island.xml",
+        "firstScene": "PeanutsMain",
+        "keyScenes": [
+          "PeanutsMain"
+        ],
+        "requiredItems": [
+          "bag",
+          "sucker",
+          "invitation",
+          "blanket",
+          "football",
+          "pen",
+          "mask",
+          "candy",
+          "medal_peanuts"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "wonPartyGames",
+          "wonPartyGames1",
+          "wonPartyGames2",
+          "wonPartyGames3",
+          "wonPartyGames4"
+        ],
+        "settlementEvents": [
+          "wonPartyGames",
+          "wonPartyGames1",
+          "wonPartyGames2",
+          "wonPartyGames3",
+          "wonPartyGames4",
+          "wonLeaves"
+        ],
+        "completionEvents": [
+          "usedPen",
+          "usedFootball",
+          "usedBlanket",
+          "usedBag",
+          "turnedNight",
+          "startedTricks",
+          "movedPumpkin",
+          "foundPumpkin"
+        ],
+        "reward": "medal_peanuts",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "lunar-colony",
+      "displayName": "lunar-colony",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=MoonMain&island=Moon&startup_path=gameplay",
+      "internalIsland": "Moon",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "MoonMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "MoonMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "ginger_ale",
+            "notebook",
+            "album"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "salernoChased"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "salernoChased",
+            "salernoEscaped",
+            "salernoTeleported",
+            "spokeToSlayton",
+            "vehicleDoorOpen"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_moon"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "moon",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/moon/island.xml",
+        "firstScene": "MoonMain",
+        "keyScenes": [
+          "MoonMain"
+        ],
+        "requiredItems": [
+          "ginger_ale",
+          "notebook",
+          "album",
+          "manual",
+          "locator_device",
+          "keycard",
+          "codes",
+          "medal_moon"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "salernoChased"
+        ],
+        "settlementEvents": [
+          "salernoChased",
+          "salernoEscaped",
+          "salernoTeleported",
+          "spokeToSlayton",
+          "vehicleDoorOpen"
+        ],
+        "completionEvents": [
+          "rocketLaunched",
+          "rockLabOpen",
+          "roverCharged",
+          "salernoChased",
+          "salernoEscaped",
+          "salernoTeleported",
+          "spokeToSlayton",
+          "vehicleDoorOpen"
+        ],
+        "reward": "medal_moon",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "mission-atlantis",
+      "displayName": "mission-atlantis",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.deepDive1.ship.Ship&reloadOnResize=frame",
+      "internalIsland": "deepDive1",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.deepDive1.ship.Ship",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.deepDive1.ship.Ship",
+            "reef",
+            "ledge",
+            "maze"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "bucket_empty",
+            "bucket_full",
+            "key"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "deepDive1/maze"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "tutorial_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_atlantis1"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "deepDive1",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/deepDive1/island.xml",
+        "firstScene": "game.scenes.deepDive1.ship.Ship",
+        "keyScenes": [
+          "game.scenes.deepDive1.ship.Ship",
+          "reef",
+          "ledge",
+          "maze",
+          "adMixed1",
+          "deepestOcean",
+          "adStreet3",
+          "adMixed2",
+          "shipUnderside",
+          "hub",
+          "ship"
+        ],
+        "requiredItems": [
+          "bucket_empty",
+          "bucket_full",
+          "key",
+          "fish_files",
+          "medal_atlantis1"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "deepDive1/maze"
+        ],
+        "settlementEvents": [
+          "tutorial_complete"
+        ],
+        "completionEvents": [
+          "sub_opened",
+          "tutorial_complete",
+          "angler_captured",
+          "barreleye_captured",
+          "cuttlefish_captured",
+          "seadragon_captured",
+          "stonefish_captured",
+          "saw_hydromedusa"
+        ],
+        "reward": "medal_atlantis1",
+        "sourceFiles": [
+          "deepDive1/adMixed1/doors.xml",
+          "deepDive1/adMixed2/doors.xml",
+          "deepDive1/adStreet3/doors.xml",
+          "deepDive1/ledge/doors.xml",
+          "deepDive1/maze/doors.xml",
+          "deepDive1/reef/doors.xml",
+          "deepDive1/ship/doors.xml",
+          "deepDive1/shipUnderside/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "mocktropica",
+      "displayName": "mocktropica",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.adStreet.AdStreet&reloadOnResize=frame",
+      "internalIsland": "mocktropica",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.mocktropica.mainStreet.MainStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.mocktropica.mainStreet.MainStreet",
+            "chasm",
+            "mainStreet",
+            "poptropicaHQ"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "axe",
+            "bucket_bot_costume",
+            "cake"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "advertisement_boss_1",
+            "advertisement_boss_2",
+            "advertisement_boss_3",
+            "boss_escaped"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "mountain_finished",
+            "completed_popupad2",
+            "defeated_boss",
+            "mancala_victory",
+            "defeated_mfb"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_mocktropica"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "mocktropica",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/mocktropica/island.xml",
+        "firstScene": "game.scenes.mocktropica.mainStreet.MainStreet",
+        "keyScenes": [
+          "game.scenes.mocktropica.mainStreet.MainStreet",
+          "chasm",
+          "mainStreet",
+          "poptropicaHQ",
+          "mountain",
+          "adStreet",
+          "university",
+          "cheeseInterior",
+          "cheeseExterior",
+          "megaFightingBots",
+          "common",
+          "map",
+          "basement",
+          "classroom"
+        ],
+        "requiredItems": [
+          "axe",
+          "bucket_bot_costume",
+          "cake",
+          "coins",
+          "curds",
+          "designer_id",
+          "developer_id",
+          "helmet",
+          "pop",
+          "script",
+          "writer_id",
+          "medal_mocktropica"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "advertisement_boss_1",
+          "advertisement_boss_2",
+          "advertisement_boss_3",
+          "boss_escaped",
+          "defeated_boss",
+          "boss_fight_start"
+        ],
+        "settlementEvents": [
+          "rescued_designer",
+          "narf_wall_complete",
+          "mainstreet_finished",
+          "mountain_finished",
+          "completed_popupad2",
+          "defeated_boss",
+          "mancala_victory",
+          "defeated_mfb"
+        ],
+        "completionEvents": [
+          "chirp_chair_lift",
+          "started_bonus_quest",
+          "blocked_from_bonus",
+          "started_ea_demo",
+          "started_ea",
+          "blocked_from_ea",
+          "defeated_mfb",
+          "hertz_rejoined"
+        ],
+        "reward": "medal_mocktropica",
+        "sourceFiles": [
+          "mocktropica/adStreet/doors.xml",
+          "mocktropica/basement/doors.xml",
+          "mocktropica/chasm/doors.xml",
+          "mocktropica/cheeseExterior/doors.xml",
+          "mocktropica/cheeseInterior/doors.xml",
+          "mocktropica/classroom/doors.xml",
+          "mocktropica/common/doors.xml",
+          "mocktropica/hangar/doors.xml",
+          "mocktropica/mainStreet/doors.xml",
+          "mocktropica/mainStreet/items.xml",
+          "mocktropica/mountain/doors.xml",
+          "mocktropica/poptropicaHQ/doors.xml",
+          "mocktropica/university/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "monkey-wrench",
+      "displayName": "monkey-wrench",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ftue.mainLand.MainLand&reloadOnResize=frame",
+      "internalIsland": "ftue",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.ftue.intro.Intro",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.ftue.intro.Intro",
+            "beach",
+            "forest",
+            "adMixed1"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "canvas",
+            "rope",
+            "drink"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "race_enter",
+            "race_ask_question",
+            "race_ask_rules",
+            "race_ask_medallion"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "race_ask_medallion",
+            "control_tutorial_complete",
+            "saved_amelia",
+            "finished_race",
+            "awarded_medallion"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_ftue"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "ftue",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/ftue/island.xml",
+        "firstScene": "game.scenes.ftue.intro.Intro",
+        "keyScenes": [
+          "game.scenes.ftue.intro.Intro",
+          "beach",
+          "forest",
+          "adMixed1",
+          "mainLand",
+          "mainStreet",
+          "shipWreck"
+        ],
+        "requiredItems": [
+          "canvas",
+          "rope",
+          "drink",
+          "wrench",
+          "medal_ftue"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "race_enter",
+          "race_ask_question",
+          "race_ask_rules",
+          "race_ask_medallion",
+          "race_ask_credits",
+          "race_begun",
+          "jumped_on_rock",
+          "re_entered_race",
+          "finished_race"
+        ],
+        "settlementEvents": [
+          "race_ask_medallion",
+          "control_tutorial_complete",
+          "saved_amelia",
+          "finished_race",
+          "awarded_medallion"
+        ],
+        "completionEvents": [
+          "threw_wrench",
+          "talk_to_crusoe",
+          "threw_drink",
+          "finished_race",
+          "landed",
+          "awarded_medallion",
+          "explore_map",
+          "explore_home_island"
+        ],
+        "reward": "medal_ftue",
+        "sourceFiles": [
+          "ftue/adMixed1/doors.xml",
+          "ftue/beach/doors.xml",
+          "ftue/beach/items.xml",
+          "ftue/forest/doors.xml",
+          "ftue/intro/doors.xml",
+          "ftue/mainLand/doors.xml",
+          "ftue/mainLand/items.xml",
+          "ftue/outro/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "monster-carnival",
+      "displayName": "monster-carnival",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.carnival.mainStreet.MainStreet&reloadOnResize=frame",
+      "internalIsland": "carnival",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.carnival.mainStreet.MainStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.carnival.mainStreet.MainStreet",
+            "mainStreet",
+            "midwayDay",
+            "ridesDay"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_carnival",
+            "chemical_x",
+            "chemical_x_award"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "carnival/mirrorMaze",
+            "carnival/woodsMaze",
+            "need_weight",
+            "won_weight"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "won_weight",
+            "won_strength_game",
+            "won_balloon_pop",
+            "beat_ferris_monster",
+            "day_2_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_carnival"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "carnival",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/carnival/island.xml",
+        "firstScene": "game.scenes.carnival.mainStreet.MainStreet",
+        "keyScenes": [
+          "game.scenes.carnival.mainStreet.MainStreet",
+          "mainStreet",
+          "midwayDay",
+          "ridesDay",
+          "woods",
+          "autoRepair",
+          "apothecary",
+          "woodsMaze",
+          "ridesEmpty",
+          "ridesNight",
+          "ridesEvening",
+          "adStreet",
+          "midwayNight",
+          "midwayEvening",
+          "midwayEmpty",
+          "common",
+          "map",
+          "mirrorMaze",
+          "ringmastersTent",
+          "adStreet2",
+          "tunnelLove",
+          "hauntedLab",
+          "rollerCoaster",
+          "clearing"
+        ],
+        "requiredItems": [
+          "medal_carnival",
+          "chemical_x",
+          "chemical_x_award",
+          "chemical_x_formula",
+          "cola",
+          "mushrooms",
+          "pickle_juice",
+          "ball",
+          "black_lightbulb",
+          "cotton_candy",
+          "cup_empty",
+          "cup_oil",
+          "dart_blunt",
+          "dart_sharp",
+          "dough",
+          "flashlight",
+          "flashlight_black",
+          "fly_mask",
+          "hammer",
+          "hose",
+          "hypnotize_formula",
+          "hypnotize_powder",
+          "lever",
+          "salt",
+          "salt_formula",
+          "secret_message",
+          "sugar",
+          "sugar_formula",
+          "vial"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "carnival/mirrorMaze",
+          "carnival/woodsMaze",
+          "need_weight",
+          "won_weight",
+          "won_strength_game",
+          "talked_to_duck_game_worker"
+        ],
+        "settlementEvents": [
+          "won_weight",
+          "won_strength_game",
+          "won_balloon_pop",
+          "beat_ferris_monster",
+          "day_2_complete"
+        ],
+        "completionEvents": [
+          "spoke_with_ferris_worker",
+          "dan_show_tail",
+          "introduce_day_2",
+          "day_2_complete",
+          "dan_ran_away",
+          "spoke_edgar_carnival",
+          "spoke_ringmaster_formula",
+          "edgar_ran_tent"
+        ],
+        "reward": "medal_carnival",
+        "sourceFiles": [
+          "carnival/adStreet/doors.xml",
+          "carnival/adStreet2/doors.xml",
+          "carnival/apothecary/doors.xml",
+          "carnival/autoRepair/doors.xml",
+          "carnival/autoRepair/items.xml",
+          "carnival/clearing/doors.xml",
+          "carnival/common/doors.xml",
+          "carnival/hauntedLab/doors.xml",
+          "carnival/hauntedLab/items.xml",
+          "carnival/mainStreet/doors.xml",
+          "carnival/midwayDay/doors.xml",
+          "carnival/midwayEmpty/doors.xml",
+          "carnival/midwayEvening/doors.xml",
+          "carnival/midwayNight/doors.xml",
+          "carnival/mirrorMaze/doors.xml",
+          "carnival/ridesDay/doors.xml",
+          "carnival/ridesEmpty/doors.xml",
+          "carnival/ridesEvening/doors.xml",
+          "carnival/ridesNight/doors.xml",
+          "carnival/ringmastersTent/doors.xml",
+          "carnival/rollerCoaster/doors.xml",
+          "carnival/tunnelLove/doors.xml",
+          "carnival/woods/doors.xml",
+          "carnival/woods/items.xml",
+          "carnival/woodsMaze/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "mystery-of-the-map",
+      "displayName": "mystery-of-the-map",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.viking.jungle.Jungle&reloadOnResize=frame",
+      "internalIsland": "viking",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.viking.jungle.Jungle",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.viking.jungle.Jungle",
+            "jungle",
+            "beach",
+            "embedsCamp"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "axe",
+            "candybar",
+            "drippings"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "balance_game_started",
+            "balance_game_complete"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "balance_game_complete",
+            "river_completed"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_viking"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "viking",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/viking/island.xml",
+        "firstScene": "game.scenes.viking.jungle.Jungle",
+        "keyScenes": [
+          "game.scenes.viking.jungle.Jungle",
+          "jungle",
+          "beach",
+          "embedsCamp",
+          "adStreet1",
+          "pen",
+          "throneRoom",
+          "fortress",
+          "dodoHabitat",
+          "adStreet2",
+          "diningHall",
+          "map",
+          "waterfall",
+          "waterfall2",
+          "peak"
+        ],
+        "requiredItems": [
+          "axe",
+          "candybar",
+          "drippings",
+          "fish",
+          "furs",
+          "goblet",
+          "gunpowder",
+          "helmet",
+          "lens",
+          "map",
+          "rope",
+          "shovel",
+          "book",
+          "book2",
+          "medal_viking"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "balance_game_started",
+          "balance_game_complete"
+        ],
+        "settlementEvents": [
+          "balance_game_complete",
+          "river_completed"
+        ],
+        "completionEvents": [
+          "octavian_ran_away",
+          "looking_for_goblet",
+          "thorlak_framed",
+          "served_underling_1",
+          "served_underling_2",
+          "served_giant",
+          "river_completed",
+          "log_cut_down"
+        ],
+        "reward": "medal_viking",
+        "sourceFiles": [
+          "viking/adStreet1/doors.xml",
+          "viking/adStreet2/doors.xml",
+          "viking/beach/doors.xml",
+          "viking/common/doors.xml",
+          "viking/diningHall/doors.xml",
+          "viking/diningHall/items.xml",
+          "viking/dodoHabitat/doors.xml",
+          "viking/dodoHabitat/items.xml",
+          "viking/embedsCamp/doors.xml",
+          "viking/embedsCamp/items.xml",
+          "viking/fortress/doors.xml",
+          "viking/fortress/items.xml",
+          "viking/jungle/doors.xml",
+          "viking/jungle/items.xml",
+          "viking/peak/doors.xml",
+          "viking/pen/doors.xml",
+          "viking/throneRoom/doors.xml",
+          "viking/waterfall/doors.xml",
+          "viking/waterfall2/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "mystery-train",
+      "displayName": "mystery-train",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=TrainMain&island=Train&startup_path=gameplay",
+      "internalIsland": "Train",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "TrainMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "TrainMain",
+            "game.scenes.train.mainStreet.MainStreet",
+            "EdisonCabin"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "newspaper",
+            "paper",
+            "outfit"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "finalChaseStarted",
+            "mid1ChaseStarted",
+            "mid2ChaseStarted",
+            "houdiniChaseStarted"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "houdiniSaved"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_train"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "train",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/train/island.xml",
+        "firstScene": "TrainMain",
+        "keyScenes": [
+          "TrainMain",
+          "game.scenes.train.mainStreet.MainStreet",
+          "EdisonCabin"
+        ],
+        "requiredItems": [
+          "newspaper",
+          "paper",
+          "outfit",
+          "pamphlet",
+          "ticket",
+          "key",
+          "picture",
+          "bag",
+          "transformer_sketch",
+          "telegram",
+          "pencil",
+          "scissors",
+          "notepad",
+          "transformer",
+          "tesla_sketch",
+          "medal_train"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "finalChaseStarted",
+          "mid1ChaseStarted",
+          "mid2ChaseStarted",
+          "houdiniChaseStarted"
+        ],
+        "settlementEvents": [
+          "houdiniSaved"
+        ],
+        "completionEvents": [
+          "teslaReturnBathroom",
+          "checkedTeslaCabin",
+          "briefcaseChat",
+          "telsaReleaseChat",
+          "releasedTesla",
+          "teslaFindDiff",
+          "metCoalMan",
+          "metPorter"
+        ],
+        "reward": "medal_train",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTrain/sceneEdisonCabin.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTrain/sceneTrainMain.swf"
+        ],
+        "as2Folder": "islandTrain"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "mythology",
+      "displayName": "mythology",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=MythMain&island=Myth&startup_path=gameplay",
+      "internalIsland": "Myth",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "MythMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "MythMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medalMythology",
+            "goldenApple",
+            "zeusScroll"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "honey_chase_passed",
+            "honey_chase_failed",
+            "honey_chase_started"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completed_bones",
+            "completed_labyrinth"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medalMythology"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "mythAS2",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/mythAS2/island.xml",
+        "firstScene": "MythMain",
+        "keyScenes": [
+          "MythMain"
+        ],
+        "requiredItems": [
+          "medalMythology",
+          "goldenApple",
+          "zeusScroll",
+          "sphinxFlower",
+          "minotaurRing",
+          "hydraScale",
+          "giantPearl",
+          "cerberusWhisker",
+          "pipeTune",
+          "starfish",
+          "silverDrachma",
+          "reedPipe",
+          "pomegranates",
+          "aphroditeMirror",
+          "hadesCrown",
+          "poseidonTrident",
+          "bagOfWind"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "honey_chase_passed",
+          "honey_chase_failed",
+          "honey_chase_started"
+        ],
+        "settlementEvents": [
+          "completed_bones",
+          "completed_labyrinth"
+        ],
+        "completionEvents": [
+          "zeus_appears_steal",
+          "zeus_appears_throne",
+          "returned_items",
+          "player_become_god",
+          "quest_started",
+          "hercules_underwater",
+          "hercules_underground",
+          "hercules_mainStreet"
+        ],
+        "reward": "medalMythology",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "nabooti",
+      "displayName": "nabooti",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=NabootiMain&island=Nabooti&startup_path=gameplay",
+      "internalIsland": "Nabooti",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "NabootiMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "NabootiMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "africa_map",
+            "red_jewel",
+            "white_jewel"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "finishedMine",
+            "wonMancala"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_nabooti"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "nabooti",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/nabooti/island.xml",
+        "firstScene": "NabootiMain",
+        "keyScenes": [
+          "NabootiMain"
+        ],
+        "requiredItems": [
+          "africa_map",
+          "red_jewel",
+          "white_jewel",
+          "green_jewel",
+          "blue_jewel",
+          "purple_jewel",
+          "gold_nugget",
+          "moon_stone",
+          "shovel",
+          "blue_lily",
+          "ebony_elephant",
+          "camera",
+          "turban",
+          "hat",
+          "fruit",
+          "fingo",
+          "cellphone",
+          "medal_nabooti"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "finishedMine",
+          "wonMancala"
+        ],
+        "completionEvents": [
+          "blastedMineWall",
+          "finishedMine",
+          "wonMancala",
+          "passedNileRiddle",
+          "openedSphinx",
+          "calledVince",
+          "droppedRope",
+          "openedPyramidWall"
+        ],
+        "reward": "medal_nabooti",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "night-watch",
+      "displayName": "night-watch",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=NightWatchMain&island=NightWatch&startup_path=gameplay",
+      "internalIsland": "NightWatch",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "NightWatchMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "NightWatchMain",
+            "game.scenes.nightWatch.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "phone",
+            "robot",
+            "key"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completedTask1",
+            "completedTask2",
+            "completedBonusQuest"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_nightWatch"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "nightWatch",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/nightWatch/island.xml",
+        "firstScene": "NightWatchMain",
+        "keyScenes": [
+          "NightWatchMain",
+          "game.scenes.nightWatch.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "phone",
+          "robot",
+          "key",
+          "photocopy_card",
+          "blowtorch",
+          "baseball_card",
+          "bird",
+          "whoopzie_cushion",
+          "quickcharger",
+          "cover",
+          "badge",
+          "medal_nightWatch"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "completedTask1",
+          "completedTask2",
+          "completedBonusQuest"
+        ],
+        "completionEvents": [
+          "alert4_sp",
+          "alert4",
+          "alert5_sp",
+          "alert5",
+          "alert6_sp",
+          "alert6",
+          "alert7_sp",
+          "alert7"
+        ],
+        "reward": "medal_nightWatch",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "poptropicon",
+      "displayName": "poptropicon",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.con1.parking.Parking&reloadOnResize=frame&flashpointSeedIsland=con1&flashpointStartX=1740&flashpointStartY=1430&flashpointStartDirection=right",
+      "internalIsland": "con1",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.con1.center.Center",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.con1.center.Center",
+            "parking",
+            "center",
+            "alley"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "backpack_straps",
+            "bottles",
+            "jetpack"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "con1/roofRace"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "viking1_quest_complete",
+            "viking2_quest_complete",
+            "sfFan_quest_complete",
+            "shFan_quest_complete",
+            "spFan_quest_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_con1"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "con1",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/con1/island.xml",
+        "firstScene": "game.scenes.con1.center.Center",
+        "keyScenes": [
+          "game.scenes.con1.center.Center",
+          "parking",
+          "center",
+          "alley",
+          "bathrooms",
+          "mainStreet"
+        ],
+        "requiredItems": [
+          "backpack_straps",
+          "bottles",
+          "jetpack",
+          "jetpack_instructions",
+          "mjolnir",
+          "pamphlet",
+          "watch_parts",
+          "power_gem",
+          "fremulon_mask",
+          "medal_con1"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "con1/roofRace"
+        ],
+        "settlementEvents": [
+          "friend_quest_complete",
+          "viking1_quest_complete",
+          "viking2_quest_complete",
+          "sfFan_quest_complete",
+          "shFan_quest_complete",
+          "spFan_quest_complete"
+        ],
+        "completionEvents": [
+          "shFan_passed",
+          "spFan_passed",
+          "friend_goes_home",
+          "jerk_leaves_bathrooms",
+          "skip_intro",
+          "skip_preview",
+          "dressed_as_wizard",
+          "some_wizard_parts"
+        ],
+        "reward": "medal_con1",
+        "sourceFiles": [
+          "con1/adMixed/doors.xml",
+          "con1/adMixed2/doors.xml",
+          "con1/adStreet3/doors.xml",
+          "con1/alley/doors.xml",
+          "con1/alley/items.xml",
+          "con1/bathrooms/doors.xml",
+          "con1/center/doors.xml",
+          "con1/center/items.xml",
+          "con1/parking/doors.xml",
+          "con1/parking/items.xml",
+          "con1/roofRace/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "poptropolis-games",
+      "displayName": "poptropolis-games",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=TribalMain&island=Tribal&startup_path=gameplay",
+      "internalIsland": "Tribal",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "TribalMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "TribalMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_poptropolis",
+            "ancient_warrior_outfit",
+            "tribal_jersey"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "started_games",
+            "archery_completed",
+            "diving_completed",
+            "hurdles_completed"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "shotput_completed",
+            "triple_jump_completed",
+            "weight_lifting_completed",
+            "skiing_completed",
+            "wrestling_completed"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_poptropolis"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "tribal",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/tribal/island.xml",
+        "firstScene": "TribalMain",
+        "keyScenes": [
+          "TribalMain"
+        ],
+        "requiredItems": [
+          "medal_poptropolis",
+          "ancient_warrior_outfit",
+          "tribal_jersey"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "started_games",
+          "archery_completed",
+          "diving_completed",
+          "hurdles_completed",
+          "javelin_completed",
+          "long_jump_completed",
+          "pole_vault_completed",
+          "shotput_completed",
+          "triple_jump_completed",
+          "weight_lifting_completed"
+        ],
+        "settlementEvents": [
+          "promo_dive_finished",
+          "bonus_completed",
+          "archery_completed",
+          "diving_completed",
+          "hurdles_completed",
+          "javelin_completed",
+          "long_jump_completed",
+          "pole_vault_completed",
+          "shotput_completed",
+          "triple_jump_completed",
+          "weight_lifting_completed",
+          "skiing_completed",
+          "wrestling_completed"
+        ],
+        "completionEvents": [
+          "javelin_completed",
+          "long_jump_completed",
+          "pole_vault_completed",
+          "shotput_completed",
+          "triple_jump_completed",
+          "weight_lifting_completed",
+          "skiing_completed",
+          "wrestling_completed"
+        ],
+        "reward": "medal_poptropolis",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "reality-tv",
+      "displayName": "reality-tv",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=RealityMain&island=Reality&startup_path=gameplay",
+      "internalIsland": "Reality",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "RealityMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "RealityMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "tabloid",
+            "stamp",
+            "pen"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonIsland"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_reality"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "reality",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality/island.xml",
+        "firstScene": "RealityMain",
+        "keyScenes": [
+          "RealityMain"
+        ],
+        "requiredItems": [
+          "tabloid",
+          "stamp",
+          "pen",
+          "application",
+          "medal_reality"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "wonIsland"
+        ],
+        "completionEvents": [
+          "usedStamp",
+          "tookPizza",
+          "tabloidDropped",
+          "startedSeason",
+          "sawAddress",
+          "orderedPizza",
+          "mailedApplication",
+          "lostIsland"
+        ],
+        "reward": "medal_reality",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "reality-tv-wild-safari",
+      "displayName": "reality-tv-wild-safari",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.reality2.mainStreet.MainStreet&reloadOnResize=frame",
+      "internalIsland": "reality2",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.reality2.mainStreet.MainStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.reality2.mainStreet.MainStreet",
+            "mainStreet",
+            "common",
+            "map"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_reality2"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "evidence": [
+            "npcVisible",
+            "dialogueVisible"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "reality2/gameShow",
+            "reality2/shared",
+            "games_started",
+            "completed_game_1"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completed_game_1",
+            "completed_game_2",
+            "completed_game_3",
+            "competition_finished",
+            "gotItem_medal_reality2"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_reality2"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "reality2",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/reality2/island.xml",
+        "firstScene": "game.scenes.reality2.mainStreet.MainStreet",
+        "keyScenes": [
+          "game.scenes.reality2.mainStreet.MainStreet",
+          "mainStreet",
+          "common",
+          "map"
+        ],
+        "requiredItems": [
+          "medal_reality2"
+        ],
+        "keyNpcs": [
+          "c1",
+          "c2",
+          "c3",
+          "probably",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "cameraguy1",
+          "cameraguy2"
+        ],
+        "minigames": [
+          "reality2/gameShow",
+          "reality2/shared",
+          "games_started",
+          "completed_game_1",
+          "completed_game_2",
+          "completed_game_3"
+        ],
+        "settlementEvents": [
+          "completed_game_1",
+          "completed_game_2",
+          "completed_game_3",
+          "competition_finished",
+          "gotItem_medal_reality2"
+        ],
+        "completionEvents": [
+          "started",
+          "saw_intro",
+          "games_started",
+          "completed_game_1",
+          "completed_game_2",
+          "completed_game_3",
+          "competition_finished",
+          "gotItem_medal_reality2"
+        ],
+        "reward": "medal_reality2",
+        "sourceFiles": [
+          "reality2/cheetahRun/npcs.xml",
+          "reality2/cheetahRun/scene.xml",
+          "reality2/common/doors.xml",
+          "reality2/common/scene.xml",
+          "reality2/deepDive/npcs.xml",
+          "reality2/deepDive/scene.xml",
+          "reality2/gameShow/npcs.xml",
+          "reality2/gameShow/scene.xml",
+          "reality2/mainStreet/doors.xml",
+          "reality2/mainStreet/npcs.xml",
+          "reality2/mainStreet/scene.xml",
+          "reality2/shared/games.xml",
+          "reality2/spearThrow/scene.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "red-dragon",
+      "displayName": "red-dragon",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=JapanMain&island=Japan&startup_path=gameplay",
+      "internalIsland": "Japan",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "JapanMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "JapanMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "japan_book",
+            "creek_book",
+            "glasses"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "wonSumo",
+            "brokeLSumoArch",
+            "brokeRSumoArch",
+            "WonDragonBattle"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonSumo",
+            "WonDragonBattle"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_japan"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "japan",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/japan/island.xml",
+        "firstScene": "JapanMain",
+        "keyScenes": [
+          "JapanMain"
+        ],
+        "requiredItems": [
+          "japan_book",
+          "creek_book",
+          "glasses",
+          "kimonos",
+          "grappling_hook",
+          "throwing_stars",
+          "smoke_bombs",
+          "ninja_outfit",
+          "bo_staff",
+          "shuko",
+          "scissors",
+          "rotten_fish",
+          "amulet",
+          "mortar",
+          "parchment",
+          "slip",
+          "haiku",
+          "passport",
+          "medal_japan"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "wonSumo",
+          "brokeLSumoArch",
+          "brokeRSumoArch",
+          "WonDragonBattle"
+        ],
+        "settlementEvents": [
+          "wonSumo",
+          "WonDragonBattle"
+        ],
+        "completionEvents": [
+          "startedLevel4",
+          "startedLevel5",
+          "startedLevel6",
+          "caughtThief",
+          "talkedToBasho",
+          "wentToJail",
+          "kidsCaptured",
+          "passedFinalDialog"
+        ],
+        "reward": "medal_japan",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "shark-tooth",
+      "displayName": "shark-tooth",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=Mainstreet&island=Shark&startup_path=gameplay",
+      "internalIsland": "Shark",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "Mainstreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "Mainstreet",
+            "Booga",
+            "Castaway",
+            "Medicine"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "coconut_milk",
+            "skirt",
+            "bone"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "savedBoy"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_shark"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "shark",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/shark/island.xml",
+        "firstScene": "Mainstreet",
+        "keyScenes": [
+          "Mainstreet",
+          "Booga",
+          "Castaway",
+          "Medicine",
+          "Museum2",
+          "Ruins",
+          "Temple1",
+          "Temple2",
+          "Townhall"
+        ],
+        "requiredItems": [
+          "coconut_milk",
+          "skirt",
+          "bone",
+          "inf",
+          "potion",
+          "key_ingredient",
+          "translation_key",
+          "medal_shark"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "savedBoy"
+        ],
+        "completionEvents": [
+          "started",
+          "usedPotion",
+          "savedBoy",
+          "madePotion",
+          "openedTemple"
+        ],
+        "reward": "medal_shark",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneBooga.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneCastaway.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneMainstreet.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneMedicine.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneMuseum2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneRuins.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneTemple1.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneTemple2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandShark/sceneTownhall.swf"
+        ],
+        "as2Folder": "islandShark"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "shrink-ray",
+      "displayName": "shrink-ray",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=ShrinkMain&island=Shrink&startup_path=gameplay",
+      "internalIsland": "Shrink",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "ShrinkMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "ShrinkMain",
+            "game.scenes.shrink.mainStreet.MainStreet",
+            "bedroomShrunk01",
+            "livingRoomShrunk"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medal_shrink",
+            "battery",
+            "blank_paper"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "chased_cat",
+            "won_car_game"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "give_medallion",
+            "won_car_game"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_shrink"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "shrink",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/shrink/island.xml",
+        "firstScene": "ShrinkMain",
+        "keyScenes": [
+          "ShrinkMain",
+          "game.scenes.shrink.mainStreet.MainStreet",
+          "bedroomShrunk01",
+          "livingRoomShrunk",
+          "mainStreet",
+          "avenueA",
+          "schoolInterior",
+          "bedroomShrunk02",
+          "bathroomNormal",
+          "adStreet2",
+          "apartmentNormal",
+          "bathroomShrunk01",
+          "adStreet4",
+          "adMixed",
+          "map",
+          "kitchenShrunk02",
+          "trashCan",
+          "kitchenShrunk01",
+          "common",
+          "adStreet3",
+          "schoolCafetorium",
+          "silvaOfficeShrunk01"
+        ],
+        "requiredItems": [
+          "medal_shrink",
+          "battery",
+          "blank_paper",
+          "diary_key",
+          "morse_code",
+          "pencil",
+          "remote_control",
+          "screw_driver",
+          "shoe_box",
+          "thumb_drive",
+          "torn_page"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "chased_cat",
+          "won_car_game"
+        ],
+        "settlementEvents": [
+          "give_medallion",
+          "won_car_game"
+        ],
+        "completionEvents": [
+          "rolled_pin",
+          "grape_dropped",
+          "has_grape",
+          "in_silvas_office",
+          "shrunk_silva",
+          "give_medallion",
+          "intro_played",
+          "won_car_game"
+        ],
+        "reward": "medal_shrink",
+        "sourceFiles": [
+          "shrink/adMixed/doors.xml",
+          "shrink/adStreet2/doors.xml",
+          "shrink/adStreet3/doors.xml",
+          "shrink/adStreet4/doors.xml",
+          "shrink/apartmentNormal/doors.xml",
+          "shrink/avenueA/doors.xml",
+          "shrink/bathroomNormal/doors.xml",
+          "shrink/bathroomShrunk01/doors.xml",
+          "shrink/bathroomShrunk02/doors.xml",
+          "shrink/bedroomShrunk01/doors.xml",
+          "shrink/bedroomShrunk02/doors.xml",
+          "shrink/common/doors.xml",
+          "shrink/kitchenShrunk01/doors.xml",
+          "shrink/kitchenShrunk01/items.xml",
+          "shrink/kitchenShrunk02/doors.xml",
+          "shrink/kitchenShrunk02/items.xml",
+          "shrink/livingRoomShrunk/doors.xml",
+          "shrink/mainStreet/doors.xml",
+          "shrink/schoolCafetorium/doors.xml",
+          "shrink/schoolInterior/doors.xml",
+          "shrink/silvaOfficeShrunk02/doors.xml",
+          "shrink/trashCan/doors.xml"
+        ],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "skullduggery",
+      "displayName": "skullduggery",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=TradeMain&island=Trade&startup_path=gameplay",
+      "internalIsland": "Trade",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "TradeMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "TradeMain",
+            "game.scenes.trade.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "medalSkullduggery",
+            "chicken",
+            "feedbag"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "completedLift",
+            "beatCrawfish"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medalSkullduggery"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "trade",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/trade/island.xml",
+        "firstScene": "TradeMain",
+        "keyScenes": [
+          "TradeMain",
+          "game.scenes.trade.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "medalSkullduggery",
+          "chicken",
+          "feedbag",
+          "doubloon",
+          "mirror",
+          "mallet",
+          "cracker",
+          "archipelagoMap",
+          "treasureMap",
+          "cannonStarterKit",
+          "shovel",
+          "candle"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "completedLift",
+          "beatCrawfish"
+        ],
+        "completionEvents": [
+          "usedCoin",
+          "usedFeed",
+          "usedChicken",
+          "usedCandle",
+          "sawRaft",
+          "usedMirror",
+          "beatCrawfish",
+          "gotTreasure"
+        ],
+        "reward": "medalSkullduggery",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "sos",
+      "displayName": "sos",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=ShipwreckMain&island=Shipwreck&startup_path=gameplay",
+      "internalIsland": "Shipwreck",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "ShipwreckMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "ShipwreckMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "wrench",
+            "song_gadget",
+            "hazmat_suit"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "stage4Complete",
+            "stage5Complete",
+            "stage6Complete",
+            "stage7Complete",
+            "rescuedStarbuck"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_shipwreck"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "shipwreck",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/shipwreck/island.xml",
+        "firstScene": "ShipwreckMain",
+        "keyScenes": [
+          "ShipwreckMain"
+        ],
+        "requiredItems": [
+          "wrench",
+          "song_gadget",
+          "hazmat_suit",
+          "medal_shipwreck"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "wonFreezer",
+          "stage1Complete",
+          "stage2Complete",
+          "stage3Complete",
+          "stage4Complete",
+          "stage5Complete",
+          "stage6Complete",
+          "stage7Complete",
+          "rescuedStarbuck"
+        ],
+        "completionEvents": [
+          "sawSink6",
+          "brokeIceBlock",
+          "hasExplodedPipe",
+          "rescuedStarbuck",
+          "brokeLeft",
+          "brokeRight",
+          "sawS6Intro",
+          "usedWrench"
+        ],
+        "reward": "medal_shipwreck",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "spy",
+      "displayName": "spy",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=SpyMain&island=Spy&startup_path=gameplay",
+      "internalIsland": "Spy",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "SpyMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "SpyMain",
+            "game.scenes.spy.mainStreet.MainStreet",
+            "Attic",
+            "Bistro"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "chameleon_suit",
+            "goggles",
+            "pen"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "beatSpy"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_spy"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "spy",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/spy/island.xml",
+        "firstScene": "SpyMain",
+        "keyScenes": [
+          "SpyMain",
+          "game.scenes.spy.mainStreet.MainStreet",
+          "Attic",
+          "Bistro",
+          "ControlInterior",
+          "Docks",
+          "DocksInterior",
+          "Greenhouse",
+          "Headquarters",
+          "Mansion",
+          "Satellite",
+          "SpyTowers1",
+          "SpyTowers2",
+          "Spyglass"
+        ],
+        "requiredItems": [
+          "chameleon_suit",
+          "goggles",
+          "pen",
+          "bowtie",
+          "decoder_kit",
+          "hat",
+          "fingerprint",
+          "clues",
+          "letter",
+          "medal_spy"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "beatSpy"
+        ],
+        "completionEvents": [
+          "gotClue5",
+          "gotClue6",
+          "gotClue7",
+          "startedSpy",
+          "passedSpyglass",
+          "cutBars",
+          "startedTeleporter",
+          "beatSpy"
+        ],
+        "reward": "medal_spy",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneAttic.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneBistro.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneControlInterior.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneDocks.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneDocksInterior.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneGreenhouse.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneHeadquarters.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneMansion.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneSatellite.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneSpyMain.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneSpyTowers1.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneSpyTowers2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSpy/sceneSpyglass.swf"
+        ],
+        "as2Folder": "islandSpy"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "steamworks",
+      "displayName": "steamworks",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=SteamMain&island=Steam&startup_path=gameplay",
+      "internalIsland": "Steam",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "SteamMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "SteamMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "vine",
+            "multi_tool",
+            "battery"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "beatBoss",
+            "mazeDone",
+            "spinlockDone"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "beatBoss",
+            "completedStorage"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_steam"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "steam",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/steam/island.xml",
+        "firstScene": "SteamMain",
+        "keyScenes": [
+          "SteamMain"
+        ],
+        "requiredItems": [
+          "vine",
+          "multi_tool",
+          "battery",
+          "beaker",
+          "crab",
+          "sully_key",
+          "mallet",
+          "bridge_key",
+          "weed_whacker",
+          "motor",
+          "quarters_key",
+          "crank",
+          "blaster",
+          "teleporter",
+          "medal_steam"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "beatBoss",
+          "mazeDone",
+          "spinlockDone"
+        ],
+        "settlementEvents": [
+          "beatBoss",
+          "completedStorage"
+        ],
+        "completionEvents": [
+          "sprocketFollows",
+          "sprocketTalks",
+          "usedBeaker",
+          "usedCrank",
+          "usedDynamite",
+          "usedMixture",
+          "usedMotor",
+          "usedVine"
+        ],
+        "reward": "medal_steam",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "super-power",
+      "displayName": "super-power",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=DownTown&island=Super&startup_path=gameplay",
+      "internalIsland": "Super",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "DownTown",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "DownTown",
+            "game.scenes.super.mainStreet.MainStreet",
+            "AdGroundH34",
+            "AdGroundH4"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "files",
+            "handcuffs",
+            "handbook"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "beatBoss1",
+            "beatBoss2",
+            "beatBoss3",
+            "beatBoss4"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "beatBoss3",
+            "beatBoss4",
+            "beatBoss5",
+            "beatBoss6",
+            "beatBosses"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_super"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "super",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/super/island.xml",
+        "firstScene": "DownTown",
+        "keyScenes": [
+          "DownTown",
+          "game.scenes.super.mainStreet.MainStreet",
+          "AdGroundH34",
+          "AdGroundH4",
+          "Bank",
+          "Comic",
+          "Costume",
+          "Junkyard",
+          "Park",
+          "Sewer2",
+          "Skyscraper",
+          "Station",
+          "Subway",
+          "SuperMain"
+        ],
+        "requiredItems": [
+          "files",
+          "handcuffs",
+          "handbook",
+          "id",
+          "hotdog",
+          "medal_super"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "beatBoss1",
+          "beatBoss2",
+          "beatBoss3",
+          "beatBoss4",
+          "beatBoss5",
+          "beatBoss6",
+          "beatBosses"
+        ],
+        "settlementEvents": [
+          "beatBoss1",
+          "beatBoss2",
+          "beatBoss3",
+          "beatBoss4",
+          "beatBoss5",
+          "beatBoss6",
+          "beatBosses"
+        ],
+        "completionEvents": [
+          "haveSuperPower",
+          "beatBoss1",
+          "beatBoss2",
+          "beatBoss3",
+          "beatBoss4",
+          "beatBoss5",
+          "beatBoss6",
+          "beatBosses"
+        ],
+        "reward": "medal_super",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH34.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneAdGroundH4.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneBank.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneComic.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneCostume.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneJunkyard.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/scenePark.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneSewer2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneSkyscraper.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneStation.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneSubway.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneSuperMain.swf"
+        ],
+        "as2Folder": "islandSuper"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "super-villain",
+      "displayName": "super-villain",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=VillainMain&island=Villain&startup_path=gameplay",
+      "internalIsland": "Villain",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "VillainMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "VillainMain",
+            "game.scenes.villain.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "trident",
+            "turpentine",
+            "empty_sprayer"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "day2Complete",
+            "beatZeus"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_villain"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "villain",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/villain/island.xml",
+        "firstScene": "VillainMain",
+        "keyScenes": [
+          "VillainMain",
+          "game.scenes.villain.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "trident",
+          "turpentine",
+          "empty_sprayer",
+          "filled_sprayer",
+          "potion",
+          "key",
+          "walkie_talkie",
+          "drill",
+          "stopwatch",
+          "astrolabe_totem",
+          "ship_totem",
+          "paintbrush_totem",
+          "carrot_totem",
+          "codes",
+          "medal_villain"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "day2Complete",
+          "beatZeus"
+        ],
+        "completionEvents": [
+          "moveMountain",
+          "inHelicopter",
+          "sawHare",
+          "rodeInHelicopter",
+          "hareRanOff",
+          "mordredChange",
+          "beatZeus",
+          "inOcean"
+        ],
+        "reward": "medal_villain",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "survival",
+      "displayName": "survival",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.survival1.crashLanding.CrashLanding&reloadOnResize=frame",
+      "internalIsland": "survival1",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.survival1.crashLanding.CrashLanding",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.survival1.crashLanding.CrashLanding",
+            "cliffside",
+            "woods",
+            "knollside"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "axHandle",
+            "dryKindling",
+            "flint"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "fire_completed"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_survival1"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "survival1",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/survival1/island.xml",
+        "firstScene": "game.scenes.survival1.crashLanding.CrashLanding",
+        "keyScenes": [
+          "game.scenes.survival1.crashLanding.CrashLanding",
+          "cliffside",
+          "woods",
+          "knollside",
+          "hillside",
+          "adMixed1",
+          "adStreet3",
+          "cave",
+          "adMixed2"
+        ],
+        "requiredItems": [
+          "axHandle",
+          "dryKindling",
+          "flint",
+          "handbook",
+          "logs",
+          "mittens",
+          "nest",
+          "striker",
+          "wetKindling",
+          "handbookPages",
+          "handbookPage1",
+          "handbookPage2",
+          "handbookPage3",
+          "handbookPage4",
+          "handbookPage5",
+          "handbookPage6",
+          "medal_survival1"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "fire_completed"
+        ],
+        "completionEvents": [
+          "has_page_4",
+          "has_page_5",
+          "dropped_striker",
+          "retrieved_striker",
+          "wearing_mittens",
+          "found_handbook_binding",
+          "fire_completed",
+          "froze"
+        ],
+        "reward": "medal_survival1",
+        "sourceFiles": [
+          "survival1/adMixed1/doors.xml",
+          "survival1/adMixed2/doors.xml",
+          "survival1/adStreet3/doors.xml",
+          "survival1/cave/doors.xml",
+          "survival1/cave/items.xml",
+          "survival1/cliffside/doors.xml",
+          "survival1/hillside/doors.xml",
+          "survival1/hillside/items.xml",
+          "survival1/knollside/doors.xml",
+          "survival1/knollside/items.xml",
+          "survival1/woods/doors.xml",
+          "survival1/woods/items.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "time-tangled",
+      "displayName": "time-tangled",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=Present&island=Time&startup_path=gameplay",
+      "internalIsland": "Time",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "Present",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "Present",
+            "game.scenes.time.mainStreet.MainStreet",
+            "mainStreet",
+            "desolation"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "printout",
+            "timeDevice",
+            "sunstone"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "victory"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medalTime"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "time",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/time/island.xml",
+        "firstScene": "Present",
+        "keyScenes": [
+          "Present",
+          "game.scenes.time.mainStreet.MainStreet",
+          "mainStreet",
+          "desolation",
+          "lab",
+          "edison2",
+          "edison",
+          "everest2",
+          "everest",
+          "everest3",
+          "france2",
+          "france",
+          "future2",
+          "future",
+          "graff2",
+          "graff",
+          "greece2",
+          "greece",
+          "adStreet",
+          "map",
+          "Party",
+          "adDeadEnd",
+          "mali2",
+          "mali",
+          "renaissance2",
+          "renaissance",
+          "viking2",
+          "viking",
+          "Aztec",
+          "China",
+          "Desolation",
+          "Edison",
+          "Edison2",
+          "Everest2",
+          "Everest3",
+          "France",
+          "France2",
+          "Future",
+          "Future2",
+          "Graff",
+          "Graff2",
+          "Greece",
+          "Greece2",
+          "Lab",
+          "Lewis",
+          "Mali",
+          "Mali2",
+          "Renaissance",
+          "Renaissance2",
+          "Viking",
+          "Viking2"
+        ],
+        "requiredItems": [
+          "printout",
+          "timeDevice",
+          "sunstone",
+          "warriorMask",
+          "ability_glider",
+          "vikingSuit",
+          "amulet",
+          "goggles",
+          "gunpowder",
+          "phonograph",
+          "declaration",
+          "statuette",
+          "goldenVase",
+          "saltRocks",
+          "silverMedal",
+          "stoneBowl",
+          "notebook",
+          "medalTime"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "victory"
+        ],
+        "completionEvents": [
+          "started",
+          "enter_lab",
+          "victory",
+          "time_repaired",
+          "cave_open"
+        ],
+        "reward": "medalTime",
+        "sourceFiles": [
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneAztec.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneChina.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneDesolation.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneEdison.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneEdison2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneEverest2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneEverest3.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneFrance.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneFrance2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneFuture.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneFuture2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneGraff.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneGraff2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneGreece.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneGreece2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneLab.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneLewis.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneMali.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneMali2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/scenePresent.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneRenaissance.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneRenaissance2.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneViking.swf",
+          "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandTime/sceneViking2.swf",
+          "time/adDeadEnd/doors.xml",
+          "time/adStreet/doors.xml",
+          "time/china/items.xml",
+          "time/edison/doors.xml",
+          "time/edison/items.xml",
+          "time/edison2/doors.xml",
+          "time/everest/doors.xml",
+          "time/everest2/doors.xml",
+          "time/everest3/doors.xml",
+          "time/everest3/items.xml",
+          "time/france/doors.xml",
+          "time/france/items.xml",
+          "time/france2/doors.xml",
+          "time/future/doors.xml",
+          "time/future2/doors.xml",
+          "time/graff/doors.xml",
+          "time/graff/items.xml",
+          "time/graff2/doors.xml",
+          "time/greece/doors.xml",
+          "time/greece/items.xml",
+          "time/greece2/doors.xml",
+          "time/lab/doors.xml",
+          "time/mainStreet/doors.xml",
+          "time/mali/doors.xml",
+          "time/mali2/doors.xml",
+          "time/renaissance/doors.xml",
+          "time/renaissance/items.xml",
+          "time/renaissance2/doors.xml",
+          "time/viking/doors.xml",
+          "time/viking/items.xml",
+          "time/viking2/doors.xml",
+          "time/viking2/items.xml"
+        ],
+        "as2Folder": "islandTime"
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "timmy-failure",
+      "displayName": "timmy-failure",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.timmy.mainStreet.MainStreet&reloadOnResize=frame&flashpointSeedIsland=timmy&flashpointSeedEvents=intro_complete&flashpointStartX=3050&flashpointStartY=1530&flashpointStartDirection=left",
+      "internalIsland": "timmy",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.timmy.timmysStreet.TimmysStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.timmy.timmysStreet.TimmysStreet",
+            "mainStreet",
+            "zoo",
+            "school"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "beach_ball",
+            "bonbons",
+            "box"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [
+            "npc"
+          ],
+          "evidence": [
+            "npcVisible",
+            "dialogueVisible"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "timmy/chase",
+            "chase_complete",
+            "attempted_bowling_game"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "intro_complete",
+            "chase_complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_timmy"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "timmy",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/timmy/island.xml",
+        "firstScene": "game.scenes.timmy.timmysStreet.TimmysStreet",
+        "keyScenes": [
+          "game.scenes.timmy.timmysStreet.TimmysStreet",
+          "mainStreet",
+          "zoo",
+          "school",
+          "timmysStreet",
+          "adMixed2",
+          "alley",
+          "commonRoom",
+          "store",
+          "adMixed1",
+          "skyScraper",
+          "map",
+          "adStreet3",
+          "mansion",
+          "timmysHouse"
+        ],
+        "requiredItems": [
+          "beach_ball",
+          "bonbons",
+          "box",
+          "bucket",
+          "camera",
+          "car_key",
+          "cat",
+          "change",
+          "chicken_nuggets",
+          "crispy_rice_treats",
+          "detective_log",
+          "garbanzo_man_head",
+          "gardening_shears",
+          "medal_timmy",
+          "money",
+          "office_key",
+          "permanent_marker",
+          "pole",
+          "rope",
+          "screwdriver",
+          "shoes",
+          "wagon"
+        ],
+        "keyNpcs": [
+          "npc"
+        ],
+        "minigames": [
+          "timmy/chase",
+          "chase_complete",
+          "attempted_bowling_game"
+        ],
+        "settlementEvents": [
+          "intro_complete",
+          "chase_complete"
+        ],
+        "completionEvents": [
+          "knocked_down_box",
+          "saw_timmy_mainstreet",
+          "attempted_bowling_game",
+          "got_costume",
+          "got_poster",
+          "got_coloring_poster",
+          "got_scarf_item",
+          "reminisce"
+        ],
+        "reward": "medal_timmy",
+        "sourceFiles": [
+          "timmy/adMixed1/doors.xml",
+          "timmy/adMixed2/doors.xml",
+          "timmy/adStreet3/doors.xml",
+          "timmy/alley/doors.xml",
+          "timmy/chase/doors.xml",
+          "timmy/commonRoom/doors.xml",
+          "timmy/commonRoom/npcs.xml",
+          "timmy/mainStreet/doors.xml",
+          "timmy/mansion/doors.xml",
+          "timmy/school/doors.xml",
+          "timmy/skyScraper/doors.xml",
+          "timmy/store/doors.xml",
+          "timmy/timmysHouse/doors.xml",
+          "timmy/timmysStreet/doors.xml",
+          "timmy/zoo/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "twisted-thicket",
+      "displayName": "twisted-thicket",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=WoodlandMain&island=Woodland&startup_path=gameplay",
+      "internalIsland": "Woodland",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "WoodlandMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "WoodlandMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "lesovyk_rune",
+            "kobold_rune",
+            "jotunn_rune"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "wonBattle"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonGoblins",
+            "wonBattle",
+            "day2Complete",
+            "completedCanopy"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_woodland"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "woodland",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/woodland/island.xml",
+        "firstScene": "WoodlandMain",
+        "keyScenes": [
+          "WoodlandMain"
+        ],
+        "requiredItems": [
+          "lesovyk_rune",
+          "kobold_rune",
+          "jotunn_rune",
+          "nackrosor_rune",
+          "dokkalfar_rune",
+          "amulet",
+          "shards",
+          "medal_woodland"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "wonBattle"
+        ],
+        "settlementEvents": [
+          "wonGoblins",
+          "wonBattle",
+          "day2Complete",
+          "completedCanopy"
+        ],
+        "completionEvents": [
+          "bogWall0",
+          "bogWall1",
+          "bogWall2",
+          "bogWall3",
+          "stoneMoved",
+          "encounteredDryads",
+          "openedSacredTree",
+          "completedCanopy"
+        ],
+        "reward": "medal_woodland",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "vampires-curse",
+      "displayName": "vampires-curse",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=VampireMain&island=Vampire&startup_path=gameplay",
+      "internalIsland": "Vampire",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "VampireMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "VampireMain",
+            "game.scenes.vampire.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "novel",
+            "crowbar",
+            "glass_eye"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [],
+          "evidence": [
+            "notRequired"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "day2Complete"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_vampire"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "vampire",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/vampire/island.xml",
+        "firstScene": "VampireMain",
+        "keyScenes": [
+          "VampireMain",
+          "game.scenes.vampire.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "novel",
+          "crowbar",
+          "glass_eye",
+          "armory_key",
+          "crossbow",
+          "notebook",
+          "garlic_extract",
+          "wolfsbane",
+          "root",
+          "amulet",
+          "log",
+          "book",
+          "syringe",
+          "cage_key",
+          "bucket",
+          "medal_vampire"
+        ],
+        "keyNpcs": [],
+        "minigames": [],
+        "settlementEvents": [
+          "day2Complete"
+        ],
+        "completionEvents": [
+          "day2Start",
+          "day2Complete",
+          "day2GotGarlic",
+          "day2GotMandrake",
+          "day2GotWolfsbane",
+          "reachedGreenhouse",
+          "cannonBallGlow",
+          "countInPhoto"
+        ],
+        "reward": "medal_vampire",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "virus-hunter",
+      "displayName": "virus-hunter",
+      "source": "as3",
+      "launchMode": "as3-direct-scene",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.virusHunter.mainStreet.MainStreet&reloadOnResize=frame",
+      "internalIsland": "virusHunter",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "game.scenes.virusHunter.mainStreet.MainStreet",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "game.scenes.virusHunter.mainStreet.MainStreet",
+            "cityLeft",
+            "mainStreet",
+            "cityRight"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "camera",
+            "dossier",
+            "falafel"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "virusHunter/intestineBattle",
+            "heart_boss_defeated",
+            "arm_boss_started",
+            "arm_boss_defeated"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "lung_boss_defeated",
+            "lung_worms_defeated",
+            "worm_boss_defeated",
+            "intestine_boss_defeated",
+            "brain_boss_defeated"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medalVirusHunter"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "virusHunter",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/virusHunter/island.xml",
+        "firstScene": "game.scenes.virusHunter.mainStreet.MainStreet",
+        "keyScenes": [
+          "game.scenes.virusHunter.mainStreet.MainStreet",
+          "cityLeft",
+          "mainStreet",
+          "cityRight",
+          "foreArm",
+          "bloodStream",
+          "pdcLab",
+          "adStreet",
+          "condoInterior",
+          "adStreetR",
+          "videoStore",
+          "gym",
+          "joesCondo",
+          "day2Lungs",
+          "day2Stomach",
+          "day2Mouth",
+          "day2Heart",
+          "day2Intestine",
+          "anteArm",
+          "lungs",
+          "stomach",
+          "intestineBattle",
+          "intestine",
+          "heart",
+          "officeInterior",
+          "common",
+          "map",
+          "backRoom",
+          "mouth"
+        ],
+        "requiredItems": [
+          "camera",
+          "dossier",
+          "falafel",
+          "medalVirusHunter",
+          "pdcIdBadge",
+          "petriDish",
+          "photo",
+          "resistanceBand",
+          "shreddedDocuments",
+          "flyingAce",
+          "shield"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "virusHunter/intestineBattle",
+          "heart_boss_defeated",
+          "arm_boss_started",
+          "arm_boss_defeated",
+          "lung_boss_defeated",
+          "worm_boss_defeated",
+          "intestine_boss_defeated",
+          "brain_boss_defeated"
+        ],
+        "settlementEvents": [
+          "completed_tutorial",
+          "heart_boss_defeated",
+          "arm_boss_defeated",
+          "destroyed_calcification_1",
+          "destroyed_calcification_2",
+          "destroyed_calcification_3",
+          "destroyed_calcification_4",
+          "destroyed_calcification_5",
+          "destroyed_calcification_6",
+          "lung_boss_defeated",
+          "lung_worms_defeated",
+          "worm_boss_defeated",
+          "intestine_boss_defeated",
+          "brain_boss_defeated"
+        ],
+        "completionEvents": [
+          "clogged_upper_arm_cut_1",
+          "clogged_upper_arm_cut_2",
+          "clogged_upper_arm_cut_3",
+          "clogged_upper_arm_cut_4",
+          "clogged_upper_arm_cut_5",
+          "clogged_upper_arm_cut_6",
+          "lange_in_back_room",
+          "talked_to_lange_d2"
+        ],
+        "reward": "medalVirusHunter",
+        "sourceFiles": [
+          "virusHunter/adStreet/doors.xml",
+          "virusHunter/adStreetR/doors.xml",
+          "virusHunter/anteArm/doors.xml",
+          "virusHunter/backRoom/doors.xml",
+          "virusHunter/brain/doors.xml",
+          "virusHunter/cityLeft/doors.xml",
+          "virusHunter/cityRight/doors.xml",
+          "virusHunter/common/doors.xml",
+          "virusHunter/condoInterior/doors.xml",
+          "virusHunter/day2Heart/doors.xml",
+          "virusHunter/day2Intestine/doors.xml",
+          "virusHunter/day2Lungs/doors.xml",
+          "virusHunter/day2Mouth/doors.xml",
+          "virusHunter/day2Stomach/doors.xml",
+          "virusHunter/foreArm/doors.xml",
+          "virusHunter/gym/doors.xml",
+          "virusHunter/hand/doors.xml",
+          "virusHunter/heart/doors.xml",
+          "virusHunter/intestine/doors.xml",
+          "virusHunter/intestineBattle/doors.xml",
+          "virusHunter/joesCondo/doors.xml",
+          "virusHunter/lungs/doors.xml",
+          "virusHunter/mainStreet/doors.xml",
+          "virusHunter/mouth/doors.xml",
+          "virusHunter/mouth/items.xml",
+          "virusHunter/mouthShip/doors.xml",
+          "virusHunter/officeInterior/doors.xml",
+          "virusHunter/pdcLab/doors.xml",
+          "virusHunter/shipDemo/doors.xml",
+          "virusHunter/stomach/doors.xml",
+          "virusHunter/videoStore/doors.xml"
+        ]
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "wild-west",
+      "displayName": "wild-west",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=WestMain&island=West&startup_path=gameplay",
+      "internalIsland": "West",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "WestMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "WestMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "letter",
+            "oil_can",
+            "gold_pan"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "wonFinalShootout"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonFinalShootout",
+            "beatMustachio",
+            "wonGumSpit"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_west"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "west",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/west/island.xml",
+        "firstScene": "WestMain",
+        "keyScenes": [
+          "WestMain"
+        ],
+        "requiredItems": [
+          "letter",
+          "oil_can",
+          "gold_pan",
+          "key",
+          "badge",
+          "portrait",
+          "pea_shooter",
+          "spud_gun",
+          "gold_map",
+          "lasso",
+          "saddle",
+          "nugget",
+          "tonics",
+          "hideout_map",
+          "tulip",
+          "outfit",
+          "whistle",
+          "medal_west"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "wonFinalShootout"
+        ],
+        "settlementEvents": [
+          "wonFinalShootout",
+          "beatMustachio",
+          "wonGumSpit"
+        ],
+        "completionEvents": [
+          "gotCalf",
+          "gotSaddle",
+          "gotNugget",
+          "talkedToBartender",
+          "wonGumSpit",
+          "gumInteraction",
+          "gotBadge",
+          "usedLetter"
+        ],
+        "reward": "medal_west",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "wimpy-boardwalk",
+      "displayName": "wimpy-boardwalk",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=BoardwalkMain&island=Boardwalk&startup_path=gameplay",
+      "internalIsland": "Boardwalk",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "BoardwalkMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "BoardwalkMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "sunblock",
+            "lotion",
+            "keychain_picture"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "wonCraneGame"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "wonCraneGame",
+            "completedDay2",
+            "wonThunderVolt"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_boardwalk"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "boardwalk",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/boardwalk/island.xml",
+        "firstScene": "BoardwalkMain",
+        "keyScenes": [
+          "BoardwalkMain"
+        ],
+        "requiredItems": [
+          "sunblock",
+          "lotion",
+          "keychain_picture",
+          "popcorn",
+          "keys",
+          "flip_flops",
+          "frisbee",
+          "fake_vomit",
+          "fish_sticks",
+          "rabbit_foot",
+          "prize1",
+          "prize2",
+          "prize3",
+          "prize4",
+          "prize5",
+          "jumbo_prize",
+          "remote_helicopter",
+          "metal_detector",
+          "medal_boardwalk"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "wonCraneGame"
+        ],
+        "settlementEvents": [
+          "wonCraneGame",
+          "completedDay2",
+          "wonThunderVolt"
+        ],
+        "completionEvents": [
+          "heardSecret",
+          "tookPicture",
+          "wonCraneGame",
+          "foundKeys",
+          "startedDay2",
+          "completedDay2",
+          "wonThunderVolt",
+          "gotDetectorToken"
+        ],
+        "reward": "medal_boardwalk",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "wimpy-wonderland",
+      "displayName": "wimpy-wonderland",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=WimpyMain&island=Wimpy&startup_path=gameplay",
+      "internalIsland": "Wimpy",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "WimpyMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "WimpyMain"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "address_book",
+            "journal_page",
+            "paper_scrap"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "gregStoppedGame"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "beatTwistedWizard",
+            "wonBingo",
+            "wonSled"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_wimpy"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "wimpy",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/wimpy/island.xml",
+        "firstScene": "WimpyMain",
+        "keyScenes": [
+          "WimpyMain"
+        ],
+        "requiredItems": [
+          "address_book",
+          "journal_page",
+          "paper_scrap",
+          "carrot",
+          "game_guide",
+          "wiper_fluid",
+          "shovel",
+          "club_card",
+          "leaf_blower",
+          "bingo_troll",
+          "cd",
+          "dog_dish",
+          "bike",
+          "wizard_game",
+          "medal_wimpy"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "gregStoppedGame"
+        ],
+        "settlementEvents": [
+          "beatTwistedWizard",
+          "wonBingo",
+          "wonSled"
+        ],
+        "completionEvents": [
+          "openedGarage",
+          "gregStoppedGame",
+          "sawSnowplow",
+          "wonBingo",
+          "usedClassicalMusic",
+          "wonSled",
+          "watchedTeensWalk",
+          "usedCarrot"
+        ],
+        "reward": "medal_wimpy",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    },
+    {
+      "canonicalKey": "zomberry",
+      "displayName": "zomberry",
+      "source": "as2",
+      "launchMode": "as2-scene",
+      "launchUrl": "http://www.poptropica.com/base.php?room=ZombieMain&island=Zombie&startup_path=gameplay",
+      "internalIsland": "Zombie",
+      "routeNodes": [
+        {
+          "id": "start",
+          "kind": "start",
+          "target": "ZombieMain",
+          "evidence": [
+            "launchHealth",
+            "window",
+            "visibleStage"
+          ]
+        },
+        {
+          "id": "scene-transition",
+          "kind": "scene",
+          "targets": [
+            "ZombieMain",
+            "game.scenes.zombie.mainStreet.MainStreet"
+          ],
+          "evidence": [
+            "targetSceneRequest",
+            "sceneVisible"
+          ]
+        },
+        {
+          "id": "item-interaction",
+          "kind": "item",
+          "targets": [
+            "notebook",
+            "pamphlet",
+            "map"
+          ],
+          "evidence": [
+            "itemRequest",
+            "itemState"
+          ]
+        },
+        {
+          "id": "npc-interaction",
+          "kind": "npc",
+          "targets": [],
+          "evidence": [
+            "noNpcMetadata"
+          ]
+        },
+        {
+          "id": "minigame",
+          "kind": "minigame",
+          "targets": [
+            "metGamer",
+            "chattedGamer",
+            "stunnedSumo"
+          ],
+          "evidence": [
+            "minigameEntered",
+            "minigameAction",
+            "minigameResult"
+          ]
+        },
+        {
+          "id": "settlement",
+          "kind": "settlement",
+          "targets": [
+            "savedDJ",
+            "beatBunkerFPS",
+            "bonusCompleted"
+          ],
+          "evidence": [
+            "completionEvent",
+            "settlementVisible"
+          ]
+        },
+        {
+          "id": "reward",
+          "kind": "reward",
+          "targets": [
+            "medal_zombie"
+          ],
+          "evidence": [
+            "rewardItem",
+            "medallionVisible"
+          ]
+        }
+      ],
+      "metadata": {
+        "folder": "zombie",
+        "islandXml": "packs/zh-CN/as3/files/content/www.poptropica.com/game/data/scenes/zombie/island.xml",
+        "firstScene": "ZombieMain",
+        "keyScenes": [
+          "ZombieMain",
+          "game.scenes.zombie.mainStreet.MainStreet"
+        ],
+        "requiredItems": [
+          "notebook",
+          "pamphlet",
+          "map",
+          "flashlight",
+          "keys",
+          "subway_pass",
+          "blaster",
+          "bolt_cutters",
+          "lightbulb",
+          "camera",
+          "keycard",
+          "cellphone",
+          "coffee",
+          "blueberries",
+          "gun",
+          "antidote",
+          "medal_zombie"
+        ],
+        "keyNpcs": [],
+        "minigames": [
+          "metGamer",
+          "chattedGamer",
+          "stunnedSumo"
+        ],
+        "settlementEvents": [
+          "savedDJ",
+          "beatBunkerFPS",
+          "bonusCompleted"
+        ],
+        "completionEvents": [
+          "bonusCompleted",
+          "stunnedSumo",
+          "unlockedBunker",
+          "usedBlaster",
+          "gotCoffee",
+          "solvedWhiteboard",
+          "usedKeycard",
+          "curedRomero"
+        ],
+        "reward": "medal_zombie",
+        "sourceFiles": [],
+        "as2Folder": null
+      },
+      "verification": {
+        "fullRouteVerified": false,
+        "saveReloadVerified": false,
+        "renderedChineseVerified": false,
+        "windowStableVerified": false,
+        "reportPath": null
+      }
+    }
+  ]
+}
