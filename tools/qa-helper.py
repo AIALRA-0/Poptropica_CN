@@ -529,6 +529,19 @@ def is_shell_popup_candidate(row):
     process_name = (row.get("processName") or "").lower()
     class_name = (row.get("className") or "").lower()
     title = (row.get("title") or "").lower()
+    cmdline = " ".join(str(part) for part in (row.get("cmdline") or [])).lower()
+
+    # Codex/Windows Terminal may materialize an embedding host while a
+    # background command is running. It is the test harness itself, not a
+    # popup opened by the Flash runtime, and should not make the popup audit
+    # fail. Real terminal/php-cgi windows still pass the checks below.
+    if (
+        process_name == "windowsterminal.exe" and
+        "-embedding" in cmdline and
+        "php" not in title and
+        "php-cgi" not in cmdline
+    ):
+        return False
 
     if process_name in SHELL_PROCESS_NAMES:
         return True
