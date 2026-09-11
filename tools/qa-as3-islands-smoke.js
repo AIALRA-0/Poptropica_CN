@@ -581,11 +581,20 @@ function buildSceneEvidence(entry, segment, args) {
       samples: sceneAssetLines.slice(0, 6)
     }
   ];
-  const requiredChecks = checks.filter((check) => !check.informational);
-  const ok = requiredChecks.length > 0 && requiredChecks.every((check) => check.ok);
+  const dataCheck = checks.find((check) => check.name === "target_scene_data_request");
+  const trackingCheck = checks.find((check) => check.name === "target_scene_tracking_signal");
+  const assetCheck = checks.find((check) => check.name === "target_scene_asset_request");
+  // Direct-scene AS3 launches can legitimately omit the remote analytics
+  // callback. Resource requests are local evidence of the scene load; the
+  // caller adds stage/visual evidence after capture.
+  const resourceLoaded = Boolean(dataCheck?.ok && assetCheck?.ok);
+  const trackingObserved = Boolean(trackingCheck?.ok);
   return {
     required: flagEnabled(args.requireSceneEvidence),
-    ok,
+    ok: resourceLoaded,
+    sceneLoaded: resourceLoaded,
+    trackingObserved,
+    trackingRequired: false,
     target: {
       sceneFolder: sceneFolder || null,
       roomParam: roomParam || null,
@@ -1702,6 +1711,17 @@ async function smokeIsland({ config, qaDir, runDir, entry, index, total, args })
   if (!flagEnabled(args.skipVisualGuard) && !visualGuard?.ok) {
     failedChecks.push("initial_visual_guard_failed");
   }
+  sceneEvidence.visualEvidence = {
+    stageDetected: Boolean(stage?.stageRect),
+    stageCoverageRatio: Number(stage?.stageCoverageRatio || 0),
+    visualGuardPassed: Boolean(visualGuard?.ok),
+    visibleSceneEvidence: Boolean(stage?.stageRect && visualGuard?.ok)
+  };
+  sceneEvidence.sceneLoaded = Boolean(
+    sceneEvidence.sceneLoaded &&
+    sceneEvidence.visualEvidence.visibleSceneEvidence
+  );
+  sceneEvidence.ok = sceneEvidence.sceneLoaded;
   if (isLaunchHealthOk(launchHealth) && !flagEnabled(args.allowNoSceneProgress) && !hasSceneProgressSignal(logSummary)) {
     failedChecks.push("scene_progress_missing");
   }
