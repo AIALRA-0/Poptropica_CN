@@ -32,8 +32,15 @@ const ISLAND_SETTLE_MINIMUMS = {
   "charlie-and-the-chocolate-factory": 45000,
   counterfeit: 45000,
   cryptids: 45000,
+  "astro-knights": 45000,
+  "back-lot": 45000,
+  "big-nate": 45000,
+  "early-poptropica": 45000,
+  "game-show": 45000,
+  "great-pumpkin": 45000,
   "ghost-story": 45000,
   mythology: 45000,
+  nabooti: 45000,
   "night-watch": 45000,
   "reality-tv": 45000,
   "red-dragon": 45000,
@@ -47,6 +54,7 @@ const ISLAND_SETTLE_MINIMUMS = {
   "vampires-curse": 45000,
   "wild-west": 45000,
   "wimpy-boardwalk": 45000,
+  "wimpy-wonderland": 45000,
   zomberry: 45000
 };
 
