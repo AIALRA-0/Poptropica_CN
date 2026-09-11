@@ -2531,11 +2531,13 @@ function isAggregateCandidateReport(topLevelReport) {
   return topLevelReport &&
     !topLevelReport.blocked &&
     !topLevelReport.fatal &&
+    topLevelReport.projectRevision === PROJECT_REVISION &&
     Array.isArray(topLevelReport.reports);
 }
 
 function isPassingIslandReport(report) {
   return Boolean(report?.canonicalKey) &&
+    report.projectRevision === PROJECT_REVISION &&
     report.ok === true &&
     Array.isArray(report.failedChecks) &&
     report.failedChecks.length === 0;

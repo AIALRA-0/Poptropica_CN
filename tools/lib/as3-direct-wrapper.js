@@ -8,7 +8,10 @@ function normalizeResizeMode(value) {
     return "0";
   }
   if (value === undefined || value === null || value === "") {
-    return "page";
+    // Resize the embed in place. Reloading the entire AS3 shell on every
+    // window/layout change loses the loaded scene and can leave the player
+    // on a loading screen.
+    return "0";
   }
   const mode = String(value || "").trim().toLowerCase();
   if (mode === "1" || mode === "true" || mode === "yes" || mode === "frame" || mode === "iframe") {
@@ -176,7 +179,7 @@ if(!preg_match('/^[A-Za-z0-9_.$]+$/', $scene)) {
     $scene = '';
 }
 
-$resizeMode = flashpoint_as3_param('reloadOnResize', 'page');
+$resizeMode = flashpoint_as3_param('reloadOnResize', '0');
 if(!in_array($resizeMode, array('0', 'frame', 'iframe', '1', 'page', 'top', 'reload'), true)) {
     $resizeMode = '0';
 }

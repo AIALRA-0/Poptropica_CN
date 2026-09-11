@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T00:06:51.494Z",
+  "generatedAt": "2026-09-11T11:23:31.410Z",
   "sources": {
     "as2Configured": true,
     "as3Configured": true,
@@ -1344,7 +1344,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.virusHunter.mainStreet.MainStreet&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.virusHunter.mainStreet.MainStreet&reloadOnResize=0",
       "as3TargetScene": "game.scenes.virusHunter.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1387,7 +1387,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.adStreet.AdStreet&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.mocktropica.adStreet.AdStreet&reloadOnResize=0",
       "as3TargetScene": "game.scenes.mocktropica.adStreet.AdStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1438,7 +1438,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.carnival.mainStreet.MainStreet&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.carnival.mainStreet.MainStreet&reloadOnResize=0",
       "as3TargetScene": "game.scenes.carnival.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1475,7 +1475,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.survival1.crashLanding.CrashLanding&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.survival1.crashLanding.CrashLanding&reloadOnResize=0",
       "as3TargetScene": "game.scenes.survival1.crashLanding.CrashLanding",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1511,7 +1511,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.deepDive1.ship.Ship&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.deepDive1.ship.Ship&reloadOnResize=0",
       "as3TargetScene": "game.scenes.deepDive1.ship.Ship",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1546,7 +1546,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.con1.parking.Parking&reloadOnResize=frame&flashpointSeedIsland=con1&flashpointStartX=1740&flashpointStartY=1430&flashpointStartDirection=right",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.con1.parking.Parking&reloadOnResize=0&flashpointSeedIsland=con1&flashpointStartX=1740&flashpointStartY=1430&flashpointStartDirection=right",
       "as3TargetScene": "game.scenes.con1.parking.Parking",
       "seedIsland": "con1",
       "startX": 1740,
@@ -1587,7 +1587,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.arab1.bazaar.Bazaar&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.arab1.bazaar.Bazaar&reloadOnResize=0",
       "as3TargetScene": "game.scenes.arab1.bazaar.Bazaar",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1632,7 +1632,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.viking.jungle.Jungle&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.viking.jungle.Jungle&reloadOnResize=0",
       "as3TargetScene": "game.scenes.viking.jungle.Jungle",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1675,7 +1675,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.prison.hill.Hill&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.prison.hill.Hill&reloadOnResize=0",
       "as3TargetScene": "game.scenes.prison.hill.Hill",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1717,7 +1717,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.timmy.mainStreet.MainStreet&reloadOnResize=frame&flashpointSeedIsland=timmy&flashpointSeedEvents=intro_complete&flashpointStartX=3050&flashpointStartY=1530&flashpointStartDirection=left",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.timmy.mainStreet.MainStreet&reloadOnResize=0&flashpointSeedIsland=timmy&flashpointSeedEvents=intro_complete&flashpointStartX=3050&flashpointStartY=1530&flashpointStartDirection=left",
       "as3TargetScene": "game.scenes.timmy.mainStreet.MainStreet",
       "seedIsland": "timmy",
       "seedEvents": [
@@ -1771,7 +1771,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ghd.barren1.Barren1&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ghd.barren1.Barren1&reloadOnResize=0",
       "as3TargetScene": "game.scenes.ghd.barren1.Barren1",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1805,7 +1805,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ftue.mainLand.MainLand&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.ftue.mainLand.MainLand&reloadOnResize=0",
       "as3TargetScene": "game.scenes.ftue.mainLand.MainLand",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",
@@ -1839,7 +1839,7 @@
       ],
       "fallbackMode": "as3-direct-wrapper",
       "launchMode": "as3-direct-scene",
-      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.reality2.mainStreet.MainStreet&reloadOnResize=frame",
+      "launchUrl": "http://www.poptropica.com/flashpoint/as3-direct.php?overrideScene=game.scenes.reality2.mainStreet.MainStreet&reloadOnResize=0",
       "as3TargetScene": "game.scenes.reality2.mainStreet.MainStreet",
       "classEvidence": {
         "shellPath": "content/www.poptropica.com/game/Shell.swf",

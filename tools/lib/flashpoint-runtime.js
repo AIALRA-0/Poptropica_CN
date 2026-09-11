@@ -625,35 +625,39 @@ function ensurePhpCgiWrapperBuild() {
   const publishDir = paths.phpCgiWrapperPublishDir;
   const projectFile = path.join(projectDir, "PhpCgiWrapper.csproj");
   const programFile = path.join(projectDir, "Program.cs");
+  const frameworkProgramFile = path.join(projectDir, "FrameworkProgram.cs");
   const outputExe = path.join(publishDir, "php-cgi.exe");
   const statePath = path.join(publishDir, "build-state.json");
 
-  if (!fileExists(projectFile) || !fileExists(programFile)) {
+  if (!fileExists(projectFile) || !fileExists(programFile) || !fileExists(frameworkProgramFile)) {
     throw new Error("php-cgi wrapper project files are missing.");
   }
 
-  // The wrapper targets the .NET 9 runtime. Older or minimal Windows
-  // installations can still run Flashpoint's native PHP CGI binary, so do
-  // not make the whole local runtime unusable when .NET 9 is absent.
+  // The wrapper targets the framework available on this host (currently
+  // .NET 8). Older or minimal Windows installations can still run
+  // Flashpoint's native PHP CGI binary, so do not make the whole local
+  // runtime unusable when the managed wrapper cannot be built.
   const dotnetRuntimes = spawnSync("dotnet", ["--list-runtimes"], {
     encoding: "utf8",
     windowsHide: true,
     timeout: 10000
   });
-  if (dotnetRuntimes.status !== 0 || !/Microsoft\.NETCore\.App\s+9\./u.test(String(dotnetRuntimes.stdout || ""))) {
+  if (dotnetRuntimes.status !== 0 || !/Microsoft\.NETCore\.App\s+(?:8|9)\./u.test(String(dotnetRuntimes.stdout || ""))) {
     return null;
   }
 
   const sourceState = {
     projectHash: hashFile(projectFile),
-    programHash: hashFile(programFile)
+    programHash: hashFile(programFile),
+    frameworkProgramHash: hashFile(frameworkProgramFile)
   };
   const existingState = readJson(statePath, null);
   const shouldReuse =
     fileExists(outputExe) &&
     existingState &&
     existingState.projectHash === sourceState.projectHash &&
-    existingState.programHash === sourceState.programHash;
+    existingState.programHash === sourceState.programHash &&
+    existingState.frameworkProgramHash === sourceState.frameworkProgramHash;
 
   if (shouldReuse) {
     return outputExe;
@@ -662,32 +666,70 @@ function ensurePhpCgiWrapperBuild() {
   removeDirContents(publishDir);
   ensureDirSync(publishDir);
 
-  const publish = spawnSync("dotnet", [
-    "publish",
-    projectFile,
-    "-c",
-    "Release",
-    "-r",
-    "win-x64",
-    "--self-contained",
-    "false",
-    "-p:PublishSingleFile=true",
-    "-p:EnableCompressionInSingleFile=false",
-    "-o",
-    publishDir
-  ], {
-    cwd: projectDir,
+  // Prefer the managed wrapper when a matching SDK is installed. Minimal
+  // Windows hosts often ship only a .NET runtime, so fall back to the
+  // framework compiler which is part of the OS and produces the same
+  // invisible WinExe behavior.
+  const dotnetSdks = spawnSync("dotnet", ["--list-sdks"], {
     encoding: "utf8",
     windowsHide: true,
-    timeout: 300000
+    timeout: 10000
   });
+  let publish = null;
+  if (dotnetSdks.status === 0 && /\d+\.\d+\./u.test(String(dotnetSdks.stdout || ""))) {
+    publish = spawnSync("dotnet", [
+      "publish",
+      projectFile,
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "--self-contained",
+      "false",
+      "-p:PublishSingleFile=true",
+      "-p:EnableCompressionInSingleFile=false",
+      "-o",
+      publishDir
+    ], {
+      cwd: projectDir,
+      encoding: "utf8",
+      windowsHide: true,
+      timeout: 300000
+    });
+  }
 
-  if (publish.status !== 0 || !fileExists(outputExe)) {
-    throw new Error((publish.stderr || publish.stdout || "Failed to publish php-cgi wrapper.").trim());
+  let backend = "dotnet";
+  if (!publish || publish.status !== 0 || !fileExists(outputExe)) {
+    const cscCandidates = [
+      path.join(process.env.WINDIR || "C:\\Windows", "Microsoft.NET", "Framework64", "v4.0.30319", "csc.exe"),
+      path.join(process.env.WINDIR || "C:\\Windows", "Microsoft.NET", "Framework", "v4.0.30319", "csc.exe")
+    ];
+    const csc = cscCandidates.find((candidate) => fileExists(candidate));
+    if (!csc) {
+      const detail = publish && (publish.stderr || publish.stdout);
+      throw new Error(String(detail || "Failed to build php-cgi wrapper: no .NET SDK or framework compiler is available.").trim());
+    }
+    const compile = spawnSync(csc, [
+      "/nologo",
+      "/target:winexe",
+      "/optimize+",
+      "/out:" + outputExe,
+      frameworkProgramFile
+    ], {
+      cwd: projectDir,
+      encoding: "utf8",
+      windowsHide: true,
+      timeout: 120000
+    });
+    if (compile.status !== 0 || !fileExists(outputExe)) {
+      throw new Error((compile.stderr || compile.stdout || "Failed to compile php-cgi framework wrapper.").trim());
+    }
+    backend = "framework-csc";
   }
 
   writeJson(statePath, {
     builtAt: new Date().toISOString(),
+    backend,
     ...sourceState,
     outputExe
   });

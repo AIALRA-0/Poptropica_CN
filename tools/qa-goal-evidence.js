@@ -5,6 +5,7 @@ const { parseArgs, printJson } = require("./lib/cli");
 const { loadConfig } = require("./lib/config");
 const paths = require("./lib/paths");
 const { generateLaunchManifest } = require("./lib/launch-manifest");
+const { getProjectRevision } = require("./lib/qa");
 const { readJson, writeJson } = require("./lib/fs-utils");
 
 function flagEnabled(value) {
@@ -96,6 +97,7 @@ function interactionCoverageForAggregate(report, expectedCount, extraChecks = {}
 }
 
 function findLatestAs2AllIslandVisualReport(expectedCount) {
+  const currentRevision = getProjectRevision();
   const dir = path.join(paths.projectRoot, "runtime-data/qa/as2/interaction-smoke");
   let entries = [];
   try {
@@ -113,6 +115,9 @@ function findLatestAs2AllIslandVisualReport(expectedCount) {
 
   for (const entry of entries) {
     const report = readJson(entry.path, null);
+    if (report?.projectRevision !== currentRevision) {
+      continue;
+    }
     const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
     const ok = report?.ok === true &&
       Number(report?.total || 0) === expectedCount &&
@@ -143,6 +148,7 @@ function findLatestAs2AllIslandVisualReport(expectedCount) {
 }
 
 function findLatestAs2AllIslandInteractionReport(expectedCount) {
+  const currentRevision = getProjectRevision();
   const dir = path.join(paths.projectRoot, "runtime-data/qa/as2/interaction-smoke");
   let entries = [];
   try {
@@ -160,6 +166,9 @@ function findLatestAs2AllIslandInteractionReport(expectedCount) {
 
   for (const entry of entries) {
     const report = readJson(entry.path, null);
+    if (report?.projectRevision !== currentRevision) {
+      continue;
+    }
     const failedKeys = Array.isArray(report?.failedKeys) ? report.failedKeys : [];
     const missingKeys = Array.isArray(report?.missingKeys) ? report.missingKeys : [];
     const ok = report?.ok === true &&
@@ -195,6 +204,7 @@ function findLatestAs2AllIslandInteractionReport(expectedCount) {
 }
 
 function findLatestAs3AllIslandInteractionReport(expectedCount) {
+  const currentRevision = getProjectRevision();
   const dir = path.join(paths.projectRoot, "runtime-data/qa/as3/interaction-smoke");
   let entries = [];
   try {
@@ -212,6 +222,9 @@ function findLatestAs3AllIslandInteractionReport(expectedCount) {
 
   for (const entry of entries) {
     const report = readJson(entry.path, null);
+    if (report?.projectRevision !== currentRevision) {
+      continue;
+    }
     const coverage = interactionCoverageForAggregate(report, expectedCount, {
       reportOk: report?.ok === true,
       audioOk: Number(report?.audioActive || 0) === expectedCount,

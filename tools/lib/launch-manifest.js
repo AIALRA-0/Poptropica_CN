@@ -346,7 +346,10 @@ function discoverAs3Entries(as3Entries, sceneMap, overrides, shellEvidence) {
       startupPath: override.startupPath || "gameplay",
       discoveredRooms,
       shellEvidence,
-      reloadOnResize: override.reloadOnResize !== undefined ? override.reloadOnResize : "frame",
+      // Keep the loaded AS3 scene alive while the wrapper resizes its embed.
+      // A reload here is indistinguishable from a stuck initial load for
+      // large islands and can reset gameplay state.
+      reloadOnResize: override.reloadOnResize !== undefined ? override.reloadOnResize : "0",
       seedIsland: override.seedIsland || (hasQaSeedState ? islandParam : null),
       seedEvents: override.seedEvents || [],
       startX: override.startX,
