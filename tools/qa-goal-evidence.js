@@ -175,6 +175,7 @@ function findLatestAs2AllIslandInteractionReport(expectedCount) {
       Number(report?.total || 0) === expectedCount &&
       Number(report?.passed || 0) === expectedCount &&
       Number(report?.failed || 0) === 0 &&
+      Number(report?.interactionsPassed || 0) === expectedCount &&
       Number(report?.audioActive || 0) === expectedCount &&
       Number(report?.mapClicksPassed || 0) === expectedCount &&
       Number(report?.sceneEvidencePassed || 0) === expectedCount &&
@@ -191,6 +192,7 @@ function findLatestAs2AllIslandInteractionReport(expectedCount) {
         generatedAt: report.generatedAt || null,
         total: report.total,
         passed: report.passed,
+        interactionsPassed: report.interactionsPassed,
         audioActive: report.audioActive,
         mapClicksPassed: report.mapClicksPassed,
         sceneEvidencePassed: report.sceneEvidencePassed,
@@ -311,6 +313,7 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
   const as2InteractionSource = as2InteractionSelection?.source || "as2-interaction-smoke-latest";
   const as2Coverage = interactionCoverageForAggregate(reports.as2Aggregate.data, as2Launchable.length, {
     reportOk: reports.as2Aggregate.data?.ok === true,
+    interactionOk: Number(reports.as2Aggregate.data?.interactionsPassed || 0) === as2Launchable.length,
     audioOk: Number(reports.as2Aggregate.data?.audioActive || 0) === as2Launchable.length,
     mapOk: Number(reports.as2Aggregate.data?.mapClicksPassed || 0) === as2Launchable.length,
     sceneOk: Number(reports.as2Aggregate.data?.sceneEvidencePassed || 0) === as2Launchable.length,
@@ -366,6 +369,28 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
     Number(as3Interaction.total || 0) > 0;
   const as2AllIslandVisual = findLatestAs2AllIslandVisualReport(as2Launchable.length);
   const as2VisualAllIslandOk = as2AllIslandVisual.ok === true;
+  const popupRegression = reports.popupRegression?.data || null;
+  const popupRegressionOk = popupRegression?.ok === true &&
+    Array.isArray(popupRegression.reports) &&
+    popupRegression.reports.length === 2 &&
+    popupRegression.reports.every((item) =>
+      item?.ok === true &&
+      Array.isArray(item.failedChecks) &&
+      item.failedChecks.length === 0 &&
+      item.popupAudit?.summary?.popupStormDetected !== true &&
+      item.popupAudit?.summary?.shellPopupSeen !== true &&
+      Number(item.popupAudit?.summary?.maxNavigatorWindowCount || 0) <= 1 &&
+      Number(item.popupAudit?.summary?.maxPluginWindowCount || 0) <= 1
+    );
+  const rapidLaunch = popupRegression?.rapidLaunch || null;
+  const rapidLaunchOk = rapidLaunch?.ok === true &&
+    Number(rapidLaunch.successfulCount || 0) === 1 &&
+    Number(rapidLaunch.busyCount || 0) >= Math.max(1, Number(rapidLaunch.requestCount || 2) - 1) &&
+    rapidLaunch.audit?.summary?.popupStormDetected !== true &&
+    rapidLaunch.audit?.summary?.shellPopupSeen !== true &&
+    Number(rapidLaunch.audit?.summary?.maxNavigatorWindowCount || 0) <= 1 &&
+    Number(rapidLaunch.audit?.summary?.maxPluginWindowCount || 0) <= 1;
+  const popupAndDuplicateOk = popupRegressionOk && rapidLaunchOk;
 
   const scripts = packageJson.scripts || {};
   const requirements = [
@@ -506,9 +531,9 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
       id: "ui_layout_and_resize",
       title: "UI 位置正确、窗口可调大小且对话/UI 稳定",
       ...reportStatus(
-        as3InteractionVisualOk && as2VisualAllIslandOk ? "proved" : "partial",
-        as3InteractionVisualOk && as2VisualAllIslandOk
-          ? "AS2 all-island resize/visual guard and representative AS3 interaction visual guard are green."
+        as3InteractionVisualOk && as2VisualAllIslandOk && popupAndDuplicateOk ? "proved" : "partial",
+        as3InteractionVisualOk && as2VisualAllIslandOk && popupAndDuplicateOk
+          ? "AS2 all-island resize/visual guard, representative AS3 visual guard, and 60-second popup regression are green."
           : "Resize/visual-guard evidence is still incomplete across AS2 and AS3.",
         {
           as3InteractionLatest: {
@@ -518,13 +543,70 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
             sceneEvidencePassed: as3Interaction?.sceneEvidencePassed
           },
           as2AllIslandVisual,
+          popupRegression: popupRegression
+            ? {
+                ok: popupAndDuplicateOk,
+                path: reports.popupRegression.path || null,
+                durationMs: popupRegression.durationMs || null,
+                reports: popupRegression.reports.map((item) => ({
+                  canonicalKey: item.canonicalKey,
+                  sourceGroup: item.sourceGroup,
+                  ok: item.ok,
+                  failedChecks: item.failedChecks || [],
+                  summary: item.popupAudit?.summary || null,
+                  actions: item.actions || []
+                })),
+                rapidLaunch: {
+                  ok: rapidLaunchOk,
+                  requestCount: rapidLaunch?.requestCount || null,
+                  successfulCount: rapidLaunch?.successfulCount || 0,
+                  busyCount: rapidLaunch?.busyCount || 0,
+                  failedChecks: rapidLaunch?.failedChecks || [],
+                  auditSummary: rapidLaunch?.audit?.summary || null
+                }
+              }
+            : null,
           as2LatestVisualGuardPassed: reports.as2Aggregate.data?.visualGuardPassed || 0,
           as2Launchable: as2Launchable.length
         },
         [
           ...(as2VisualAllIslandOk ? [] : ["Add/refresh AS2 visual-guard coverage for all launchable AS2 islands."]),
-          ...(as3InteractionVisualOk ? [] : ["Refresh AS3 interaction visual-guard evidence."])
+          ...(as3InteractionVisualOk ? [] : ["Refresh AS3 interaction visual-guard evidence."]),
+          ...(popupAndDuplicateOk ? [] : ["Run npm run qa:popup-regression and resolve any extra Navigator/plugin windows, shell popups, or rapid-launch duplicate instances."])
         ]
+      )
+    },
+    {
+      id: "popup_and_duplicate_instance_regression",
+      title: "启动弹窗风暴和重复实例回归",
+      ...reportStatus(
+        popupAndDuplicateOk ? "proved" : "incomplete",
+        popupAndDuplicateOk
+          ? "AS2 and AS3 each passed a 60-second window/process audit without popup storms or duplicate runtime windows, and rapid launch requests produced one runtime with busy responses for the rest."
+          : "The current revision has no passing AS2/AS3 60-second popup regression and rapid-launch evidence.",
+        {
+          reportPath: reports.popupRegression?.path || null,
+          durationMs: popupRegression?.durationMs || null,
+          summary: popupRegression?.reports?.map((item) => ({
+            canonicalKey: item.canonicalKey,
+            sourceGroup: item.sourceGroup,
+            ok: item.ok,
+            failedChecks: item.failedChecks || [],
+            popupAudit: item.popupAudit?.summary || null,
+            actions: item.actions || []
+          })) || [],
+          rapidLaunch: rapidLaunch
+            ? {
+                ok: rapidLaunchOk,
+                requestCount: rapidLaunch.requestCount || null,
+                successfulCount: rapidLaunch.successfulCount || 0,
+                busyCount: rapidLaunch.busyCount || 0,
+                failedChecks: rapidLaunch.failedChecks || [],
+                auditSummary: rapidLaunch.audit?.summary || null
+              }
+            : null
+        },
+        popupAndDuplicateOk ? [] : ["Run npm run qa:popup-regression and inspect its per-island and rapid-launch window audit artifacts."]
       )
     },
     {
@@ -577,11 +659,11 @@ function buildRequirementResults({ manifest, reports, packageJson, git, runtimeP
     },
     {
       id: "launcher_ipc_and_safe_sizing",
-      title: "Launcher UI / IPC 使用 G32QC 和安全窗口尺寸",
+      title: "Launcher UI / IPC 使用当前可用显示器和安全窗口尺寸",
       ...reportStatus(
         reports.launcherIpc.data?.ok === true ? "proved" : "missing",
         reports.launcherIpc.data?.ok === true
-          ? "Launcher IPC background smoke validates AS3 safe maximize, AS2 default sizing, inherited sizing, busy-launch guard, and G32QC target."
+          ? "Launcher IPC background smoke validates AS3 safe maximize, AS2 default sizing, inherited sizing, busy-launch guard, and automatic display selection."
           : "Launcher IPC smoke evidence is missing or failing.",
         {
           launcherIpc: reports.launcherIpc.data
@@ -668,7 +750,8 @@ function main() {
     launchGaps: readReport("runtime-data/qa/launch-manifest-gaps-latest.json"),
     soundRefs: readReport("runtime-data/qa/sound-reference-audit-runtime.json"),
     packInputs: readReport("runtime-data/qa/pack-inputs-latest.json"),
-    translationCoverage: readReport("runtime-data/qa/translation-coverage-audit.json")
+    translationCoverage: readReport("runtime-data/qa/translation-coverage-audit.json"),
+    popupRegression: readReport("runtime-data/qa/window-stability-popup-regression-latest.json")
   };
   const git = gitEvidence();
   const runtimeProcesses = runtimeProcessEvidence();

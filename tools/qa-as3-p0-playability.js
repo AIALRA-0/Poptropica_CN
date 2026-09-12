@@ -230,7 +230,7 @@ function containsDialogueChinese(text) {
 }
 
 function configureVisibleQa(args, size) {
-  const targetMonitor = String(args.monitor || args.targetMonitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const targetMonitor = String(args.monitor || args.targetMonitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   const allowForegroundCapture = flagEnabled(args.allowForegroundCapture || args["allow-foreground-capture"]);
   const postMessageF11 = flagEnabled(args.postMessageF11 || args["post-message-f11"]);
   if (targetMonitor) {

@@ -38,6 +38,17 @@ const QUEST_NAMES = {
 };
 
 const EXACT = {
+  "CHEW": "咀嚼",
+  "COSTUMIZE": "换装",
+  "EQUIP": "装备",
+  "Hammer": "锤子",
+  "Island Medallion": "岛屿奖章",
+  "PUT AWAY": "收起",
+  "PUT ON": "穿上",
+  "REMOVE": "移除",
+  "Script": "剧本",
+  "VIEW": "查看",
+  "TAKE OFF": "脱下",
   "A corner of a larger map.": "一张更大地图的一角。",
   "Divination Dust": "占卜粉",
   "Galvanized Nail": "镀锌钉",

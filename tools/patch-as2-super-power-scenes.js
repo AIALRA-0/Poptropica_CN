@@ -173,7 +173,12 @@ function patchScriptFile(filePath, options = {}) {
   } else if (next.includes(LOADCHECK_BASE_SNIPPET)) {
     next = next.replace(LOADCHECK_BASE_SNIPPET, LOADCHECK_COMPAT_SNIPPET);
   }
-  next = applyAvatarReadinessPatch(next);
+  next = applyAvatarReadinessPatch(next, {
+    preserveInitCharsRootAdvance: Boolean(options.scene)
+  });
+  if (options.gameplay) {
+    next = applyGameplayCharLoadPatch(next);
+  }
   if (options.diagnostics) {
     next = applyBankDiagnosticsPatch(next);
   }
@@ -182,6 +187,91 @@ function patchScriptFile(filePath, options = {}) {
   }
   fs.writeFileSync(filePath, next, "utf8");
   return { changed: true, alreadyPatched: false };
+}
+
+const GAMEPLAY_CHAR_LOAD_BLOCK_RE = /if\(!_level0\.charLazyLoad\)\r?\n\s*\{\r?\n\s*var clip = null;\r?\n\s*createEmptyMovieClip\("flashpointCharLoad",getNextHighestDepth\(\)\)\.onEnterFrame = function\(\)\r?\n\s*\{[\s\S]*?\r?\n\s*\};\r?\n\}/u;
+
+const SAFE_GAMEPLAY_CHAR_LOAD_BLOCK = `if(!_level0.charLazyLoad)
+{
+   var clip = null;
+   createEmptyMovieClip("flashpointCharLoad",getNextHighestDepth()).onEnterFrame = function()
+   {
+      if(camera != undefined && camera.scene != undefined && camera.scene.initChars != undefined)
+      {
+         clip = camera.scene;
+      }
+      else if(camera != undefined && camera.initChars != undefined)
+      {
+         clip = camera;
+      }
+      if(clip)
+      {
+         var realInit = clip.initChars;
+         clip.initChars = function()
+         {
+            var realRNF = _root.nextFrame;
+            _root.nextFrame = function()
+            {
+               var chars = new Array();
+               var _loc2_ = 0;
+               var _loc3_ = clip.char;
+               while(_loc3_ != undefined && (_loc2_ == 0 || _loc3_.loadingFinished))
+               {
+                  chars.push(_loc3_);
+                  _loc2_ += 1;
+                  if(_loc2_ > 32)
+                  {
+                     break;
+                  }
+                  _loc3_ = clip["char" + _loc2_];
+               }
+               if(chars.length <= 0 && clip.char != undefined)
+               {
+                  chars.push(clip.char);
+               }
+               _root.nextFrame = realRNF;
+               flashpointCharLoad.__zhChars = chars;
+               flashpointCharLoad.__zhWait = 0;
+               flashpointCharLoad.__zhAdvanced = false;
+               flashpointCharLoad.onEnterFrame = function()
+               {
+                  var _loc4_ = 0;
+                  var _loc5_ = true;
+                  this.__zhWait += 1;
+                  while(_loc4_ < chars.length)
+                  {
+                     if(chars[_loc4_] != undefined && chars[_loc4_].avatar != undefined && chars[_loc4_].avatar.partsLoading != undefined && Number(chars[_loc4_].avatar.partsLoading) > 0)
+                     {
+                        _loc5_ = false;
+                        break;
+                     }
+                     _loc4_ += 1;
+                  }
+                  if(_level0._nav_mc != undefined && _level0._nav_mc.friendshubBtn != undefined && _level0._nav_mc.friendshubBtn.mc != undefined && _level0._nav_mc.friendshubBtn.mc.placeHolder != undefined && _level0._nav_mc.friendshubBtn.mc.placeHolder._visible)
+                  {
+                     _loc5_ = false;
+                  }
+                  if((_loc5_ && this.__zhWait >= 2 || this.__zhWait > 180) && !this.__zhAdvanced)
+                  {
+                     this.__zhAdvanced = true;
+                     _root.nextFrame();
+                     delete this.onEnterFrame;
+                  }
+               };
+            };
+            (clip.initChars = realInit).call(this);
+         };
+         delete this.onEnterFrame;
+      }
+   };
+}`;
+
+function applyGameplayCharLoadPatch(content) {
+  let next = normalizeScript(content);
+  if (!GAMEPLAY_CHAR_LOAD_BLOCK_RE.test(next)) {
+    return next;
+  }
+  return next.replace(GAMEPLAY_CHAR_LOAD_BLOCK_RE, SAFE_GAMEPLAY_CHAR_LOAD_BLOCK);
 }
 
 function applyBankDiagnosticsPatch(content) {
@@ -288,10 +378,15 @@ function zhSuperAdvanceGameplayFrame()
    {
       zhSuperBankQaLog("AdvanceFrame","target=none");
    }
+   if(_root != undefined && _root.nextFrame != undefined)
+   {
+      _root.nextFrame();
+      return "root-fallback";
+   }
    return "none";
 }`;
 
-function applyAvatarReadinessPatch(content) {
+function applyAvatarReadinessPatch(content, options = {}) {
   let normalized = normalizeScript(content);
   normalized = normalized.replace(
     '      zhSuperAdvanceGameplayFrame();\n      return "root";',
@@ -393,7 +488,14 @@ function applyAvatarReadinessPatch(content) {
     }
     output.push(line);
   }
-  return output.join("\n");
+  let result = output.join("\n");
+  if (options.preserveInitCharsRootAdvance) {
+    result = result.replace(
+      /(function initChars\(\)\n\{[\s\S]*?)\n\s*zhSuperAdvanceGameplayFrame\(\);\n\}/u,
+      "$1\n   _root.nextFrame();\n}"
+    );
+  }
+  return result;
 }
 
 function hasRecentGuard(lines, index, guardLine) {
@@ -428,7 +530,9 @@ function patchSwf({ ffdecCli, swfPath, workRoot, dryRun, diagnostics }) {
 
   for (const script of collectScripts(scriptRoot)) {
     const patch = patchScriptFile(script.filePath, {
-      diagnostics: Boolean(diagnostics) && baseName === "sceneBank"
+      diagnostics: Boolean(diagnostics) && ["sceneBank", "sceneDownTown"].includes(baseName),
+      gameplay: baseName === "gameplay",
+      scene: baseName.startsWith("scene")
     });
     if (patch.alreadyPatched) {
       alreadyPatchedCount += 1;
@@ -451,7 +555,7 @@ function patchSwf({ ffdecCli, swfPath, workRoot, dryRun, diagnostics }) {
     swfPath: path.relative(paths.projectRoot, swfPath).replace(/\\/gu, "/"),
     changed: changedScripts.length > 0,
     dryRun: Boolean(dryRun),
-    diagnostics: Boolean(diagnostics) && baseName === "sceneBank",
+    diagnostics: Boolean(diagnostics) && ["sceneBank", "sceneDownTown"].includes(baseName),
     loadCheckCandidateCount,
     alreadyPatchedCount,
     changedScripts: changedScripts.map((script) => ({
@@ -473,11 +577,25 @@ function collectTargetSwfs(args) {
         .map((item) => item.endsWith(".swf") ? item : `${item}.swf`)
     : [];
   const requestedSet = new Set(requestedScenes.map((item) => item.toLowerCase()));
-  return fs.readdirSync(SUPER_SCENE_DIR)
+  const sceneSwfs = fs.readdirSync(SUPER_SCENE_DIR)
     .filter((entry) => /\.swf$/iu.test(entry))
     .filter((entry) => requestedSet.size === 0 || requestedSet.has(entry.toLowerCase()))
     .sort((left, right) => left.localeCompare(right, "en"))
     .map((entry) => path.join(SUPER_SCENE_DIR, entry));
+  const gameplayPath = path.join(
+    paths.as2PackDir,
+    "swf",
+    "content",
+    "www.poptropica.com",
+    "gameplay.swf"
+  );
+  const includeGameplay = requestedSet.size === 0 ||
+    requestedSet.has("gameplay.swf") ||
+    requestedSet.has("gameplay");
+  if (includeGameplay && fileExists(gameplayPath)) {
+    return [gameplayPath, ...sceneSwfs];
+  }
+  return sceneSwfs;
 }
 
 function main() {

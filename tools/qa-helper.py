@@ -616,6 +616,8 @@ def enrich_window_candidates(rows):
         class_name = str(row.get("className") or "").lower()
         likely_runtime = (
             "poptropica" in title
+            or "flashpoint navigator" in title
+            or "fpnavigator" in title
             or class_name in RUNTIME_RESIZE_CHILD_CLASSES
             or "gecko" in class_name
         )
@@ -1223,15 +1225,21 @@ def post_synthetic_mouse_focus(parent_hwnd, target_hwnd):
         pass
 
 
+def get_client_bbox(hwnd):
+    left_top = win32gui.ClientToScreen(hwnd, (0, 0))
+    client_rect = win32gui.GetClientRect(hwnd)
+    right_bottom = win32gui.ClientToScreen(hwnd, (client_rect[2], client_rect[3]))
+    return (
+        int(left_top[0]),
+        int(left_top[1]),
+        int(right_bottom[0]),
+        int(right_bottom[1]),
+    )
+
+
 def get_capture_bbox(hwnd, client_only):
     if client_only:
-        left_top = win32gui.ClientToScreen(hwnd, (0, 0))
-        client_rect = win32gui.GetClientRect(hwnd)
-        right_bottom = win32gui.ClientToScreen(hwnd, (client_rect[2], client_rect[3]))
-        left = int(left_top[0])
-        top = int(left_top[1])
-        right = int(right_bottom[0])
-        bottom = int(right_bottom[1])
+        left, top, right, bottom = get_client_bbox(hwnd)
         class_name = (win32gui.GetClassName(hwnd) or "").lower()
         if "mozillawindowclass" in class_name:
             trim_top = 110
@@ -1252,6 +1260,10 @@ def monitor_popup_windows(duration_ms, interval_ms):
     visible_shell = {}
     samples = []
     process_samples = []
+    # A zero-duration audit is a valid single-snapshot request.  Initialize
+    # this outside the sampling loop so the final payload never references an
+    # unbound local when the deadline has already elapsed.
+    runtime_processes = []
     baseline_all_windows = enum_window_skeletons()
     baseline_windows = enrich_window_candidates(baseline_all_windows)
     baseline_shell_process_keys = {
@@ -1259,11 +1271,51 @@ def monitor_popup_windows(duration_ms, interval_ms):
         for row in baseline_windows
         if is_shell_popup_candidate(row)
     }
+    baseline_runtime_handles = {
+        int(row.get("handle") or 0)
+        for row in baseline_windows
+        if (
+            str(row.get("processName") or "").lower() in RUNTIME_WINDOW_PROCESS_NAMES
+            or is_runtime_plugin_process_name(row.get("processName"))
+            or str(row.get("className") or "").lower() in {
+                "geckopluginwindow",
+                "geckofpsandboxchildwindow",
+            }
+        )
+    }
+    seen_runtime_handles = set(baseline_runtime_handles)
+    popup_storm_detected = False
+    max_runtime_window_count = 0
+    max_navigator_window_count = 0
+    max_plugin_window_count = 0
+    max_runtime_process_count = 0
 
-    while time.time() < end_at:
+    sampled_once = False
+    while time.time() < end_at or not sampled_once:
+        sampled_once = True
         all_windows = enum_window_skeletons()
         windows = enrich_window_candidates(all_windows)
         runtime_summary = summarize_runtime_windows(windows)
+        runtime_rows = list(runtime_summary.get("windows") or [])
+        runtime_handles = {
+            int(row.get("handle") or 0)
+            for row in runtime_rows
+            if int(row.get("handle") or 0) > 0
+        }
+        navigator_rows = [
+            row for row in runtime_rows
+            if str(row.get("processName") or "").lower() in RUNTIME_BROWSER_PROCESS_NAMES
+        ]
+        plugin_rows = [
+            row for row in runtime_rows
+            if is_runtime_plugin_process_name(row.get("processName"))
+            or str(row.get("className") or "").lower() in {
+                "geckopluginwindow",
+                "geckofpsandboxchildwindow",
+            }
+        ]
+        new_runtime_handles = sorted(runtime_handles - baseline_runtime_handles)
+        seen_runtime_handles.update(runtime_handles)
         # Shell/terminal windows opened by a runtime are identified from the
         # enriched candidate rows.  This avoids scanning all process metadata
         # on every sample while preserving Navigator/plugin/shell counts.
@@ -1287,8 +1339,8 @@ def monitor_popup_windows(duration_ms, interval_ms):
         ]
         process_samples.append({
             "at": now_iso(),
-            "runtimeProcessCount": len(runtime_processes),
-            "navigatorProcessCount": sum(
+                "runtimeProcessCount": len(runtime_processes),
+                "navigatorProcessCount": sum(
                 str(row.get("processName") or "").lower() in RUNTIME_BROWSER_PROCESS_NAMES
                 for row in runtime_processes
             ),
@@ -1299,14 +1351,50 @@ def monitor_popup_windows(duration_ms, interval_ms):
             "runtimeProcesses": runtime_processes,
             **runtime_summary,
         })
+        runtime_window_count = len(runtime_rows)
+        navigator_window_count = len(navigator_rows)
+        plugin_window_count = len(plugin_rows)
+        runtime_process_count = len(runtime_processes)
+        # A healthy Flashpoint launch normally has one Navigator top-level
+        # window and at most one plugin child window.  More Navigator windows,
+        # multiple plugin windows, or a large runtime process fan-out are the
+        # signatures of the popup/reload storm reported by the user.  Keep the
+        # raw rows in every sample so a false positive can be diagnosed without
+        # rerunning the audit.
+        extra_runtime_window_count = max(
+            0,
+            (navigator_window_count - 1) +
+            max(0, plugin_window_count - 1) +
+            max(0, runtime_window_count - 2),
+        )
+        sample_popup_storm = (
+            navigator_window_count > 1
+            or plugin_window_count > 1
+            or runtime_window_count > 4
+            or runtime_process_count > 4
+        )
+        popup_storm_detected = popup_storm_detected or sample_popup_storm
+        max_runtime_window_count = max(max_runtime_window_count, runtime_window_count)
+        max_navigator_window_count = max(max_navigator_window_count, navigator_window_count)
+        max_plugin_window_count = max(max_plugin_window_count, plugin_window_count)
+        max_runtime_process_count = max(max_runtime_process_count, runtime_process_count)
         samples.append({
             "at": now_iso(),
             "visibleWindowCount": len(all_windows),
             "shellPopupCount": len(shell_processes),
-            **{
-                key: runtime_summary[key]
-                for key in ("runtimeWindowCount", "navigatorWindowCount", "pluginWindowCount")
-            },
+            "runtimeWindowCount": runtime_window_count,
+            "navigatorWindowCount": navigator_window_count,
+            "pluginWindowCount": plugin_window_count,
+            "runtimeWindowHandles": sorted(runtime_handles),
+            "navigatorWindowHandles": sorted(
+                int(row.get("handle") or 0) for row in navigator_rows
+            ),
+            "pluginWindowHandles": sorted(
+                int(row.get("handle") or 0) for row in plugin_rows
+            ),
+            "newRuntimeWindowHandles": new_runtime_handles,
+            "extraRuntimeWindowCount": extra_runtime_window_count,
+            "popupStormDetected": sample_popup_storm,
         })
         for row in shell_processes:
             process_key = f"{row.get('processName')}:{row.get('pid')}"
@@ -1319,7 +1407,10 @@ def monitor_popup_windows(duration_ms, interval_ms):
                     **row,
                     "firstSeenAt": now_iso(),
                 }
-        time.sleep(interval_ms / 1000.0)
+        remaining = end_at - time.time()
+        if remaining <= 0:
+            break
+        time.sleep(min(interval_ms / 1000.0, max(0.0, remaining)))
 
     return {
         "generatedAt": now_iso(),
@@ -1329,8 +1420,20 @@ def monitor_popup_windows(duration_ms, interval_ms):
             "visibleShellPopupCount": len(visible_shell),
             "shellPopupSeen": bool(seen_shell) or bool(visible_shell),
             "maxVisibleWindowCount": max((sample["visibleWindowCount"] for sample in samples), default=0),
+            "maxRuntimeWindowCount": max_runtime_window_count,
+            "maxNavigatorWindowCount": max_navigator_window_count,
+            "maxPluginWindowCount": max_plugin_window_count,
+            "maxRuntimeProcessCount": max_runtime_process_count,
+            "newRuntimeWindowCount": len(seen_runtime_handles - baseline_runtime_handles),
+            "newRuntimeWindowHandles": sorted(seen_runtime_handles - baseline_runtime_handles),
+            "unexpectedRuntimeWindowCount": max(
+                (sample.get("extraRuntimeWindowCount", 0) for sample in samples),
+                default=0,
+            ),
+            "popupStormDetected": popup_storm_detected,
         },
         "baselineWindowCount": len(baseline_windows),
+        "baselineRuntimeWindowHandles": sorted(baseline_runtime_handles),
         "visibleShellPopups": list(visible_shell.values()),
         "shellPopups": list(seen_shell.values()),
         "samples": samples,
@@ -1692,6 +1795,7 @@ def command_capture_window(args):
         return target, raw, clipped, clip
 
     target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
+    client_bbox = get_client_bbox(parent_hwnd)
     topmost_applied = False
     try:
         if getattr(args, "no_foreground", False):
@@ -1717,6 +1821,14 @@ def command_capture_window(args):
         "placementError": placement_error,
         "layoutSync": layout_sync,
         "captureMode": "client" if args.client_only else "window",
+        "clientBox": {
+            "left": int(client_bbox[0]),
+            "top": int(client_bbox[1]),
+            "right": int(client_bbox[2]),
+            "bottom": int(client_bbox[3]),
+            "width": int(max(0, client_bbox[2] - client_bbox[0])),
+            "height": int(max(0, client_bbox[3] - client_bbox[1])),
+        },
         "topmostDuringCapture": bool(topmost_applied),
         "captureBox": {
             "left": int(bbox[0]),
@@ -1807,6 +1919,7 @@ def command_capture_window_sequence(args):
         return target, raw, clipped, clip
 
     target_row, raw_bbox, bbox, capture_clip = refresh_capture_target()
+    client_bbox = get_client_bbox(parent_hwnd)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1852,6 +1965,14 @@ def command_capture_window_sequence(args):
         "placement": placement,
         "layoutSync": layout_sync,
         "captureMode": "client" if args.client_only else "window",
+        "clientBox": {
+            "left": int(client_bbox[0]),
+            "top": int(client_bbox[1]),
+            "right": int(client_bbox[2]),
+            "bottom": int(client_bbox[3]),
+            "width": int(max(0, client_bbox[2] - client_bbox[0])),
+            "height": int(max(0, client_bbox[3] - client_bbox[1])),
+        },
         "captureBox": {
             "left": int(bbox[0]),
             "top": int(bbox[1]),
@@ -2219,6 +2340,131 @@ def command_analyze_popup_close_button(args):
         sys.exit(2)
 
 
+def detect_pause_icon_bars(
+    luma,
+    saturation,
+    *,
+    min_median_luma=190.0,
+    min_run_ratio=0.45,
+    min_bar_width=2,
+    max_bar_width=9,
+    min_bar_gap=2,
+    max_bar_gap=16,
+    min_column_support=0.35,
+    min_row_support=0.45,
+    max_saturation=60.0,
+):
+    """Return evidence for the two vertical bars of the pause control.
+
+    The old detector accepted any pale connected edge in the top-left
+    quadrant.  Several legitimate scene objects (clouds, lamps, ropes, and
+    windows) satisfy that rule.  The pause icon is a much stronger shape:
+    two similarly sized vertical bars, separated by a small gap, with both
+    bars remaining visible across the middle of the candidate.
+    """
+    height, width = luma.shape[:2]
+    if height < 8 or width < 8:
+        return {
+            "ok": False,
+            "reason": "candidate_too_small",
+            "medianLuma": round(float(np.median(luma)), 3),
+            "groups": [],
+            "best": None,
+        }
+
+    median_luma = float(np.median(luma))
+    mean_saturation = float(np.mean(saturation))
+    # Anti-aliased controls can be only a few luminance points brighter than
+    # their background.  A small relative threshold catches those pixels
+    # while excluding broad flat regions.
+    bright_mask = (
+        (luma >= median_luma + 2.0)
+        & (saturation <= float(max_saturation))
+    )
+    column_support = bright_mask.mean(axis=0)
+    candidate_columns = np.where(column_support >= float(min_column_support))[0]
+    groups = []
+    for column in candidate_columns:
+        column = int(column)
+        if not groups or column > groups[-1][-1] + 1:
+            groups.append([column])
+        else:
+            groups[-1].append(column)
+    groups = [
+        group
+        for group in groups
+        if int(min_bar_width) <= len(group) <= int(max_bar_width)
+    ]
+
+    best = None
+    best_groups = None
+    for first_index, first in enumerate(groups):
+        for second in groups[first_index + 1:]:
+            gap = int(second[0] - first[-1] - 1)
+            if gap < int(min_bar_gap) or gap > int(max_bar_gap):
+                continue
+            # Do not use the candidate's outer border as one of the bars.
+            if first[0] < 2 or second[-1] > width - 3:
+                continue
+            first_support = bright_mask[:, first[0]:first[-1] + 1].mean(axis=1)
+            second_support = bright_mask[:, second[0]:second[-1] + 1].mean(axis=1)
+            both_visible = (
+                (first_support >= float(min_row_support))
+                & (second_support >= float(min_row_support))
+            )
+            longest_run = 0
+            current_run = 0
+            for visible in both_visible:
+                if visible:
+                    current_run += 1
+                    longest_run = max(longest_run, current_run)
+                else:
+                    current_run = 0
+            run_ratio = longest_run / float(max(1, height))
+            score = (
+                run_ratio,
+                min(len(first), len(second)),
+                -abs(len(first) - len(second)),
+                -abs(gap - 4),
+            )
+            if best is None or score > best:
+                best = score
+                best_groups = {
+                    "first": [int(first[0]), int(first[-1])],
+                    "second": [int(second[0]), int(second[-1])],
+                    "gap": gap,
+                    "longestRun": int(longest_run),
+                    "runRatio": round(float(run_ratio), 4),
+                    "firstWidth": len(first),
+                    "secondWidth": len(second),
+                }
+
+    ok = bool(
+        best_groups
+        and median_luma >= float(min_median_luma)
+        and best_groups["runRatio"] >= float(min_run_ratio)
+    )
+    return {
+        "ok": ok,
+        "reason": None if ok else "two_vertical_bars_not_found",
+        "medianLuma": round(median_luma, 3),
+        "meanSaturation": round(mean_saturation, 3),
+        "groups": [[int(group[0]), int(group[-1])] for group in groups],
+        "best": best_groups,
+        "thresholds": {
+            "minMedianLuma": float(min_median_luma),
+            "minRunRatio": float(min_run_ratio),
+            "minBarWidth": int(min_bar_width),
+            "maxBarWidth": int(max_bar_width),
+            "minBarGap": int(min_bar_gap),
+            "maxBarGap": int(max_bar_gap),
+            "minColumnSupport": float(min_column_support),
+            "minRowSupport": float(min_row_support),
+            "maxSaturation": float(max_saturation),
+        },
+    }
+
+
 def command_analyze_pause_artifact(args):
     image = Image.open(args.input).convert("RGB")
     width, height = image.size
@@ -2300,11 +2546,37 @@ def command_analyze_pause_artifact(args):
             density = float(crop.mean()) if crop.size else 0.0
             if density < float(args.min_density) or density > float(args.max_density):
                 continue
+            # Scene artwork frequently contains pale, high-contrast shapes in
+            # the same top-left region as the pause control.  A real pause
+            # control has a distinctive pair of bright vertical bars inside
+            # the rounded button.  Require that structure before treating an
+            # otherwise plausible component as a pause artifact.  The test is
+            # relative to the candidate's own luminance so it survives
+            # different scene palettes and window scaling.
+            candidate_rgb = rgb[comp["top"]:comp["bottom"], comp["left"]:comp["right"], :]
+            candidate_luma = candidate_rgb.mean(axis=2)
+            candidate_sat = candidate_rgb.max(axis=2) - candidate_rgb.min(axis=2)
+            pause_icon_evidence = detect_pause_icon_bars(
+                candidate_luma,
+                candidate_sat,
+                min_median_luma=float(args.pause_icon_min_median_luma),
+                min_run_ratio=float(args.pause_icon_min_run_ratio),
+                min_bar_width=int(args.pause_icon_min_bar_width),
+                max_bar_width=int(args.pause_icon_max_bar_width),
+                min_bar_gap=int(args.pause_icon_min_bar_gap),
+                max_bar_gap=int(args.pause_icon_max_bar_gap),
+                min_column_support=float(args.pause_icon_min_column_support),
+                min_row_support=float(args.pause_icon_min_row_support),
+                max_saturation=float(args.pause_icon_max_saturation),
+            )
+            if not pause_icon_evidence["ok"]:
+                continue
             candidates.append({
                 **comp,
                 "source": source_name,
                 "aspect": round(aspect, 4),
                 "density": round(density, 6),
+                "pauseIconEvidence": pause_icon_evidence,
             })
     candidates.sort(key=lambda comp: (comp["centerY"], comp["centerX"], -comp["pixels"]))
     checks = [
@@ -2592,12 +2864,25 @@ def command_analyze_map_popup_guard(args):
         and right_margin >= min_margin
         and center_delta_ratio <= float(args.max_center_x_delta_ratio)
     )
+    # A few legacy AS2 shells render the map panel as a full-height sheet
+    # behind the blue frame.  The panel is then clipped by the Navigator
+    # client and its pale-paper pixel share is lower than the contained-popup
+    # threshold even though the shape evidence is unambiguous.  Keep a
+    # conservative lower bound for that layout instead of disabling the
+    # paper check globally.
+    clipped_map_min_paper_pct = max(6.0, min(float(args.min_paper_pct), float(args.min_paper_pct) * 0.72))
+    paper_pct_ok = (
+        paper_pct >= float(args.min_paper_pct)
+        or (full_height_clipped_map and paper_pct >= clipped_map_min_paper_pct)
+    )
     checks = [
         {
             "name": "paper_pixel_pct",
-            "ok": paper_pct >= float(args.min_paper_pct),
+            "ok": paper_pct_ok,
             "observedPct": paper_pct,
             "minPct": float(args.min_paper_pct),
+            "clippedMapMinPct": clipped_map_min_paper_pct,
+            "allowFullHeightClippedMap": full_height_clipped_map,
         },
         {
             "name": "paper_width_ratio",
@@ -4640,6 +4925,15 @@ def main():
     pause_artifact_parser.add_argument("--min-edge-brightness", type=int, default=170)
     pause_artifact_parser.add_argument("--max-edge-channel-spread", type=int, default=110)
     pause_artifact_parser.add_argument("--min-edge-pixels", type=int, default=12)
+    pause_artifact_parser.add_argument("--pause-icon-min-median-luma", type=float, default=190.0)
+    pause_artifact_parser.add_argument("--pause-icon-min-run-ratio", type=float, default=0.45)
+    pause_artifact_parser.add_argument("--pause-icon-min-bar-width", type=int, default=2)
+    pause_artifact_parser.add_argument("--pause-icon-max-bar-width", type=int, default=9)
+    pause_artifact_parser.add_argument("--pause-icon-min-bar-gap", type=int, default=2)
+    pause_artifact_parser.add_argument("--pause-icon-max-bar-gap", type=int, default=16)
+    pause_artifact_parser.add_argument("--pause-icon-min-column-support", type=float, default=0.35)
+    pause_artifact_parser.add_argument("--pause-icon-min-row-support", type=float, default=0.45)
+    pause_artifact_parser.add_argument("--pause-icon-max-saturation", type=float, default=60.0)
     pause_artifact_parser.add_argument("--no-fail-exit", action="store_true")
     pause_artifact_parser.set_defaults(func=command_analyze_pause_artifact)
 

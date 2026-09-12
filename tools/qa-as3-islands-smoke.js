@@ -1143,6 +1143,9 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         await sleep(Math.max(0, Number(steps[index].waitMs)));
       }
     }
+    const actionFailures = actions.filter((action) =>
+      !action?.result || action.result.ok === false
+    );
     const lastAction = actions[actions.length - 1] || null;
     click = lastAction?.result || null;
     clickPoint = lastAction?.clickPoint || null;
@@ -1262,7 +1265,7 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
       : !flagEnabled(args.requireInteractionEvidence);
     const requiredEvidenceOk = !flagEnabled(args.requireInteractionEvidence) || evidenceOk;
     return {
-      ok: stageStable && requiredEvidenceOk,
+      ok: stageStable && requiredEvidenceOk && actionFailures.length === 0,
       skipped: false,
       target,
       clickPoint,
@@ -1293,11 +1296,18 @@ async function clickInteraction({ runDir, safeStem, runtime, runtimeWindow, capt
         ok: evidenceOk,
         checks: evidenceChecks
       },
+      actionFailures: actionFailures.map((action) => ({
+        step: action.step,
+        artifactPath: action.artifactPath,
+        result: action.result || null
+      })),
       stageStable,
       reason: stageStable
-        ? requiredEvidenceOk
-          ? null
-          : "interaction_evidence_missing"
+        ? actionFailures.length > 0
+          ? "interaction_action_failed"
+          : requiredEvidenceOk
+            ? null
+            : "interaction_evidence_missing"
         : "post_click_stage_missing",
       artifacts: {
         clickPath,
@@ -1898,11 +1908,14 @@ function collectAggregateCandidates(qaDir) {
       continue;
     }
     for (const islandReport of topLevelReport.reports) {
-      if (!isPassingIslandReport(islandReport)) {
+      if (!islandReport?.canonicalKey ||
+          islandReport.projectRevision !== PROJECT_REVISION ||
+          !Array.isArray(islandReport.failedChecks)) {
         continue;
       }
       candidates.push({
         key: islandReport.canonicalKey,
+        passing: isPassingIslandReport(islandReport),
         report: {
           ...islandReport,
           aggregateSource: {
@@ -1925,20 +1938,19 @@ function chooseAggregateReports({ expectedKeys, candidates, preferAudio }) {
       continue;
     }
     const existing = byKey.get(candidate.key);
-    if (!existing) {
+    if (!existing ||
+        candidate.sortTime > existing.sortTime ||
+        (candidate.sortTime === existing.sortTime &&
+          (candidate.passing && !existing.passing))) {
       byKey.set(candidate.key, candidate);
       continue;
     }
-    const candidateHasAudio = Boolean(candidate.report.audio?.active);
-    const existingHasAudio = Boolean(existing.report.audio?.active);
-    if (preferAudio && candidateHasAudio !== existingHasAudio) {
-      if (candidateHasAudio) {
+    if (candidate.sortTime === existing.sortTime && preferAudio) {
+      const candidateHasAudio = Boolean(candidate.report.audio?.active);
+      const existingHasAudio = Boolean(existing.report.audio?.active);
+      if (candidateHasAudio && !existingHasAudio) {
         byKey.set(candidate.key, candidate);
       }
-      continue;
-    }
-    if (candidate.sortTime > existing.sortTime) {
-      byKey.set(candidate.key, candidate);
     }
   }
   return [...expectedKeys].map((key) => byKey.get(key)).filter(Boolean);

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-24T01:22:48.944Z",
+  "generatedAt": "2026-09-12T00:04:09.072Z",
   "sourceGroup": "as2",
   "islandIds": [],
   "assetPatterns": [],
@@ -41,7 +41,7 @@
     "wimpy-boardwalk",
     "wimpy-wonderland"
   ],
-  "assetsPatched": 117,
+  "assetsPatched": 118,
   "externalTextAssets": [
     {
       "assetId": "b8fc4b2ccb148fa4d73d50f83fcee75575b64e9e",
@@ -643,9 +643,9 @@
     {
       "assetId": "as2-shared:gameplay-hud-popup-anchor",
       "assetPath": "content/www.poptropica.com/gameplay.swf",
-      "outputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
+      "outputPath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay.swf",
       "aliasAssetPath": "content/www.poptropica.com/gameplay-zh.swf",
-      "aliasOutputPath": "E:\\Poptropica\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay-zh.swf",
+      "aliasOutputPath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\gameplay-zh.swf",
       "changed": true,
       "gameplayChanged": true,
       "aliasSynced": true,
@@ -664,9 +664,20 @@
         "changed": false,
         "reason": "already-bitmap-popup-close-label-shape",
         "shapeId": 256,
-        "sourceShapePath": "E:\\Poptropica\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
+        "sourceShapePath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\tmp\\as2-gameplay-hud-popup\\popup-close-shape-export\\256.svg"
       },
       "notes": "Anchors AS2 gameplay HUD by visible icon bounds, hides HUD while popup/map/inventory overlays are open, localizes the native popup close text, replaces the static vector CLOSE label asset, and throttles active/native AS2 dialogue re-entry."
+    },
+    {
+      "assetId": "poptropolis:select-tribe-script",
+      "assetPath": "content/www.poptropica.com/popups/Tribal/selectTribe.swf",
+      "outputPath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\packs\\zh-CN\\as2\\swf\\content\\www.poptropica.com\\popups\\Tribal\\selectTribe.swf",
+      "sourcePath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\extracted\\as2\\5861ac039716f6a4aeafdf4247b34556eb34cd9d\\content\\www.poptropica.com\\popups\\Tribal\\selectTribe.swf",
+      "sourceHash": "543557714d0f7167e1a0b42da70b83ba9abccb15",
+      "outputHash": "52ccc365f1bb0f6f1c9d9c1b59694ba1a7b8a3ab",
+      "changed": true,
+      "replaceTarget": "\\frame_2\\DoAction",
+      "notes": "Fixes the original Poptropolis selectTribe handler reference to the selected button's tribe name so the START button and popup close chain remain usable."
     }
   ],
   "pendingSwfAssets": [],
@@ -678,18 +689,18 @@
     }
   ],
   "runtimeZip": {
-    "status": "ready",
+    "status": "reused",
     "sourceZip": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\AS2.zip",
     "runtimeZipPath": "E:\\AIALRA-POPTROPICA-REMOTE\\POPTROPICA_FLASH\\runtime-data\\patched-zips\\as2-runtime.zip",
-    "replacementCount": 115,
+    "replacementCount": 116,
     "swfRuntimeOverrides": "enabled"
   },
   "superPowerSceneLoadCheckPatch": {
-    "generatedAt": "2026-06-24T04:37:41.885Z",
+    "generatedAt": "2026-09-11T14:25:30.327Z",
     "reportPath": "runtime-data/qa/as2/super-power-scene-loadcheck-patch.json",
     "changedCount": 1,
     "changedSwfs": [
-      "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneBank.swf"
+      "packs/zh-CN/as2/swf/content/www.poptropica.com/scenes/islandSuper/sceneDownTown.swf"
     ]
   }
 }

@@ -212,7 +212,7 @@ function resolveWindowSize(args = {}) {
 }
 
 function resolveQaWindowOptions(args = {}) {
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   const noForeground = flagEnabled(args.noForeground || args["no-foreground"] || args.noForegroundCapture || args["no-foreground-capture"] || process.env.POPTROPICA_QA_NO_FOREGROUND);
   const postMessageClicks = !flagEnabled(args.allowMouseClicks || args["allow-mouse-clicks"]) && !flagEnabled(args.cursorClicks || args["cursor-clicks"]);
   const size = resolveWindowSize(args);

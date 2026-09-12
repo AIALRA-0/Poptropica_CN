@@ -500,7 +500,7 @@ function patchFrameOne(content) {
       "function zhPopupUsesTightViewport(popupName)",
       "{",
       "   var _loc2_ = String(popupName).toLowerCase();",
-      "   if(_loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+      "   if(_loc2_.indexOf(\"tribal/\") >= 0 || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
       "   {",
       "      return false;",
       "   }",
@@ -807,7 +807,7 @@ function patchFrameOne(content) {
       "function zhPopupUsesTightViewport(popupName)",
       "{",
       "   var _loc2_ = String(popupName).toLowerCase();",
-      "   if(_loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
+       "   if(_loc2_.indexOf(\"tribal/\") >= 0 || _loc2_ == \"inventory.swf\" || _loc2_ == \"wardrobe.swf\" || _loc2_ == \"games.swf\" || _loc2_ == \"getcard.swf\" || _loc2_ == \"givecard.swf\" || _loc2_ == \"malidocs.swf\")",
       "   {",
       "      return false;",
       "   }",
@@ -1064,17 +1064,39 @@ function patchFrameOne(content) {
         "         return true;",
         "      }",
         "   }",
-        "   if(_loc4_ >= 520 && _loc4_ <= 950 && _loc5_ >= -130 && _loc5_ <= 130)",
-        "   {",
-        "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source + \"Fallback\",0);",
-        "      _root.closePopup();",
-        "      return true;",
-        "   }",
         "   return false;",
         "}",
         "function zhHidePopupCloseHit()"
       ].join("\n"),
       "popup close global mouse helper"
+    );
+  }
+  if (!next.includes("function zhMouseInsidePopupClip()")) {
+    next = replaceRequired(
+      next,
+      "function zhPopupLooksOpen()",
+      [
+        "function zhMouseInsidePopupClip()",
+        "{",
+        "   var _loc1_;",
+        "   var _loc2_;",
+        "   var _loc3_;",
+        "   if(_root == undefined || popupClip == undefined || popupClip._visible == false || popupClip.getBounds == undefined)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   _loc1_ = _root._xmouse;",
+        "   _loc2_ = _root._ymouse;",
+        "   _loc3_ = popupClip.getBounds(_root);",
+        "   if(_loc3_ == undefined)",
+        "   {",
+        "      return false;",
+        "   }",
+        "   return _loc1_ >= Number(_loc3_.xMin) && _loc1_ <= Number(_loc3_.xMax) && _loc2_ >= Number(_loc3_.yMin) && _loc2_ <= Number(_loc3_.yMax);",
+        "}",
+        "function zhPopupLooksOpen()"
+      ].join("\n"),
+      "popup content mouse hit helper"
     );
   }
   const popupCloseMouseHelper = [
@@ -1105,12 +1127,6 @@ function patchFrameOne(content) {
     "         _root.closePopup();",
     "         return true;",
     "      }",
-    "   }",
-    "   if((_root.__zhPopupHudHidden == true || zhPopupLooksOpen()) && _loc3_ >= 520 && _loc3_ <= 950 && _loc4_ >= -130 && _loc4_ <= 130)",
-    "   {",
-    "      loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=PopupClosePressed&target=\" + source + \"Fallback\",0);",
-    "      _root.closePopup();",
-    "      return true;",
     "   }",
     "   return false;",
     "}"
@@ -1339,7 +1355,7 @@ function patchFrameOne(content) {
       "direct map ensure popup gate"
     );
   }
-  if (!next.includes("zhMapMouseListenerBlockedByPopup") && !next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
+  if (false && !next.includes("zhMapMouseListenerBlockedByPopup") && !next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
     next = replaceRequired(
       next,
       [
@@ -1361,7 +1377,7 @@ function patchFrameOne(content) {
       "direct map mouse listener popup gate"
     );
   }
-  if (!next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
+  if (false && !next.includes("zhTryClosePopupFromMouse(\"mapMouseListener\")")) {
     next = replaceRequired(
       next,
       [
@@ -1387,7 +1403,7 @@ function patchFrameOne(content) {
       "map mouse listener popup close bridge"
     );
   }
-  if (!next.includes("mapMouseListenerBlockedMap") && !next.includes("MapMouseListenerIgnoredPopup") && !next.includes("MapResetRootBridge")) {
+  if (false && !next.includes("mapMouseListenerBlockedMap") && !next.includes("MapMouseListenerIgnoredPopup") && !next.includes("MapResetRootBridge")) {
     next = replaceRequired(
       next,
       [
@@ -1434,6 +1450,114 @@ function patchFrameOne(content) {
   next = next.replace(
     "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup\",0);",
     "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);"
+  );
+  if (!/__zhMapMouseListener\.onMouseDown = function\(\)[\s\S]*?if\(zhMouseInsidePopupClip\(\)\)/u.test(next)) {
+    const mapPopupHitPattern = /(_root\.__zhMapMouseListener\.onMouseDown = function\(\)\r?\n\s*\{\r?\n\s*if\(_root\.__zhPopupHudHidden == true \|\| zhPopupLooksOpen\(\)\)\r?\n\s*\{\r?\n)/u;
+    if (!mapPopupHitPattern.test(next)) {
+      throw new Error("Unable to locate AS2 map mouse listener popup branch.");
+    }
+    next = next.replace(
+      mapPopupHitPattern,
+      [
+        "$1",
+        "            if(zhMouseInsidePopupClip())",
+        "            {",
+        "               return undefined;",
+        "            }",
+        ""
+      ].join("\n")
+    );
+  }
+  // Keep the popup hit check inside the global listener without collapsing the
+  // branch into an unconditional return. The previous normalization erased
+  // the surrounding conditional and made every popup click invisible to the
+  // loaded SWF.
+  next = next.replace(
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            return undefined;",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))"
+    ].join("\n"),
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            if(zhMouseInsidePopupClip() == true)",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))"
+    ].join("\n")
+  );
+  next = next.replace(
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            if(zhMouseInsidePopupClip() == true)",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))"
+    ].join("\n"),
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            if(zhMouseInsidePopupClip() == true)",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))"
+    ].join("\n")
+  );
+  // Repair any older generated SWF that contains the broken unreachable
+  // branch produced by the former patch implementation.
+  next = next.replace(
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            return undefined;",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+      "            {",
+      "               return undefined;"
+    ].join("\n"),
+    [
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            if(zhMouseInsidePopupClip() == true)",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+      "            {",
+      "               return undefined;"
+    ].join("\n")
+  );
+  // FFDec can emit the mouse helper with stale temporary locals when an older
+  // generated script is re-exported. Replace that body with a self-contained
+  // bounds check before rebuilding the SWF.
+  next = next.replace(
+    /function zhMouseInsidePopupClip\(\)\r?\n\{\r?\n[\s\S]*?\r?\n\}\r?\nfunction zhPopupLooksOpen\(\)/u,
+    [
+      "function zhMouseInsidePopupClip()",
+      "{",
+      "   var _loc1_;",
+      "   var _loc2_;",
+      "   var _loc3_;",
+      "   if(_root == undefined || popupClip == undefined || popupClip._visible == false || popupClip.getBounds == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   _loc1_ = _root._xmouse;",
+      "   _loc2_ = _root._ymouse;",
+      "   _loc3_ = popupClip.getBounds(_root);",
+      "   if(_loc3_ == undefined)",
+      "   {",
+      "      return false;",
+      "   }",
+      "   return _loc1_ >= Number(_loc3_.xMin) && _loc1_ <= Number(_loc3_.xMax) && _loc2_ >= Number(_loc3_.yMin) && _loc2_ <= Number(_loc3_.yMax);",
+      "}",
+      "function zhPopupLooksOpen()"
+    ].join("\n")
   );
   if (!/MapResetRootBridge/iu.test(next)) {
     next = next.replace(
@@ -2143,11 +2267,27 @@ function patchFrameOne(content) {
   next = next.replace("if(_root.__zhTightPopupFitTicks > 80)", "if(_root.__zhTightPopupFitTicks > 600)");
   next = next.replace(
     'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf")',
-    'if(_loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
+    'if(_loc2_.indexOf("tribal/") >= 0 || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    'if(_loc2_ == "map.swf" || _loc2_ == "travelmap.swf" || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")',
+    'if(_loc2_.indexOf("tribal/") >= 0 || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    'if(_loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")',
+    'if(_loc2_.indexOf("tribal/") >= 0 || _loc2_ == "inventory.swf" || _loc2_ == "wardrobe.swf" || _loc2_ == "games.swf" || _loc2_ == "getcard.swf" || _loc2_ == "givecard.swf" || _loc2_ == "malidocs.swf")'
   );
   next = next.replace(
     'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf")',
-    'if(_loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
+    'if(_loc1_.indexOf("tribal/") >= 0 || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    'if(_loc1_ == "map.swf" || _loc1_ == "travelmap.swf" || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")',
+    'if(_loc1_.indexOf("tribal/") >= 0 || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
+  );
+  next = next.replace(
+    'if(_loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")',
+    'if(_loc1_.indexOf("tribal/") >= 0 || _loc1_ == "inventory.swf" || _loc1_ == "wardrobe.swf" || _loc1_ == "games.swf" || _loc1_ == "getcard.swf" || _loc1_ == "givecard.swf" || _loc1_ == "malidocs.swf")'
   );
   next = next.replace(
     [
@@ -3077,6 +3217,52 @@ function patchFrameOne(content) {
   next = next.replace(
     /(\n   [A-Za-z_$][\w$]* = zhGameplayLogicalRight\(\);\n   [A-Za-z_$][\w$]* = 14;\n   )([A-Za-z_$][\w$]*) = 10;/u,
     "$1$2 = -32;"
+  );
+
+  // Normalize the global mouse listener as a whole. Older generated SWFs
+  // contained an unconditional `return` before the popup branch, which made
+  // all clicks inside loaded popups disappear. Keeping one canonical listener
+  // here also makes the patch idempotent across FFDec re-exports.
+  next = next.replace(
+    /      _root\.__zhMapMouseListener\.onMouseDown = function\(\)\r?\n      \{[\s\S]*?\r?\n      \};\r?\n      Mouse\.addListener\(_root\.__zhMapMouseListener\);/u,
+    [
+      "      _root.__zhMapMouseListener.onMouseDown = function()",
+      "      {",
+      "         if(_root.__zhPopupHudHidden == true || zhPopupLooksOpen())",
+      "         {",
+      "            if(zhMouseInsidePopupClip() == true)",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(zhTryClosePopupFromMouse(\"mapMouseListener\"))",
+      "            {",
+      "               return undefined;",
+      "            }",
+      "            if(_root.__zhPopupMode == \"map\" && _root.__zhMapPopupShowResetDialog != undefined && Number(_root._xmouse) >= 0 && Number(_root._xmouse) <= 130 && Number(_root._ymouse) >= 250 && Number(_root._ymouse) <= 390)",
+      "            {",
+      "               loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapResetRootBridge&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);",
+      "               _root.__zhMapPopupShowResetDialog();",
+      "               return undefined;",
+      "            }",
+      "            zhHideDirectMapButton();",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseListenerIgnoredPopup&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse),0);",
+      "            return undefined;",
+      "         }",
+      "         var _loc2_ = _root.__zhMapButtonBounds;",
+      "         if(_loc2_ != undefined && _root._ymouse <= 180 && _root._xmouse >= 600)",
+      "         {",
+      "            loadVariablesNum(\"/brain/track.php?cluster=QA&scene=Gameplay&event=MapMouseProbe&x=\" + Math.round(_root._xmouse) + \"&y=\" + Math.round(_root._ymouse) + \"&l=\" + Math.round(_loc2_.left) + \"&t=\" + Math.round(_loc2_.top) + \"&r=\" + Math.round(_loc2_.right) + \"&b=\" + Math.round(_loc2_.bottom),0);",
+      "         }",
+      "         if(_loc2_ != undefined && _root._xmouse >= _loc2_.left && _root._xmouse <= _loc2_.right && _root._ymouse >= _loc2_.top && _root._ymouse <= _loc2_.bottom)",
+      "         {",
+      "            if(_root.__zhDirectOpenMap != undefined)",
+      "            {",
+      "               _root.__zhDirectOpenMap();",
+      "            }",
+      "         }",
+      "      };",
+      "      Mouse.addListener(_root.__zhMapMouseListener);"
+    ].join("\n")
   );
 
   if (!next.includes("function zhSuppressGameMenuNow()")) {

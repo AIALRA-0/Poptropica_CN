@@ -4,6 +4,7 @@ const { execFileSync } = require("node:child_process");
 const paths = require("./lib/paths");
 const { writeJson } = require("./lib/fs-utils");
 const { derivePlayabilityStatus } = require("./lib/status-store");
+const { loadFinalAcceptanceEvidence } = require("./lib/final-acceptance");
 
 function readJson(filePath) {
   try {
@@ -73,11 +74,21 @@ function buildIslandStatus({ canonicalKey, source, revision, previous }) {
   const interactionPassed = interaction?.report?.ok === true &&
     Array.isArray(interaction.report.failedChecks) &&
     interaction.report.failedChecks.length === 0;
+  const finalEvidence = loadFinalAcceptanceEvidence({ source, canonicalKey, revision });
   const oldEvidence = previous?.acceptanceEvidence || {};
   const oldEvidenceCurrent =
     oldEvidence.sourceRevision === revision ||
     previous?.sourceRevision === revision;
-  const preservedEvidence = oldEvidenceCurrent ? oldEvidence : {};
+  // Route/save/chinese/window fields may only come from a dedicated,
+  // per-island final-acceptance record for this exact revision.  Never carry
+  // them forward from an older run or infer them from another island's
+  // aggregate smoke report.
+  const preservedEvidence = finalEvidence?.evidence
+    ? {
+        ...finalEvidence.evidence,
+        reportPaths: finalEvidence.reportPaths
+      }
+    : {};
   const evidence = {
     smokeVerified: smokePassed,
     interactionVerified: interactionPassed,
@@ -86,7 +97,7 @@ function buildIslandStatus({ canonicalKey, source, revision, previous }) {
     renderedChineseVerified: preservedEvidence.renderedChineseVerified === true,
     windowStableVerified: preservedEvidence.windowStableVerified === true,
     naturalAudioVerified: interaction?.report?.audio?.active === true ||
-      preservedEvidence.naturalAudioVerified === true
+      (oldEvidenceCurrent && oldEvidence.naturalAudioVerified === true)
   };
   const failed = Boolean((smoke && !smokePassed) || (interaction && !interactionPassed));
   const reportPaths = {
@@ -95,7 +106,8 @@ function buildIslandStatus({ canonicalKey, source, revision, previous }) {
     route: preservedEvidence.reportPaths?.route || preservedEvidence.routeReportPath || null,
     saveReload: preservedEvidence.reportPaths?.saveReload || preservedEvidence.saveReloadReportPath || null,
     chinese: preservedEvidence.reportPaths?.chinese || preservedEvidence.chineseReportPath || null,
-    window: preservedEvidence.reportPaths?.window || preservedEvidence.windowReportPath || null
+    window: preservedEvidence.reportPaths?.window || preservedEvidence.windowReportPath || null,
+    finalAcceptance: finalEvidence?.filePath || null
   };
   const playabilityStatus = derivePlayabilityStatus({
     available: true,
@@ -119,6 +131,7 @@ function buildIslandStatus({ canonicalKey, source, revision, previous }) {
       `${source.toUpperCase()} 证据按岛屿独立选择，当前版本为 ${revision}`,
       smokePassed ? "当前提交的启动烟测通过。" : "当前提交缺少通过的启动烟测证据。",
       interactionPassed ? "当前提交的基础交互通过。" : "当前提交缺少通过的基础交互证据。",
+      finalEvidence ? "存在当前提交的逐岛最终验收记录。" : "当前提交没有逐岛最终验收记录。",
       evidence.fullRouteVerified ? "完整路线有独立现场证据。" : "完整路线尚未有独立现场证据。",
       evidence.saveReloadVerified ? "退出、刷新和重启恢复有独立现场证据。" : "存档恢复尚未有独立现场证据。",
       evidence.renderedChineseVerified ? "中文现场有独立截图证据。" : "中文现场尚未有独立截图证据。",

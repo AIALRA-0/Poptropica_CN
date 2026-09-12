@@ -1,7 +1,16 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const { XMLParser } = require("fast-xml-parser");
+const fastXmlParser = require("fast-xml-parser");
+const XMLParser = fastXmlParser.XMLParser || class CompatibleXmlParser {
+  constructor(options = {}) {
+    this.options = options;
+  }
+
+  parse(content) {
+    return fastXmlParser.parse(content, this.options);
+  }
+};
 const { buildCatalogIndex } = require("./catalog");
 const { ensureDirSync, fileExists, hashFile, hashString, listFilesRecursive, removeDirContents } = require("./fs-utils");
 const { buildGenericKey, buildStringKey, looksTranslatable, normalizeSourceText } = require("./text-utils");

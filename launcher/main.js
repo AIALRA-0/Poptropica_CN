@@ -24,6 +24,7 @@ const {
 
 let mainWindow = null;
 let activeRuntime = null;
+let launchInFlight = false;
 const DEFAULT_RUNTIME_TARGET_MONITOR = "";
 const electronProfileRoot = path.join(
   paths.runtimeDataDir,
@@ -322,41 +323,54 @@ function createWindow() {
 }
 
 async function launchRuntimeWindow(sourceGroup) {
-  if (activeRuntime && !activeRuntime.killed) {
+  if (launchInFlight) {
     return {
       ok: false,
+      busy: true,
+      error: "已有启动操作正在进行，请等待当前窗口完成初始化。"
+    };
+  }
+  if (activeRuntime && activeRuntime.exitCode == null && !activeRuntime.killed) {
+    return {
+      ok: false,
+      busy: true,
       error: "已经有一个旧版游戏窗口在运行。请先关闭它，再切换 AS2 / AS3。"
     };
   }
 
-  emitStatus("launch", `正在准备 ${String(sourceGroup).toUpperCase()} 入口…`);
-  const plan = await buildRuntimePlan(sourceGroup);
-  if (!plan.ok) {
-    return plan;
-  }
-
-  const runtime = withWindowGeometryEnv(plan.windowGeometry, () =>
-    spawnManagedRuntime(loadConfig(), plan.source, plan.launchUrl, { detach: false })
-  );
-  activeRuntime = runtime.child;
-  activeRuntime.once("exit", () => {
-    activeRuntime = null;
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.show();
-      mainWindow.focus();
-      emitStatus("launch", "游戏窗口已经关闭，启动器回到了前台。");
+  launchInFlight = true;
+  try {
+    emitStatus("launch", `正在准备 ${String(sourceGroup).toUpperCase()} 入口…`);
+    const plan = await buildRuntimePlan(sourceGroup);
+    if (!plan.ok) {
+      return plan;
     }
-  });
 
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.hide();
+    const runtime = withWindowGeometryEnv(plan.windowGeometry, () =>
+      spawnManagedRuntime(loadConfig(), plan.source, plan.launchUrl, { detach: false })
+    );
+    activeRuntime = runtime.child;
+    activeRuntime.once("exit", () => {
+      activeRuntime = null;
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.show();
+        mainWindow.focus();
+        emitStatus("launch", "游戏窗口已经关闭，启动器回到了前台。");
+      }
+    });
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.hide();
+    }
+
+    return {
+      ...plan,
+      launched: true,
+      playerKey: runtime.playerKey
+    };
+  } finally {
+    launchInFlight = false;
   }
-
-  return {
-    ...plan,
-    launched: true,
-    playerKey: runtime.playerKey
-  };
 }
 
 ipcMain.handle("flash:get-state", async () => getState());

@@ -149,6 +149,30 @@ function applyVisibleQaDefaults(args) {
   };
 }
 
+function applyFullInteractionDefaults(args) {
+  if (!flagEnabled(args.fullInteraction || args["full-interaction"] || args.strictInteraction || args["strict-interaction"])) {
+    return args;
+  }
+  const defaults = {
+    requireSceneEvidence: true,
+    requireMapRequest: true,
+    requireMapClose: true,
+    requireHudAnchor: true,
+    requireVisualGuard: true,
+    requirePlayableCropGuard: true,
+    requireNoPauseArtifact: true,
+    dialogueClick: true,
+    requireInteractionEvidence: true
+  };
+  for (const [key, value] of Object.entries(defaults)) {
+    if (args[key] === undefined) {
+      args[key] = value;
+    }
+  }
+  args.fullInteraction = true;
+  return args;
+}
+
 function safeFileSegment(value) {
   return String(value || "")
     .replace(/[^a-z0-9_-]+/giu, "-")
@@ -712,11 +736,30 @@ function captureWindowMatchesRuntime(capture, runtime) {
 }
 
 function captureClickOffset(capture) {
+  const captureBox = capture?.captureBox;
+  const clientBox = capture?.clientBox;
+  if (
+    Number.isFinite(Number(captureBox?.left)) &&
+    Number.isFinite(Number(captureBox?.top)) &&
+    Number.isFinite(Number(clientBox?.left)) &&
+    Number.isFinite(Number(clientBox?.top))
+  ) {
+    // qa-helper click-window consumes coordinates relative to the parent
+    // client origin.  Captures may be cropped inside that client rectangle
+    // (Navigator removes its 110px chrome band and 24px bottom strip), so
+    // translate image pixels back to the parent client coordinate system.
+    return {
+      x: Math.round(Number(captureBox.left) - Number(clientBox.left)),
+      y: Math.round(Number(captureBox.top) - Number(clientBox.top))
+    };
+  }
   const mode = String(capture?.captureMode || "").toLowerCase();
-  if (mode === "client") {
-    // qa-helper click-window expects parent client coordinates. Client screenshots
-    // already use that origin, so adding the browser chrome offset clicks too low.
-    return { x: 0, y: 0 };
+  const className = String(capture?.window?.className || "").toLowerCase();
+  if (mode === "client" && className.includes("mozillawindowclass")) {
+    // Backward-compatible fallback for metadata captured before clientBox was
+    // added.  Keep this only as a compatibility path; new captures use the
+    // measured screen-space boxes above.
+    return { x: 0, y: 110 };
   }
   return { x: 0, y: 0 };
 }
@@ -863,7 +906,7 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
     } catch (error) {
       qaErrors.push(formatQaError(`${suffix || "initial"}-analyze-stage`, error));
     }
-    visualGuard = suffix === "map"
+    visualGuard = String(suffix || "").startsWith("map")
       ? runMapPopupGuard({
         screenshotPath,
         outputPath: visualGuardPath,
@@ -935,7 +978,7 @@ function captureAndAnalyze({ runDir, stem, suffix, runtime, runtimeWindow, qaErr
   };
 }
 
-async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qaErrors }) {
+async function captureHudAnchor({ config, runDir, entry, stem, initial, runtime: primaryRuntime, args, qaErrors }) {
   if (!shouldRequireHudAnchor(args)) {
     return { skipped: true, ok: true };
   }
@@ -963,7 +1006,16 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
     Number(ISLAND_SETTLE_MINIMUMS[entry?.canonicalKey] || 0)
   );
 
+  let hiddenRuntime = null;
   try {
+    // Run the HUD baseline serially. Both launches use the legacy Navigator
+    // profile; concurrent launches overwrite active-runtime.json and leave
+    // the primary process alive for the next island, causing the native
+    // "already running, but is not responding" popup.
+    if (primaryRuntime?.pid) {
+      stopNavigatorProcesses({ runtimePid: primaryRuntime.pid });
+      await sleep(500);
+    }
     const rowAnalysis = runPythonQa([
       "analyze-top-right-slot-row",
       "--input",
@@ -979,11 +1031,11 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       "--critical-slots",
       String(args.as2HudCriticalSlots || args["as2-hud-critical-slots"] || "inventory,wardrobe,map"),
       "--rightmost-center-inset",
-      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 88),
+      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 36),
       "--center-y-offset",
       String(args.as2HudCenterYOffset || args["as2-hud-center-y-offset"] || 20),
       "--slot-spacing",
-      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 86),
+      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 64),
       "--slot-size",
       String(args.as2HudSlotSize || args["as2-hud-slot-size"] || 76),
       "--min-edge-density",
@@ -999,9 +1051,9 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       timeoutMs: 30000
     });
     const launchHealth = await requestLaunchHealth(hiddenUrl, args);
-    const runtime = spawnRuntimeWithWindowGeometry(config, hiddenUrl, args);
+    hiddenRuntime = spawnRuntimeWithWindowGeometry(config, hiddenUrl, args);
     const runtimeWindow = runPythonQa(buildWaitArgs({
-      runtime,
+      runtime: hiddenRuntime,
       timeoutMs: windowTimeoutMs,
       outputPath: windowPath,
       args
@@ -1016,7 +1068,7 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
         runDir,
         stem: hiddenStem,
         suffix: "initial",
-        runtime,
+        runtime: hiddenRuntime,
         runtimeWindow,
         qaErrors,
         args: hiddenArgs
@@ -1065,8 +1117,8 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       ok: Boolean(rowAnalysis?.ok) && (flagEnabled(args.requireLegacyHudDiff || args["require-legacy-hud-diff"]) ? Boolean(analysis?.ok) : true),
       launchHealth: summarizeLaunchHealth(launchHealth),
       runtime: {
-        pid: runtime.pid || null,
-        processNames: runtime.processNames || []
+        pid: hiddenRuntime.pid || null,
+        processNames: hiddenRuntime.processNames || []
       },
       runtimeWindow,
       hidden: {
@@ -1101,6 +1153,11 @@ async function captureHudAnchor({ config, runDir, entry, stem, initial, args, qa
       },
       error: String(error.message || error)
     };
+  } finally {
+    if (hiddenRuntime?.pid) {
+      stopNavigatorProcesses({ runtimePid: hiddenRuntime.pid });
+      await sleep(500);
+    }
   }
 }
 
@@ -1126,11 +1183,11 @@ function analyzeHudRowForMapClick({ runDir, stem, initial, args, qaErrors }) {
       "--critical-slots",
       String(args.as2HudCriticalSlots || args["as2-hud-critical-slots"] || "inventory,wardrobe,map"),
       "--rightmost-center-inset",
-      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 88),
+      String(args.as2HudRightmostCenterInset || args["as2-hud-rightmost-center-inset"] || 36),
       "--center-y-offset",
       String(args.as2HudCenterYOffset || args["as2-hud-center-y-offset"] || 20),
       "--slot-spacing",
-      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 86),
+      String(args.as2HudSlotSpacing || args["as2-hud-slot-spacing"] || 64),
       "--slot-size",
       String(args.as2HudSlotSize || args["as2-hud-slot-size"] || 76),
       "--min-edge-density",
@@ -1619,26 +1676,48 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
     if (waitMs > 0) {
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
     }
-    const postWindow = runPythonQa(buildWaitArgs({
-      runtime,
-      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
-      outputPath: postWindowPath,
-      args
-    }), {
-      timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
-    });
-    const postCapture = captureAndAnalyze({
-      runDir,
-      stem,
-      suffix: "map",
-      runtime,
-      runtimeWindow: postWindow,
-      qaErrors,
-      args
-    });
+    const mapPollAttempts = Math.max(1, Number(args.mapPollAttempts || args["map-poll-attempts"] || 8));
+    const mapPollMs = Math.max(250, Number(args.mapPollMs || args["map-poll-ms"] || 900));
+    let postWindow = null;
+    let postCapture = null;
+    const mapPoll = [];
+    for (let attempt = 1; attempt <= mapPollAttempts; attempt += 1) {
+      if (attempt > 1) {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, mapPollMs);
+      }
+      postWindow = runPythonQa(buildWaitArgs({
+        runtime,
+        timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000),
+        outputPath: postWindowPath,
+        args
+      }), {
+        timeoutMs: Number(args.recaptureWindowTimeoutMs || 10000) + 5000
+      });
+      postCapture = captureAndAnalyze({
+        runDir,
+        stem,
+        suffix: attempt === 1 ? "map" : `map-attempt-${attempt}`,
+        runtime,
+        runtimeWindow: postWindow,
+        qaErrors,
+        args
+      });
+      mapPoll.push({
+        attempt,
+        visualGuardOk: Boolean(postCapture?.visualGuard?.ok),
+        stageStable: Boolean(postCapture?.stage?.stageRect),
+        screenshotPath: postCapture?.artifacts?.screenshotPath || null,
+        visualGuardPath: postCapture?.artifacts?.visualGuardPath || null,
+        ocrText: String(postCapture?.ocr?.text || "").slice(0, 240)
+      });
+      if (postCapture?.visualGuard?.ok) {
+        break;
+      }
+    }
     const segment = readLogSegment(GAME_SERVER_LOG_PATH, logOffset);
     fs.writeFileSync(logPath, segment, "utf8");
     const logSummary = summarizeLogSegment(segment);
+    const popupBlocked = /MapMouseListenerIgnoredPopup/iu.test(segment);
     const mapRequestSeen = Number(logSummary.mapRequestCount || 0) > 0;
     const stageStable = Boolean(postCapture.stage?.stageRect);
     const mapOpenedByVisualGuard = Boolean(postCapture.visualGuard?.ok);
@@ -1649,7 +1728,7 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
       // emitted in the post-click log segment.  A passing map visual guard is
       // stronger evidence than a duplicate request and must satisfy the
       // request requirement for those shells.
-      ok: stageStable && (!mapRequestRequired || mapRequestSeen || mapOpenedByVisualGuard),
+      ok: !popupBlocked && stageStable && (!mapRequestRequired || mapRequestSeen || mapOpenedByVisualGuard),
       skipped: false,
       clickPoint: point,
       clickPointSource: point.source || "stage-relative",
@@ -1663,12 +1742,16 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
       pauseArtifact: postCapture.pauseArtifact,
       ocr: postCapture.ocr,
       artifacts: postCapture.artifacts,
+      mapPoll,
       logSummary,
+      popupBlocked,
       mapRequestSeen,
       mapOpenedByVisualGuard,
       stageStable,
       reason: stageStable
-        ? mapRequestRequired && !mapRequestSeen
+        ? popupBlocked
+          ? "map_click_blocked_by_popup"
+          : mapRequestRequired && !mapRequestSeen
           ? "map_request_not_seen"
           : null
         : "post_click_stage_missing"
@@ -1683,8 +1766,11 @@ function clickMap({ runDir, stem, runtime, runtimeWindow, capture, stage, hudAnc
       clickPointSource: point.source || "stage-relative",
       clickPath,
       logPath,
+      popupBlocked: /MapMouseListenerIgnoredPopup/iu.test(segment),
       mapRequestSeen: Number(summarizeLogSegment(segment).mapRequestCount || 0) > 0,
-      reason: "map_click_or_recapture_failed",
+      reason: /MapMouseListenerIgnoredPopup/iu.test(segment)
+        ? "map_click_blocked_by_popup"
+        : "map_click_or_recapture_failed",
       error: String(error.message || error)
     };
   }
@@ -1996,6 +2082,7 @@ function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, a
   const stageRect = stage?.stageRect;
   const clickPath = path.join(runDir, `${stem}-dialogue-click.json`);
   const postWindowPath = path.join(runDir, `${stem}-dialogue-window.json`);
+  const diffPath = path.join(runDir, `${stem}-dialogue-diff.json`);
   if (!runtimeWindow?.match?.handle || !capture || !stageRect) {
     return {
       ok: false,
@@ -2091,9 +2178,37 @@ function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, a
     const text = String(postCapture.ocr?.text || "");
     const containsChinese = containsCjkText(text);
     const requireChinese = flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]);
+    let visualDiff = null;
+    try {
+      const beforePath = capture?.savedTo || capture?.screenshotPath || "";
+      const afterPath = postCapture?.artifacts?.screenshotPath || "";
+      if (beforePath && afterPath && fs.existsSync(beforePath) && fs.existsSync(afterPath)) {
+        visualDiff = runPythonQa([
+          "compare-images",
+          "--before",
+          beforePath,
+          "--after",
+          afterPath,
+          "--threshold",
+          String(args.interactionDiffThreshold || args["interaction-diff-threshold"] || 20),
+          "--output",
+          diffPath
+        ], {
+          timeoutMs: 30000
+        });
+      }
+    } catch (error) {
+      qaErrors.push(formatQaError("dialogue-diff", error));
+    }
+    const minChangedPixelRatio = Number(args.interactionMinChangedPixelRatio || args["interaction-min-changed-pixel-ratio"] || 0.002);
+    const changedPixelRatio = Number(visualDiff?.changedPixelRatio || 0);
+    const interactionChanged = changedPixelRatio >= minChangedPixelRatio;
+    const requireInteractionEvidence = flagEnabled(args.requireInteractionEvidence || args["require-interaction-evidence"]);
     const stageStable = Boolean(postCapture.stage?.stageRect);
     return {
-      ok: stageStable && (!requireChinese || containsChinese),
+      ok: stageStable &&
+        (!requireChinese || containsChinese) &&
+        (!requireInteractionEvidence || containsChinese || interactionChanged),
       skipped: false,
       clickPoint: point,
       secondClickPoint: secondClick ? secondPoint : null,
@@ -2107,13 +2222,19 @@ function clickDialogue({ runDir, stem, runtime, runtimeWindow, capture, stage, a
       visualGuard: postCapture.visualGuard,
       ocr: postCapture.ocr,
       artifacts: postCapture.artifacts,
+      visualDiff,
+      interactionChanged,
+      changedPixelRatio,
+      minChangedPixelRatio,
       containsChinese,
       ocrText: text.slice(0, 500),
       stageStable,
       reason: stageStable
         ? requireChinese && !containsChinese
-          ? "dialogue_chinese_not_seen"
-          : null
+        ? "dialogue_chinese_not_seen"
+        : requireInteractionEvidence && !containsChinese && !interactionChanged
+          ? "interaction_evidence_missing"
+        : null
         : "post_click_stage_missing"
     };
   } catch (error) {
@@ -2222,6 +2343,25 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         qaErrors
       })
     : { ok: true, skipped: true, containsChinese: false };
+  const interaction = dialogue.skipped
+    ? dialogue
+    : {
+        ...dialogue,
+        kind: "npc-or-item-probe",
+        evidence: {
+          ok: Boolean(dialogue.ok && dialogue.clickPath && dialogue.stageStable),
+          checks: [
+            {
+              name: "clickDelivered",
+              ok: Boolean(dialogue.clickPath)
+            },
+            {
+              name: "sceneRemainedVisible",
+              ok: Boolean(dialogue.stageStable)
+            }
+          ]
+        }
+      };
 
   const popupClose = flagEnabled(args.popupCloseClick || args["popup-close-click"])
     ? clickPopupClose({
@@ -2273,6 +2413,26 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
         args,
         qaErrors
       });
+  // Keep map-open and map-close evidence in the same island report.  The
+  // close action uses the actual map capture so it cannot silently click the
+  // underlying scene or a stale fixed coordinate.
+  const mapClose = map.skipped || !map.ok || !map.runtimeWindow?.match?.handle || !map.capture
+    ? {
+        ok: map.skipped,
+        skipped: map.skipped,
+        reason: map.skipped
+          ? "map_click_skipped"
+          : "map_close_requires_open_map"
+      }
+    : clickPopupClose({
+        runDir,
+        stem: `${stem}-map`,
+        runtime,
+        runtimeWindow: map.runtimeWindow,
+        capture: map.capture,
+        args,
+        qaErrors
+      });
 
   const mapResetConfirm = flagEnabled(args.mapResetClick || args["map-reset-click"])
     ? clickMapResetConfirm({
@@ -2301,6 +2461,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     entry,
     stem,
     initial: hudSource,
+    runtime,
     args: hudAnchorArgs,
     qaErrors
   });
@@ -2355,8 +2516,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   if (!preLoadingF11.skipped && flagEnabled(args.requireF11BeforeLoading || args["require-f11-before-loading"]) && !preLoadingF11.ok) {
     failedChecks.push("f11_before_loading_failed");
   }
-  if (!dialogue.skipped && !dialogue.ok) {
-    failedChecks.push("dialogue_click_failed");
+  if (!interaction.skipped && !interaction.ok) {
+    failedChecks.push("interaction_click_failed");
   }
   if (!dialogue.skipped && flagEnabled(args.requireDialogueChinese || args["require-dialogue-chinese"]) && !dialogue.containsChinese) {
     failedChecks.push("dialogue_chinese_not_seen");
@@ -2368,7 +2529,7 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     failedChecks.push("f11_fullscreen_size_visual_or_crop_guard_failed");
   }
   if (!map.skipped && !map.ok) {
-    failedChecks.push("map_post_message_click_failed");
+    failedChecks.push(map.reason || "map_post_message_click_failed");
   }
   if (!map.skipped && flagEnabled(args.requireMapRequest) && !map.mapRequestSeen && !map.mapOpenedByVisualGuard) {
     failedChecks.push("map_request_not_seen");
@@ -2378,6 +2539,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
   }
   if (!map.skipped && shouldRequireNoPauseArtifact(args) && !map.pauseArtifact?.ok) {
     failedChecks.push("map_pause_artifact_seen");
+  }
+  if (!mapClose.skipped && flagEnabled(args.requireMapClose || args["require-map-close"]) && !mapClose.ok) {
+    failedChecks.push(mapClose.reason || "map_close_failed");
   }
   if (!mapResetConfirm.skipped && flagEnabled(args.requireMapResetConfirm || args["require-map-reset-confirm"]) && !mapResetConfirm.ok) {
     failedChecks.push("map_reset_confirm_failed");
@@ -2423,6 +2587,8 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
       initialPauseArtifactAnnotatedPath: initial.artifacts.pauseArtifactAnnotatedPath || null,
       popupCloseScreenshotPath: popupClose.artifacts?.screenshotPath || null,
       popupCloseStagePath: popupClose.artifacts?.stagePath || null,
+      mapCloseScreenshotPath: mapClose.artifacts?.screenshotPath || null,
+      mapCloseStagePath: mapClose.artifacts?.stagePath || null,
       mapResetConfirmScreenshotPath: mapResetConfirm.artifacts?.screenshotPath || null,
       mapResetConfirmStagePath: mapResetConfirm.artifacts?.stagePath || null,
       hudAnchorPath: hudAnchor.artifacts?.analysisPath || null,
@@ -2458,7 +2624,9 @@ async function smokeEntry({ config, runDir, entry, index, total, args }) {
     },
     initialDialogue,
     dialogue,
+    interaction,
     popupClose,
+    mapClose,
     f11,
     map,
     mapResetConfirm,
@@ -2479,8 +2647,15 @@ function buildSummary(startedAt, reports) {
     total: reports.length,
     passed: reports.filter((report) => report.ok).length,
     failed: reports.filter((report) => !report.ok).length,
+    interactionsPassed: reports.filter((report) =>
+      report.interaction &&
+      !report.interaction.skipped &&
+      report.interaction.evidence?.ok === true
+    ).length,
     audioActive: reports.filter((report) => report.audio?.active).length,
     mapClicksPassed: reports.filter((report) => report.map && !report.map.skipped && report.map.ok && (report.map.mapRequestSeen || report.map.mapOpenedByVisualGuard)).length,
+    mapClosesPassed: reports.filter((report) => report.mapClose && !report.mapClose.skipped && report.mapClose.ok).length,
+    popupBlocked: reports.filter((report) => report.map?.popupBlocked === true).length,
     mapResetConfirmPassed: reports.filter((report) => report.mapResetConfirm && !report.mapResetConfirm.skipped && report.mapResetConfirm.ok).length,
     sceneEvidencePassed: reports.filter((report) => report.sceneEvidence?.ok).length,
     loadingCenterPassed: reports.filter((report) => report.loading && !report.loading.skipped && report.loading.observed && report.loading.centerOk).length,
@@ -2577,11 +2752,14 @@ function collectAggregateCandidates(qaDir) {
       continue;
     }
     for (const islandReport of topLevelReport.reports) {
-      if (!isPassingIslandReport(islandReport)) {
+      if (!islandReport?.canonicalKey ||
+          islandReport.projectRevision !== PROJECT_REVISION ||
+          !Array.isArray(islandReport.failedChecks)) {
         continue;
       }
       candidates.push({
         key: islandReport.canonicalKey,
+        passing: isPassingIslandReport(islandReport),
         report: {
           ...islandReport,
           aggregateSource: {
@@ -2636,7 +2814,12 @@ function chooseAggregateReports({ expectedKeys, candidates, args }) {
       continue;
     }
     const existing = byKey.get(candidate.key);
-    if (!existing || preferCandidate(candidate, existing, args)) {
+    // Select the newest report for each island before evaluating whether it
+    // passed.  Filtering to passing candidates first lets an older green
+    // report mask a newer failure from the same island, which violates the
+    // per-island evidence contract.
+    if (!existing || candidate.sortTime > existing.sortTime ||
+        (candidate.sortTime === existing.sortTime && preferCandidate(candidate, existing, args))) {
       byKey.set(candidate.key, candidate);
     }
   }
@@ -2700,8 +2883,10 @@ function formatAggregateStdout(report) {
     total: report.total,
     passed: report.passed,
     failed: report.failed,
+    interactionsPassed: report.interactionsPassed,
     audioActive: report.audioActive,
     mapClicksPassed: report.mapClicksPassed,
+    mapClosesPassed: report.mapClosesPassed,
     sceneEvidencePassed: report.sceneEvidencePassed,
     loadingCenterPassed: report.loadingCenterPassed,
     f11Passed: report.f11Passed,
@@ -2725,6 +2910,7 @@ function formatAggregateStdout(report) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  applyFullInteractionDefaults(args);
   args.visibleQaDefaults = applyVisibleQaDefaults(args);
   const config = loadConfig();
   const qaDir = ensureQaDir("as2", "interaction-smoke");

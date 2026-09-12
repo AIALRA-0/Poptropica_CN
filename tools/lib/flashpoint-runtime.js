@@ -1515,7 +1515,11 @@ function sanitizeNavigatorProfile(config) {
     // Flash-era SWFs can issue repeated plugin popup requests; keep them
     // inside the managed game window instead of spawning native windows.
     ["privacy.popups.disable_from_plugins", "1"],
-    ["dom.popup_allowed_events", "\"click auxclick pointerdown\""],
+    ["privacy.popups.showBrowserMessage", "false"],
+    ["dom.disable_open_during_load", "true"],
+    ["dom.popup_allowed_events", "\"\""],
+    ["browser.link.open_newwindow", "1"],
+    ["browser.link.open_newwindow.restriction", "2"],
     ["toolkit.legacyUserProfileCustomizations.stylesheets", "true"],
     ["layers.acceleration.disabled", "true"],
     ["gfx.direct2d.disabled", "true"],
@@ -1735,27 +1739,75 @@ function prepareNavigatorWindowGeometry(config, command) {
   writeText(xulstorePath, `${JSON.stringify(xulstore)}\r\n`);
 }
 
-function stopNavigatorProcesses() {
-  const script = [
+function stopNavigatorProcesses(options = {}) {
+  const requestedPid = Number(options.runtimePid || 0);
+  const markerPath = path.join(paths.managedWorkspaceDir, "active-runtime.json");
+  let markerPid = 0;
+  let markerOwnerPid = 0;
+  try {
+    const marker = readJson(markerPath, null);
+    markerPid = Number(marker?.pid || 0);
+    markerOwnerPid = Number(marker?.ownerPid || 0);
+  } catch (_error) {
+    markerPid = 0;
+    markerOwnerPid = 0;
+  }
+
+  // A project launch must never tear down another user's Flashpoint session.
+  // The old implementation killed every Navigator/secure-player process on
+  // the host, which was especially dangerous when multiple Codex jobs shared
+  // the same Windows desktop.  Cleanup is now scoped to the explicitly
+  // supplied PID or to the PID recorded by our managed runtime marker.  A
+  // caller that truly owns the whole desktop can opt into the legacy global
+  // cleanup with { allowGlobal: true } or POPTROPICA_ALLOW_GLOBAL_RUNTIME_STOP=1.
+  const allowGlobal = options.allowGlobal === true ||
+    process.env.POPTROPICA_ALLOW_GLOBAL_RUNTIME_STOP === "1";
+  const markerOwnedByCaller = options.allowMarker === true ||
+    (markerOwnerPid > 0 && markerOwnerPid === process.pid);
+  const targetPid = Number.isInteger(requestedPid) && requestedPid > 0
+    ? requestedPid
+    : (markerOwnedByCaller && Number.isInteger(markerPid) && markerPid > 0 ? markerPid : 0);
+
+  const scriptLines = [
     "$names = @('FPNavigator','flashpointnavigator','FlashpointSecurePlayer','BasiliskII','plugin-container')",
+    `$targetPid = ${targetPid}`,
+    `$allowGlobal = ${allowGlobal ? "$true" : "$false"}`,
+    "$kill = New-Object System.Collections.Generic.HashSet[int]",
+    "if ($allowGlobal) {",
+    "  foreach ($name in $names) {",
+    "    foreach ($process in @(Get-Process -Name $name -ErrorAction SilentlyContinue)) {",
+    "      [void]$kill.Add([int]$process.Id)",
+    "    }",
+    "  }",
+    "} elseif ($targetPid -gt 0) {",
+    "  # taskkill performs a bounded recursive tree stop without enumerating every",
+    "  # process on the host.  A full Win32_Process scan can block when FFDec/Java",
+    "  # is extracting a large SWF, which used to leave an unresponsive Navigator",
+    "  # behind and caused the next island to show the native popup storm.",
+    "  [void]$kill.Add($targetPid)",
+    "}",
+    "$orderedKill = @($kill | Sort-Object -Descending)",
+    "foreach ($processId in $orderedKill) {",
+    "  if ($processId -le 0) { continue }",
+    "  try { & taskkill.exe /PID $processId /T /F *> $null } catch {}",
+    "  try { Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue } catch {}",
+    "}",
     "$deadline = (Get-Date).AddSeconds(8)",
     "do {",
-    "  foreach ($name in $names) {",
-    "    Get-Process -Name $name -ErrorAction SilentlyContinue |",
-    "      ForEach-Object { try { Stop-Process -Id $_.Id -Force -ErrorAction Stop } catch {} }",
-    "  }",
     "  Start-Sleep -Milliseconds 250",
-    "  $remaining = @(Get-Process -Name $names -ErrorAction SilentlyContinue)",
+    "  $remaining = @($kill | Where-Object { Get-Process -Id $_ -ErrorAction SilentlyContinue })",
+    "  foreach ($processId in @($remaining)) {",
+    "    try { & taskkill.exe /PID $processId /T /F *> $null } catch {}",
+    "  }",
     "} while ($remaining.Count -gt 0 -and (Get-Date) -lt $deadline)"
-  ].join("\n");
-
+  ];
   spawnSync("powershell", [
     "-NoProfile",
     "-NonInteractive",
     "-ExecutionPolicy",
     "Bypass",
     "-Command",
-    script
+    scriptLines.join("\n")
   ], {
     encoding: "utf8",
     windowsHide: true,
@@ -1839,7 +1891,9 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
   const command = buildRuntimeCommand(config, sourceGroup, runtimeUrl, options);
   const navigatorConfig = ensureNavigatorFlashPlugin(config, sourceGroup);
   const audioMuteWatcher = spawnRuntimeMuteWatcher();
-  stopNavigatorProcesses();
+  // Do not terminate Navigator sessions while starting a new one.  The
+  // launcher/web API performs the single-instance check before reaching this
+  // function, and QA cleanup passes an explicit runtime PID after each case.
   syncUserAudioOverrides(path.join(paths.managedServiceRootDir, "Legacy"));
   const flashState = sourceGroup === "as2" ? ensurePoptropicaAs2FlashState({
     launchUrl: runtimeUrl,
@@ -1869,6 +1923,7 @@ function spawnManagedRuntime(config, sourceGroup, url, options = {}) {
     executable: command.executable,
     args: command.args,
     pid: child.pid,
+    ownerPid: process.pid,
     startedAt: new Date().toISOString(),
     targetMonitor: process.env.POPTROPICA_QA_MONITOR || null,
     windowGeometry: {

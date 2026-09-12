@@ -71,7 +71,7 @@
     "qa:steam-detect": "node tools/qa-steam-detect.js",
     "qa:web-launcher": "node tools/qa-web-launcher.js",
     "qa:launcher-ipc": "node tools/qa-launcher-ipc.js",
-    "qa:monitors": "python tools/qa-helper.py list-monitors --target-monitor G32QC",
+    "qa:monitors": "python tools/qa-helper.py list-monitors",
     "qa:capture": "node tools/qa-capture.js",
     "qa:ocr": "node tools/qa-ocr.js",
     "qa:audio-check": "node tools/qa-audio-check.js",
@@ -87,6 +87,9 @@
     "qa:as3-islands-aggregate": "node tools/qa-as3-islands-smoke.js --aggregateLatest=1 --aggregatePreferAudio=1",
     "qa:as3-p0-playability": "node tools/qa-as3-p0-playability.js",
     "qa:as3-resize-smoke": "node tools/qa-as3-resize-smoke.js",
+    "qa:popup-regression": "node tools/qa-popup-regression.js",
+    "qa:final-acceptance": "node tools/qa-final-acceptance.js",
+    "patch:as2-poptropolis": "node tools/patch-as2-poptropolis.js",
     "qa:as3-hud-smoke": "node tools/qa-as3-hud-smoke.js",
     "qa:as3-hud-button-matrix": "node tools/qa-as3-hud-button-matrix.js",
     "qa:as3-interaction-smoke": "node tools/qa-as3-islands-smoke.js --interaction"

@@ -182,7 +182,7 @@ function resolveLaunchTarget({ config, args, autoSceneDelayMs, loadingHoldMs }) 
 }
 
 function configureQaDefaults(args, size) {
-  const monitor = String(arg(args, "monitor", "monitor", process.env.POPTROPICA_QA_MONITOR || "G32QC") || "").trim();
+  const monitor = String(arg(args, "monitor", "monitor", process.env.POPTROPICA_QA_MONITOR || "") || "").trim();
   const postMessageF11 = flagEnabled(arg(args, "postMessageF11", "post-message-f11", ""));
   if (monitor) {
     process.env.POPTROPICA_QA_MONITOR = monitor;

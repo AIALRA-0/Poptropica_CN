@@ -238,6 +238,20 @@ async function main() {
     assert(process.env.POPTROPICA_WINDOW_HEIGHT === "900", "inherited height env should be preserved");
     spawnCalls[2].child.emit("exit", 0);
 
+    delete process.env.POPTROPICA_WINDOW_WIDTH;
+    delete process.env.POPTROPICA_WINDOW_HEIGHT;
+    const concurrentStart = spawnCalls.length;
+    const concurrentResults = await Promise.all([
+      invoke("flash:launch-runtime", "as3"),
+      invoke("flash:launch-runtime", "as3")
+    ]);
+    const concurrentBusyCount = concurrentResults.filter((result) => result?.busy === true).length;
+    const concurrentLaunchCount = concurrentResults.filter((result) => result?.launched === true).length;
+    assert(concurrentLaunchCount === 1, "concurrent launch requests should allow exactly one launch");
+    assert(concurrentBusyCount === 1, "concurrent launch requests should reject exactly one request as busy");
+    assert(spawnCalls.length === concurrentStart + 1, "concurrent launch requests should spawn at most one runtime");
+    spawnCalls[concurrentStart].child.emit("exit", 0);
+
     const directIsland = await invoke("flash:launch-island");
     assert(directIsland.ok === false, "flash:launch-island should remain disabled in Electron UI");
 
@@ -253,6 +267,11 @@ async function main() {
         busyLaunchBlocked: busy.ok === false,
         as2WindowGeometry: as2.windowGeometry,
         inheritedAs3WindowGeometry: inheritedAs3.windowGeometry,
+        concurrentLaunchGuard: {
+          launchCount: concurrentLaunchCount,
+          busyCount: concurrentBusyCount,
+          spawnCountDelta: spawnCalls.length - concurrentStart - 1
+        },
         directIslandDisabled: directIsland.ok === false,
         spawnCalls: spawnCalls.map((call) => ({
           sourceGroup: call.sourceGroup,

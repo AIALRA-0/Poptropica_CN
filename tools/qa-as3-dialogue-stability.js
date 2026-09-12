@@ -170,7 +170,12 @@ async function main() {
   process.env.POPTROPICA_QA_MUTE_RUNTIME = "1";
   process.env.POPTROPICA_QA_MUTE_SECONDS = String(Math.max(3600, Number(process.env.POPTROPICA_QA_MUTE_SECONDS || 43200)));
   process.env.POPTROPICA_QA_MUTE_INTERVAL_MS = String(Math.max(100, Number(process.env.POPTROPICA_QA_MUTE_INTERVAL_MS || 150)));
-  process.env.POPTROPICA_QA_MONITOR = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC");
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
+  if (targetMonitor) {
+    process.env.POPTROPICA_QA_MONITOR = targetMonitor;
+  } else {
+    delete process.env.POPTROPICA_QA_MONITOR;
+  }
   process.env.POPTROPICA_QA_NO_FOREGROUND = "1";
   process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS = "1";
 
@@ -235,7 +240,7 @@ async function main() {
       "--pid",
       String(runtime.pid),
       "--target-monitor",
-      process.env.POPTROPICA_QA_MONITOR,
+      targetMonitor || null,
       "--timeout-ms",
       String(windowTimeoutMs),
       "--output",

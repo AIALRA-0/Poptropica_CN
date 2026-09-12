@@ -192,6 +192,123 @@ window.addEventListener("resize", () => {
 });
 window.addEventListener("keydown", handleViewportRecoveryKey, true);
 
+// Flash-era SWFs occasionally request browser windows for ads, tracking
+// links, or javascript: callbacks.  A managed offline game must keep those
+// requests inside the one Navigator window; otherwise a single scene can
+// create an unbounded popup/reload cascade.  Internal game navigation remains
+// available through the existing POSTToBase flow.
+let flashpointLastAlertText = "";
+let flashpointLastAlertAt = 0;
+let flashpointReloadScheduled = false;
+let flashpointReloadHistory = [];
+const flashpointReloadHistoryKey = "flashpointRecoverableReloadHistory";
+
+function readFlashpointReloadHistory() {
+    try {
+        const parsed = JSON.parse(sessionStorage.getItem(flashpointReloadHistoryKey) || "[]");
+        if(!Array.isArray(parsed))
+            return [];
+        const now = Date.now();
+        return parsed.map(Number).filter(function(at) {
+            return isFinite(at) && now - at < 10000;
+        });
+    } catch(err) {
+        return [];
+    }
+}
+
+function writeFlashpointReloadHistory(history) {
+    try {
+        sessionStorage.setItem(flashpointReloadHistoryKey, JSON.stringify(history.slice(-8)));
+    } catch(err) { }
+}
+
+function clearFlashpointReloadHistory() {
+    try { sessionStorage.removeItem(flashpointReloadHistoryKey); } catch(err) { }
+}
+
+// Native browser alerts and repeated recoverable reloads are both capable of
+// turning a single Flash error into hundreds of visible dialogs or Navigator
+// restarts.  Keep the first diagnostic visible in the managed page and
+// suppress only identical bursts.
+window.alert = function(message) {
+    const text = String(message || "运行时错误").trim() || "运行时错误";
+    const now = Date.now();
+    if(text === flashpointLastAlertText && now - flashpointLastAlertAt < 5000)
+        return;
+    flashpointLastAlertText = text;
+    flashpointLastAlertAt = now;
+    if(errorText) {
+        errorText.textContent = text;
+        errorText.hidden = false;
+    }
+    try { console.warn("FlashpointAlertSuppressed&message=" + encodeURIComponent(text)); } catch(err) { }
+};
+
+window.open = function(url, target, features) {
+    const rawUrl = String(url || "").trim();
+    const rawTarget = String(target || "").trim().toLowerCase();
+    if(!rawUrl || /^javascript:/i.test(rawUrl)) {
+        return null;
+    }
+
+    let resolvedUrl = null;
+    try {
+        resolvedUrl = new URL(rawUrl, window.location.href);
+    } catch(err) {
+        return null;
+    }
+
+    const localHost = resolvedUrl.hostname === window.location.hostname ||
+        resolvedUrl.hostname === "www.poptropica.com" ||
+        resolvedUrl.hostname === "127.0.0.1" ||
+        resolvedUrl.hostname === "localhost";
+    const sameOrigin = resolvedUrl.origin === window.location.origin;
+    const forcedNewWindow = rawTarget === "_blank" || rawTarget === "_new" || rawTarget === "popup";
+
+    if(!localHost || forcedNewWindow) {
+        if(localHost && sameOrigin) {
+            try {
+                window.location.assign(resolvedUrl.href);
+            } catch(err) { }
+        }
+        return null;
+    }
+
+    // Always navigate inside this managed page.  Calling the native
+    // window.open implementation, even with "_self", is browser-version
+    // dependent and was the source of duplicate Navigator/plugin windows.
+    try {
+        window.location.assign(resolvedUrl.href);
+    } catch(err) { }
+    return window;
+};
+
+document.addEventListener("click", function(event) {
+    const anchor = event && event.target && event.target.closest
+        ? event.target.closest("a")
+        : null;
+    if(!anchor)
+        return;
+    const target = String(anchor.target || "").toLowerCase();
+    if(target !== "_blank" && target !== "_new" && target !== "popup")
+        return;
+    const href = String(anchor.href || "").trim();
+    if(!href)
+        return;
+    let parsed = null;
+    try {
+        parsed = new URL(href, window.location.href);
+    } catch(err) {
+        parsed = null;
+    }
+    if(!parsed || parsed.origin !== window.location.origin ||
+        target === "_blank" || target === "_new" || target === "popup") {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+}, true);
+
 function main() {
     const params = getInput();
     flashpointLoad(params.island, params.room, params.startup_path);
@@ -373,7 +490,15 @@ function requestFlashMapResetDialog() {
 
 function resolveMapHotspot(viewport) {
     const hotspot = Object.assign({}, MAP_HOTSPOT);
-    if(viewport && viewport.useViewportCrop) {
+    // The standard gameplay viewport already uses the original Flash HUD
+    // coordinates.  Replacing them with the crop-right anchor moves the
+    // transparent DOM bridge away from the visible map icon (and causes
+    // clicks to land in the scene instead of opening the map).  Keep the
+    // dynamic crop placement only for non-standard/custom crops.
+    const isStandardGameplayCrop = viewport &&
+        Number(viewport.cropWidth || 0) === Number(STANDARD_GAMEPLAY_VIEWPORT.width) &&
+        Number(viewport.cropHeight || 0) === Number(STANDARD_GAMEPLAY_VIEWPORT.height);
+    if(viewport && viewport.useViewportCrop && !isStandardGameplayCrop) {
         const cropRight = Number(viewport.cropLeft || 0) + Number(viewport.cropWidth || 0);
         hotspot.x = Math.max(Number(viewport.cropLeft || 0), cropRight - 110);
         hotspot.y = -5;
@@ -475,10 +600,23 @@ function stableBrowserViewportSize() {
     };
 }
 
+function allowResizeRecoveryReload() {
+    const input = getInput();
+    return isEnabledFlag(input.flashpointResizeRecovery || input.flashpointQaResizeRecovery);
+}
+
 function scheduleResizeRecoveryReload() {
     const size = stableBrowserViewportSize();
     const state = game.__zhViewportState;
     if(!state || state.gameState !== "return_user_standard") {
+        viewportResizeLastSize = size;
+        return;
+    }
+    // Ordinary window resizing is handled by the viewport scaler in place.
+    // A reload is an explicit recovery action only; automatic reloads during
+    // Navigator's startup/layout negotiation can otherwise loop the SWF and
+    // surface dozens of transient popup windows.
+    if(!allowResizeRecoveryReload()) {
         viewportResizeLastSize = size;
         return;
     }
@@ -525,6 +663,10 @@ function handleViewportRecoveryKey(event) {
     const code = Number(event && (event.keyCode || event.which) || 0);
     if(key !== "F11" && code !== 122)
         return;
+    if(!allowResizeRecoveryReload()) {
+        applyCurrentViewport();
+        return;
+    }
     if(viewportResizeReloadTimer)
         clearTimeout(viewportResizeReloadTimer);
     viewportResizeReloadTimer = setTimeout(reloadAfterViewportShrink, 3000);
@@ -843,12 +985,38 @@ function flashpointLoad(island, scene, path = PATH_DEFAULT) {
 }
 
 function flashpointError(recoverable) {
-    if(recoverable)
-        location.reload();
-    else {
-        alert("A fatal error occurred.");
-        location.href = "/";
+    if(recoverable) {
+        if(flashpointReloadScheduled)
+            return;
+        const now = Date.now();
+        flashpointReloadHistory = readFlashpointReloadHistory().filter(function(at) {
+            return now - at < 10000;
+        });
+        if(flashpointReloadHistory.length >= 3) {
+            clearFlashpointReloadHistory();
+            flashpointError(false);
+            return;
+        }
+        flashpointReloadHistory.push(now);
+        writeFlashpointReloadHistory(flashpointReloadHistory);
+        flashpointReloadScheduled = true;
+        setTimeout(function() {
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set("flashpointRecoverableReload", String(Date.now()));
+                window.location.replace(url.toString());
+            } catch(err) {
+                try { location.reload(); } catch(reloadErr) { }
+            }
+        }, 250);
+        return;
     }
+    if(window.__flashpointFatalErrorShown)
+        return;
+    window.__flashpointFatalErrorShown = true;
+    alert("运行时发生错误，已停止重复重启。");
+    if(errorText)
+        errorText.hidden = false;
 }
 
 function getAdStatus() {

@@ -210,7 +210,11 @@ const PROTECTED_LITERAL_VALUES = new Set([
   "utf-8",
   "utf8",
   "F.R.E.D.",
-  "S.O.S."
+  "S.O.S.",
+  "GG.",
+  "PoptropiCon",
+  "Poptropolis",
+  "Poptropolis (AS2)"
 ]);
 
 function parseContext(row) {

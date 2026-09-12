@@ -1325,7 +1325,7 @@ async function testEntry({ config, entry, index, total, runDir, args }) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC").trim();
+  const targetMonitor = String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "").trim();
   if (targetMonitor) {
     process.env.POPTROPICA_QA_MONITOR = targetMonitor;
   }

@@ -304,11 +304,13 @@ function runLaunch(launchPlan, dryRun, serverOptions = {}) {
     };
   }
   const activeRuntime = readActiveRuntime();
-  if (activeRuntimeMatchesLaunch(launchPlan, activeRuntime)) {
+  if (activeRuntime) {
     return {
       ok: false,
       busy: true,
-      error: "该岛已经在运行中，已忽略重复启动请求。",
+      error: activeRuntimeMatchesLaunch(launchPlan, activeRuntime)
+        ? "该岛已经在运行中，已忽略重复启动请求。"
+        : "已有一个旧版游戏窗口在运行，请先关闭它再切换 AS2 / AS3。",
       activeRuntime: {
         pid: activeRuntime.pid,
         sourceGroup: activeRuntime.sourceGroup,

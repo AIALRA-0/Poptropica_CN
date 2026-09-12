@@ -60,7 +60,7 @@ function runHudSmokeForButton(args, button) {
   const childArgs = [
     scriptPath,
     `--islands=${String(args.islands || args.island || "galactic-hot-dogs")}`,
-    `--targetMonitor=${String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC")}`,
+    `--targetMonitor=${String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "")}`,
     `--initial-size=${String(args.initialSize || args["initial-size"] || "1186x760")}`,
     `--resized-size=${String(args.resizedSize || args["resized-size"] || "1450x900")}`,
     `--initial-settle-ms=${String(args.initialSettleMs || args["initial-settle-ms"] || 22000)}`,
@@ -90,7 +90,7 @@ function runHudSmokeForButton(args, button) {
     timeout: Number(args.perButtonTimeoutMs || args["per-button-timeout-ms"] || 220000),
     env: {
       ...process.env,
-      POPTROPICA_QA_MONITOR: String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || "G32QC"),
+      POPTROPICA_QA_MONITOR: String(args.targetMonitor || args.monitor || process.env.POPTROPICA_QA_MONITOR || ""),
       POPTROPICA_QA_NO_FOREGROUND: process.env.POPTROPICA_QA_NO_FOREGROUND || "1",
       POPTROPICA_QA_POST_MESSAGE_CLICKS: process.env.POPTROPICA_QA_POST_MESSAGE_CLICKS || "1",
       POPTROPICA_QA_CAPTURE_CHILD_CLASS: process.env.POPTROPICA_QA_CAPTURE_CHILD_CLASS || "GeckoFPSandboxChildWindow"
