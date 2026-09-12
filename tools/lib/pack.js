@@ -4612,16 +4612,45 @@ function zhFindNearbyInteractiveChar(sceneRef, clickX, clickY)
    var _loc6_;
    var _loc7_ = null;
    var _loc8_ = 999999;
-   var _loc10_ = clickX - sceneRef._x;
-   var _loc11_ = clickY - sceneRef._y;
+   var _loc10_ = Number(clickX);
+   var _loc11_ = Number(clickY);
+   var _loc12_;
+   var _loc13_;
+   var _loc14_;
+   var _loc15_;
+   var _loc16_;
+   var _loc17_;
+   var _loc18_;
+   if(isNaN(_loc10_) || isNaN(_loc11_))
+   {
+      _loc10_ = Number(sceneRef._xmouse);
+      _loc11_ = Number(sceneRef._ymouse);
+   }
    for(var _loc9_ in sceneRef)
    {
       _loc2_ = sceneRef[_loc9_];
       if(_loc2_ != undefined && _loc2_ != sceneRef.char && _loc2_.interaction != undefined && _loc2_.interaction != "none" && _loc2_.isObject != true)
       {
-         if(_loc2_._visible != false && _loc2_.hitTest != undefined && (_loc2_.hitTest(_root._xmouse,_root._ymouse,true) || _loc2_.hitTest(_root._xmouse,_root._ymouse,false)))
+         if(_loc2_._visible != false && _loc2_.getBounds != undefined)
          {
-            return _loc2_;
+            _loc3_ = undefined;
+            try
+            {
+               _loc3_ = _loc2_.getBounds(sceneRef);
+            }
+            catch(_loc18_)
+            {
+               _loc3_ = undefined;
+            }
+            if(_loc3_ != undefined && Number(_loc3_.xMax) > Number(_loc3_.xMin) && Number(_loc3_.yMax) > Number(_loc3_.yMin) && _loc10_ >= Number(_loc3_.xMin) && _loc10_ <= Number(_loc3_.xMax) && _loc11_ >= Number(_loc3_.yMin) && _loc11_ <= Number(_loc3_.yMax))
+            {
+               _loc4_ = (_loc10_ - (Number(_loc3_.xMin) + Number(_loc3_.xMax)) / 2) * (_loc10_ - (Number(_loc3_.xMin) + Number(_loc3_.xMax)) / 2) + (_loc11_ - (Number(_loc3_.yMin) + Number(_loc3_.yMax)) / 2) * (_loc11_ - (Number(_loc3_.yMin) + Number(_loc3_.yMax)) / 2);
+               if(_loc4_ < _loc8_)
+               {
+                  _loc8_ = _loc4_;
+                  _loc7_ = _loc2_;
+               }
+            }
          }
       }
    }
@@ -5067,31 +5096,28 @@ function applyAs2FrameworkTopRightNavPatch(content) {
 
 function applyAs2FrameworkGameplayCacheBustPatch(content) {
   let nextContent = normalizeScriptContent(content);
-  if (nextContent.includes("flashpointQaGameplayUrl") && /_loc3_\.gameplay_url = _loc\d+_;/u.test(nextContent)) {
+  if (nextContent.includes("flashpointQaGameplayUrl") && /_loc\d+_\.gameplay_url = _loc\d+_;/u.test(nextContent)) {
     return nextContent;
   }
-  const queryBustPattern = /      var (_loc\d+_) = "";\n      if\(this\._rt_target\.flashpointQaCacheBust != undefined && String\(this\._rt_target\.flashpointQaCacheBust\) != ""\)\n      \{\n         \1 = "\?flashpointQaCacheBust=" \+ String\(this\._rt_target\.flashpointQaCacheBust\);\n      \}\n      _loc3_\.gameplay_url = "gameplay\.swf" \+ \1;/u;
-  const aliasBlock = (localName) => [
+  const queryBustPattern = /      var (_loc\d+_) = "";\n      if\(this\._rt_target\.flashpointQaCacheBust != undefined && String\(this\._rt_target\.flashpointQaCacheBust\) != ""\)\n      \{\n         \1 = "\?flashpointQaCacheBust=" \+ String\(this\._rt_target\.flashpointQaCacheBust\);\n      \}\n      (_loc\d+_)\.gameplay_url = "gameplay\.swf" \+ \1;/u;
+  const aliasBlock = (localName, gameplayTarget) => [
     `      var ${localName} = "gameplay.swf";`,
     '      if(this._rt_target.flashpointQaGameplayUrl != undefined && String(this._rt_target.flashpointQaGameplayUrl) != "")',
     "      {",
     `         ${localName} = String(this._rt_target.flashpointQaGameplayUrl);`,
     "      }",
-    `      _loc3_.gameplay_url = ${localName};`
+    `      ${gameplayTarget}.gameplay_url = ${localName};`
   ].join("\n");
   const queryMatch = nextContent.match(queryBustPattern);
   if (queryMatch) {
-    return nextContent.replace(queryBustPattern, aliasBlock(queryMatch[1]));
+    return nextContent.replace(queryBustPattern, aliasBlock(queryMatch[1], queryMatch[2]));
   }
-  nextContent = replaceRequiredSnippet(
-    nextContent,
-    `      _loc3_.gameplay_url = "gameplay.swf";`,
-    aliasBlock("_loc8_"),
-    "framework gameplay URL QA alias"
-  );
-  return nextContent;
+  const directMatch = nextContent.match(/      (_loc\d+_)\.gameplay_url = "gameplay\.swf";/u);
+  if (directMatch) {
+    return nextContent.replace(directMatch[0], aliasBlock("_loc8_", directMatch[1]));
+  }
+  throw new Error("Unable to locate framework gameplay URL assignment");
 }
-
 function applyAs2BasePageMinimalPatch(content) {
   let nextContent = normalizeScriptContent(content);
   if (!nextContent.includes("function flashpoint_audio_sanitize(")) {
@@ -6348,6 +6374,52 @@ _root.useArrow();`
   return nextContent;
 }
 
+function applyAs2MapPopupLoaderPatch(content) {
+  let nextContent = normalizeScriptContent(content);
+  if (nextContent.includes("flashpointQaMapPromoteToReady")) {
+    return nextContent;
+  }
+
+  const marker = "mapLoader.loadClip(sPath,mapHolderMC);";
+  const replacement = `${marker}
+var flashpointQaMapPollTicks = 0;
+var flashpointQaMapReady = false;
+function flashpointQaMapPromoteToReady()
+{
+   if(flashpointQaMapReady)
+   {
+      return undefined;
+   }
+   flashpointQaMapReady = true;
+   delete this.onEnterFrame;
+   gotoAndStop(2);
+   _visible = true;
+   if(_root != undefined && _root.flashpointQaCacheBust != undefined)
+   {
+      loadVariablesNum("/brain/track.php?cluster=QA&scene=MapPopup&event=MapReadyFallback&island=" + escape(String(_root.island)),0);
+   }
+}
+this.onEnterFrame = function()
+{
+   flashpointQaMapPollTicks = Number(flashpointQaMapPollTicks) + 1;
+   if(mapHolderMC != undefined && Number(mapHolderMC._framesloaded) > 0)
+   {
+      flashpointQaMapPromoteToReady();
+   }
+   else if(flashpointQaMapPollTicks >= 60)
+   {
+      flashpointQaMapPromoteToReady();
+   }
+};`;
+
+  return replaceRequiredSnippet(
+    nextContent,
+    marker,
+    replacement,
+    "AS2 map popup loader visibility fallback"
+  );
+}
+
 function buildAs2SharedMapPopupAsset({ config, outputDir, manifest, sourceZip, sharedTempRoot }) {
   const ffdecCli = config.tools?.ffdecCli;
   if (!sourceZip || !fileExists(sourceZip) || !ffdecCli || !fileExists(ffdecCli)) {
@@ -6403,6 +6475,13 @@ function buildAs2SharedMapPopupAsset({ config, outputDir, manifest, sourceZip, s
   }
 
   const patchRoot = path.join(sharedTempRoot, "map-patch");
+  const frame1Script = ensureTranslatedScriptFromSource({
+    sourceScriptRoot: scriptRoot,
+    translatedScriptRoot: patchRoot,
+    exportPath: path.join("scripts", "DefineSprite_38", "frame_1", "DoAction.as")
+  });
+  writeText(frame1Script, applyAs2MapPopupLoaderPatch(fs.readFileSync(frame1Script, "utf8")));
+
   const frame2Script = ensureTranslatedScriptFromSource({
     sourceScriptRoot: scriptRoot,
     translatedScriptRoot: patchRoot,
@@ -8375,6 +8454,7 @@ function buildPackForSourceGroup({ db, config, sourceGroup, islandIds = [], asse
 }
 
 module.exports = {
+  applyAs2MapPopupLoaderPatch,
   applyFlashSafeTypography,
   applyStructuredReplacements,
   buildPackForSourceGroup,
